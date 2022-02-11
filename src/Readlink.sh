@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 
 # POSIX compliant version
 Readlinkf_Posix() {
