@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-# ParseArg LONG="<GNU getopt's long option>" SHORT="<GNU getopt's short option>" -- "${@}"
+# parsearg LONG="<GNU getopt's long option>" SHORT="<GNU getopt's short option>" -- "${@}"
 # This function does not support the option argument (Example: 'a::')
 # It will return an array named OPTRET
-ParseArg(){
+parsearg(){
     local _Arg _Chr _Cnt # Temporary variable for loop
     local _Long=() _LongWithArg=() _Short=() _ShortWithArg=() 
     local _OutArg=() _NoArg=() # Parsed array
