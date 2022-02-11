@@ -3,6 +3,7 @@
 
 CurrentDir="$(cd "$(dirname "${0}")" || exit 1 ; pwd)"
 SrcDir="$CurrentDir/src"
+StaticDir="$CurrentDir/static"
 OutFile="${1-"${CurrentDir}/fasbashlib.sh"}"
 
 for file in "${SrcDir}/"*".sh"; do
@@ -10,5 +11,5 @@ for file in "${SrcDir}/"*".sh"; do
     source "$file"
 done
 
-echo -e "#!/usr/bin/env bash\n# shellcheck disable=all" > "$OutFile"
+cat "$StaticDir/head.sh" > "$OutFile"
 typeset -f >> "$OutFile"
