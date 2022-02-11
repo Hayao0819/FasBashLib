@@ -1,7 +1,7 @@
 #!/bin/env bash
 
 # POSIX compliant version
-readlinkf_posix() {
+Readlinkf_Posix() {
     [ "${1:-}" ] || return 1
     max_symlinks=40
     CDPATH='' # to avoid changing to an unexpected directory
@@ -37,7 +37,7 @@ readlinkf_posix() {
 }
 
 # readlink version
-readlinkf_readlink() {
+Readlinkf_Readlink() {
     [ "${1:-}" ] || return 1
     max_symlinks=40
     CDPATH='' # to avoid changing to an unexpected directory
@@ -68,5 +68,5 @@ readlinkf_readlink() {
 }
 
 readlinkf(){
-    readlinkf_posix "$@"
+    Readlinkf_Posix "$@"
 }
