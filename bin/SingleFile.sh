@@ -6,22 +6,26 @@
 MainDir="$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)"
 TmpFile="/tmp/fasbashlib.sh"
 OutFile="${MainDir}/fasbashlib.sh"
+NoRequire=false
 
 # Parse args
 while [[ -n "${1-""}" ]]; do
     [[ "$1" == "-"* ]] || break
     case "${1}" in
-        "-o")
+        "-out")
             [[ -n "${2-""}" ]] || { echo "No file is specified"; exit 1; }
             OutFile="${2}"
             shift 2 || break
+            ;;
+        "-noreq")
+            NoRequire=true
             ;;
         "--")
             shift 1
             break
             ;;
         *)
-            echo "Usage: $(basename "$0") [-o File] [Lib1] [Lib2] ..."
+            echo "Usage: $(basename "$0") [-out File] [-noreq] [Lib1] [Lib2] ..."
             [[ "${1}" = "-h" ]] && exit 0
             exit 1
             ;;
@@ -51,10 +55,12 @@ done < <(declare -F | cut -d " " -f 3)
 unset Func
 
 # Solve require
-for Lib in "${TargetLib[@]}"; do
-    readarray -O "${#RequireLib[@]}" -t RequireLib < <("$LibDir/SolveRequire.sh" "$Lib")
-done
-unset Lib
+if [[ "$NoRequire" = false ]]; then
+    for Lib in "${TargetLib[@]}"; do
+        readarray -O "${#RequireLib[@]}" -t RequireLib < <("$LibDir/SolveRequire.sh" "$Lib")
+    done
+    unset Lib
+fi
 
 # Load src
 while read -r Dir; do
