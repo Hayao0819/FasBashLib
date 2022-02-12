@@ -16,11 +16,6 @@ jobs:
           submodules: true
           fetch-depth: 0 
 
-      - name: Build FasBashLib
-        run: |
-          make
-          make docs
-
       - name: Install SSH key
         uses: shimataro/ssh-key-action@v2
         with:
@@ -37,6 +32,8 @@ jobs:
           git config --local user.email "hayao@fascode.net"
           git config --local user.name "hayao[bot]"
           git config pull.rebase false
+          make
+          make docs
           git add -A
           git commit -S -m "Build Update $(date "+%Y/%m/%d|%T")"
           git checkout -b build-dev
