@@ -90,3 +90,4 @@ typeset -f >> "$TmpFile"
 # Minify
 #bash "$LibDir/minifier/Minify.sh" -f="$TmpFile" > "$OutFile"
 cat "$TmpFile" > "$OutFile"
+echo "$OutFile にビルドされました"
