@@ -15,32 +15,16 @@ jobs:
         with:
           submodules: true
           fetch-depth: 0 
-
-      - name: Install SSH key
-        uses: shimataro/ssh-key-action@v2
-        with:
-          key: ${{ secrets.GH_PAGES_REPO_DEPLOY_KEY }}
-          name: id_rsa # optional
-          known_hosts: unnecessary
-
-      - name: Commit files to build-dev
-        env: 
-          GH_PAGES_REPO_DEPLOY_KEY: ${{ secrets.GH_PAGES_REPO_DEPLOY_KEY }}
+    
+      - name: Build
         run: |
-          echo "$GH_PAGES_REPO_DEPLOY_KEY" > ~/deploy_key.pem
-          chmod 600 ~/deploy_key.pem
-          git config --local user.email "hayao@fascode.net"
-          git config --local user.name "hayao[bot]"
-          git config pull.rebase false
           make
           make docs
-          mv ./fasbashlib.sh ../
-          mv ./docs ../
-          ls ../
-          git checkout -b build-dev
-          git pull origin build-dev
-          mv ../fasbashlib.sh ./
-          mv ../docs ./
-          git add -f ./fasbashlib.sh ./docs/*
-          git commit -m "Build Update $(date "+%Y/%m/%d|%T")"
-          git push --set-upstream origin build-dev
+
+      - name: Upload built files
+        uses: actions/upload-artifact@v2
+        with:
+          name: FasBashLib
+          path: |
+            ./fasbashlib.sh
+            ./docs/*
