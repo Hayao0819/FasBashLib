@@ -11,7 +11,7 @@ OutFile="${MainDir}/fasbashlib.sh"
 while [[ -n "${1-""}" ]]; do
     [[ "$1" == "-"* ]] || break
     case "${1}" in
-        "o")
+        "-o")
             [[ -n "${2-""}" ]] || { echo "No file is specified"; exit 1; }
             OutFile="${2}"
             shift 2 || break
@@ -28,7 +28,7 @@ while [[ -n "${1-""}" ]]; do
     esac
 done
 TargetLib=("$@")
-
+RequireLib=()
 
 # Ccnfigure dir
 SrcDir="$MainDir/src"
@@ -43,13 +43,18 @@ for Dir in "$SrcDir" "$StaticDir" "$LibDir"; do
     }
 done
 
-
 # Check function
 while read -r Func; do
     echo "Unset $Func" >&2
     unset "$Func"
 done < <(declare -F | cut -d " " -f 3)
+unset Func
 
+# Solve require
+for Lib in "${TargetLib[@]}"; do
+    readarray -O "${#RequireLib[@]}" -t RequireLib < <("$LibDir/SolveRequire.sh" "$Lib")
+done
+unset Lib
 
 # Load src
 while read -r Dir; do
@@ -60,10 +65,11 @@ while read -r Dir; do
     }
 done < <(
     if (( "${#TargetLib[@]}" > 0 )); then
-        printf "${SrcDir}/%s\n" "${TargetLib[@]}"
+        printf "${SrcDir}/%s\n" "${RequireLib[@]}" "${TargetLib[@]}"
     else
         find "$SrcDir" -type d -mindepth 1 -maxdepth 1
     fi )
+unset Dir
 
 # Output to temp
 cat "$StaticDir/head.sh" > "$TmpFile"
