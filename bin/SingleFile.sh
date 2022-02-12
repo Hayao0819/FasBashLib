@@ -19,6 +19,7 @@ while [[ -n "${1-""}" ]]; do
             ;;
         "-noreq")
             NoRequire=true
+            shift 1
             ;;
         "--")
             shift 1
