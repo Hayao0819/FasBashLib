@@ -37,5 +37,5 @@ jobs:
           git add -f ./fasbashlib.sh ./docs/*
           git commit -m "Build Update $(date "+%Y/%m/%d|%T")"
           git checkout -b build-dev
-          git pull
+          git pull origin build-dev
           git push --set-upstream origin build-dev
