@@ -1,4 +1,4 @@
-name: Build dev branch
+name: Test library
 
 on: push
 
