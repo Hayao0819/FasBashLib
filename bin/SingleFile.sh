@@ -58,18 +58,20 @@ unset Lib
 
 # Load src
 while read -r Dir; do
-    echo "Load: ${Dir}/Main.sh" >&2
-    source "${Dir}/Main.sh" || {
-        echo "Failed to load shell file"
-        exit 1
-    }
+    while read -r File; do
+        echo "Load: ${Dir}/${File}" >&2
+        source "${Dir}/${File}" || {
+            echo "Failed to load shell file"
+            exit 1
+        }
+    done < <("$LibDir/GetMeta.sh" "$(basename "$Dir")" "Files")
 done < <(
     if (( "${#TargetLib[@]}" > 0 )); then
         printf "${SrcDir}/%s\n" "${RequireLib[@]}" "${TargetLib[@]}"
     else
         find "$SrcDir" -type d -mindepth 1 -maxdepth 1
     fi )
-unset Dir
+unset Dir File
 
 # Output to temp
 cat "$StaticDir/head.sh" > "$TmpFile"
