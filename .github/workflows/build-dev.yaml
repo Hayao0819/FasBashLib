@@ -34,8 +34,13 @@ jobs:
           git config pull.rebase false
           make
           make docs
-          git add -f ./fasbashlib.sh ./docs/*
-          git commit -m "Build Update $(date "+%Y/%m/%d|%T")"
+          mv ./fasbashlib.sh ../
+          mv ./docs ../
+          ls ../
           git checkout -b build-dev
           git pull origin build-dev
+          mv ../fasbashlib.sh ./
+          mv ../docs ./
+          git add -f ./fasbashlib.sh ./docs/*
+          git commit -m "Build Update $(date "+%Y/%m/%d|%T")"
           git push --set-upstream origin build-dev
