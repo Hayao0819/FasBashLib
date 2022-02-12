@@ -37,5 +37,4 @@ jobs:
           git add -f ./fasbashlib.sh ./docs/*
           git commit -m "Build Update $(date "+%Y/%m/%d|%T")"
           git checkout -b build-dev
-          git pull --allow-unrelated-histories origin mirror
-          git push --force origin mirror
+          git push
