@@ -1,12 +1,8 @@
 #!/usr/bin/env bash
-# @file Readlink
-# @brief Readlink -fと同等の機能を実装した関数
+# @file BetterShell
+# @brief よく使う構文をシンプルに書けるようにした関数
 # @description
-#    readlink -fをシェルスクリプトで再実装した関数です。
-#
-#    これらのコードは [ko1nksm/readlinkf](https://github.com/ko1nksm/readlinkf) から引用しています。
-#
-#    一部インデントやコードを改変して使用させていただいています。ありがとうございます。
+#    For文やecho文など、コーディングで多用する文を短く記述できる関数です。
 
 GetLine(){
     head -n "$1" | tail -n 1
