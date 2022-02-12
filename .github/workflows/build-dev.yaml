@@ -1,4 +1,3 @@
-# このGitHub Actionsはhayao0819/hayao.fascode.net上でのみ実行されます
 name: Build dev branch
 
 on: 
@@ -15,7 +14,7 @@ jobs:
         with:
           submodules: true
           fetch-depth: 0 
-    
+
       - name: Build
         run: |
           make
@@ -25,6 +24,10 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: FasBashLib
-          path: |
-            ./fasbashlib.sh
-            ./docs/*
+          path: ./fasbashlib.sh
+
+      - name: Upload built files
+        uses: actions/upload-artifact@v2
+        with:
+          name: FasBashLib Documents
+          path: ./docs/*
