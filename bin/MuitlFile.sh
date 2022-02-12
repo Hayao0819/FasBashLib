@@ -2,6 +2,8 @@
 # Do not use FasBashLib in this file
 # shellcheck disable=SC1090,SC1091
 
+set -Eeu
+
 # Init
 MainDir="$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)"
 OutDir="$MainDir/out"
@@ -10,7 +12,7 @@ OutDir="$MainDir/out"
 while [[ -n "${1-""}" ]]; do
     [[ "$1" == "-"* ]] || break
     case "${1}" in
-        "-o")
+        "-out")
             [[ -n "${2-""}" ]] || { echo "No file is specified"; exit 1; }
             OutDir="${2}"
             shift 2 || break
@@ -20,7 +22,7 @@ while [[ -n "${1-""}" ]]; do
             break
             ;;
         *)
-            echo "Usage: $(basename "$0") [-o Dir]"
+            echo "Usage: $(basename "$0") [-out Dir]"
             [[ "${1}" = "-h" ]] && exit 0
             exit 1
             ;;

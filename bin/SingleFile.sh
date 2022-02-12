@@ -2,6 +2,8 @@
 # Do not use FasBashLib in this file
 # shellcheck disable=SC1090,SC1091
 
+set -Eeu
+
 # Init
 MainDir="$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)"
 TmpFile="/tmp/fasbashlib.sh"
@@ -83,6 +85,7 @@ unset Dir File
 # Output to temp
 cat "$StaticDir/head.sh" > "$TmpFile"
 typeset -f >> "$TmpFile"
+[[ -e "$TmpFile" ]] || exit 1
 
 # Minify
 #bash "$LibDir/minifier/Minify.sh" -f="$TmpFile" > "$OutFile"
