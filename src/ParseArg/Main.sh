@@ -1,8 +1,27 @@
 #!/usr/bin/env bash
+# @file ParseArg
+# @brief GNU getoptのように動作する小さいコマンドラインパーサー
+# @description
+#    GNU getoptのように引数を解析して並び替えを行う関数です。
+#
+#    全てBashで記述されており、BSD環境でも動作します。
 
-# ParseArg LONG="<GNU getopt's long option>" SHORT="<GNU getopt's short option>" -- "${@}"
-# This function does not support the option argument (Example: 'a::')
-# It will return an array named OPTRET
+# @description GNU getoptの最小限の機能をBashで実装した関数です。
+#
+#              getoptと同じフォーマットで引数を指定できます。
+#
+#              This function does not support the option argument (Example: 'a::')
+#
+# @example ParseArg LONG="<GNU getopt's long option>" SHORT="<GNU getopt's short option>" -- "${@}"
+#
+# @arg LONG  GNU getopt's long option
+# @arg SHORT GNU getopt's short option
+#
+# @exitcode 0 正常に解析が終了しました
+# @exitcode 1 定義されていない不正なオプション
+# @exitcode 2 必要な引数が指定されていません
+#
+# @set OPTRET 解析された結果
 ParseArg(){
     local _Arg _Chr _Cnt # Temporary variable for loop
     local _Long=() _LongWithArg=() _Short=() _ShortWithArg=() 
@@ -57,7 +76,7 @@ ParseArg(){
                 # Check argument
                 if [[ "${2}" = "-"* ]]; then
                     MsgError "${1} の引数が指定されていません"
-                    return 1
+                    return 2
                 else
                     _OutArg+=("${1}" "${2}")
                     shift 2
@@ -98,4 +117,5 @@ ParseArg(){
 
     #shellcheck disable=SC2034
     OPTRET=("${_OutArg[@]}" -- "${_NoArg[@]}")
+    return 0
 }
