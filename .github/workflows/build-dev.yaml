@@ -34,7 +34,7 @@ jobs:
           git config pull.rebase false
           make
           make docs
-          git add -A
+          git add -f ./fasbashlib.sh ./docs/*
           git commit -S -m "Build Update $(date "+%Y/%m/%d|%T")"
           git checkout -b build-dev
           git pull --allow-unrelated-histories origin mirror
