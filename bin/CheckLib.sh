@@ -5,6 +5,7 @@ set -Eeu
 MainDir="$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)"
 SrcDir="$MainDir/src"
 LibDir="$MainDir/lib"
+ShellList=("ModernBash" "Any" "LegacySh")
 
 
 while read -r Dir; do
@@ -24,6 +25,11 @@ while read -r Dir; do
     done < <(find "$Dir" -type f -print0)
 
     # 依存関係をテスト
-    "$LibDir/SolveRequire.sh" "$(basename "$Dir")" 1> /dev/null
+    "$LibDir/SolveRequire.sh" "$(basename "$Dir")" 1> /dev/null 2>&1
+
+    # シェルを確認
+    printf "%s\n" "${ShellList[@]}" | grep -qx "$("$LibDir/GetMeta.sh" "$(basename "$Dir")" "Shell")" || {
+        echo "$(basename "$Dir"): 不正なシェルが設定されています"
+    }
 
 done < <(find "${SrcDir}" -type d -mindepth 1 -maxdepth 1 )
