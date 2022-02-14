@@ -72,3 +72,7 @@ IsUUID(){
     [[ "${_UUID//-/}" =~ ^[[:xdigit:]]{32}$ ]] && return 0
     return 1
 }
+
+RemoveBlank(){
+    sed "s|^ *||g; s| *$||g"
+}

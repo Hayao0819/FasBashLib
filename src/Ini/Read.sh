@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+# @file IniRead
+# @brief Iniファイルを解析し、内容を出力します
+# @description
+#    Ini設定ファイルを読み取り、以下のものを出力します
+#      - セクションの一覧
+#      - パラメータの一覧
+#      - 指定されたパラメータの値
+
+#@internal
+#@set TYPE    SECTION/KEY-VALUE/NOTHING/ERROR
+#@set KEY     変数名
+#@set VALUE   値
+#@set SECTION セクション名
+ParseIniLine(){
+    local _Line="$1"
+    TYPE="" KEY="" VALUE="" SECTION=""
+    _Line="$(RemoveBlank <<< "$1")"
+    case "$_Line" in
+        "["*"]")
+            TYPE="SECTION"
+            SECTION=$(sed "s|^\[||g; s|\]$||g" <<< "$_Line")
+            ;;
+        "" | "#"*)
+            TYPE="NOTHING"
+            ;;
+        *"="*)
+            TYPE="KEY-VALUE"
+            KEY="$(RemoveBlank <<< "$(cut -d "=" -f 1 <<< "$_Line")")"
+            VALUE="$(RemoveBlank <<< "$(cut -d "=" -f 2- <<< "$_Line")")"
+            ;;
+        *)
+            TYPE="ERROR"
+            ;;
+    esac
+}
+
+
+# @description Iniのセクションの一覧を取得します
+# Iniファイルは標準入力から受け取ります。
+#
+# @example
+#    cat config.ini | GetIniSectionList
+#
+# @noargs
+#
+# @stdout セクションのリストを返します
+#
+# @exitcode 0 正常に出力されました
+# @exitcode 1 一部の行で解析に失敗しました
+GetIniSectionList(){
+    local _RawIniLine=()
+    local _Line _LineNo=1 _Exit=0
+    readarray -t _RawIniLine
+
+    while read -r _Line;do
+        ParseIniLine "$_Line"
+        case "$TYPE" in
+            "SECTION")
+                echo "$SECTION"
+                ;;
+            "ERROR")
+                echo "Line $_LineNo: Failed to parse Ini" >&2
+                _Exit=1
+                ;;
+        esac
+        _LineNo=$(( _LineNo + 1  ))
+    done < <(PrintArray "${_RawIniLine[@]}")
+    return 0
+}
