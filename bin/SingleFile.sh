@@ -15,7 +15,7 @@ while [[ -n "${1-""}" ]]; do
     [[ "$1" == "-"* ]] || break
     case "${1}" in
         "-out")
-            [[ -n "${2-""}" ]] || { echo "No file is specified"; exit 1; }
+            [[ -n "${2-""}" ]] || { echo "No file is specified" >&2 ; exit 1; }
             OutFile="${2}"
             shift 2 || break
             ;;
@@ -28,7 +28,7 @@ while [[ -n "${1-""}" ]]; do
             break
             ;;
         *)
-            echo "Usage: $(basename "$0") [-out File] [-noreq] [Lib1] [Lib2] ..."
+            echo "Usage: $(basename "$0") [-out File] [-noreq] [Lib1] [Lib2] ..." >&2
             [[ "${1}" = "-h" ]] && exit 0
             exit 1
             ;;
@@ -45,7 +45,7 @@ LibDir="$MainDir/lib"
 # Check dir
 for Dir in "$SrcDir" "$StaticDir" "$LibDir"; do
     [[ -d "$Dir" ]]  || {
-        echo "Missing directory: $Dir"
+        echo "Missing directory: $Dir" >&2
         exit 1
     }
 done
@@ -70,7 +70,7 @@ while read -r Dir; do
     while read -r File; do
         echo "Load: ${Dir}/${File}" >&2
         source "${Dir}/${File}" || {
-            echo "Failed to load shell file"
+            echo "Failed to load shell file" >&2
             exit 1
         }
     done < <("$LibDir/GetMeta.sh" "$(basename "$Dir")" "Files")
@@ -90,4 +90,4 @@ typeset -f >> "$TmpFile"
 # Minify
 #bash "$LibDir/minifier/Minify.sh" -f="$TmpFile" > "$OutFile"
 cat "$TmpFile" > "$OutFile"
-echo "$OutFile にビルドされました"
+echo "$OutFile にビルドされました" >&2
