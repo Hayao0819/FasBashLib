@@ -17,27 +17,30 @@ LibFrom=("<EntryPoint>")
 
 SolveRequire(){
     local _Lib _Shell
-    echo "Load: $1" >&2
+    #echo "Load: $1" >&2
     [[ -d "$SrcDir/$1/" ]] || {
         echo "Missing library: $1" >&2
         return 1
     }
     _Shell="$("$LibDir/GetMeta.sh" "$1" "Shell")"
     while read -r _Lib; do
+        _LibShell="$("$LibDir/GetMeta.sh" "$_Lib" "Shell")"
         if ! printf "%s\n" "${LibList[@]}" | grep -qx "$_Lib"; then
             # Check Shell
-            case "$("$LibDir/GetMeta.sh" "$_Lib" "Shell")" in
+            [[ "$_Shell" = "Any" ]] && SolveRequire "$_Lib"
+            case "$_LibShell" in
                 "$_Shell" | "Any")
                     SolveRequire "$_Lib"
                     ;;
                 *)
-                    echo "$1と$_Libは別のシェル用のライブラリです。"
+                    echo "${1}($_Shell)と${_Lib}($_LibShell)は別のシェル用のライブラリです。"
                     exit 1
                     ;;
             esac
+            LibList+=("$_Lib")
+            LibFrom+=("$1")
         fi
-        LibList+=("$_Lib")
-        LibFrom+=("$1")
+
     done < <("$LibDir/GetMeta.sh" "$1" "Require" | tr "," "\n")
 }
 
@@ -48,4 +51,3 @@ SolveRequire "$Target"
 #echo "LibFrom: ${LibFrom[*]}" >&2
 
 printf "%s\n" "${LibList[@]}"
-
