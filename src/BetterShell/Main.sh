@@ -34,7 +34,7 @@ CutLastString(){
     return 0
 }
 
-ForArray(){
+ForEach(){
     local _Item _Cmd _C
     while read -r _Item; do
         for _C in "$@"; do
