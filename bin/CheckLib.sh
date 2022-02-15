@@ -26,7 +26,7 @@ while read -r Dir; do
     done < <(find "$Dir" -type f)
 
     # 依存関係をテスト
-    "$LibDir/SolveRequire.sh" "$(basename "$Dir")" 1> /dev/null 2>&1 || Errors=$(( Errors + 1 ))
+    "$LibDir/SolveRequire.sh" "$(basename "$Dir")" 1> /dev/null || Errors=$(( Errors + 1 ))
 
     # シェルを確認
     if ! printf "%s\n" "${ShellList[@]}" | grep -qx "$("$LibDir/GetMeta.sh" "$(basename "$Dir")" "Shell")"; then

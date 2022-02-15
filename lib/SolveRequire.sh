@@ -33,7 +33,7 @@ SolveRequire(){
                     SolveRequire "$_Lib"
                     ;;
                 *)
-                    echo "${1}($_Shell)と${_Lib}($_LibShell)は別のシェル用のライブラリです。"
+                    echo "${1}($_Shell)と${_Lib}($_LibShell)は別のシェル用のライブラリです。" >&2
                     exit 1
                     ;;
             esac
