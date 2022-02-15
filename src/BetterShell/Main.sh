@@ -76,3 +76,7 @@ IsUUID(){
 RemoveBlank(){
     sed "s|^ *||g; s| *$||g"
 }
+
+FileType(){
+    file --mime-type -b "$1" 
+}
