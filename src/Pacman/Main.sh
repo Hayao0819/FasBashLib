@@ -10,6 +10,10 @@
 #
 #    Pacmanの仕様変更などで動作しない場合は開発者に問題を報告してください。
 
+# @internal
+RunPacman(){
+    pacman --noconfirm --config "${PACMAN_CONF-"/etc/pacman.conf"}" "$@"
+}
 
 # @description パッケージがインストール済みかどうかを確認します。
 #
@@ -23,8 +27,28 @@
 CheckPacmanPkg(){
     local p
     for p in "$@"; do
-        pacman -Qq "$p" || return 1
+        RunPacman -Qq "$p" || return 1
     done
     return 0
 }
+
+GetPacmanRepoList(){
+    find "$(pacman-conf DBPath)/sync" -mindepth 1 -maxdepth 1 -type f | GetBaseName | sed "s|.db$||g"
+}
+
+
+GetPacmanLatestPkgVer(){
+    local _LANG="${LANG-""}"
+    export LANG=C
+    ForEach RunPacman -Si "{}" | grep "^Version" | cut -d ":" -f 2 | RemoveBlank
+    [[ -n "$_LANG" ]] && export LANG="$_LANG"
+    return 0
+}
+
+GetPacmanInstalledPkgVer(){
+    ForEach pacman -Qq "{}" | cut -d " " -f 2
+    PrintArray "${PIPESTATUS[@]}" | grep -qx "1" && return 1
+    return 0
+}
+
 
