@@ -22,7 +22,7 @@ while read -r Dir; do
         if [[ "$(file --mime-type "$File" | cut -d " " -f 2)" = "text/x-shellscript" ]]; then
             shellcheck -s bash -x "$File"
         fi
-    done < <(find "$Dir" -type f -print0)
+    done < <(find "$Dir" -type f)
 
     # 依存関係をテスト
     "$LibDir/SolveRequire.sh" "$(basename "$Dir")" 1> /dev/null 2>&1
