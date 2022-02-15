@@ -25,6 +25,8 @@ if [[ ! -e "$SrcDir/$LibName/Meta.ini" ]]; then
     exit 1
 fi
 
-source /dev/stdin < <("$BinDir/SingleFile.sh" -out "/dev/stdout" "$LibName" 2> /dev/null )
+source /dev/stdin < <("$BinDir/SingleFile.sh" -out "/dev/stdout" "$LibName")
+
+typeset -f "${FuncName}" 1> /dev/null || exit 1
 
 "$FuncName" "$@"
