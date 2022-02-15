@@ -26,7 +26,7 @@ ParseArg(){
     local _Arg _Chr _Cnt # Temporary variable for loop
     local _Long=() _LongWithArg=() _Short=() _ShortWithArg=() 
     local _OutArg=() _NoArg=() # Parsed array
-    local _ParseFinished=false
+    #local _ParseFinished=false
 
     # 引数一覧を取得
     for _Arg in "${@}"; do
