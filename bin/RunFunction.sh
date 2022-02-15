@@ -29,4 +29,6 @@ source /dev/stdin < <("$BinDir/SingleFile.sh" -out "/dev/stdout" "$LibName")
 
 typeset -f "${FuncName}" 1> /dev/null || exit 1
 
+echo "---Function Start---" >&2
 "$FuncName" "$@"
+echo "---Function End" >&2
