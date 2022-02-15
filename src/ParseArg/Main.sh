@@ -46,6 +46,7 @@ ParseArg(){
         "SHORT="*)
             readarray -t _TempArray < <(tr -d "\"" <<< "${_Arg#SHORT=}" | grep -o .)
             for (( _Cnt=0; _Cnt<= "${#_TempArray[@]}" - 1; _Cnt++ )); do
+                #shellcheck disable=SC2140
                 if [[ "${_TempArray["$(( _Cnt + 1))"]-""}" = ":" ]]; then
                 _ShortWithArg+=("${_TempArray["${_Cnt}"]}")
                 _Cnt=$(( _Cnt + 1 ))
@@ -68,7 +69,7 @@ ParseArg(){
             shift 1
             _NoArg+=("${@}")
             shift "$#"
-            _ParseFinished=true
+            #_ParseFinished=true
             break
         elif [[ "${1}" = "--"* ]]; then # Long option
             # Long option with argument
