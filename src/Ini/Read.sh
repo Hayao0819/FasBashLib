@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2034
 # @file IniRead
 # @brief Iniファイルを解析し、内容を出力します
 # @description
