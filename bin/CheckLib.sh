@@ -34,6 +34,14 @@ while read -r Dir; do
         Errors=$(( Errors + 1 ))
     fi
 
+    # ファイルの存在を確認
+    while read -r File; do
+        if ! [[ -e "$Dir/$File" ]]; then
+            echo "$(basename "$Dir"): $File が存在しません"
+            Errors=$(( Errors + 1 ))
+        fi
+    done < <("$LibDir/GetMeta.sh" "$(basename "$Dir")" "Files")
+
 done < <(find "${SrcDir}" -type d -mindepth 1 -maxdepth 1 )
 
 if (( Errors == 0 )); then
