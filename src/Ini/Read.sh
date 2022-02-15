@@ -8,13 +8,13 @@
 #      - 指定されたパラメータの値
 
 #@internal
-#@set TYPE    SECTION/KEY-VALUE/NOTHING/ERROR
-#@set KEY     変数名
+#@set TYPE    SECTION/PARAM-VALUE/NOTHING/ERROR
+#@set PARAM   変数名
 #@set VALUE   値
 #@set SECTION セクション名
 ParseIniLine(){
     local _Line="$1"
-    TYPE="" KEY="" VALUE="" SECTION=""
+    TYPE="" PARAM="" VALUE="" SECTION=""
     _Line="$(RemoveBlank <<< "$1")"
     case "$_Line" in
         "["*"]")
@@ -25,8 +25,8 @@ ParseIniLine(){
             TYPE="NOTHING"
             ;;
         *"="*)
-            TYPE="KEY-VALUE"
-            KEY="$(RemoveBlank <<< "$(cut -d "=" -f 1 <<< "$_Line")")"
+            TYPE="PARAM-VALUE"
+            PARAM="$(RemoveBlank <<< "$(cut -d "=" -f 1 <<< "$_Line")")"
             VALUE="$(RemoveBlank <<< "$(cut -d "=" -f 2- <<< "$_Line")")"
             ;;
         *)
@@ -66,5 +66,43 @@ GetIniSectionList(){
         esac
         _LineNo=$(( _LineNo + 1  ))
     done < <(PrintArray "${_RawIniLine[@]}")
-    return 0
+    return "$_Exit"
+}
+
+
+# @description 指定されたセクション内のパラメータの一覧を表示します
+# Iniファイルは標準入力から受け取ります。
+#
+# @example
+#    cat chromium.desktop | GetIniParamList desktop
+#
+# @noargs
+#
+# @stdout パラメータのリストを返します
+#
+# @exitcode 0 正常に出力されました
+# @exitcode 1 一部の行で解析に失敗しました
+GetIniParamList(){
+    local _RawIniLine=()
+    local _Line _LineNo=1 _Exit=0 _InSection=false
+    readarray -t _RawIniLine
+
+    while read -r _Line;do
+        ParseIniLine "$_Line"
+        case "$TYPE" in
+            "SECTION")
+                ! [[ "$SECTION" = "$1" ]] || _InSection=true
+                ;;
+            "PARAM-VALUE")
+
+                [[ "$_InSection" = false ]] || echo "$PARAM"
+                ;;
+            "ERROR")
+                echo "Line $_LineNo: Failed to parse Ini" >&2
+                _Exit=1
+                ;;
+        esac
+        _LineNo=$(( _LineNo + 1  ))
+    done < <(PrintArray "${_RawIniLine[@]}")
+    return "$_Exit"
 }
