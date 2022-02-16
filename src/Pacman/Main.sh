@@ -64,5 +64,6 @@ GetPacmanRepoConf(){
 }
 
 GetPacmanRepoServer(){
+    #shellcheck disable=SC2016
     ForEach eval 'GetPacmanConf -r {}' | grep "^Server" | ForEach eval 'ParseIniLine; printf "%s\n" ${VALUE}'
 }
