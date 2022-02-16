@@ -52,6 +52,8 @@ jobs:
           git config remote.origin.url "git@github.com:Hayao0819/FasBashLib.git"
           echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
           git checkout -b build-dev
+          make
+          make docs
           git add -A --force ./docs/* ./fasbashlib.sh
           git pull --allow-unrelated-histories origin build-dev
           git push --force origin build-dev
