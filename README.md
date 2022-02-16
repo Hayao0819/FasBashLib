@@ -6,7 +6,17 @@ Some functions are also for Arch Linux.
 
 ## Document
 
-Currently no documentation exists. We plan to publish everything on gitHubWiki and markDown.
+You can read auto generated documents [here](https://github.com/Hayao0819/FasBashLib/tree/build-dev/docs).
+
+## Use
+
+### The latest dev library from Online
+
+Add this line into your script.
+
+```
+source /dev/stdin < <(https://raw.githubusercontent.com/Hayao0819/FasBashLib/build-dev/fasbashlib.sh)
+```
 
 ## Special thanks
 
