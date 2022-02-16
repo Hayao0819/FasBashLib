@@ -57,6 +57,8 @@ jobs:
       - name: Run commit
         run: |
           rm -rf .gitignore && echo "Removed .gitignore"
+          echo "Current: $(pwd)"
+          ls
           git add -A --force ./docs/* ./fasbashlib.sh
           git status
           git commit -m "Update: Updated built docs and fasbashlib.sh (${GITHUB_REF})"
