@@ -16,7 +16,7 @@ RunPacman(){
 }
 
 GetPacmanConf(){
-    pacman-conf --config= "${PACMAN_CONF-"/etc/pacman.conf"}" "$@"
+    LANG=C pacman-conf --config="${PACMAN_CONF-"/etc/pacman.conf"}" "$@"
 }
 
 # @description パッケージがインストール済みかどうかを確認します。
@@ -59,4 +59,10 @@ GetPacmanInstalledPkgVer(){
     return 0
 }
 
+GetPacmanRepoConf(){
+    ForEach eval 'echo [{}] && GetPacmanConf -r {}'
+}
 
+GetPacmanRepoServer(){
+    ForEach eval 'GetPacmanConf -r {}' | grep "^Server" | ForEach eval 'ParseIniLine; printf "%s\n" ${VALUE}'
+}
