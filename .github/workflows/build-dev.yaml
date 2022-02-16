@@ -33,54 +33,44 @@ jobs:
           path: ./docs/*
 
       - name: Commit library to another branch
-        uses: EndBug/add-and-commit@v8.0.2
+      - uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          # The arguments for the `git add` command (see the paragraph below for more info)
-          # Default: '.'
-          add: './fasbashlib.sh'
+          # Optional, but recommended
+          # Defaults to "Apply automatic changes"
+          commit_message: Update fasbashlib.sh
 
-          # The name of the user that will be displayed as the author of the commit.
-          # Default: depends on the default_author input
-          author_name: hayao[bot]
+          # Optional branch name where commit should be pushed to.
+          # Defaults to the current branch.
+          branch: build-dev
 
-          # The email of the user that will be displayed as the author of the commit.
-          # Default: depends on the default_author input
-          author_email: hayao@fascode.net
+          # Optional. Used by `git-commit`.
+          # See https://git-scm.com/docs/git-commit#_options
+          commit_options: '--no-verify --signoff'
 
-          # Additional arguments for the git commit command. The --message argument is already set by the message input.
-          # Default: ''
-          commit: --signoff
+          # Optional glob pattern of files which should be added to the commit
+          # Defaults to all (.)
+          # See the `pathspec`-documentation for git
+          # - https://git-scm.com/docs/git-add#Documentation/git-add.txt-ltpathspecgt82308203
+          # - https://git-scm.com/docs/gitglossary#Documentation/gitglossary.txt-aiddefpathspecapathspec
+          file_pattern: ./docs/* ./fasbashlib.sh
 
+          # Optional. Used by `git-add`
+          # See https://git-scm.com/docs/git-add#_options
+          add_options: '-u --force'
 
-          # Determines the way the action fills missing author name and email. Three options are available:
-          # - github_actor -> UserName <UserName@users.noreply.github.com>
-          # - user_info -> Your Display Name <your-actual@email.com>
-          # - github_actions -> github-actions <email associated with the github logo>
-          # Default: github_actor
-          default_author: github_actor
+          # Optional. Used by `git-push`
+          # See https://git-scm.com/docs/git-push#_options
+          #push_options: '--force'
+          
+          # Optional. Disable dirty check and always try to create a commit and push
+          skip_dirty_check: true    
+          
+          # Optional. Skip internal call to `git fetch`
+          skip_fetch: true    
+          
+          # Optional. Skip internal call to `git checkout`
+          skip_checkout: true
 
-          # The message for the commit.
-          # Default: 'Commit from GitHub Actions (name of the workflow)'
-          message: 'Update fasbashlib.sh'
-
-          # If this input is set, the action will push the commit to a new branch with this name.
-          # Default: ''
-          new_branch: dev-build
-
-          # The way the action should handle pathspec errors from the add and remove commands. Three options are available:
-          # - ignore -> errors will be logged but the step won't fail
-          # - exitImmediately -> the action will stop right away, and the step will fail
-          # - exitAtEnd -> the action will go on, every pathspec error will be logged at the end, the step will fail.
-          # Default: ignore
-          pathspec_error_handling: ignore
-
-          # Arguments for the git pull command. By default, the action does not pull.
-          # Default: ''
-          pull: '--rebase --autostash ...'
-
-          # Whether to push the commit and, if any, its tags to the repo. It can also be used to set the git push arguments (see the paragraph below for more info)
-          # Default: true
-          push: true
-
-
-
+          # Optional. Prevents the shell from expanding filenames. 
+          # Details: https://www.gnu.org/software/bash/manual/html_node/Filename-Expansion.html
+          disable_globbing: true
