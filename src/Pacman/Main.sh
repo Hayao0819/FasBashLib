@@ -15,6 +15,10 @@ RunPacman(){
     pacman --noconfirm --config "${PACMAN_CONF-"/etc/pacman.conf"}" "$@"
 }
 
+GetPacmanConf(){
+    pacman-conf --config= "${PACMAN_CONF-"/etc/pacman.conf"}"
+}
+
 # @description パッケージがインストール済みかどうかを確認します。
 #
 # @example CheckPacmanPkg yay bash base
@@ -37,7 +41,8 @@ GetPacmanRepoListFromLocalDb(){
 }
 
 GetPacmanRepoListFromConf(){
-    pacman-conf | GetIniSectionList 2> /dev/null| grep -vx "options"
+    #pacman-conf | GetIniSectionList 2> /dev/null| grep -vx "options"
+    pacman-conf --repo-list
 }
 
 GetPacmanLatestPkgVer(){
