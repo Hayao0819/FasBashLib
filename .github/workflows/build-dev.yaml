@@ -33,7 +33,7 @@ jobs:
           path: ./docs/*
 
       - name: Commit library to another branch
-      - uses: stefanzweifel/git-auto-commit-action@v4
+        uses: stefanzweifel/git-auto-commit-action@v4
         with:
           # Optional, but recommended
           # Defaults to "Apply automatic changes"
