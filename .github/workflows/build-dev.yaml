@@ -52,7 +52,7 @@ jobs:
           # See the `pathspec`-documentation for git
           # - https://git-scm.com/docs/git-add#Documentation/git-add.txt-ltpathspecgt82308203
           # - https://git-scm.com/docs/gitglossary#Documentation/gitglossary.txt-aiddefpathspecapathspec
-          file_pattern: ./docs/* ./fasbashlib.sh
+          file_pattern: ./docs/ ./fasbashlib.sh
 
           # Optional. Used by `git-add`
           # See https://git-scm.com/docs/git-add#_options
