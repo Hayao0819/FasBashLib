@@ -55,6 +55,7 @@ jobs:
           make
           make docs
           git add -A --force ./docs/* ./fasbashlib.sh
+          git commit -m "Update: Updated built docs and fasbashlib.sh (${GITHUB_REF})"
           git pull --allow-unrelated-histories origin build-dev
           git push --force origin build-dev
     
