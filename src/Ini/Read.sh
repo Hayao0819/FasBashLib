@@ -14,9 +14,9 @@
 #@set VALUE   値
 #@set SECTION セクション名
 ParseIniLine(){
-    local _Line="$1"
+    local _Line #="$1"
     TYPE="" PARAM="" VALUE="" SECTION=""
-    _Line="$(RemoveBlank <<< "$1")"
+    _Line="$(RemoveBlank <<< "$(cat)")"
     case "$_Line" in
         "["*"]")
             TYPE="SECTION"
@@ -34,6 +34,7 @@ ParseIniLine(){
             TYPE="ERROR"
             ;;
     esac
+    return 0
 }
 
 
@@ -55,7 +56,7 @@ GetIniSectionList(){
     readarray -t _RawIniLine
 
     while read -r _Line;do
-        ParseIniLine "$_Line"
+        ParseIniLine <<< "$_Line"
         case "$TYPE" in
             "SECTION")
                 echo "$SECTION"
@@ -89,7 +90,7 @@ GetIniParamList(){
     readarray -t _RawIniLine
 
     while read -r _Line;do
-        ParseIniLine "$_Line"
+        ParseIniLine <<< "$_Line"
         case "$TYPE" in
             "SECTION")
                 ! [[ "$SECTION" = "$1" ]] || _InSection=true
