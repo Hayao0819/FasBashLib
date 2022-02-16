@@ -80,3 +80,7 @@ RemoveBlank(){
 FileType(){
     file --mime-type -b "$1" 
 }
+
+IsAvailable(){
+    type "$1" 2> /dev/null 1>&2
+}
