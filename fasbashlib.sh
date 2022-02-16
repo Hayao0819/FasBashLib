@@ -256,6 +256,10 @@ GetVersion ()
 { 
     jq -r ".Version"
 }
+IsAvailable () 
+{ 
+    type "$1" 2> /dev/null 1>&2
+}
 IsOutOfDated () 
 { 
     local _Status;
