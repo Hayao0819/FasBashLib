@@ -58,7 +58,6 @@ jobs:
         run: |
           rm -rf .gitignore && echo "Removed .gitignore"
           git add --force ./docs/ ./fasbashlib.sh
-          git status
-          git commit -m "Update: Updated built docs and fasbashlib.sh (${GITHUB_REF})"
+          git commit -m "Update: Updated built docs and fasbashlib.sh (${GITHUB_REF})" || true
           git push --force origin build-dev
     
