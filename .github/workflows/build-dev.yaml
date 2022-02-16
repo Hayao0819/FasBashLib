@@ -40,7 +40,7 @@ jobs:
           name: id_rsa # optional
           known_hosts: unnecessary
 
-      - name: Commit files to build-dev
+      - name: Prepare for commit
         env: 
           GH_PAGES_REPO_DEPLOY_KEY: ${{ secrets.GH_PAGES_REPO_DEPLOY_KEY }}
         run: |
@@ -51,12 +51,14 @@ jobs:
           git config pull.rebase false
           git config remote.origin.url "git@github.com:Hayao0819/FasBashLib.git"
           echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
-          git checkout -b build-dev
-          make
-          make docs
           git pull --allow-unrelated-histories origin build-dev
-          rm -rf .gitignore
+          git checkout -b build-dev
+          
+      - name: Run commit
+        run: |
+          rm -rf .gitignore && echo "Removed .gitignore"
           git add -A --force ./docs/* ./fasbashlib.sh
+          git status
           git commit -m "Update: Updated built docs and fasbashlib.sh (${GITHUB_REF})"
           git push --force origin build-dev
     
