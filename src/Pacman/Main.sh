@@ -16,7 +16,7 @@ RunPacman(){
 }
 
 GetPacmanConf(){
-    pacman-conf --config= "${PACMAN_CONF-"/etc/pacman.conf"}"
+    pacman-conf --config= "${PACMAN_CONF-"/etc/pacman.conf"}" "$@"
 }
 
 # @description パッケージがインストール済みかどうかを確認します。
@@ -37,12 +37,12 @@ CheckPacmanPkg(){
 }
 
 GetPacmanRepoListFromLocalDb(){
-    find "$(pacman-conf DBPath)/sync" -mindepth 1 -maxdepth 1 -type f | GetBaseName | sed "s|.db$||g"
+    find "$(GetPacmanConf DBPath)/sync" -mindepth 1 -maxdepth 1 -type f | GetBaseName | sed "s|.db$||g"
 }
 
 GetPacmanRepoListFromConf(){
-    #pacman-conf | GetIniSectionList 2> /dev/null| grep -vx "options"
-    pacman-conf --repo-list
+    #GetPacmanConf | GetIniSectionList 2> /dev/null| grep -vx "options"
+    GetPacmanConf --repo-list
 }
 
 GetPacmanLatestPkgVer(){
