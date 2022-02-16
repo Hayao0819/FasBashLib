@@ -32,45 +32,26 @@ jobs:
           name: FasBashLib Documents
           path: ./docs/*
 
-      - name: Commit library to another branch
-        uses: stefanzweifel/git-auto-commit-action@v4
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
         with:
-          # Optional, but recommended
-          # Defaults to "Apply automatic changes"
-          commit_message: Update fasbashlib.sh
+          key: ${{ secrets.GH_PAGES_REPO_DEPLOY_KEY }}
+          name: id_rsa # optional
+          known_hosts: unnecessary
 
-          # Optional branch name where commit should be pushed to.
-          # Defaults to the current branch.
-          branch: build-dev
-
-          # Optional. Used by `git-commit`.
-          # See https://git-scm.com/docs/git-commit#_options
-          commit_options: '--no-verify --signoff'
-
-          # Optional glob pattern of files which should be added to the commit
-          # Defaults to all (.)
-          # See the `pathspec`-documentation for git
-          # - https://git-scm.com/docs/git-add#Documentation/git-add.txt-ltpathspecgt82308203
-          # - https://git-scm.com/docs/gitglossary#Documentation/gitglossary.txt-aiddefpathspecapathspec
-          file_pattern: ./docs/ ./fasbashlib.sh
-
-          # Optional. Used by `git-add`
-          # See https://git-scm.com/docs/git-add#_options
-          add_options: '-u --force'
-
-          # Optional. Used by `git-push`
-          # See https://git-scm.com/docs/git-push#_options
-          #push_options: '--force'
-          
-          # Optional. Disable dirty check and always try to create a commit and push
-          skip_dirty_check: true    
-          
-          # Optional. Skip internal call to `git fetch`
-          skip_fetch: true    
-          
-          # Optional. Skip internal call to `git checkout`
-          skip_checkout: true
-
-          # Optional. Prevents the shell from expanding filenames. 
-          # Details: https://www.gnu.org/software/bash/manual/html_node/Filename-Expansion.html
-          disable_globbing: true
+      - name: Commit files to build-dev
+        env: 
+          GH_PAGES_REPO_DEPLOY_KEY: ${{ secrets.GH_PAGES_REPO_DEPLOY_KEY }}
+        run: |
+          echo "$GH_PAGES_REPO_DEPLOY_KEY" > ~/deploy_key.pem
+          chmod 600 ~/deploy_key.pem
+          git config --local user.email "hayao@fascode.net"
+          git config --local user.name "hayao[bot]"
+          git config pull.rebase false
+          git config remote.origin.url "git@github.com:Hayao0819/FasBashLib.git"
+          echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+          git checkout -b build-dev
+          git add -A --force ./docs/* ./fasbashlib.sh
+          git pull --allow-unrelated-histories origin build-dev
+          git push --force origin build-dev
+    
