@@ -52,6 +52,15 @@ GetPacmanRepoListFromLocalDb(){
     return 0
 }
 
+# @description pacman.confからリポジトリの一覧を取得します。
+#              pacman-confを使用してpacman.confを読みより、リポジトリの一覧を取得します。
+#              pacman.confを使用しないでデータベースを読み取る場合は`GetPacmanRepoListFromLocalDb`を使用してください。
+#
+# @example GetPacmanRepoListFromConf
+#
+# @noargs
+#
+# @exitcode 0 この関数は常に0を返します
 GetPacmanRepoListFromConf(){
     #GetPacmanConf | GetIniSectionList 2> /dev/null| grep -vx "options"
     GetPacmanConf --repo-list
