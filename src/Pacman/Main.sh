@@ -32,10 +32,13 @@ CheckPacmanPkg(){
     return 0
 }
 
-GetPacmanRepoList(){
+GetPacmanRepoListFromLocalDb(){
     find "$(pacman-conf DBPath)/sync" -mindepth 1 -maxdepth 1 -type f | GetBaseName | sed "s|.db$||g"
 }
 
+GetPacmanRepoListFromConf(){
+    pacman-conf | GetIniSectionList 2> /dev/null| grep -vx "options"
+}
 
 GetPacmanLatestPkgVer(){
     local _LANG="${LANG-""}"
