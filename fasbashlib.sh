@@ -240,7 +240,7 @@ GetPacmanKeyringDir ()
     local _KeyringDir="";
     _KeyringDir="$(LANG=C pacman-key -h | RemoveBlank | grep -A 1 -- "^--populate" | tail -n 1 | cut -d "/" -f 2-)";
     : "${_KeyringDir="usr/share/pacman/keyrings"}";
-    echo "$(GetpacmanRoot)/$($_KeyringDir)"
+    echo "$(GetPacmanRoot)/$_KeyringDir"
 }
 GetPacmanKeyringList () 
 { 
