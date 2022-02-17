@@ -238,9 +238,15 @@ GetPacmanInstalledPkgVer ()
 GetPacmanKeyringDir () 
 { 
     local _KeyringDir="";
-    _KeyringDir="$(LANG=C pacman-key -h | RemoveBlank | grep -A 1 -- "^--populate" | tail -n 1 | cut -d "/" -f 2-)";
+    _KeyringDir="$(LANG=C pacman-key -h | RemoveBlank | grep -A 1 -- "^--populate" | tail -n 1 | cut -d "/" -f 2- | sed "s|'$||g")";
     : "${_KeyringDir="usr/share/pacman/keyrings"}";
-    echo "$(GetPacmanRoot)/$_KeyringDir"
+    _KeyringDir="$(GetPacmanRoot)/$_KeyringDir";
+    _KeyringDir="$(sed -E "s|/+|/|g" <<< $_KeyringDir)";
+    if [[ -e "$_KeyringDir" ]]; then
+        Readlinkf "$_KeyringDir";
+    else
+        echo "$_KeyringDir";
+    fi
 }
 GetPacmanKeyringList () 
 { 
@@ -450,6 +456,10 @@ PrintArray ()
     (( $# >= 1 )) || return 0;
     printf "%s\n" "${@}"
 }
+Readlinkf () 
+{ 
+    Readlinkf_Posix "$@"
+}
 Readlinkf_Posix () 
 { 
     [ "${1:-}" ] || return 1;
@@ -523,8 +533,4 @@ RemoveFileExt ()
 RunPacman () 
 { 
     pacman --noconfirm --config "${PACMAN_CONF-"/etc/pacman.conf"}" "$@"
-}
-readlinkf () 
-{ 
-    Readlinkf_Posix "$@"
 }
