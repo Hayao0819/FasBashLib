@@ -84,3 +84,15 @@ FileType(){
 IsAvailable(){
     type "$1" 2> /dev/null 1>&2
 }
+
+GetFileExt(){
+    GetBaseName | rev | cut -d "." -f 1 | rev
+}
+
+RemoveFileExt(){
+    # shellcheck disable=SC2034
+    local Ext
+    # shellcheck disable=SC2016
+    ForEach eval 'Ext=$(GetFileExt <<< {}); sed "s|.$Ext$||g" <<< {}; unset Ext'
+}
+

@@ -66,6 +66,17 @@ GetPacmanRepoListFromConf(){
     GetPacmanConf --repo-list
 }
 
+GetPacmanRoot(){
+    GetPacmanConf RootDir
+}
+
+GetPacmanKeyringDir(){
+    local _KeyringDir=""
+    _KeyringDir="$(LANG=C pacman-key -h | RemoveBlank | grep -A 1 -- "^--populate" | tail -n 1 | cut -d "/" -f 2-)"
+    : "${_KeyringDir="usr/share/pacman/keyrings"}"
+    echo "$(GetpacmanRoot)/$($_KeyringDir)"
+}
+
 GetPacmanLatestPkgVer(){
     local _LANG="${LANG-""}"
     export LANG=C
@@ -87,4 +98,8 @@ GetPacmanRepoConf(){
 GetPacmanRepoServer(){
     #shellcheck disable=SC2016
     ForEach eval 'GetPacmanConf -r {}' | grep "^Server" | ForEach eval 'ParseIniLine; printf "%s\n" ${VALUE}'
+}
+
+GetPacmanKeyringList(){
+    find "$(GetPacmanKeyringDir)" -name "*.gpg" | GetBaseName | RemoveFileExt 
 }
