@@ -221,9 +221,21 @@ GetIniSectionList ()
     done < <(PrintArray "${_RawIniLine[@]}");
     return "$_Exit"
 }
+GetKernelFileList () 
+{ 
+    find "/boot" -maxdepth 1 -mindepth 1 -name "vmlinuz-*"
+}
+GetKernelSrcList () 
+{ 
+    find "/usr/src" -mindepth 1 -maxdepth 1 -type l -name "linux*"
+}
 GetLine () 
 { 
     head -n "$1" | tail -n 1
+}
+GetMkinitcpioPresetList () 
+{ 
+    find "/etc/mkinitcpio.d/" -name "*.preset" -type f | GetBaseName | RemoveFileExt
 }
 GetPacmanConf () 
 { 
@@ -234,6 +246,10 @@ GetPacmanInstalledPkgVer ()
     ForEach pacman -Qq "{}" | cut -d " " -f 2;
     PrintArray "${PIPESTATUS[@]}" | grep -qx "1" && return 1;
     return 0
+}
+GetPacmanKernelPkg () 
+{ 
+    echo "there is nothing"
 }
 GetPacmanKeyringDir () 
 { 
@@ -328,6 +344,10 @@ MsgInfo ()
 MsgWarn () 
 { 
     MsgCommon " Warn: ${*}" 1>&2
+}
+PacmanGpg () 
+{ 
+    gpg --homedir "$(GetPacmanConf GPGDir)" "$@"
 }
 ParseArg () 
 { 
