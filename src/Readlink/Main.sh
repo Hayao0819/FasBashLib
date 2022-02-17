@@ -75,6 +75,6 @@ Readlinkf_Readlink() {
     return 1
 }
 
-readlinkf(){
+Readlinkf(){
     Readlinkf_Posix "$@"
 }
