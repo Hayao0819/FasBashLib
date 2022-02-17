@@ -70,6 +70,10 @@ GetPacmanRoot(){
     GetPacmanConf RootDir
 }
 
+PacmanGpg(){
+    gpg --homedir "$(GetPacmanConf GPGDir)" "$@"
+}
+
 GetPacmanKeyringDir(){
     local _KeyringDir=""
     _KeyringDir="$(LANG=C pacman-key -h | RemoveBlank | grep -A 1 -- "^--populate" | tail -n 1 | cut -d "/" -f 2-)"
@@ -102,4 +106,8 @@ GetPacmanRepoServer(){
 
 GetPacmanKeyringList(){
     find "$(GetPacmanKeyringDir)" -name "*.gpg" | GetBaseName | RemoveFileExt 
+}
+
+GetPacmanKernelPkg(){
+    echo "there is nothing"
 }
