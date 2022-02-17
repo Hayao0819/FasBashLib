@@ -6,23 +6,26 @@
 #
 
 for _JsonKey in "Description" "FirstSubmitted" "ID" "LastModified" "Maintainer" "NumVotes" "PackageBase" "PackageBaseID" "Popularity" "URL" "URLPath" "Version"; do
-    eval "Get$_JsonKey(){ jq -r \".${_JsonKey}\";}"
+    eval "GetAur$_JsonKey(){ jq -r \".${_JsonKey}\";}"
 done
 
 for _JsonKey in "Depends" "Keywords" "License" "MakeDepends" "OptDepends"; do
-    eval "Get$_JsonKey(){ jq -r \".${_JsonKey}[]\";}"
+    eval "GetAur$_JsonKey(){ jq -r \".${_JsonKey}[]\";}"
 done
 
+# @internal
 GetAurSearch(){
     local _Field="${1-"name-desc"}" _Keywords="$2" 
     curl -sL "https://aur.archlinux.org/rpc?v=5&type=search&by=$_Field&arg=${_Keywords}" | CheckAurJson
 }
 
+# @internal
 GetAurInfo(){
     local _Pkg="$1" _Json
     curl -sL "https://aur.archlinux.org/rpc?v=5&type=info&arg=${_Pkg}" | CheckAurJson
 }
 
+# @internal
 CheckAurJson(){
     local _ResultCount _Json _Type
     _Json="$(cat)"
@@ -35,7 +38,7 @@ CheckAurJson(){
     return 1
 }
 
-IsOutOfDated(){
+IsAurPkgOutOfDated(){
     local _Status
     _Status=$(jq -r ".OutOfDate")
     case "$_Status" in
