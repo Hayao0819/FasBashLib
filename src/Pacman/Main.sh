@@ -71,7 +71,6 @@ GetPacmanRoot(){
 }
 
 GetPacmanKeyringDir(){
-    set -x
     local _KeyringDir=""
     _KeyringDir="$(LANG=C pacman-key -h | RemoveBlank | grep -A 1 -- "^--populate" | tail -n 1 | cut -d "/" -f 2- | sed "s|'$||g")"
     : "${_KeyringDir="usr/share/pacman/keyrings"}"
