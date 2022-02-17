@@ -79,15 +79,83 @@ ForEach ()
         _Cmd=();
     done
 }
+GetAurDepends () 
+{ 
+    jq -r ".Depends[]"
+}
+GetAurDescription () 
+{ 
+    jq -r ".Description"
+}
+GetAurFirstSubmitted () 
+{ 
+    jq -r ".FirstSubmitted"
+}
+GetAurID () 
+{ 
+    jq -r ".ID"
+}
 GetAurInfo () 
 { 
     local _Pkg="$1" _Json;
     curl -sL "https://aur.archlinux.org/rpc?v=5&type=info&arg=${_Pkg}" | CheckAurJson
 }
+GetAurKeywords () 
+{ 
+    jq -r ".Keywords[]"
+}
+GetAurLastModified () 
+{ 
+    jq -r ".LastModified"
+}
+GetAurLicense () 
+{ 
+    jq -r ".License[]"
+}
+GetAurMaintainer () 
+{ 
+    jq -r ".Maintainer"
+}
+GetAurMakeDepends () 
+{ 
+    jq -r ".MakeDepends[]"
+}
+GetAurNumVotes () 
+{ 
+    jq -r ".NumVotes"
+}
+GetAurOptDepends () 
+{ 
+    jq -r ".OptDepends[]"
+}
+GetAurPackageBase () 
+{ 
+    jq -r ".PackageBase"
+}
+GetAurPackageBaseID () 
+{ 
+    jq -r ".PackageBaseID"
+}
+GetAurPopularity () 
+{ 
+    jq -r ".Popularity"
+}
 GetAurSearch () 
 { 
     local _Field="${1-"name-desc"}" _Keywords="$2";
     curl -sL "https://aur.archlinux.org/rpc?v=5&type=search&by=$_Field&arg=${_Keywords}" | CheckAurJson
+}
+GetAurURL () 
+{ 
+    jq -r ".URL"
+}
+GetAurURLPath () 
+{ 
+    jq -r ".URLPath"
+}
+GetAurVersion () 
+{ 
+    jq -r ".Version"
 }
 GetBaseName () 
 { 
@@ -106,21 +174,9 @@ GetCsvColumnCnt ()
     RemoveBlank <<< "$_ClmCnt";
     return 0
 }
-GetDepends () 
+GetFileExt () 
 { 
-    jq -r ".Depends[]"
-}
-GetDescription () 
-{ 
-    jq -r ".Description"
-}
-GetFirstSubmitted () 
-{ 
-    jq -r ".FirstSubmitted"
-}
-GetID () 
-{ 
-    jq -r ".ID"
+    GetBaseName | rev | cut -d "." -f 1 | rev
 }
 GetIniParamList () 
 { 
@@ -165,45 +221,9 @@ GetIniSectionList ()
     done < <(PrintArray "${_RawIniLine[@]}");
     return "$_Exit"
 }
-GetKeywords () 
-{ 
-    jq -r ".Keywords[]"
-}
-GetLastModified () 
-{ 
-    jq -r ".LastModified"
-}
-GetLicense () 
-{ 
-    jq -r ".License[]"
-}
 GetLine () 
 { 
     head -n "$1" | tail -n 1
-}
-GetMaintainer () 
-{ 
-    jq -r ".Maintainer"
-}
-GetMakeDepends () 
-{ 
-    jq -r ".MakeDepends[]"
-}
-GetNumVotes () 
-{ 
-    jq -r ".NumVotes"
-}
-GetOptDepends () 
-{ 
-    jq -r ".OptDepends[]"
-}
-GetPackageBase () 
-{ 
-    jq -r ".PackageBase"
-}
-GetPackageBaseID () 
-{ 
-    jq -r ".PackageBaseID"
 }
 GetPacmanConf () 
 { 
@@ -214,6 +234,17 @@ GetPacmanInstalledPkgVer ()
     ForEach pacman -Qq "{}" | cut -d " " -f 2;
     PrintArray "${PIPESTATUS[@]}" | grep -qx "1" && return 1;
     return 0
+}
+GetPacmanKeyringDir () 
+{ 
+    local _KeyringDir="";
+    _KeyringDir="$(LANG=C pacman-key -h | RemoveBlank | grep -A 1 -- "^--populate" | tail -n 1 | cut -d "/" -f 2-)";
+    : "${_KeyringDir="usr/share/pacman/keyrings"}";
+    echo "$(GetpacmanRoot)/$($_KeyringDir)"
+}
+GetPacmanKeyringList () 
+{ 
+    find "$(GetPacmanKeyringDir)" -name "*.gpg" | GetBaseName | RemoveFileExt
 }
 GetPacmanLatestPkgVer () 
 { 
@@ -240,27 +271,11 @@ GetPacmanRepoServer ()
 { 
     ForEach eval 'GetPacmanConf -r {}' | grep "^Server" | ForEach eval 'ParseIniLine; printf "%s\n" ${VALUE}'
 }
-GetPopularity () 
+GetPacmanRoot () 
 { 
-    jq -r ".Popularity"
+    GetPacmanConf RootDir
 }
-GetURL () 
-{ 
-    jq -r ".URL"
-}
-GetURLPath () 
-{ 
-    jq -r ".URLPath"
-}
-GetVersion () 
-{ 
-    jq -r ".Version"
-}
-IsAvailable () 
-{ 
-    type "$1" 2> /dev/null 1>&2
-}
-IsOutOfDated () 
+IsAurPkgOutOfDated () 
 { 
     local _Status;
     _Status=$(jq -r ".OutOfDate");
@@ -273,6 +288,10 @@ IsOutOfDated ()
             return 0
         ;;
     esac
+}
+IsAvailable () 
+{ 
+    type "$1" 2> /dev/null 1>&2
 }
 IsUUID () 
 { 
@@ -495,6 +514,11 @@ Readlinkf_Readlink ()
 RemoveBlank () 
 { 
     sed "s|^ *||g; s| *$||g"
+}
+RemoveFileExt () 
+{ 
+    local Ext;
+    ForEach eval 'Ext=$(GetFileExt <<< {}); sed "s|.$Ext$||g" <<< {}; unset Ext'
 }
 RunPacman () 
 { 
