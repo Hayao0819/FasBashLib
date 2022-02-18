@@ -96,3 +96,18 @@ RemoveFileExt(){
     ForEach eval 'Ext=$(GetFileExt <<< {}); sed "s|.$Ext$||g" <<< {}; unset Ext'
 }
 
+RevArray(){
+    readarray -t "$1" < <(PrintEvalArray "$1" | tac)
+}
+
+# AddToArray <Name> <Value>
+AddToArray(){
+    local _Pkg
+    _Pkg=$(tr -cd "[^a-zA-z]" <<< "$2")
+    eval "PrintArray \"\${$1[@]}\"" | grep -qx "$_Pkg" && return 0
+    eval "$1+=(\"$_Pkg\")"
+}
+
+PrintEvalArray(){
+    eval "PrintArray \"\${$1[@]}\""
+}
