@@ -102,10 +102,8 @@ RevArray(){
 
 # AddToArray <Name> <Value>
 AddToArray(){
-    local _Pkg
-    _Pkg=$(tr -cd "[^a-zA-z]" <<< "$2")
-    eval "PrintArray \"\${$1[@]}\"" | grep -qx "$_Pkg" && return 0
-    eval "$1+=(\"$_Pkg\")"
+    eval "PrintArray \"\${$1[@]}\"" | grep -qx "$2" && return 0
+    eval "$1+=(\"$2\")"
 }
 
 PrintEvalArray(){
