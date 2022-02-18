@@ -49,6 +49,6 @@ GetFileLastUpdate(){
 
 # GetCache Name
 GetCache(){
-    ExistCache "$1" || return 1
-    cat "$(GetCacheDir)/$1"
+    #ExistCache "$1" || return 1
+    cat "$(GetCacheDir)/$1" 2> /dev/null || return 1
 }

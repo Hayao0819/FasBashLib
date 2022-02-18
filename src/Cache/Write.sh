@@ -4,13 +4,14 @@
 # SCRIPTCACHEID: スクリプト内のキャッシュを保存するディレクトリのパスのID
 # TMPDIR: /tmpもしくはそれ相当のディレクトリ
 CreateCache(){
-    cat > "$(CreateCacheDir)/${1}"
+    CreateCacheDir > /dev/null
+    cat > "$(GetCacheDir)/${1}"
     cat "$(GetCacheDir)/$1"
 }
 
 CreateCacheDir(){
     SCRIPTCACHEID="${SCRIPTCACHEID-"$(RandomString 10)"}"
-    export SCRIPTCACHEID
+    export SCRIPTCACHEID="$SCRIPTCACHEID"
     local TMPDIR="${TMPDIR-"/tmp"}"
     local _Dir="$TMPDIR/${SCRIPTCACHEID}"
     mkdir -p "$_Dir"
