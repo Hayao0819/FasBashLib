@@ -12,7 +12,7 @@ GetCsvColumnCnt(){
 
     while read -r _Line;do
         grep -qE "^#" <<< "$_Line" && continue
-        _CurrentClmCnt=$(tr "${CSVDELIM=","}" "\n" | wc -l)
+        _CurrentClmCnt=$(tr "${CSVDELIM-","}" "\n" | wc -l)
         (( _CurrentClmCnt > _ClmCnt )) && _ClmCnt="$_CurrentClmCnt"
     done < <(PrintArray "${_RawCsvLine[@]}")
     RemoveBlank <<< "$_ClmCnt"
