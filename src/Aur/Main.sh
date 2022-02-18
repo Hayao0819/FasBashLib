@@ -75,6 +75,40 @@ AurInfoToBash(){
 }
 
 GetAurAllDepends(){
-    GetAurMakeDepends
-    GetAurDepends
+    #local _Json
+    #_Json="$(cat)"
+    #GetAurMakeDepends <<< "$_Json"
+    #GetAurDepends <<< "$_Json"
+    jq -r ".Depends[], .MakeDepends[]"
+}
+
+GetAurRecursiveDepends(){
+    local _Pkg 
+    _Pkg="$(GetPacmanName <<< "$1")"
+    _AurDependList=()
+
+    # Installed package list
+    SCRIPTCACHEID="FasBashLib_Aur"
+    ExistCache "InstalledPackage" || RunPacman -Qq | CreateCache "InstalledPackage" > /dev/null
+
+    # Repository package list
+    ExistCache "RepoPackage" || GetPacmanRepoPkgList | CreateCache "RepoPackage" > /dev/null
+
+    # APIから情報を取得
+    _Resolve(){
+        # リポジトリパッケージかどうか確認
+        GetCache "RepoPackage" | grep -qx "$1" && return 0
+
+        #echo "Found AUR depend $1"
+        while read -r _P; do
+            ArrayIncludes _AurDependList "$_P" && continue
+            GetCache "RepoPackage" | grep -qx "$_P" && continue
+            #echo "Resolve $_P in $1"
+            
+            _AurDependList+=("$_P")    
+            _Resolve "$_P"
+        done < <(GetAurInfo "$1" | GetAurAllDepends | GetPacmanName)
+    }
+    _Resolve "$_Pkg"
+    PrintEvalArray _AurDependList
 }
