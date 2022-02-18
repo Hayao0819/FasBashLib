@@ -112,7 +112,7 @@ PrintEvalArray(){
 
 # ArrayIncludes <Array Name> <Value>
 ArrayIncludes(){
-    PrintEvalArray "$1" | grep -Qqx "$2"
+    PrintEvalArray "$1" | grep -qx "$2"
 }
 
 # RandomString <Num>
