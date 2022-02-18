@@ -1,5 +1,12 @@
 #!/usr/bin/env bash
 # shellcheck disable=all
+AddToArray () 
+{ 
+    local _Pkg;
+    _Pkg=$(tr -cd "[^a-zA-z]" <<< "$2");
+    eval "PrintArray \"\${$1[@]}\"" | grep -qx "$_Pkg" && return 0;
+    eval "$1+=(\"$_Pkg\")"
+}
 AurInfoToBash () 
 { 
     local _Prefix="${AurPrefix-"{}"}" _Json;
@@ -37,7 +44,7 @@ CheckPacmanPkg ()
     local p;
     for p in "$@";
     do
-        RunPacman -Qq "$p" || return 1;
+        RunPacman -Qq "$p" > /dev/null 2>&1 || return 1;
     done;
     return 0
 }
@@ -351,6 +358,10 @@ MsgWarn ()
 { 
     MsgCommon " Warn: ${*}" 1>&2
 }
+PacmanGetName () 
+{ 
+    cut -d "<" -f 1 | cut -d ">" -f 1 | cut -d "=" -f 1
+}
 PacmanGpg () 
 { 
     gpg --homedir "$(GetPacmanConf GPGDir)" "$@"
@@ -486,6 +497,10 @@ PrintArray ()
     (( $# >= 1 )) || return 0;
     printf "%s\n" "${@}"
 }
+PrintEvalArray () 
+{ 
+    eval "PrintArray \"\${$1[@]}\""
+}
 Readlinkf () 
 { 
     Readlinkf_Posix "$@"
@@ -559,6 +574,10 @@ RemoveFileExt ()
 { 
     local Ext;
     ForEach eval 'Ext=$(GetFileExt <<< {}); sed "s|.$Ext$||g" <<< {}; unset Ext'
+}
+RevArray () 
+{ 
+    readarray -t "$1" < <(PrintEvalArray "$1" | tac)
 }
 RunPacman () 
 { 
