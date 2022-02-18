@@ -48,13 +48,15 @@ CsvToBashArray ()
     readarray -t _RawCsvLine < <(
         # 標準入力からCSVのみを抽出
         while read -r _Line; do
-            (( $(tr "," "\n" <<< "$_Line" | wc -l) >= ${#} )) && echo "$_Line"
+            # shellcheck disable=SC2031
+            (( $(tr "${CSVDELIM-","}" "\n" <<< "$_Line" | wc -l) >= ${#} )) && echo "$_Line"
         done < <(grep -v "^#")
     );
     _ClmCnt=$(PrintArray "${_RawCsvLine[@]}" | GetCsvColumnCnt);
     while read -r _Cnt; do
         readarray -t "$(sed "s|{}|$(eval "echo \"\${${_Cnt}}\"")|g" <<< "$ArrayPrefix")" < <(
-            PrintArray "${_RawCsvLine[@]}" | cut -d "," -f "$_Cnt"
+            # shellcheck disable=SC2031
+            PrintArray "${_RawCsvLine[@]}" | cut -d "${CSVDELIM-","}" -f "$_Cnt"
         );
     done < <(seq 1 "$#")
 }
@@ -161,6 +163,10 @@ GetBaseName ()
 { 
     xargs -L 1 basename
 }
+GetCsvClm () 
+{ 
+    grep -v "^#" | sed "/^$/d" | cut -d "${CSVDELIM-","}" -f "$1"
+}
 GetCsvColumnCnt () 
 { 
     local _RawCsvLine=();
@@ -168,7 +174,7 @@ GetCsvColumnCnt ()
     readarray -t _RawCsvLine;
     while read -r _Line; do
         grep -qE "^#" <<< "$_Line" && continue;
-        _CurrentClmCnt=$(tr "," "\n" | wc -l);
+        _CurrentClmCnt=$(tr "${CSVDELIM-","}" "\n" | wc -l);
         (( _CurrentClmCnt > _ClmCnt )) && _ClmCnt="$_CurrentClmCnt";
     done < <(PrintArray "${_RawCsvLine[@]}");
     RemoveBlank <<< "$_ClmCnt";
@@ -257,7 +263,7 @@ GetPacmanKeyringDir ()
     _KeyringDir="$(LANG=C pacman-key -h | RemoveBlank | grep -A 1 -- "^--populate" | tail -n 1 | cut -d "/" -f 2- | sed "s|'$||g")";
     : "${_KeyringDir="usr/share/pacman/keyrings"}";
     _KeyringDir="$(GetPacmanRoot)/$_KeyringDir";
-    _KeyringDir="$(sed -E "s|/+|/|g" <<< $_KeyringDir)";
+    _KeyringDir="$(sed -E "s|/+|/|g" <<< "$_KeyringDir")";
     if [[ -e "$_KeyringDir" ]]; then
         Readlinkf "$_KeyringDir";
     else
