@@ -106,3 +106,7 @@ GetPacmanKernelPkg(){
 PacmanIsRepoPkg(){
     RunPacman -Slq | grep -qx "$1"
 }
+
+PacmanGetName(){
+    cut -d "<" -f 1 | cut -d ">" -f 1 | cut -d "=" -f 1
+}
