@@ -1,5 +1,26 @@
 ## FasBashLib - A collection of small functions for Bash
 
+<p>
+    <a href="/LICENSE.md">
+        <img src="https://img.shields.io/badge/license-MIT--SUSHI-orange?style=flat-square">
+    </a>
+    <a href="https://github.com/Hayao0819/FasBashLib/actions">
+        <img src="https://img.shields.io/github/workflow/status/Hayao0819/FasBashLib/Test%20library">
+    </a>
+    <a href="https://github.com/Hayao0819/FasBashLib/stargazers">
+        <img src="https://img.shields.io/github/stars/Hayao0819/FasBashLib?color=yellow&style=flat-square&logo=github">
+    </a>
+    <a href="https://github.com/Hayao0819/FasBashLib/commits/">
+        <img src="https://img.shields.io/github/last-commit/Hayao0819/FasBashLib?style=flat-square">
+    </a>
+    <a href="https://github.com/Hayao0819/FasBashLib/">
+        <img src="https://img.shields.io/github/repo-size/Hayao0819/FasBashLib?style=flat-square">
+    </a>
+    <a href="https://github.com/Hayao0819/FasBashLib">
+        <img src="https://img.shields.io/tokei/lines/github/Hayao0819/FasBashLib?style=flat-square">
+    </a>
+</p>
+
 A collection of small functions designed to quickly write secure code in Bash 5.x. 
 
 Some functions are also for Arch Linux.
