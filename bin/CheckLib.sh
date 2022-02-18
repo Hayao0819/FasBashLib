@@ -35,13 +35,23 @@ while read -r Dir; do
     fi
 
     # ファイルの存在を確認
-    while read -r File; do
+    readarray -t _FileList < <("$LibDir/GetMeta.sh" "$(basename "$Dir")" "Files")
+    for File in "${_FileList[@]}"; do
         if ! [[ -e "$Dir/$File" ]]; then
             echo "$(basename "$Dir"): $File が存在しません"
             Errors=$(( Errors + 1 ))
         fi
-    done < <("$LibDir/GetMeta.sh" "$(basename "$Dir")" "Files")
+    done
 
+    # Filesに設定されていないファイル
+    while read -r File; do
+        if ! printf "%s\n" "${_FileList[@]}" | grep -qx "$(basename "$File")"; then
+            echo "$(basename "$Dir"): $File はライブラリとして認識されていません"
+            Errors=$(( Errors + 1 ))
+        fi
+    done < <(find "$Dir" -name "*.sh" -mindepth 1)
+
+    unset File _FileList
 done < <(find "${SrcDir}" -type d -mindepth 1 -maxdepth 1 )
 
 if (( Errors == 0 )); then
