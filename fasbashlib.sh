@@ -5,6 +5,10 @@ AddToArray ()
     eval "PrintArray \"\${$1[@]}\"" | grep -qx "$2" && return 0;
     eval "$1+=(\"$2\")"
 }
+ArrayIncludes () 
+{ 
+    PrintEvalArray "$1" | grep -Qqx "$2"
+}
 AurInfoToBash () 
 { 
     local _Prefix="${AurPrefix-"{}"}" _Json;
@@ -85,6 +89,11 @@ ForEach ()
         "${_Cmd[@]}" || return 1;
         _Cmd=();
     done
+}
+GetAurAllDepends () 
+{ 
+    GetAurMakeDepends;
+    GetAurDepends
 }
 GetAurDepends () 
 { 
@@ -287,6 +296,10 @@ GetPacmanLatestPkgVer ()
     [[ -n "$_LANG" ]] && export LANG="$_LANG";
     return 0
 }
+GetPacmanName () 
+{ 
+    cut -d "<" -f 1 | cut -d ">" -f 1 | cut -d "=" -f 1
+}
 GetPacmanRepoConf () 
 { 
     ForEach eval 'echo [{}] && GetPacmanConf -r {}'
@@ -299,6 +312,10 @@ GetPacmanRepoListFromLocalDb ()
 { 
     find "$(GetPacmanConf DBPath)/sync" -mindepth 1 -maxdepth 1 -type f | GetBaseName | sed "s|.db$||g";
     return 0
+}
+GetPacmanRepoPkgList () 
+{ 
+    RunPacman -Slq
 }
 GetPacmanRepoServer () 
 { 
@@ -355,10 +372,6 @@ MsgInfo ()
 MsgWarn () 
 { 
     MsgCommon " Warn: ${*}" 1>&2
-}
-PacmanGetName () 
-{ 
-    cut -d "<" -f 1 | cut -d ">" -f 1 | cut -d "=" -f 1
 }
 PacmanGpg () 
 { 
