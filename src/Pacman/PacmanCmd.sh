@@ -102,3 +102,7 @@ GetPacmanKeyringList(){
 GetPacmanKernelPkg(){
     echo "there is nothing"
 }
+
+PacmanIsRepoPkg(){
+    RunPacman -Slq | grep -qx "$1"
+}
