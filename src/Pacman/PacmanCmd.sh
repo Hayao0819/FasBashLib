@@ -32,7 +32,7 @@ GetPacmanConf(){
 CheckPacmanPkg(){
     local p
     for p in "$@"; do
-        RunPacman -Qq "$p" || return 1
+        RunPacman -Qq "$p" > /dev/null 2> &1|| return 1
     done
     return 0
 }
