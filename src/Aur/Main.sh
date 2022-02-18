@@ -88,6 +88,7 @@ GetAurRecursiveDepends(){
     _AurDependList=()
 
     # Installed package list
+    # shellcheck disable=SC2034
     SCRIPTCACHEID="FasBashLib_Aur"
     ExistCache "InstalledPackage" || RunPacman -Qq | CreateCache "InstalledPackage" > /dev/null
 
