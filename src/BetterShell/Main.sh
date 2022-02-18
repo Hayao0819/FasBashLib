@@ -109,3 +109,8 @@ AddToArray(){
 PrintEvalArray(){
     eval "PrintArray \"\${$1[@]}\""
 }
+
+# ArrayIncludes <Array Name> <Value>
+ArrayIncludes(){
+    PrintEvalArray "$1" | grep -Qqx "$2"
+}
