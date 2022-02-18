@@ -7,7 +7,7 @@ AddToArray ()
 }
 ArrayIncludes () 
 { 
-    PrintEvalArray "$1" | grep -Qqx "$2"
+    PrintEvalArray "$1" | grep -qx "$2"
 }
 AurInfoToBash () 
 { 
@@ -50,6 +50,22 @@ CheckPacmanPkg ()
     done;
     return 0
 }
+CreateCache () 
+{ 
+    CreateCacheDir > /dev/null;
+    cat > "$(GetCacheDir)/${1}";
+    cat "$(GetCacheDir)/$1"
+}
+CreateCacheDir () 
+{ 
+    SCRIPTCACHEID="${SCRIPTCACHEID-"$(RandomString 10)"}";
+    export SCRIPTCACHEID="$SCRIPTCACHEID";
+    local TMPDIR="${TMPDIR-"/tmp"}";
+    local _Dir="$TMPDIR/${SCRIPTCACHEID}";
+    mkdir -p "$_Dir";
+    echo "$_Dir";
+    return 0
+}
 CsvToBashArray () 
 { 
     local _RawCsvLine=() _Line _ClmCnt=0;
@@ -74,6 +90,14 @@ CutLastString ()
     echo "${1%%"${2}"}";
     return 0
 }
+ExistCache () 
+{ 
+    local _File;
+    _File="$(CreateCacheDir)/$1";
+    [[ -e "$_File" ]] || return 1;
+    (( "$(GetTimeDiffFromLastUpdate "$_File")" > "${KEEPCACHESEC-"86400"}" )) && return 2;
+    return 0
+}
 FileType () 
 { 
     file --mime-type -b "$1"
@@ -92,8 +116,7 @@ ForEach ()
 }
 GetAurAllDepends () 
 { 
-    GetAurMakeDepends;
-    GetAurDepends
+    jq -r ".Depends[], .MakeDepends[]"
 }
 GetAurDepends () 
 { 
@@ -156,6 +179,27 @@ GetAurPopularity ()
 { 
     jq -r ".Popularity"
 }
+GetAurRecursiveDepends () 
+{ 
+    local _Pkg;
+    _Pkg="$(GetPacmanName <<< "$1")";
+    _AurDependList=();
+    SCRIPTCACHEID="FasBashLib_Aur";
+    ExistCache "InstalledPackage" || RunPacman -Qq | CreateCache "InstalledPackage" > /dev/null;
+    ExistCache "RepoPackage" || GetPacmanRepoPkgList | CreateCache "RepoPackage" > /dev/null;
+    function _Resolve () 
+    { 
+        GetCache "RepoPackage" | grep -qx "$1" && return 0;
+        while read -r _P; do
+            ArrayIncludes _AurDependList "$_P" && continue;
+            GetCache "RepoPackage" | grep -qx "$_P" && continue;
+            _AurDependList+=("$_P");
+            _Resolve "$_P";
+        done < <(GetAurInfo "$1" | GetAurAllDepends | GetPacmanName)
+    };
+    _Resolve "$_Pkg";
+    PrintEvalArray _AurDependList
+}
 GetAurSearch () 
 { 
     local _Field="${1-"name-desc"}" _Keywords="$2";
@@ -177,6 +221,21 @@ GetBaseName ()
 { 
     xargs -L 1 basename
 }
+GetCache () 
+{ 
+    cat "$(GetCacheDir)/$1" 2> /dev/null || return 1
+}
+GetCacheDir () 
+{ 
+    echo "${TMPDIR-"/tmp"}/$(GetCacheID)"
+}
+GetCacheID () 
+{ 
+    if [[ -z "${SCRIPTCACHEID-""}" ]]; then
+        CreateCacheDir > /dev/null;
+    fi;
+    echo "$SCRIPTCACHEID"
+}
 GetCsvClm () 
 { 
     grep -v "^#" | sed "/^$/d" | cut -d "${CSVDELIM-","}" -f "$1"
@@ -197,6 +256,19 @@ GetCsvColumnCnt ()
 GetFileExt () 
 { 
     GetBaseName | rev | cut -d "." -f 1 | rev
+}
+GetFileLastUpdate () 
+{ 
+    local _isGnu=false;
+    date --help 2> /dev/null | grep -q "GNU" && _isGnu=true;
+    if [[ "$_isGnu" = true ]]; then
+        date +%s -r "$1";
+    else
+        { 
+            eval "$(stat -s "$1")";
+            echo "$st_mtime"
+        };
+    fi
 }
 GetIniParamList () 
 { 
@@ -324,6 +396,14 @@ GetPacmanRepoServer ()
 GetPacmanRoot () 
 { 
     GetPacmanConf RootDir
+}
+GetTimeDiffFromLastUpdate () 
+{ 
+    local _Now _Last;
+    _Now="$(date "+%s")";
+    _Last="$(GetFileLastUpdate "$1")";
+    echo "$(( _Now - _Last ))";
+    return 0
 }
 IsAurPkgOutOfDated () 
 { 
@@ -511,6 +591,10 @@ PrintArray ()
 PrintEvalArray () 
 { 
     eval "PrintArray \"\${$1[@]}\""
+}
+RandomString () 
+{ 
+    base64 < "/dev/random" | fold -w "$1" | head -n 1
 }
 Readlinkf () 
 { 
