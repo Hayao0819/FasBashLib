@@ -114,3 +114,8 @@ PrintEvalArray(){
 ArrayIncludes(){
     PrintEvalArray "$1" | grep -Qqx "$2"
 }
+
+# RandomString <Num>
+RandomString(){
+    base64 < "/dev/random" | fold -w "$1" | head -n 1
+}
