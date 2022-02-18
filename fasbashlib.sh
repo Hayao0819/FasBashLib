@@ -355,6 +355,10 @@ PacmanGpg ()
 { 
     gpg --homedir "$(GetPacmanConf GPGDir)" "$@"
 }
+PacmanIsRepoPkg () 
+{ 
+    RunPacman -Slq | grep -qx "$1"
+}
 ParseArg () 
 { 
     local _Arg _Chr _Cnt;
