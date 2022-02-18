@@ -73,7 +73,7 @@ while read -r Dir; do
             echo "Failed to load shell file" >&2
             exit 1
         }
-    done < <("$LibDir/GetMeta.sh" "$(basename "$Dir")" "Files")
+    done < <("$LibDir/GetMeta.sh" "$(basename "$Dir")" "Files" | tr "," "\n")
 done < <(
     if (( "${#TargetLib[@]}" > 0 )); then
         printf "${SrcDir}/%s\n" "${RequireLib[@]}" "${TargetLib[@]}"
