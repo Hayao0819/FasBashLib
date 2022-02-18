@@ -3,7 +3,7 @@
 # @brief Csvファイルを解析します
 # @description
 #    Csvファイルを解析してシェルスクリプト内で扱えるようにします
-#
+#    `CSVDELIM 変数でCSVの区切りを制御できます`
 
 GetCsvColumnCnt(){
     local _RawCsvLine=()
@@ -12,7 +12,7 @@ GetCsvColumnCnt(){
 
     while read -r _Line;do
         grep -qE "^#" <<< "$_Line" && continue
-        _CurrentClmCnt=$(tr "," "\n" | wc -l)
+        _CurrentClmCnt=$(tr "${CSVDELIM=","}" "\n" | wc -l)
         (( _CurrentClmCnt > _ClmCnt )) && _ClmCnt="$_CurrentClmCnt"
     done < <(PrintArray "${_RawCsvLine[@]}")
     RemoveBlank <<< "$_ClmCnt"
@@ -28,7 +28,8 @@ CsvToBashArray(){
     readarray -t _RawCsvLine < <(
         # 標準入力からCSVのみを抽出
         while read -r _Line; do
-            (( $(tr "," "\n" <<< "$_Line" | wc -l) >= ${#} )) && echo "$_Line"
+            # shellcheck disable=SC2031
+            (( $(tr "${CSVDELIM-","}" "\n" <<< "$_Line" | wc -l) >= ${#} )) && echo "$_Line"
         done < <(grep -v "^#")
     )
 
@@ -40,9 +41,14 @@ CsvToBashArray(){
     while read -r _Cnt; do
         #shellcheck disable=SC2001
         readarray -t "$(sed "s|{}|$(eval "echo \"\${${_Cnt}}\"")|g" <<< "$ArrayPrefix")" < <(
-            PrintArray "${_RawCsvLine[@]}" | cut -d "," -f "$_Cnt"
+            # shellcheck disable=SC2031
+            PrintArray "${_RawCsvLine[@]}" | cut -d "${CSVDELIM-","}" -f "$_Cnt"
         )
     done < <(seq 1 "$#")
 }
 
-
+# getCsvClm <num>
+GetCsvClm(){
+    # shellcheck disable=SC2031
+    grep -v "^#" | sed "/^$/d" | cut -d "${CSVDELIM-","}" -f "$1"
+}
