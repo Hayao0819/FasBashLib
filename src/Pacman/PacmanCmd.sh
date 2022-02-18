@@ -79,7 +79,7 @@ GetPacmanKeyringDir(){
     _KeyringDir="$(LANG=C pacman-key -h | RemoveBlank | grep -A 1 -- "^--populate" | tail -n 1 | cut -d "/" -f 2- | sed "s|'$||g")"
     : "${_KeyringDir="usr/share/pacman/keyrings"}"
     _KeyringDir="$(GetPacmanRoot)/$_KeyringDir"
-    _KeyringDir="$(sed -E "s|/+|/|g" <<< $_KeyringDir)"
+    _KeyringDir="$(sed -E "s|/+|/|g" <<< "$_KeyringDir")"
     if [[ -e "$_KeyringDir" ]]; then
         Readlinkf "$_KeyringDir"
     else
