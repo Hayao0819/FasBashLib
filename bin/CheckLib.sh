@@ -37,7 +37,7 @@ while read -r Dir; do
     fi
 
     # ファイルの存在を確認
-    readarray -t _FileList < <("$LibDir/GetMeta.sh" "${Name}" "Files")
+    readarray -t _FileList < <("$LibDir/GetMeta.sh" "${Name}" "Files" | tr "," "\n")
     for File in "${_FileList[@]}"; do
         if ! [[ -e "$Dir/$File" ]]; then
             echo "${Name}: $File が存在しません"
