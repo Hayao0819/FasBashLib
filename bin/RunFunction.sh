@@ -27,7 +27,10 @@ fi
 
 source /dev/stdin < <("$BinDir/SingleFile.sh" -out "/dev/stdout" "$LibName")
 
-typeset -f "${FuncName}" 1> /dev/null || exit 1
+typeset -f "${FuncName}" 1> /dev/null || {
+    echo "$FuncName is not defined." >&2
+    exit 1
+}
 
 echo "---Function Start---" >&2
 "$FuncName" "$@"
