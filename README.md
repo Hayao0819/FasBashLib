@@ -10,13 +10,40 @@ You can read auto generated documents [here](https://github.com/Hayao0819/FasBas
 
 ## Use
 
-### The latest dev library from Online
+There are two ways to use this library.
+
+### The latest dev library Online
 
 Add this line into your script.
 
+```bash
+source /dev/stdin < <(curl -sL https://raw.githubusercontent.com/Hayao0819/FasBashLib/build-dev/fasbashlib.sh)
 ```
-source /dev/stdin < <(https://raw.githubusercontent.com/Hayao0819/FasBashLib/build-dev/fasbashlib.sh)
+
+### The latest dev library Offline
+
+Build library and source it in your script.
+
+Run this following command (Do not write it on your script)
+
+```bash
+# Download source code
+git clone "https://github.com/Hayao0819/FasBashLib.git"
+cd ./FasBashLib/
+
+# Build all library
+make
+
+# Build library you need
+bash ./bin/SingleFile.sh [Lib1] [Lib2] ...
 ```
+
+And run `source`
+
+```bash
+source /path/to/your/fasbashlib.sh
+```
+
 
 ## Special thanks
 
