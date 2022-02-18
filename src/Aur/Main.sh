@@ -73,3 +73,8 @@ AurInfoToBash(){
         echo "${_VarName}=\"$(Get$_JsonKey <<< "$_Json")\""
     done
 }
+
+GetAurAllDepends(){
+    GetAurMakeDepends
+    GetAurDepends
+}
