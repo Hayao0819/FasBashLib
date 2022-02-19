@@ -1,13 +1,23 @@
 #!/usr/bin/env bash
 # shellcheck disable=all
-AddToArray () 
+AddNewToArray () 
 { 
     eval "PrintArray \"\${$1[@]}\"" | grep -qx "$2" && return 0;
     eval "$1+=(\"$2\")"
 }
+ArrayAppend () 
+{ 
+    local _ArrName="$1";
+    shift 1 || return 1;
+    readarray -t -O "$(ArrayIndex "$_ArrName")" "$_ArrName" < <(cat)
+}
 ArrayIncludes () 
 { 
     PrintEvalArray "$1" | grep -qx "$2"
+}
+ArrayIndex () 
+{ 
+    PrintEvalArray "$1" | wc -l
 }
 AurInfoToBash () 
 { 
@@ -116,7 +126,7 @@ ForEach ()
 }
 FormatSrcInfo () 
 { 
-    RemoveBlank | ForEach eval "ParseKeyValue Line <<< \"{}\""
+    RemoveBlank | sed "/^$/d" | grep -v "^#" | ForEach eval "ParseKeyValue Line <<< \"{}\""
 }
 GetAurAllDepends () 
 { 
@@ -455,7 +465,64 @@ GetSrcInfoSectionList ()
 }
 GetSrcInfoValue () 
 { 
-    :
+    local _SrcInfo=();
+    local _Output=();
+    local _PkgBaseValues=("pkgver" "pkgrel" "epoch");
+    local _AllValues=("pkgdesc" "url" "install" "changelog");
+    local _AllArrays=("arch" "groups" "license" "noextract" "options" "backup" "validpgpkeys");
+    local _AllArraysWithArch=("source" "depends" "checkdepends" "makedepends" "optdepends" "provides" "conflicts" "replaces" "md5sums" "sha1sums" "sha224sums" "sha256sums" "sha384sums" "sha512sums");
+    ArrayAppend _SrcInfo;
+    ArrayIncludes _PkgBaseValues "$1" && { 
+        PrintEvalArray _SrcInfo | GetSrcInfoValueInPkgBase "$1";
+        return 0
+    };
+    [[ -n "${2-""}" ]] || return 1;
+    if ArrayIncludes _AllValues "$1" || ArrayIncludes _AllArrays "$1"; then
+        ArrayAppend _Output < <(PrintEvalArray _SrcInfo | GetSrcInfoValueInPkgBase "$1");
+        ArrayAppend _Output < <(PrintEvalArray _SrcInfo | GetSrcInfoValueInPkgName "$2" "$1");
+        PrintEvalArray _Output;
+        return 0;
+    fi;
+    ArrayIncludes _AllArraysWithArch "$1" || return 1;
+    local _Arch _ArchList;
+    if [[ -z "${3-""}" ]]; then
+        ArrayAppend _ArchList < <(PrintEvalArray _SrcInfo | GetSrcInfoValue arch "$2");
+    else
+        ArrayAppend _ArchList < <(tr "," "\n" <<< "$3" | RemoveBlank);
+    fi;
+    ArrayAppend _Output < <(PrintEvalArray _SrcInfo | GetSrcInfoValueInPkgBase "$1");
+    ArrayAppend _Output < <(PrintEvalArray _SrcInfo | GetSrcInfoValueInPkgName "$2" "$1");
+    for _Arch in "${_ArchList[@]}";
+    do
+        ArrayAppend _Output < <(PrintEvalArray _SrcInfo | GetSrcInfoValueInPkgBase "$1_${_Arch}");
+        ArrayAppend _Output < <(PrintEvalArray _SrcInfo | GetSrcInfoValueInPkgName "$2" "$1_${_Arch}");
+    done;
+    PrintEvalArray _Output;
+    return 0
+}
+GetSrcInfoValueInPkgBase () 
+{ 
+    local _Line;
+    while read -r _Line; do
+        _Key="$(ParseKeyValue Key <<< "$_Line")";
+        case "$_Key" in 
+            "$1")
+                ParseKeyValue Value <<< "$_Line"
+            ;;
+        esac;
+    done < <(GetSrcInfoPkgBase)
+}
+GetSrcInfoValueInPkgName () 
+{ 
+    local _Line;
+    while read -r _Line; do
+        _Key="$(ParseKeyValue Key <<< "$_Line")";
+        case "$_Key" in 
+            "$2")
+                ParseKeyValue Value <<< "$_Line"
+            ;;
+        esac;
+    done < <(GetSrcInfoPkgName "$1")
 }
 GetTimeDiffFromLastUpdate () 
 { 
