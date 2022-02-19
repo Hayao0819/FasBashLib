@@ -833,3 +833,7 @@ RunPacman ()
 { 
     pacman --noconfirm --config "${PACMAN_CONF-"/etc/pacman.conf"}" "$@"
 }
+RunPacmanKey () 
+{ 
+    pacman-key --config "${PACMAN_CONF-"/etc/pacman.conf"}" "$@"
+}
