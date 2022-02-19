@@ -74,7 +74,7 @@ IsUUID(){
 }
 
 RemoveBlank(){
-    sed "s|^ *||g; s| *$||g"
+    sed "s|^ *||g; s| *$||g; s|^	*||g; s|	*$||g; /^$/d"
 }
 
 FileType(){
