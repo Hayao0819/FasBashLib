@@ -15,6 +15,10 @@ RunPacman(){
     pacman --noconfirm --config "${PACMAN_CONF-"/etc/pacman.conf"}" "$@"
 }
 
+RunPacmanKey(){
+    pacman-key --config "${PACMAN_CONF-"/etc/pacman.conf"}" "$@"
+}
+
 # @internal
 GetPacmanConf(){
     LANG=C pacman-conf --config="${PACMAN_CONF-"/etc/pacman.conf"}" "$@"
