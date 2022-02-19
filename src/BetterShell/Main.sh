@@ -101,7 +101,7 @@ RevArray(){
 }
 
 # AddToArray <Name> <Value>
-AddToArray(){
+AddNewToArray(){
     eval "PrintArray \"\${$1[@]}\"" | grep -qx "$2" && return 0
     eval "$1+=(\"$2\")"
 }
@@ -118,4 +118,16 @@ ArrayIncludes(){
 # RandomString <Num>
 RandomString(){
     base64 < "/dev/random" | fold -w "$1" | head -n 1
+}
+
+#ArrayIndex <ArrayName>
+ArrayIndex(){
+    PrintEvalArray "$1" | wc -l
+}
+
+#ArrayAppend <Arrayname>
+ArrayAppend(){
+    local _ArrName="$1"
+    shift 1 || return 1
+    readarray -t -O "$(ArrayIndex "$_ArrName")" "$_ArrName" < <(cat)
 }
