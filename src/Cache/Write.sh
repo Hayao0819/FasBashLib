@@ -10,7 +10,7 @@ CreateCache(){
 }
 
 CreateCacheDir(){
-    SCRIPTCACHEID="${SCRIPTCACHEID-"$(RandomString 10)"}"
+    [[ -z "${SCRIPTCACHEID-""}" ]] || { echo "Set SCRIPTCACHEID variable" >&2 ; return 1; }
     export SCRIPTCACHEID="$SCRIPTCACHEID"
     local TMPDIR="${TMPDIR-"/tmp"}"
     local _Dir="$TMPDIR/${SCRIPTCACHEID}"
