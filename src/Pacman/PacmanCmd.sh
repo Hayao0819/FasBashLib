@@ -108,7 +108,7 @@ GetPacmanKernelPkg(){
 }
 
 PacmanIsRepoPkg(){
-    RunPacman -Slq | grep -qx "$1"
+    RunPacman -Slq | grep -qx "$(GetPacmanName <<< "$1")"
 }
 
 GetPacmanRepoPkgList(){

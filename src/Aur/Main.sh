@@ -20,9 +20,13 @@ GetAurSearch(){
 }
 
 # @internal
+GetRawAurInfo(){
+    curl -sL "https://aur.archlinux.org/rpc?v=5&type=info&arg=${1}"
+}
+
+# @internal
 GetAurInfo(){
-    local _Pkg="$1" _Json
-    curl -sL "https://aur.archlinux.org/rpc?v=5&type=info&arg=${_Pkg}" | CheckAurJson
+    GetRawAurInfo "$1" | CheckAurJson
 }
 
 # @internal
