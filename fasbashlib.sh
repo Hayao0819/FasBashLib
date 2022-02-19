@@ -68,7 +68,10 @@ CreateCache ()
 }
 CreateCacheDir () 
 { 
-    SCRIPTCACHEID="${SCRIPTCACHEID-"$(RandomString 10)"}";
+    [[ -z "${SCRIPTCACHEID-""}" ]] || { 
+        echo "Set SCRIPTCACHEID variable" 1>&2;
+        return 1
+    };
     export SCRIPTCACHEID="$SCRIPTCACHEID";
     local TMPDIR="${TMPDIR-"/tmp"}";
     local _Dir="$TMPDIR/${SCRIPTCACHEID}";
@@ -150,8 +153,7 @@ GetAurID ()
 }
 GetAurInfo () 
 { 
-    local _Pkg="$1" _Json;
-    curl -sL "https://aur.archlinux.org/rpc?v=5&type=info&arg=${_Pkg}" | CheckAurJson
+    GetRawAurInfo "$1" | CheckAurJson
 }
 GetAurKeywords () 
 { 
@@ -411,6 +413,10 @@ GetPacmanRoot ()
 { 
     GetPacmanConf RootDir
 }
+GetRawAurInfo () 
+{ 
+    curl -sL "https://aur.archlinux.org/rpc?v=5&type=info&arg=${1}"
+}
 GetSrcInfoKeyList () 
 { 
     FormatSrcInfo | cut -d "=" -f 1
@@ -586,7 +592,7 @@ PacmanGpg ()
 }
 PacmanIsRepoPkg () 
 { 
-    RunPacman -Slq | grep -qx "$1"
+    RunPacman -Slq | grep -qx "$(GetPacmanName <<< "$1")"
 }
 ParseArg () 
 { 
