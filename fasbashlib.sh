@@ -114,6 +114,10 @@ ForEach ()
         _Cmd=();
     done
 }
+FormatSrcInfo () 
+{ 
+    RemoveBlank | ForEach eval "ParseKeyValue Line <<< \"{}\""
+}
 GetAurAllDepends () 
 { 
     jq -r ".Depends[], .MakeDepends[]"
@@ -397,6 +401,62 @@ GetPacmanRoot ()
 { 
     GetPacmanConf RootDir
 }
+GetSrcInfoKeyList () 
+{ 
+    FormatSrcInfo | cut -d "=" -f 1
+}
+GetSrcInfoPkgBase () 
+{ 
+    local _Line _Key _InSection=false;
+    while read -r _Line; do
+        _Key="$(ParseKeyValue Key <<< "$_Line")";
+        case "$_Key" in 
+            "pkgbase")
+                _InSection=true
+            ;;
+            "pkgname")
+                _InSection=false
+            ;;
+            *)
+                if [[ "${_InSection}" = true ]]; then
+                    echo "$_Line";
+                fi
+            ;;
+        esac;
+    done < <(FormatSrcInfo)
+}
+GetSrcInfoPkgName () 
+{ 
+    local _Line _Key _InSection=false _TargetPkgName="$1";
+    while read -r _Line; do
+        _Key="$(ParseKeyValue Key <<< "$_Line")";
+        case "$_Key" in 
+            "pkgname")
+                if [[ "$(ParseKeyValue Value <<< "$_Line")" = "$_TargetPkgName" ]]; then
+                    _InSection=true;
+                else
+                    _InSection=false;
+                fi
+            ;;
+            "pkgbase")
+                _InSection=false
+            ;;
+            *)
+                if [[ "${_InSection}" = true ]]; then
+                    echo "$_Line";
+                fi
+            ;;
+        esac;
+    done < <(FormatSrcInfo)
+}
+GetSrcInfoSectionList () 
+{ 
+    FormatSrcInfo | grep -e "^pkgbase" -e "^pkgname"
+}
+GetSrcInfoValue () 
+{ 
+    :
+}
 GetTimeDiffFromLastUpdate () 
 { 
     local _Now _Last;
@@ -583,6 +643,28 @@ ParseIniLine ()
     esac;
     return 0
 }
+ParseKeyValue () 
+{ 
+    local _Output="${1-""}";
+    [[ -n "${_Output}" ]] || return 1;
+    shift 1;
+    local _String _Key _Value;
+    _String="$(cat)";
+    _Key="$(cut -d "=" -f 1 <<<  "$_String" | RemoveBlank)";
+    _Value="$(cut -d "=" -f 2- <<< "$_String" | RemoveBlank)";
+    case "$_Output" in 
+        "Line")
+            echo "$_Key=$_Value"
+        ;;
+        "Key")
+            echo "$_Key"
+        ;;
+        "Value")
+            echo "$_Value"
+        ;;
+    esac;
+    return 0
+}
 PrintArray () 
 { 
     (( $# >= 1 )) || return 0;
@@ -663,7 +745,7 @@ Readlinkf_Readlink ()
 }
 RemoveBlank () 
 { 
-    sed "s|^ *||g; s| *$||g"
+    sed "s|^ *||g; s| *$||g; s|^	*||g; s|	*$||g; /^$/d"
 }
 RemoveFileExt () 
 { 
