@@ -79,6 +79,10 @@ CreateCacheDir ()
     echo "$_Dir";
     return 0
 }
+CreatePacmanDbTmpDir () 
+{ 
+    mkdir -p "${TMPDIR-"/tmp"}/fasbashlib-pacman-db"
+}
 CsvToBashArray () 
 { 
     local _RawCsvLine=() _Line _ClmCnt=0;
@@ -102,6 +106,10 @@ CutLastString ()
 { 
     echo "${1%%"${2}"}";
     return 0
+}
+DeletePacmanDbTmpDir () 
+{ 
+    rm -rf "${TMPDIR-"/tmp"}/fasbashlib-pacman-db"
 }
 ExistCache () 
 { 
@@ -337,6 +345,10 @@ GetKernelSrcList ()
 { 
     find "/usr/src" -mindepth 1 -maxdepth 1 -type l -name "linux*"
 }
+GetLastSplitString () 
+{ 
+    rev <<< "$2" | cut -d "$1" -f 1 | rev
+}
 GetLine () 
 { 
     head -n "$1" | tail -n 1
@@ -348,6 +360,23 @@ GetMkinitcpioPresetList ()
 GetPacmanConf () 
 { 
     LANG=C pacman-conf --config="${PACMAN_CONF-"/etc/pacman.conf"}" "$@"
+}
+GetPacmanDbNextSection () 
+{ 
+    GetPacmanDbSectionList | grep -x -A 1 "^%$1%$" | GetLine 2 | sed "s|^%||g; s|%$||g"
+}
+GetPacmanDbSection () 
+{ 
+    readarray -t _Stdin;
+    PrintEvalArray _Stdin | sed -ne "/^%$1%$/,/^%$(PrintEvalArray _Stdin | GetPacmanDbNextSection "$1")%$/p" | sed "1d; \$d"
+}
+GetPacmanDbSectionList () 
+{ 
+    grep -E "^%.*%$"
+}
+GetPacmanDbTmpDir () 
+{ 
+    echo "${TMPDIR-"/tmp"}/fasbashlib-pacman-db"
 }
 GetPacmanInstalledPkgVer () 
 { 
@@ -388,6 +417,10 @@ GetPacmanName ()
 { 
     cut -d "<" -f 1 | cut -d ">" -f 1 | cut -d "=" -f 1
 }
+GetPacmanPkgArch () 
+{ 
+    GetPacmanSyncDbDesc "$1" | GetPacmanDbSection ARCH | RemoveBlank
+}
 GetPacmanRepoConf () 
 { 
     ForEach eval 'echo [{}] && GetPacmanConf -r {}'
@@ -403,15 +436,44 @@ GetPacmanRepoListFromLocalDb ()
 }
 GetPacmanRepoPkgList () 
 { 
-    RunPacman -Slq
+    RunPacman -Slq "$@"
 }
 GetPacmanRepoServer () 
 { 
     ForEach eval 'GetPacmanConf -r {}' | grep "^Server" | ForEach eval 'ParseIniLine; printf "%s\n" ${VALUE}'
 }
+GetPacmanRepoVer () 
+{ 
+    pacman -Sp --print-format '%v' "$1"
+}
 GetPacmanRoot () 
 { 
     GetPacmanConf RootDir
+}
+GetPacmanSyncAllDesc () 
+{ 
+    find "$(GetPacmanDbTmpDir)" -mindepth 3 -maxdepth 3 -name "desc" -type f
+}
+GetPacmanSyncDbDesc () 
+{ 
+    local _path;
+    _path="$(GetPacmanSyncDbDescPath "$1")";
+    [[ -e "$_path" ]] || return 1;
+    cat "$_path/desc"
+}
+GetPacmanSyncDbDescPath () 
+{ 
+    local _repo;
+    _repo="$(pacman -Sp --print-format '%r' "$1")";
+    { 
+        IsPacmanSyncDbOpend "$_repo" || OpenPacmanSyncDb "$_repo"
+    } || return 1;
+    echo "$(GetPacmanDbTmpDir)/sync/$(pacman -Sp --print-format '%r/%n-%v' "$1")"
+}
+GetPacmanVirtualPkgList () 
+{ 
+    GetPacmanRepoListFromLocalDb | ForEach OpenPacmanSyncDb {};
+    GetPacmanSyncAllDesc | ForEach eval "GetPacmanDbSection PROVIDES < {}" | RemoveBlank
 }
 GetRawAurInfo () 
 { 
@@ -556,6 +618,12 @@ IsAvailable ()
 { 
     type "$1" 2> /dev/null 1>&2
 }
+IsPacmanSyncDbOpend () 
+{ 
+    readarray -t _PkgDbList < <(find "$(GetPacmanDbTmpDir)/sync/$1" -mindepth 1 -maxdepth 1 -type d );
+    (( "${#_PkgDbList[@]}" > 0 )) && return 0;
+    return 1
+}
 IsUUID () 
 { 
     local _UUID="${1-""}";
@@ -585,6 +653,20 @@ MsgInfo ()
 MsgWarn () 
 { 
     MsgCommon " Warn: ${*}" 1>&2
+}
+OpenPacmanSyncDb () 
+{ 
+    local _Dir _RepoDb;
+    CreatePacmanDbTmpDir;
+    _Dir="$(GetPacmanDbTmpDir)/sync/$1";
+    mkdir -p "$_Dir";
+    _RepoDb="$(GetPacmanConf DBPath)/sync/$1.db";
+    [[ -e "$_RepoDb" ]] || return 1;
+    tar -xzf "${_RepoDb}" -C "$_Dir" || return 1
+}
+OpenedPacmanSyncDbList () 
+{ 
+    find "$(GetPacmanDbTmpDir)/sync/" -mindepth 1 -maxdepth 1 -type d
 }
 PacmanGpg () 
 { 
@@ -737,6 +819,26 @@ ParseKeyValue ()
         ;;
     esac;
     return 0
+}
+ParsePacmanPkgFileName () 
+{ 
+    local _Pkg="$1";
+    local _PkgName _PkgVer _PkgRel _Arch _FileExt;
+    local _PkgWithOutExt;
+    if grep "/" <<< "$_Pkg"; then
+        _Pkg="$(basename "$_Pkg")";
+    fi;
+    _FileExt="$(GetLastSplitString "-" "$_Pkg" | cut -d "." -f 2-)";
+    _PkgWithOutExt="${_Pkg%%".${_FileExt}"}";
+    _Arch=$(GetLastSplitString "-" "${_PkgWithOutExt}");
+    _PkgRel=$(GetLastSplitString "-" "${_PkgWithOutExt%%"-${_Arch}"}");
+    _PkgVer=$(GetLastSplitString "-" "${_PkgWithOutExt%%"-${_PkgRel}-${_Arch}"}");
+    _PkgName="${_PkgWithOutExt%%"-${_PkgVer}-${_PkgRel}-${_Arch}"}";
+    _ParsedPkg=("${_PkgName}" "-" "$_PkgVer" "-" "$_PkgRel" "-" "$_Arch" ".$_FileExt");
+    if [[ ! "$(PrintArray "${_ParsedPkg[@]}" | tr -d "\n")" = "${_Pkg}" ]]; then
+        return 1;
+    fi;
+    PrintArray "${_ParsedPkg[@]}"
 }
 PrintArray () 
 { 
