@@ -118,3 +118,7 @@ GetPacmanRepoPkgList(){
 GetPacmanName(){
     cut -d "<" -f 1 | cut -d ">" -f 1 | cut -d "=" -f 1
 }
+
+GetPacmanRepoVer(){
+    pacman -Sp --print-format '%v' "$1"
+}
