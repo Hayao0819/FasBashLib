@@ -131,3 +131,9 @@ ArrayAppend(){
     shift 1 || return 1
     readarray -t -O "$(ArrayIndex "$_ArrName")" "$_ArrName" < <(cat)
 }
+
+# GetLastSplitString <delim> <string>
+GetLastSplitString(){
+    rev <<< "$2" | cut -d "$1" -f 1 | rev
+}
+
