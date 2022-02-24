@@ -70,13 +70,16 @@ IsPacmanSyncDbOpend(){
     return 1
 }
 
+OpenedPacmanSyncDbList(){
+    find "$(GetPacmanDbTmpDir)/sync/" -mindepth 1 -maxdepth 1 -type d 
+}
+
 # GetPacmanSyncDbDescPath <pkgname>
 GetPacmanSyncDbDescPath(){
     local _repo
     _repo="$(pacman -Sp --print-format '%r' "$1")"
-    #GetPacmanRepoListFromLocalDb | ForEach OpenPacmanSyncDb "{}"
     { IsPacmanSyncDbOpend "$_repo" || OpenPacmanSyncDb "$_repo"; } || return 1
-    echo "$(GetPacmanDbTmpDir)/$(pacman -Sp --print-format '%r/%n-%v' "$1")"
+    echo "$(GetPacmanDbTmpDir)/sync/$(pacman -Sp --print-format '%r/%n-%v' "$1")"
 }
 
 # GetPacmanSyncDbDesc <pkgname>
@@ -85,4 +88,17 @@ GetPacmanSyncDbDesc(){
     _path="$(GetPacmanSyncDbDescPath "$1")"
     [[ -e "$_path" ]] || return 1
     cat "$_path/desc"
+}
+
+GetPacmanSyncAllDesc(){
+    find "$(GetPacmanDbTmpDir)" -mindepth 3 -maxdepth 3 -name "desc" -type f
+}
+
+GetPacmanVirtualPkgList(){
+    GetPacmanRepoListFromLocalDb | ForEach OpenPacmanSyncDb {}
+    GetPacmanSyncAllDesc | ForEach eval "GetPacmanDbSection PROVIDES < {}" | RemoveBlank
+}
+
+GetPacmanPkgArch(){
+    GetPacmanSyncDbDesc "$1" | GetPacmanDbSection ARCH | RemoveBlank
 }
