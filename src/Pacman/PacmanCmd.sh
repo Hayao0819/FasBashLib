@@ -112,7 +112,7 @@ PacmanIsRepoPkg(){
 }
 
 GetPacmanRepoPkgList(){
-    RunPacman -Slq
+    RunPacman -Slq "$@"
 }
 
 GetPacmanName(){
