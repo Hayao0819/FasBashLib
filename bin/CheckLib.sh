@@ -54,7 +54,7 @@ while read -r Dir; do
     done < <(find "$Dir" -name "*.sh" -mindepth 1)
 
     unset File _FileList Name
-done < <(find "${SrcDir}" -type d -mindepth 1 -maxdepth 1 )
+done < <(find "${SrcDir}" -mindepth 1 -maxdepth 1 -type d )
 
 if (( Errors == 0 )); then
     exit 0
