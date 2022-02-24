@@ -2,7 +2,7 @@
 # Do not use FasBashLib in this file
 # shellcheck disable=SC1090,SC1091
 
-set -Eeu
+set -Eeu -o pipefail
 
 # Init
 MainDir="$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)"
