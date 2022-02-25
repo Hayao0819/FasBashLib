@@ -2,10 +2,12 @@ name: Test library
 
 on: 
   push:
+    #branches:
+    #  - dev-0.1.x
   workflow_dispatch:
 
 jobs:
-  build-dev:
+  check-lib:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
