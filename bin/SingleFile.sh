@@ -9,10 +9,13 @@ MainDir="$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)"
 TmpFile="/tmp/fasbashlib.sh"
 OutFile="${MainDir}/fasbashlib.sh"
 NoRequire=false
+NameSpace=""
+Version="0.1.x-dev"
 
 # Parse args
+NoArg=()
 while [[ -n "${1-""}" ]]; do
-    [[ "$1" == "-"* ]] || break
+    #[[ "$1" == "-"* ]] || break
     case "${1}" in
         "-out")
             [[ -n "${2-""}" ]] || { echo "No file is specified" >&2 ; exit 1; }
@@ -23,17 +26,31 @@ while [[ -n "${1-""}" ]]; do
             NoRequire=true
             shift 1
             ;;
+        "-ns")
+            NameSpace="$2"
+            shift 2
+            ;;
+        "-ver")
+            Version="$2"
+            shift 2
+            ;;
         "--")
             shift 1
             break
             ;;
-        *)
+        "-"*)
             echo "Usage: $(basename "$0") [-out File] [-noreq] [Lib1] [Lib2] ..." >&2
             [[ "${1}" = "-h" ]] && exit 0
             exit 1
             ;;
+        *)
+            NoArg+=("$1")
+            shift 1
+            ;;
     esac
 done
+set -- "${NoArg[@]}"
+
 TargetLib=("$@")
 RequireLib=()
 
@@ -68,23 +85,35 @@ fi
 # Load src
 while read -r Dir; do
     while read -r File; do
-        echo "Load: ${Dir}/${File}" >&2
+        echo "Load file: ${Dir}/${File}" >&2
         source "${Dir}/${File}" || {
             echo "Failed to load shell file" >&2
             exit 1
         }
     done < <("$LibDir/GetMeta.sh" "$(basename "$Dir")" "Files" | tr "," "\n")
 done < <(
+    LoadLibDir=()
     if (( "${#TargetLib[@]}" > 0 )); then
         printf "${SrcDir}/%s\n" "${RequireLib[@]}" "${TargetLib[@]}"
+        exit 0
     else
-        find "$SrcDir" -type d -mindepth 1 -maxdepth 1
-    fi )
+        readarray -t LoadLibDir < <(find "$SrcDir" -type d -mindepth 1 -maxdepth 1)
+    fi
+    echo "Load libs: $(printf "%s\n" "${LoadLibDir[@]}" | xargs -L 1 basename | tr "\n" " ")" >&2
+    printf "%s\n" "${LoadLibDir[@]}"
+    )
 unset Dir File
 
 # Output to temp
-cat "$StaticDir/head.sh" > "$TmpFile"
-typeset -f >> "$TmpFile"
+#cat "$StaticDir/head.sh" > "$TmpFile"
+sed "s|%VERSION%|${Version-""}|g; s|%LIBNAMESPACE%|${NameSpace-""}|g" "${StaticDir}/head.sh" > "$TmpFile"
+if [[ -z "${NameSpace-""}" ]]; then
+    typeset -f >> "$TmpFile"
+else
+    while read -r Func; do
+        typeset -f "$Func" | sed "1 s|${Func} ()|${NameSpace}.${Func} ()|g" >> "$TmpFile"
+    done < <(typeset -F | cut -d " " -f 3)
+fi
 [[ -e "$TmpFile" ]] || exit 1
 
 # Minify
