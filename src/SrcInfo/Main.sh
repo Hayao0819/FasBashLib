@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
 
-# shellcheck  disable=SC1091
-source /dev/stdin < <(/home/hayao/Git/FasBashLib/bin/SingleFile.sh -out /dev/stdout Pacman Aur 2> /dev/null)
-
 # ParseKeyValue Line
 # ParseKeyValue Key
 # ParseKeyValue Value
