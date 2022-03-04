@@ -6,10 +6,12 @@ set -Eeu
 
 # Init
 MainDir="$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)"
+#BinDir="$MainDir/bin"
+LibDir="$MainDir/lib"
 TmpFile="/tmp/fasbashlib.sh"
 OutFile="${MainDir}/fasbashlib.sh"
 NoRequire=false
-NameSpace=""
+NameSpace="Fsb"
 Version="0.1.x-dev"
 
 # Parse args
@@ -82,39 +84,61 @@ if [[ "$NoRequire" = false ]]; then
     unset Lib
 fi
 
-# Load src
+# Create temp file with header
+#cat "$StaticDir/head.sh" > "$TmpFile"
+sed "s|%VERSION%|${Version-""}|g; s|%LIBNAMESPACE%|${NameSpace-""}|g" "${StaticDir}/head.sh" > "$TmpFile"
+
+# 作成に失敗した場合に終了
+[[ -e "$TmpFile" ]] || exit 1
+
+# ライブラリをサブシェル内で読み込んでファイルに追記
 while read -r Dir; do
+    LibName="$(basename "$Dir")"
+    NoNameSpace="$("$LibDir/GetMeta.sh" "$LibName" "NoNameSpace")"
+    LibPrefix="$("$LibDir/GetMeta.sh" "$LibName" "Prefix")"
+    FuncPrefix=()
+
+    if [[ -n "${NameSpace-""}" ]] && [[ ! "$NoNameSpace" = true ]]; then
+
+        FuncPrefix+=("${NameSpace}")
+    fi
+    if [[ -n "${LibPrefix-""}" ]]; then
+        FuncPrefix+=("$LibPrefix")
+    fi
+
     while read -r File; do
         echo "Load file: ${Dir}/${File}" >&2
-        source "${Dir}/${File}" || {
-            echo "Failed to load shell file" >&2
-            exit 1
-        }
-    done < <("$LibDir/GetMeta.sh" "$(basename "$Dir")" "Files" | tr "," "\n")
+        (
+            source "${Dir}/${File}" || {
+                echo "Failed to load shell file" >&2
+                exit 1
+            }
+
+            while read -r Func; do
+                if [[ -z "${FuncPrefix[*]}" ]]; then
+                    typeset -f "$Func" >> "$TmpFile"
+                else
+                    #echo "FuncName: $(printf "%s." "${FuncPrefix[@]}")${Func}" >&2
+                    typeset -f "$Func" | sed "1 s|${Func} ()|$(printf "%s." "${FuncPrefix[@]}")${Func} ()|g" >> "$TmpFile"
+                fi
+            done < <(typeset -F | cut -d " " -f 3)
+        )
+    done < <("$LibDir/GetMeta.sh" "${LibName}" "Files" | tr "," "\n")
+
+    unset NoNameSpace LibPrefix FuncPrefix LibName
 done < <(
     LoadLibDir=()
     if (( "${#TargetLib[@]}" > 0 )); then
         printf "${SrcDir}/%s\n" "${RequireLib[@]}" "${TargetLib[@]}"
         exit 0
     else
-        readarray -t LoadLibDir < <(find "$SrcDir" -type d -mindepth 1 -maxdepth 1)
+        readarray -t LoadLibDir < <(find "$SrcDir" -mindepth 1 -maxdepth 1 -type d )
     fi
     echo "Load libs: $(printf "%s\n" "${LoadLibDir[@]}" | xargs -L 1 basename | tr "\n" " ")" >&2
     printf "%s\n" "${LoadLibDir[@]}"
     )
 unset Dir File
 
-# Output to temp
-#cat "$StaticDir/head.sh" > "$TmpFile"
-sed "s|%VERSION%|${Version-""}|g; s|%LIBNAMESPACE%|${NameSpace-""}|g" "${StaticDir}/head.sh" > "$TmpFile"
-if [[ -z "${NameSpace-""}" ]]; then
-    typeset -f >> "$TmpFile"
-else
-    while read -r Func; do
-        typeset -f "$Func" | sed "1 s|${Func} ()|${NameSpace}.${Func} ()|g" >> "$TmpFile"
-    done < <(typeset -F | cut -d " " -f 3)
-fi
-[[ -e "$TmpFile" ]] || exit 1
 
 # Minify
 #bash "$LibDir/minifier/Minify.sh" -f="$TmpFile" > "$OutFile"
