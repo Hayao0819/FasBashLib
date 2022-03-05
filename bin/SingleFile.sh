@@ -11,7 +11,7 @@ LibDir="$MainDir/lib"
 TmpFile="/tmp/fasbashlib.sh"
 OutFile="${MainDir}/fasbashlib.sh"
 NoRequire=false
-NameSpace="Fsb"
+NameSpace=""
 Version="0.1.x-dev"
 
 # Parse args
@@ -90,6 +90,12 @@ sed "s|%VERSION%|${Version-""}|g; s|%LIBNAMESPACE%|${NameSpace-""}|g" "${StaticD
 
 # 作成に失敗した場合に終了
 [[ -e "$TmpFile" ]] || exit 1
+
+# 警告
+if [[ -n "${NameSpace-""}" ]]; then
+    echo "WARNING!!" >&2
+    echo "NameSpace=$NameSpace に設定されました。関数の呼出には\"@\"か\"$NameSpace.\"が必要です。" >&2
+fi
 
 # ライブラリをサブシェル内で読み込んでファイルに追記
 while read -r Dir; do
