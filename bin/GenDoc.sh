@@ -7,10 +7,10 @@ BinDir="$MainDir/bin"
 
 mkdir -p "$MainDir/docs"
 
-#while read -r File; do
-    # shellcheck disable=SC2002
-#    cat "$File" | gawk -f "$LibDir/shdoc/shdoc" > "$MainDir/docs/$(basename "$(dirname "$File")").md"
-#done < <(find "${SrcDir}" -name "*.sh" -type f -mindepth 1)
+if [[ ! -e "$LibDir/shdoc/shdoc" ]]; then
+    echo "Error: Update git submodule" >&2
+    exit 1
+fi
 
 while read -r Lib; do
     echo > "$MainDir/docs/${Lib}.md"
