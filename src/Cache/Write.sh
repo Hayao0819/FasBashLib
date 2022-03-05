@@ -5,8 +5,8 @@
 # TMPDIR: /tmpもしくはそれ相当のディレクトリ
 CreateCache(){
     CreateCacheDir > /dev/null
-    cat > "$(GetCacheDir)/${1}"
-    cat "$(GetCacheDir)/$1"
+    cat > "$(@ GetCacheDir)/${1}"
+    cat "$(@ GetCacheDir)/$1"
 }
 
 CreateCacheDir(){

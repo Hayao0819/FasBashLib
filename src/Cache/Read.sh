@@ -20,7 +20,7 @@ ExistCache(){
     local _File
     _File="$(CreateCacheDir)/$1"
     [[ -e "$_File" ]] || return 1
-    (( "$(GetTimeDiffFromLastUpdate "$_File")" > "${KEEPCACHESEC-"86400"}" )) && return 2
+    (( "$(@ GetTimeDiffFromLastUpdate "$_File")" > "${KEEPCACHESEC-"86400"}" )) && return 2
     return 0
 }
 
