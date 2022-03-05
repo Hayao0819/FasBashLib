@@ -55,7 +55,12 @@ while read -r Dir; do
     done < <(find "$Dir" -name "*.sh" -mindepth 1)
 
     unset File _FileList Name
-done < <(find "${SrcDir}" -mindepth 1 -maxdepth 1 -type d )
+done < <(
+    if (( "${#}" > 0 )); then
+        printf "${SrcDir}/%s\n" "$@"
+    else
+        find "${SrcDir}" -mindepth 1 -maxdepth 1 -type d 
+    fi )
 
 if (( Errors == 0 )); then
     exit 0
