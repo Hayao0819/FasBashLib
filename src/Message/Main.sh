@@ -6,7 +6,7 @@
 #
 #    メッセージをラベルと共に適切な場所へ出力します。例えば、Error メッセージはstdoutへ出力されます。
 
-MsgCommon(){
+Common(){
     local i
     for i in $(seq "$(echo -e "${*}" | wc -l)"); do
         echo -e "${*}" | head -n "${i}" | tail -n 1
@@ -20,8 +20,8 @@ MsgCommon(){
 # @arg $* string A value to print
 #
 # @exitcode 0 This script return only 0
-MsgErr(){
-    MsgCommon "Error: ${*}" >&2
+Err(){
+    @ Msg.Common "Error: ${*}" >&2
 }
 
 # @description Output info to stdout
@@ -31,8 +31,8 @@ MsgErr(){
 # @arg $* string A value to print
 #
 # @exitcode 0 This script return only 0
-MsgInfo(){
-    MsgCommon " Info: ${*}" >&1
+Info(){
+    @ Msg.Common " Info: ${*}" >&1
 }
 
 # @description Output warning to stderr
@@ -42,8 +42,8 @@ MsgInfo(){
 # @arg $* string A value to print
 #
 # @exitcode 0 This script return only 0
-MsgWarn(){
-    MsgCommon " Warn: ${*}" >&2
+Warn(){
+    @ Msg.Common " Warn: ${*}" >&2
 }
 
 # @description Output debug message to stderr
@@ -54,6 +54,6 @@ MsgWarn(){
 #
 # @exitcode 0 This script return only 0
 MsgDebug(){
-    MsgCommon "Debug: ${*}" >&2
+    @ MsgCommon "Debug: ${*}" >&2
 }
 
