@@ -41,7 +41,7 @@ LibList=("$@")
 shift "$#"
 
 if (("${#LibList[@]}" < 1 )); then
-    readarray -t LibList < <(find "${SrcDir}" -type d -mindepth 1 -maxdepth 1 -print0 | xargs -0 -L 1 basename)
+    readarray -t LibList < <(find "${SrcDir}" -mindepth 1 -maxdepth 1 -type d  -print0 | xargs -0 -L 1 basename)
 fi
 
 for Lib in "${LibList[@]}"; do
