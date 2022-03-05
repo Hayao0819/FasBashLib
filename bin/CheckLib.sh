@@ -33,6 +33,7 @@ while read -r Dir; do
     # シェルを確認
     if ! printf "%s\n" "${ShellList[@]}" | grep -qx "$("$LibDir/GetMeta.sh" "${Name}" "Shell")"; then
         echo "${Name}: 不正なシェルが設定されています" >&2
+        echo "${Name}: 利用可能なシェル: ${ShellList[*]}"
         Errors=$(( Errors + 1 ))
     fi
 
