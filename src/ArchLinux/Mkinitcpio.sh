@@ -8,7 +8,7 @@
 #      * GetKernelSrcList
 
 GetMkinitcpioPresetList(){
-    find "/etc/mkinitcpio.d/" -name "*.preset" -type f |GetBaseName | RemoveFileExt
+    find "/etc/mkinitcpio.d/" -name "*.preset" -type f | @ GetBaseName | @ RemoveFileExt
 }
 
 GetKernelFileList(){
