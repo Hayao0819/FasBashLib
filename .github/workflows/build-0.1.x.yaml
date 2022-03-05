@@ -40,7 +40,7 @@ jobs:
           name: id_rsa # optional
           known_hosts: unnecessary
 
-      - name: Prepare for commit
+      - name: Git Push
         env: 
           GH_PAGES_REPO_DEPLOY_KEY: ${{ secrets.GH_PAGES_REPO_DEPLOY_KEY }}
           PUSH_BRANCH: build-0.1.x
@@ -54,9 +54,6 @@ jobs:
           echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
           git pull --allow-unrelated-histories origin "${PUSH_BRANCH}"
           git checkout -b "${PUSH_BRANCH}"
-          
-      - name: Run commit
-        run: |
           make
           make docs
           rm -rf .gitignore && echo "Removed .gitignore"
