@@ -20,5 +20,5 @@ MetaFile="$SrcDir/$1/Meta.ini"
     
     NextToFsbLib="$(printf "%s\n" "${SectionList[@]}" | grep -x "FsbLib" -A 1 | tail -n 1)"
 
-    sed -ne "/^ *\[FsbLib\] *$/,/^ *\[${NextToFsbLib}\] *$/p" "$MetaFile" | sed "1d; \$d" | grep -Ex -- "^ *${2} *=.*" | cut -d "=" -f 2- | sed "s|^ *\"||g; s| *\"$||g" | grep -v "^$"
+    sed -ne "/^ *\[FsbLib\] *$/,/^ *\[${NextToFsbLib}\] *$/p" "$MetaFile" | sed "1d; s|^ *\[${NextToFsbLib}\] *$||g" | grep -Ex -- "^ *${2} *=.*" | cut -d "=" -f 2- | sed "s|^ *||g; s| *$||g"  | sed "s|^\"||g; s|\"$||g"| grep -v "^$" || true
 }
