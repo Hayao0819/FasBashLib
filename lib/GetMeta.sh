@@ -14,27 +14,11 @@ MetaFile="$SrcDir/$1/Meta.ini"
 }
 
 {
-    InSection=false Output=()
-    while read -r Line; do
-        Line=$(sed "s|^ *||g; s| *$||g" <<< "$Line")
-        case "$Line" in
-            "[FsbLib]")
-                InSection=true
-                ;;
-            "["*"]")
-                InSection=false
-                ;;
-            "")
-                continue
-                ;;
-            *"="*)
-                [[ "$InSection" = true ]] || continue
-                if [[ "$Line" = "${2}"* ]]; then
-                    Output+=("$(cut -d "=" -f 2 <<< "${Line}" | sed "s|^ *||g; s| *$||g; s|^\"||g; s|\"$||g" )")
-                fi
-                ;;
-        esac
-    done < <(cat "$MetaFile")
-    [[ -n "${Output[*]}" ]] || exit 0
-    printf "%s\n" "${Output[@]}"
+    readarray -t SectionList < <(
+        grep -E '^ *\[.*\] *$' "$MetaFile" | sed -e 's|^ *\[||g; s|\] *$||g'
+    )
+    
+    NextToFsbLib="$(printf "%s\n" "${SectionList[@]}" | grep -x "FsbLib" -A 1 | tail -n 1)"
+
+    sed -ne "/^ *\[FsbLib\] *$/,/^ *\[${NextToFsbLib}\] *$/p" "$MetaFile" | sed "1d; \$d" | grep -Ex -- "^ *${2} *=.*" | cut -d "=" -f 2- | sed "s|^ *\"||g; s| *\"$||g" | grep -v "^$"
 }
