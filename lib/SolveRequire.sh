@@ -12,8 +12,8 @@ if (( $# < 1 )); then
 fi
 
 Target="$1"
-LibList=("$1")
-LibFrom=("<EntryPoint>")
+LibList=("$1" "Core")
+LibFrom=("<EntryPoint>" "$1")
 
 SolveRequire(){
     local _Lib _Shell
