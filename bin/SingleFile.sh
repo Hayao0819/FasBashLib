@@ -8,10 +8,12 @@ set -Eeu
 MainDir="$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)"
 #BinDir="$MainDir/bin"
 LibDir="$MainDir/lib"
-TmpFile="/tmp/fasbashlib.sh"
+TmpDir="$(mktemp -d -t "fasbashlib.XXXXX")"
+TmpFile="${TmpDir}/fasbashlib.sh"
 OutFile="${MainDir}/fasbashlib.sh"
 NoRequire=false
 Version="0.1.x-dev"
+LoadedFiles=()
 
 # Parse args
 NoArg=()
@@ -74,7 +76,7 @@ unset Func
 # Solve require
 if [[ "$NoRequire" = false ]]; then
     for Lib in "${TargetLib[@]}"; do
-        readarray -O "${#RequireLib[@]}" -t RequireLib < <("$LibDir/SolveRequire.sh" "$Lib")
+        readarray -O "${#RequireLib[@]}" -t RequireLib < <("$LibDir/SolveRequire.sh" "$Lib" | grep -xv "$Lib")
     done
     unset Lib
 fi
@@ -90,31 +92,49 @@ sed "s|%VERSION%|${Version-""}|g" "${StaticDir}/head.sh" > "$TmpFile"
 while read -r Dir; do
     LibName="$(basename "$Dir")"
     LibPrefix="$("$LibDir/GetMeta.sh" "$LibName" "Prefix")"
+    TmpLibFile="$TmpDir/$LibName.sh"
 
     while read -r File; do
+        printf "%s\n" "${LoadedFiles[@]}" | grep -x "${Dir}/${File}" && {
+            echo "Already loaded $Dir/$File" >&2
+            continue
+        }
+
         echo "Load file: ${Dir}/${File}" >&2
+        LoadedFiles+=("${Dir}/${File}")
+
+        # 関数を読み込んで一時ファイルに書き込み
         (
             source "${Dir}/${File}" || {
                 echo "Failed to load shell file" >&2
                 exit 1
             }
 
+            touch "$TmpLibFile"
             while read -r Func; do
                 if [[ -z "${LibPrefix}" ]]; then
-                    typeset -f "$Func" >> "$TmpFile"
+                    typeset -f "$Func" >> "$TmpLibFile"
                 else
-                    typeset -f "$Func" | sed "1 s|${Func} ()|${LibPrefix}.${Func} ()|g" >> "$TmpFile"
+                    typeset -f "$Func" | sed "1 s|${Func} ()|${LibPrefix}.${Func} ()|g" >> "$TmpLibFile"
                 fi
             done < <(typeset -F | cut -d " " -f 3)
         )
     done < <("$LibDir/GetMeta.sh" "${LibName}" "Files" | tr "," "\n")
 
+    # 一時ファイルを元に関数内のコードを置き換え
+    (
+        source "${TmpLibFile}" 
+        while read -r Func; do
+            sed -i "" "s|@${Func}|${LibPrefix}.${Func}|g" "$TmpLibFile"
+        done < <(typeset -F | cut -d " " -f 3 | sed "s|^${LibPrefix}.||g")
+        cat "$TmpLibFile" >> "$TmpFile"
+    ) 
+
     unset LibPrefix FuncPrefix LibName
 done < <(
     LoadLibDir=()
     if (( "${#TargetLib[@]}" > 0 )); then
-        printf "${SrcDir}/%s\n" "${RequireLib[@]}" "${TargetLib[@]}"
-        exit 0
+        readarray -t LoadLibDir < <(printf "${SrcDir}/%s\n" "${RequireLib[@]}" "${TargetLib[@]}")
     else
         readarray -t LoadLibDir < <(find "$SrcDir" -mindepth 1 -maxdepth 1 -type d )
     fi
@@ -123,8 +143,11 @@ done < <(
     )
 unset Dir File
 
+# @を置き換え
+
 
 # Minify
 #bash "$LibDir/minifier/Minify.sh" -f="$TmpFile" > "$OutFile"
 cat "$TmpFile" > "$OutFile"
+rm -rf "$TmpDir"
 echo "$OutFile にビルドされました" >&2
