@@ -20,7 +20,7 @@ RunPacmanKey(){
 }
 
 # @internal
-GetPacmanConf(){
+GetConfig(){
     LANG=C pacman-conf --config="${PACMAN_CONF-"/etc/pacman.conf"}" "$@"
 }
 
@@ -36,7 +36,7 @@ GetPacmanConf(){
 CheckPacmanPkg(){
     local p
     for p in "$@"; do
-        RunPacman -Qq "$p" > /dev/null 2>&1 || return 1
+        @RunPacman -Qq "$p" > /dev/null 2>&1 || return 1
     done
     return 0
 }
@@ -51,16 +51,16 @@ CheckPacmanPkg(){
 #
 # @exitcode 0 この関数は常に0を返します
 GetPacmanRepoListFromConf(){
-    #GetPacmanConf | GetIniSectionList 2> /dev/null| grep -vx "options"
-    GetPacmanConf --repo-list
+    #@GetConfig | GetIniSectionList 2> /dev/null| grep -vx "options"
+    @GetConfig --repo-list
 }
 
 GetPacmanRoot(){
-    GetPacmanConf RootDir
+    @GetConfig RootDir
 }
 
 PacmanGpg(){
-    gpg --homedir "$(GetPacmanConf GPGDir)" "$@"
+    gpg --homedir "$(@GetConfig GPGDir)" "$@"
 }
 
 GetPacmanKeyringDir(){
@@ -79,7 +79,7 @@ GetPacmanKeyringDir(){
 GetPacmanLatestPkgVer(){
     local _LANG="${LANG-""}"
     export LANG=C
-    ForEach RunPacman -Si "{}" | grep "^Version" | cut -d ":" -f 2 | RemoveBlank
+    ForEach @RunPacman -Si "{}" | grep "^Version" | cut -d ":" -f 2 | RemoveBlank
     [[ -n "$_LANG" ]] && export LANG="$_LANG"
     return 0
 }
@@ -91,12 +91,12 @@ GetPacmanInstalledPkgVer(){
 }
 
 GetPacmanRepoConf(){
-    ForEach eval 'echo [{}] && GetPacmanConf -r {}'
+    ForEach eval 'echo [{}] && @GetConfig -r {}'
 }
 
 GetPacmanRepoServer(){
     #shellcheck disable=SC2016
-    ForEach eval 'GetPacmanConf -r {}' | grep "^Server" | ForEach eval 'ParseIniLine; printf "%s\n" ${VALUE}'
+    ForEach eval '@GetConfig -r {}' | grep "^Server" | ForEach eval 'ParseIniLine; printf "%s\n" ${VALUE}'
 }
 
 GetPacmanKeyringList(){
@@ -108,14 +108,14 @@ GetPacmanKernelPkg(){
 }
 
 PacmanIsRepoPkg(){
-    RunPacman -Slq | grep -qx "$(GetPacmanName <<< "$1")"
+    @RunPacman -Slq | grep -qx "$(@GetName <<< "$1")"
 }
 
 GetPacmanRepoPkgList(){
-    RunPacman -Slq "$@"
+    @RunPacman -Slq "$@"
 }
 
-GetPacmanName(){
+GetName(){
     cut -d "<" -f 1 | cut -d ">" -f 1 | cut -d "=" -f 1
 }
 

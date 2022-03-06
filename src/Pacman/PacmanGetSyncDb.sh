@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-ParsePacmanPkgFileName(){
+ParsePkgFileName(){
     local _Pkg="$1"
     local _PkgName _PkgVer _PkgRel _Arch _FileExt  
     local _PkgWithOutExt
@@ -37,41 +37,41 @@ ParsePacmanPkgFileName(){
 #
 # @exitcode 0 この関数は常に0を返します
 GetPacmanRepoListFromLocalDb(){
-    find "$(GetPacmanConf DBPath)/sync" -mindepth 1 -maxdepth 1 -type f | GetBaseName | sed "s|.db$||g"
+    find "$(@GetConfig DBPath)/sync" -mindepth 1 -maxdepth 1 -type f | GetBaseName | sed "s|.db$||g"
     return 0
 }
 
 # GetPacmanSyncDb <repo> 
 OpenPacmanSyncDb(){
     local _Dir _RepoDb
-    CreatePacmanDbTmpDir
-    _Dir="$(GetPacmanDbTmpDir)/sync/$1"
+    @CreateDbTmpDir
+    _Dir="$(@GetDbTmpDir)/sync/$1"
     mkdir -p "$_Dir"
-    _RepoDb="$(GetPacmanConf DBPath)/sync/$1.db"
+    _RepoDb="$(@GetConfig DBPath)/sync/$1.db"
     [[ -e "$_RepoDb" ]] || return 1
     tar -xzf "${_RepoDb}" -C "$_Dir" || return 1
 }
 
-GetPacmanDbTmpDir(){
+GetDbTmpDir(){
     echo "${TMPDIR-"/tmp"}/fasbashlib-pacman-db"
 }
 
-CreatePacmanDbTmpDir(){
-    mkdir -p "${TMPDIR-"/tmp"}/fasbashlib-pacman-db"
+CreateDbTmpDir(){
+    mkdir -p "$(@GetDbTmpDir)"
 }
 
-DeletePacmanDbTmpDir(){
-    rm -rf "${TMPDIR-"/tmp"}/fasbashlib-pacman-db"
+DeleteDbTmpDir(){
+    rm -rf "$(@GetDbTmpDir)"
 }
 
 IsPacmanSyncDbOpend(){
-    readarray -t _PkgDbList < <(find "$(GetPacmanDbTmpDir)/sync/$1" -mindepth 1 -maxdepth 1 -type d )
+    readarray -t _PkgDbList < <(find "$(@GetDbTmpDir)/sync/$1" -mindepth 1 -maxdepth 1 -type d )
     (( "${#_PkgDbList[@]}" > 0 )) && return 0
     return 1
 }
 
 OpenedPacmanSyncDbList(){
-    find "$(GetPacmanDbTmpDir)/sync/" -mindepth 1 -maxdepth 1 -type d 
+    find "$(@GetDbTmpDir)/sync/" -mindepth 1 -maxdepth 1 -type d 
 }
 
 # GetPacmanSyncDbDescPath <pkgname>
@@ -79,7 +79,7 @@ GetPacmanSyncDbDescPath(){
     local _repo
     _repo="$(pacman -Sp --print-format '%r' "$1")"
     { IsPacmanSyncDbOpend "$_repo" || OpenPacmanSyncDb "$_repo"; } || return 1
-    echo "$(GetPacmanDbTmpDir)/sync/$(pacman -Sp --print-format '%r/%n-%v' "$1")"
+    echo "$(@GetDbTmpDir)/sync/$(pacman -Sp --print-format '%r/%n-%v' "$1")"
 }
 
 # GetPacmanSyncDbDesc <pkgname>
@@ -91,7 +91,7 @@ GetPacmanSyncDbDesc(){
 }
 
 GetPacmanSyncAllDesc(){
-    find "$(GetPacmanDbTmpDir)" -mindepth 3 -maxdepth 3 -name "desc" -type f
+    find "$(@GetDbTmpDir)" -mindepth 3 -maxdepth 3 -name "desc" -type f
 }
 
 GetPacmanVirtualPkgList(){
