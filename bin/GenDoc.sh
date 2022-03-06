@@ -4,8 +4,31 @@ MainDir="$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)"
 LibDir="$MainDir/lib"
 SrcDir="$MainDir/src"
 BinDir="$MainDir/bin"
+DocsDir="$MainDir/docs"
 
-mkdir -p "$MainDir/docs"
+
+# Parse args
+while [[ -n "${1-""}" ]]; do
+    [[ "$1" == "-"* ]] || break
+    case "${1}" in
+        "-out")
+            [[ -n "${2-""}" ]] || { echo "No file is specified"; exit 1; }
+            DocsDir="${2}"
+            shift 2 || break
+            ;;
+        "--")
+            shift 1
+            break
+            ;;
+        *)
+            echo "Usage: $(basename "$0") [-out Dir]"
+            [[ "${1}" = "-h" ]] && exit 0
+            exit 1
+            ;;
+    esac
+done
+
+mkdir -p "${DocsDir}"
 
 if [[ ! -e "$LibDir/shdoc/shdoc" ]]; then
     echo "Error: Update git submodule" >&2
@@ -13,7 +36,7 @@ if [[ ! -e "$LibDir/shdoc/shdoc" ]]; then
 fi
 
 while read -r Lib; do
-    echo > "$MainDir/docs/${Lib}.md"
+    echo > "${DocsDir}/${Lib}.md"
     readarray -t FileList < <("$LibDir/GetMeta.sh" "$Lib" Files | tr "," "\n")
-    printf "${SrcDir}/$Lib/%s\n" "${FileList[@]}" | xargs cat | gawk -f "$LibDir/shdoc/shdoc" >> "$MainDir/docs/${Lib}.md"
+    printf "${SrcDir}/$Lib/%s\n" "${FileList[@]}" | xargs cat | gawk -f "$LibDir/shdoc/shdoc" >> "${DocsDir}/${Lib}.md"
 done < <("${BinDir}/GetLibList.sh" -q)
