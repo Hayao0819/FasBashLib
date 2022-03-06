@@ -1,0 +1,31 @@
+# Maintainer : Yamada Hayao <development@fascode.net>
+
+pkgname=fasbashlib-git
+pkgver=0.1.0
+pkgrel=1
+pkgdesc='A collection of small but awasome functions for Bash'
+arch=('any')
+url='https:/fascode.net'
+license=('MIT SUSHI-WARE')
+makedepends=("git")
+source=("git+https://github.com/Hayao0819/FasBashLib.git")
+sha256sums=('SKIP')
+
+package() {
+    # Create dir
+    mkdir -p "$pkgdir/usr/lib/fasbashlib/"
+    mkdir -p "$pkgDir/usr/share/doc/fasbashlib/"
+    mkdir -p "$pkgdir/usr/share/licenses/fasbashlib"
+
+    # install multifile
+    "${srcdir}/FasBashLib/bin/MuitlFile.sh" -out "$pkgdir/usr/lib/fasbashlib/"
+
+    # install singlefile
+    "${srcdir}/FasBashLib/bin/SingleFile.sh" -out "$pkgdir/usr/lib/fasbashlib.sh"
+
+    # install docs
+    "$srcdir/FasBashLib/bin/GenDoc.sh" -out "$pkgDir/usr/share/doc/fasbashlib/"
+
+    # install license
+    install -Dm 644 "$srcdir/FasBashLib/LICENSE.md" "$pkgdir/usr/share/licenses/fasbashlib/LICENSE.md"
+}
