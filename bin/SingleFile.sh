@@ -11,7 +11,6 @@ LibDir="$MainDir/lib"
 TmpFile="/tmp/fasbashlib.sh"
 OutFile="${MainDir}/fasbashlib.sh"
 NoRequire=false
-NameSpace=""
 Version="0.1.x-dev"
 
 # Parse args
@@ -27,10 +26,6 @@ while [[ -n "${1-""}" ]]; do
         "-noreq")
             NoRequire=true
             shift 1
-            ;;
-        "-ns")
-            NameSpace="$2"
-            shift 2
             ;;
         "-ver")
             Version="$2"
@@ -86,31 +81,15 @@ fi
 
 # Create temp file with header
 #cat "$StaticDir/head.sh" > "$TmpFile"
-sed "s|%VERSION%|${Version-""}|g; s|%LIBNAMESPACE%|${NameSpace-""}|g" "${StaticDir}/head.sh" > "$TmpFile"
+sed "s|%VERSION%|${Version-""}|g" "${StaticDir}/head.sh" > "$TmpFile"
 
 # 作成に失敗した場合に終了
 [[ -e "$TmpFile" ]] || exit 1
 
-# 警告
-if [[ -n "${NameSpace-""}" ]]; then
-    echo "WARNING!!" >&2
-    echo "NameSpace=$NameSpace に設定されました。関数の呼出には\"@\"か\"$NameSpace.\"が必要です。" >&2
-fi
-
 # ライブラリをサブシェル内で読み込んでファイルに追記
 while read -r Dir; do
     LibName="$(basename "$Dir")"
-    NoNameSpace="$("$LibDir/GetMeta.sh" "$LibName" "NoNameSpace")"
     LibPrefix="$("$LibDir/GetMeta.sh" "$LibName" "Prefix")"
-    FuncPrefix=()
-
-    if [[ -n "${NameSpace-""}" ]] && [[ ! "$NoNameSpace" = true ]]; then
-
-        FuncPrefix+=("${NameSpace}")
-    fi
-    if [[ -n "${LibPrefix-""}" ]]; then
-        FuncPrefix+=("$LibPrefix")
-    fi
 
     while read -r File; do
         echo "Load file: ${Dir}/${File}" >&2
@@ -121,17 +100,16 @@ while read -r Dir; do
             }
 
             while read -r Func; do
-                if [[ -z "${FuncPrefix[*]}" ]]; then
+                if [[ -z "${LibPrefix}" ]]; then
                     typeset -f "$Func" >> "$TmpFile"
                 else
-                    #echo "FuncName: $(printf "%s." "${FuncPrefix[@]}")${Func}" >&2
-                    typeset -f "$Func" | sed "1 s|${Func} ()|$(printf "%s." "${FuncPrefix[@]}")${Func} ()|g" >> "$TmpFile"
+                    typeset -f "$Func" | sed "1 s|${Func} ()|${LibPrefix}.${Func} ()|g" >> "$TmpFile"
                 fi
             done < <(typeset -F | cut -d " " -f 3)
         )
     done < <("$LibDir/GetMeta.sh" "${LibName}" "Files" | tr "," "\n")
 
-    unset NoNameSpace LibPrefix FuncPrefix LibName
+    unset LibPrefix FuncPrefix LibName
 done < <(
     LoadLibDir=()
     if (( "${#TargetLib[@]}" > 0 )); then
