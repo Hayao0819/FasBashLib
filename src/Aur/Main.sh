@@ -6,31 +6,31 @@
 #
 
 for _JsonKey in "Description" "FirstSubmitted" "ID" "LastModified" "Maintainer" "NumVotes" "PackageBase" "PackageBaseID" "Popularity" "URL" "URLPath" "Version"; do
-    eval "GetAur$_JsonKey(){ jq -r \".${_JsonKey}\";}"
+    eval "Get$_JsonKey(){ jq -r \".${_JsonKey}\";}"
 done
 
 for _JsonKey in "Depends" "Keywords" "License" "MakeDepends" "OptDepends"; do
-    eval "GetAur$_JsonKey(){ jq -r \".${_JsonKey}[]\";}"
+    eval "Get$_JsonKey(){ jq -r \".${_JsonKey}[]\";}"
 done
 
 # @internal
-GetAurSearch(){
+GetSearch(){
     local _Field="${1-"name-desc"}" _Keywords="$2" 
-    curl -sL "https://aur.archlinux.org/rpc?v=5&type=search&by=$_Field&arg=${_Keywords}" | CheckAurJson
+    curl -sL "https://aur.archlinux.org/rpc?v=5&type=search&by=$_Field&arg=${_Keywords}" | @CheckJson
 }
 
 # @internal
-GetRawAurInfo(){
+GetRawInfo(){
     curl -sL "https://aur.archlinux.org/rpc?v=5&type=info&arg=${1}"
 }
 
 # @internal
-GetAurInfo(){
-    GetRawAurInfo "$1" | CheckAurJson
+GetInfo(){
+    GetRawAurInfo "$1" | @CheckJson
 }
 
 # @internal
-CheckAurJson(){
+CheckJson(){
     local _ResultCount _Json _Type
     _Json="$(cat)"
     _ResultCount=$(jq -r ".resultcount" <<< "$_Json")
@@ -42,7 +42,7 @@ CheckAurJson(){
     return 1
 }
 
-IsAurPkgOutOfDated(){
+IsPkgOutOfDated(){
     local _Status
     _Status=$(jq -r ".OutOfDate")
     case "$_Status" in
@@ -56,7 +56,7 @@ IsAurPkgOutOfDated(){
     esac
 }
 
-AurInfoToBash(){
+InfoToBash(){
     local _Prefix="${AurPrefix-"{}"}" _Json
     local _ArrName _VarName
 
@@ -67,18 +67,18 @@ AurInfoToBash(){
         #shellcheck disable=SC2001
         _ArrName=$(sed "s|{}|$_JsonKey|g" <<< "$_Prefix")
         #echo "readarray -t '$_ArrName' < <(Get$_JsonKey <<< '$_Json')"
-        echo "${_ArrName}=($(Get$_JsonKey <<< "$_Json" | sed "s|^|\"|g; s|$|\" |g" | tr -d "\n"))"
+        echo "${_ArrName}=($(Aur.Get$_JsonKey <<< "$_Json" | sed "s|^|\"|g; s|$|\" |g" | tr -d "\n"))"
     done
 
     # 変数
     for _JsonKey in "Description" "FirstSubmitted" "ID" "LastModified" "Maintainer" "NumVotes" "PackageBase" "PackageBaseID" "Popularity" "URL" "URLPath" "Version"; do
         #shellcheck disable=SC2001
         _VarName=$(sed "s|{}|$_JsonKey|g" <<< "$_Prefix")
-        echo "${_VarName}=\"$(Get$_JsonKey <<< "$_Json")\""
+        echo "${_VarName}=\"$(Aur.Get$_JsonKey <<< "$_Json")\""
     done
 }
 
-GetAurAllDepends(){
+GetAllDepends(){
     #local _Json
     #_Json="$(cat)"
     #GetAurMakeDepends <<< "$_Json"
@@ -86,9 +86,9 @@ GetAurAllDepends(){
     jq -r ".Depends[], .MakeDepends[]"
 }
 
-GetAurRecursiveDepends(){
+GetRecursiveDepends(){
     local _Pkg 
-    _Pkg="$(GetPacmanName <<< "$1")"
+    _Pkg="$(Pm.GetName <<< "$1")"
     _AurDependList=()
 
     # Installed package list
@@ -112,7 +112,7 @@ GetAurRecursiveDepends(){
             
             _AurDependList+=("$_P")    
             _Resolve "$_P"
-        done < <(GetAurInfo "$1" | GetAurAllDepends | GetPacmanName)
+        done < <(@GetInfo "$1" | @GetAllDepends | Pm.GetName)
     }
     _Resolve "$_Pkg"
     PrintEvalArray _AurDependList
