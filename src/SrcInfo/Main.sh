@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 #! shellcheck disable=SC2034
 
-# ParseKeyValue Line
-# ParseKeyValue Key
-# ParseKeyValue Value
-ParseKeyValue(){
+# @Parse Line
+# @Parse Key
+# @Parse Value
+Parse(){
     local _Output="${1-""}"
     [[ -n "${_Output}" ]] || return 1
     shift 1
@@ -26,23 +26,22 @@ ParseKeyValue(){
     return 0
 }
 
-FormatSrcInfo(){
-    RemoveBlank | sed "/^$/d" | grep -v "^#" | ForEach eval "ParseKeyValue Line <<< \"{}\"" 
+Format(){
+    RemoveBlank | sed "/^$/d" | grep -v "^#" | ForEach eval "@Parse Line <<< \"{}\"" 
 }
 
-GetSrcInfoKeyList(){
-    FormatSrcInfo | cut -d "=" -f 1
+GetKeyList(){
+    @Format | cut -d "=" -f 1
 }
 
-GetSrcInfoSectionList(){
-    FormatSrcInfo | grep -e "^pkgbase" -e "^pkgname"
+GetSectionList(){
+    @Format | grep -e "^pkgbase" -e "^pkgname"
 }
 
-# GetSrcInfoPkgBase
-GetSrcInfoPkgBase(){
+GetPkgBase(){
     local _Line _Key _InSection=false
     while read -r _Line; do
-        _Key="$(ParseKeyValue Key <<< "$_Line")"
+        _Key="$(@Parse Key <<< "$_Line")"
         case "$_Key" in
             "pkgbase")
                 _InSection=true
@@ -56,17 +55,16 @@ GetSrcInfoPkgBase(){
                 fi
                 ;;
         esac
-    done < <(FormatSrcInfo)
+    done < <(@Format)
 }
 
-# GetSrcInfoPkgName <Name>
-GetSrcInfoPkgName(){
+GetPkgName(){
     local _Line _Key _InSection=false _TargetPkgName="$1"
     while read -r _Line; do
-        _Key="$(ParseKeyValue Key <<< "$_Line")"
+        _Key="$(@Parse Key <<< "$_Line")"
         case "$_Key" in
             "pkgname")
-                if [[ "$(ParseKeyValue Value <<< "$_Line")" = "$_TargetPkgName" ]]; then
+                if [[ "$(@Parse Value <<< "$_Line")" = "$_TargetPkgName" ]]; then
                     _InSection=true
                 else
                     _InSection=false
@@ -81,38 +79,38 @@ GetSrcInfoPkgName(){
                 fi
                 ;;
         esac
-    done < <(FormatSrcInfo)
+    done < <(@Format)
 }
 
-# GetSrcInfoValueInPkgBase <Key>
+# @GetValueInPkgBase <Key>
 # Support key: pkgver, pkgrel, epoch
-GetSrcInfoValueInPkgBase(){
+GetValueInPkgBase(){
     local _Line
     while read -r _Line; do
-        _Key="$(ParseKeyValue Key <<< "$_Line")"
+        _Key="$(@Parse Key <<< "$_Line")"
         case "$_Key" in
             "$1")
-                ParseKeyValue Value <<< "$_Line"
+                @Parse Value <<< "$_Line"
                 ;;
         esac
-    done < <(GetSrcInfoPkgBase)
+    done < <(@GetPkgBase)
 }
 
-#GetSrcInfoValueInPkgName <PkgName> <Key>
-GetSrcInfoValueInPkgName(){
+#@GetValueInPkgName <PkgName> <Key>
+GetValueInPkgName(){
     local _Line
     while read -r _Line; do
-        _Key="$(ParseKeyValue Key <<< "$_Line")"
+        _Key="$(@Parse Key <<< "$_Line")"
         case "$_Key" in
             "$2")
-                ParseKeyValue Value <<< "$_Line"
+                @Parse Value <<< "$_Line"
                 ;;
         esac
-    done < <(GetSrcInfoPkgName "$1")
+    done < <(@GetPkgName "$1")
 }
 
-# GetSrcInfoValue <Key> <PkgName> <Arch1,Arch2>
-GetSrcInfoValue(){
+# @GetValue <Key> <PkgName> <Arch1,Arch2>
+GetValue(){
     local _SrcInfo=()
     local _Output=()
     local _PkgBaseValues=("pkgver" "pkgrel" "epoch")
@@ -125,15 +123,15 @@ GetSrcInfoValue(){
     
     # PkgBase内で1度だけ指定可能
     ArrayIncludes _PkgBaseValues "$1" && {
-        PrintEvalArray _SrcInfo | GetSrcInfoValueInPkgBase "$1" 
+        PrintEvalArray _SrcInfo | @GetValueInPkgBase "$1" 
         return 0
     }
 
     # 全てのセクション内で1度もしくは複数指定可能
     [[ -n "${2-""}" ]] || return 1
     if ArrayIncludes _AllValues "$1" || ArrayIncludes _AllArrays "$1"; then
-        ArrayAppend _Output < <(PrintEvalArray _SrcInfo | GetSrcInfoValueInPkgBase "$1")
-        ArrayAppend _Output < <(PrintEvalArray _SrcInfo | GetSrcInfoValueInPkgName "$2" "$1")
+        ArrayAppend _Output < <(PrintEvalArray _SrcInfo | @GetValueInPkgBase "$1")
+        ArrayAppend _Output < <(PrintEvalArray _SrcInfo | @GetValueInPkgName "$2" "$1")
         PrintEvalArray _Output
         return 0
     fi
@@ -144,15 +142,15 @@ GetSrcInfoValue(){
     # 全てのセクション内で複数指定可能かつアーキテクチャごとの設定が可能
     local _Arch _ArchList
     if [[ -z "${3-""}" ]]; then
-        ArrayAppend _ArchList < <(PrintEvalArray _SrcInfo | GetSrcInfoValue arch "$2")
+        ArrayAppend _ArchList < <(PrintEvalArray _SrcInfo | @GetValue arch "$2")
     else
         ArrayAppend _ArchList < <(tr "," "\n" <<< "$3" | RemoveBlank)
     fi
-    ArrayAppend _Output < <(PrintEvalArray _SrcInfo | GetSrcInfoValueInPkgBase "$1")
-    ArrayAppend _Output < <(PrintEvalArray _SrcInfo | GetSrcInfoValueInPkgName "$2" "$1")
+    ArrayAppend _Output < <(PrintEvalArray _SrcInfo | @GetValueInPkgBase "$1")
+    ArrayAppend _Output < <(PrintEvalArray _SrcInfo | @GetValueInPkgName "$2" "$1")
     for _Arch in "${_ArchList[@]}"; do
-        ArrayAppend _Output < <(PrintEvalArray _SrcInfo | GetSrcInfoValueInPkgBase "$1_${_Arch}")
-        ArrayAppend _Output < <(PrintEvalArray _SrcInfo | GetSrcInfoValueInPkgName "$2" "$1_${_Arch}")
+        ArrayAppend _Output < <(PrintEvalArray _SrcInfo | @GetValueInPkgBase "$1_${_Arch}")
+        ArrayAppend _Output < <(PrintEvalArray _SrcInfo | @GetValueInPkgName "$2" "$1_${_Arch}")
     done
     PrintEvalArray _Output
     return 0
