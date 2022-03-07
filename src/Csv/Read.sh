@@ -5,7 +5,7 @@
 #    Csvファイルを解析してシェルスクリプト内で扱えるようにします
 #    `CSVDELIM 変数でCSVの区切りを制御できます`
 
-GetCsvColumnCnt(){
+GetClmCnt(){
     local _RawCsvLine=()
     local _Line _ClmCnt=0
     readarray -t _RawCsvLine
@@ -34,7 +34,7 @@ CsvToBashArray(){
     )
 
     # カラム数を取得
-    _ClmCnt=$(PrintArray "${_RawCsvLine[@]}" | GetCsvColumnCnt)
+    _ClmCnt=$(PrintArray "${_RawCsvLine[@]}" | @GetClmCnt)
     #echo $#
 
     # Prefixに従って配列を生成
