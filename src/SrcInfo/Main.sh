@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#! shellcheck disable=SC2034
+#shellcheck disable=SC2034
 
 # @Parse Line
 # @Parse Key
