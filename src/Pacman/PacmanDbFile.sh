@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-#shellcheck disable=SC2034
 
 GetDbSectionList(){
     grep -E "^%.*%$"
@@ -11,7 +10,7 @@ GetDbNextSection(){
 
 GetPacmanDbSection(){
     readarray -t _Stdin
-    PrintEvalArray _Stdin | sed -ne "/^%$1%$/,/^%$(PrintEvalArray _Stdin | @GetDbNextSection "$1")%$/p" | sed "1d; \$d" # | RemoveBlank
+    PrintArray "${_Stdin[@]}" | sed -ne "/^%$1%$/,/^%$(PrintEvalArray _Stdin | @GetDbNextSection "$1")%$/p" | sed "1d; \$d" # | RemoveBlank
 }
 
 
