@@ -7,6 +7,22 @@ SrcDir="$MainDir/src"
 BinDir="$MainDir/bin"
 TestsDir="$MainDir/tests"
 
+# Parse args
+while [[ -n "${1-""}" ]]; do
+    [[ "$1" == "-"* ]] || break
+    case "${1}" in
+        "--")
+            shift 1
+            break
+            ;;
+        *)
+            echo "Usage: $(basename "$0") --"
+            [[ "${1}" = "-h" ]] && exit 0
+            exit 1
+            ;;
+    esac
+done
+
 # Get library list
 readarray -t LibList < <("$BinDir/GetLibList.sh" -q)
 
