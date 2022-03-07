@@ -14,6 +14,7 @@ OutFile="${MainDir}/fasbashlib.sh"
 NoRequire=false
 Version="0.1.x-dev"
 LoadedFiles=()
+Debug=false
 
 # Parse args
 NoArg=()
@@ -32,6 +33,10 @@ while [[ -n "${1-""}" ]]; do
         "-ver")
             Version="$2"
             shift 2
+            ;;
+        -debug)
+            Debug=true
+            shift 1
             ;;
         "--")
             shift 1
@@ -76,6 +81,7 @@ unset Func
 # Solve require
 if [[ "$NoRequire" = false ]]; then
     for Lib in "${TargetLib[@]}"; do
+        "${Debug}" && echo "Solving require of $Lib" >&2
         readarray -O "${#RequireLib[@]}" -t RequireLib < <("$LibDir/SolveRequire.sh" "$Lib" | grep -xv "$Lib")
     done
     unset Lib
@@ -115,6 +121,7 @@ while read -r Dir; do
                 if [[ -z "${LibPrefix}" ]]; then
                     typeset -f "$Func" >> "$TmpLibFile"
                 else
+                    "${Debug}" && echo "${Func}を${LibPrefix}.${Func}に置き換え" >&2
                     typeset -f "$Func" | sed "1 s|${Func} ()|${LibPrefix}.${Func} ()|g" >> "$TmpLibFile"
                 fi
             done < <(typeset -F | cut -d " " -f 3)
@@ -122,14 +129,18 @@ while read -r Dir; do
     done < <("$LibDir/GetMeta.sh" "${LibName}" "Files" | tr "," "\n")
 
     # 一時ファイルを元に関数内のコードを置き換え
-    (
-        source "${TmpLibFile}" 
-        while read -r Func; do
-            sed -i "" "s|@${Func}|${LibPrefix}.${Func}|g" "$TmpLibFile"
-        done < <(typeset -F | cut -d " " -f 3 | sed "s|^${LibPrefix}.||g")
-        cat "$TmpLibFile" >> "$TmpFile"
-    ) 
-
+    if [[ -z "${LibPrefix-""}" ]]; then
+        "${Debug}" && echo "プレフィックスが設定されていないため、${LibName}の置き換えをスキップ" >&2
+    else
+        (
+            source "${TmpLibFile}" 
+            while read -r Func; do
+                "${Debug}" && echo "ソースコード内の@${Func}を${LibPrefix}.${Func}に置き換え" >&2
+                sed -i "" "s|@${Func}|${LibPrefix}\.${Func}|g" "$TmpLibFile"
+            done < <(typeset -F | cut -d " " -f 3 | sed "s|^${LibPrefix}\.||g")
+        ) 
+    fi
+    cat "$TmpLibFile" >> "$TmpFile"
     unset LibPrefix FuncPrefix LibName
 done < <(
     LoadLibDir=()
