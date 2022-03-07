@@ -3,31 +3,31 @@
 
 GetCacheID(){
     if [[ -z "${SCRIPTCACHEID-""}" ]]; then
-        CreateCacheDir > /dev/null
+        @CreateDir > /dev/null
     fi
     echo "$SCRIPTCACHEID"
 }
 
-GetCacheDir(){
-    echo "${TMPDIR-"/tmp"}/$(GetCacheID)"
+GetDir(){
+    echo "${TMPDIR-"/tmp"}/$(@GetCacheID)"
 }
 
-# ExistCache <Name>
+# Exist <Name>
 # 0: exist
 # 1: not exist
 # 2: exist but too old
-ExistCache(){
+Exist(){
     local _File
-    _File="$(CreateCacheDir)/$1"
+    _File="$(@CreateDir)/$1"
     [[ -e "$_File" ]] || return 1
-    (( "$(GetTimeDiffFromLastUpdate "$_File")" > "${KEEPCACHESEC-"86400"}" )) && return 2
+    (( "$(@GetTimeDiffFromLastUpdate "$_File")" > "${KEEPCACHESEC-"86400"}" )) && return 2
     return 0
 }
 
 GetTimeDiffFromLastUpdate(){
     local _Now _Last
     _Now="$(date "+%s")"
-    _Last="$(GetFileLastUpdate "$1")"
+    _Last="$(@GetFileLastUpdate "$1")"
     echo "$(( _Now - _Last ))"
     return 0
 }
@@ -49,6 +49,6 @@ GetFileLastUpdate(){
 
 # GetCache Name
 GetCache(){
-    #ExistCache "$1" || return 1
-    cat "$(GetCacheDir)/$1" 2> /dev/null || return 1
+    #@Exist "$1" || return 1
+    cat "$(@GetDir)/$1" 2> /dev/null || return 1
 }
