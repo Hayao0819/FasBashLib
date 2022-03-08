@@ -48,10 +48,12 @@ while read -r Dir; do
             while read -r Func; do
                 FuncTestDir="$TestsDir/$LibName/${Func}/"
                 mkdir -p "$FuncTestDir"
-                TestFiles=("Run.sh" "Result.txt")
-                for _File in "${TestFiles[@]}"; do
-                    touch "$FuncTestDir/$_File"
-                done
+                #TestFiles=("Run.sh" "Result.txt")
+                #for _File in "${TestFiles[@]}"; do
+                #    touch "$FuncTestDir/$_File"
+                #done
+                [[ -e "$FuncTestDir/Run.sh"    ]] || echo "# shellcheck disable=SC2148,SC2034" >  "$FuncTestDir/Run.sh"
+                [[ -e "$FuncTestDir/Result.sh" ]] || echo > "$FuncTestDir/Result.sh"
             done < <(typeset -F | cut -d " " -f 3)
         )
     done < <("$LibDir/GetMeta.sh" "${LibName}" "Files" | tr "," "\n")
