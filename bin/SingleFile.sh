@@ -102,7 +102,7 @@ while read -r Dir; do
 
     while read -r File; do
         printf "%s\n" "${LoadedFiles[@]}" | grep -x "${Dir}/${File}" && {
-            echo "Already loaded $Dir/$File" >&2
+            "$Debug" && echo "Already loaded $Dir/$File" >&2
             continue
         }
 
