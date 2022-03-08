@@ -4,8 +4,6 @@
 set -Eeu
 
 MainDir="$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)"
-LibDir="$MainDir/lib"
-SrcDir="$MainDir/src"
 BinDir="$MainDir/bin"
 TestsDir="$MainDir/tests"
 
@@ -14,8 +12,15 @@ if (( "${#LibToRunTest[@]}" < 1 )); then
     readarray -t LibToRunTest < <("$BinDir/GetLibList.sh" -q)
 fi
 
+
+MainLibFile="${TMPDIR-"/tmp"}/fasbashlib.sh"
+ActualResultTmp="$(mktemp -t "fasbashlib.XXXXX")"
+
 # Build fasbashlib
-"$BinDir/SingleFile.sh" -out "${TMPDIR-"/tmp"}/fasbashlib.sh" "${LibToRunTest[@]}"
+echo "ライブラリをビルドしています..." >&2
+"$BinDir/SingleFile.sh" -out "$MainLibFile" "${LibToRunTest[@]}" 1> /dev/null 2>&1
+
+
 
 for Lib in "${LibToRunTest[@]}"; do
     while read -r FuncToTest; do 
@@ -38,9 +43,21 @@ for Lib in "${LibToRunTest[@]}"; do
                 echo "失敗"
                 ;;
             esac < <(
-                source "${TMPDIR-"/tmp"}/fasbashlib.sh"
+                # Initilize
+                echo > "${ActualResultTmp}"
+
+                # run
+                sed "s|%LIBPATH%|${MainLibFile}|g" "$MainDir/static/test-head.sh" | \
+                    cat "/dev/stdin" "$TestsDir/$Lib/$FuncToTest/Run.sh" | bash -o pipefail -o errtrace > "${ActualResultTmp}" || {
+                        echo "FAILED"
+                        exit 1
+                    }
+                
+                # Get result
                 readarray -t ExpectedResult < "$TestsDir/$Lib/$FuncToTest/Result.txt"
-                readarray -t ActualResult < <(source "$TestsDir/$Lib/$FuncToTest/Run.sh" )
+                readarray -t ActualResult < "${ActualResultTmp}"
+
+                # check
                 if [[ -z "${ExpectedResult[*]}" ]] || [[ -z "${ActualResult[*]}" ]]; then
                     echo "EMPTY"
                 elif [[ "${ExpectedResult[*]}" = "${ActualResult[*]}" ]]; then
@@ -49,5 +66,5 @@ for Lib in "${LibToRunTest[@]}"; do
                     echo "FAILED"
                 fi
             )
-    done < <(find "$TestsDir/$Lib/" -mindepth 1 -maxdepth 1 -type d -print0 | xargs -0 -L 1 basename )
+    done < <(find "$TestsDir/$Lib/" -mindepth 1 -maxdepth 1 -type d -print0  2> /dev/null | xargs -0 -L 1 basename )
 done

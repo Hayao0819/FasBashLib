@@ -2,10 +2,10 @@
 # shellcheck disable=SC1090,SC1091
 
 set -Eeu
+set -o pipefail
+set -o errtrace
 
 MainDir="$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)"
-LibDir="$MainDir/lib"
-SrcDir="$MainDir/src"
 BinDir="$MainDir/bin"
 TestsDir="$MainDir/tests"
 
@@ -35,16 +35,19 @@ Lib="$1" FuncToTest="$2"
 
 
 # Build fasbashlib
-"$BinDir/SingleFile.sh" -out "${TMPDIR-"/tmp"}/fasbashlib.sh" "${Lib}" 1> /dev/null 2>&1
+MainLibFile="${TMPDIR-"/tmp"}/fasbashlib.sh"
+"$BinDir/SingleFile.sh" -out "$MainLibFile" "${Lib}" 1> /dev/null 2>&1
 
 if [[ ! -e "$TestsDir/$Lib/$FuncToTest/Run.sh" ]]; then
     echo "テストに必要なファイルが見つかりませんでした" >&2
     exit 1
 fi
 
-(
-    source "${TMPDIR-"/tmp"}/fasbashlib.sh" 1> /dev/null 2>&1
-    source "$TestsDir/$Lib/$FuncToTest/Run.sh"
-) > "$OutputFile"
+
+sed "s|%LIBPATH%|${MainLibFile}|g" "$MainDir/static/test-head.sh" | \
+    cat "/dev/stdin" "$TestsDir/$Lib/$FuncToTest/Run.sh" | bash -x -v -o pipefail -o errtrace > "${OutputFile}" || { 
+    echo "異常終了しました (コード: $?)"
+    exit 1
+}
 
 echo "${OutputFile} を作成しました"
