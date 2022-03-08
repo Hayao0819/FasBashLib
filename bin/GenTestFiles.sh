@@ -53,7 +53,7 @@ while read -r Dir; do
                 #    touch "$FuncTestDir/$_File"
                 #done
                 [[ -e "$FuncTestDir/Run.sh"    ]] || echo "# shellcheck disable=SC2148,SC2034" >  "$FuncTestDir/Run.sh"
-                [[ -e "$FuncTestDir/Result.sh" ]] || echo > "$FuncTestDir/Result.sh"
+                [[ -e "$FuncTestDir/Result.txt" ]] || echo > "$FuncTestDir/Result.txt"
             done < <(typeset -F | cut -d " " -f 3)
         )
     done < <("$LibDir/GetMeta.sh" "${LibName}" "Files" | tr "," "\n")
