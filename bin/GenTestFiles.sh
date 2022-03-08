@@ -16,7 +16,7 @@ while [[ -n "${1-""}" ]]; do
             break
             ;;
         *)
-            echo "Usage: $(basename "$0") --"
+            echo "Usage: $(basename "$0") -- [Lib1] [Lib2] ..."
             [[ "${1}" = "-h" ]] && exit 0
             exit 1
             ;;
@@ -24,7 +24,11 @@ while [[ -n "${1-""}" ]]; do
 done
 
 # Get library list
-readarray -t LibList < <("$BinDir/GetLibList.sh" -q)
+if (( "${#}" > 0 )); then
+    LibList=("$@")
+else
+    readarray -t LibList < <("$BinDir/GetLibList.sh" -q)
+fi
 
 # Create lib dirs
 printf "%s\n" "${LibList[@]}" | xargs -I{} mkdir -p "$TestsDir/{}"
