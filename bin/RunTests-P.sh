@@ -1,0 +1,85 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC1090,SC1091
+
+set -Eeu
+
+MainDir="$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)"
+BinDir="$MainDir/bin"
+TestsDir="$MainDir/tests"
+
+LibToRunTest=("${@}")
+if (( "${#LibToRunTest[@]}" < 1 )); then
+    readarray -t LibToRunTest < <("$BinDir/GetLibList.sh" -q)
+fi
+
+MainLibFile="${TMPDIR-"/tmp"}/fasbashlib.sh"
+ResultFile="${TMPDIR-"/tmp"}/fasbashlib-result.txt"
+
+
+# Build fasbashlib
+echo "ライブラリをビルドしています..." >&2
+"$BinDir/SingleFile.sh" -out "$MainLibFile" "${LibToRunTest[@]}" 1> /dev/null 2>&1
+
+# RunFuncTest <Lib> <Func>
+# exit 0: 正常に終了。
+# exit 1: 必要なファイルが見つかりません。
+# exit 2: ファイルが空です。
+# exit 3: 終了コードが異常です。
+RunFuncTest(){
+    local ActualResultTmp
+    ActualResultTmp="$(mktemp -t "fasbashlib.result.XXXXX")"
+
+    if [[ ! -e "$TestsDir/$Lib/$FuncToTest/Result.txt" ]] || [[ ! -e "$TestsDir/$Lib/$FuncToTest/Run.sh" ]]; then
+        echo "テストに必要なファイルが見つかりませんでした" >&2
+        return 1
+    fi
+
+    echo "${1}の${2}をテスト中..." >&2
+
+    # Initilize
+    echo > "${ActualResultTmp}"
+
+    # run
+    sed "s|%LIBPATH%|${MainLibFile}|g" "$MainDir/static/test-head.sh" | \
+        cat "/dev/stdin" "$TestsDir/$1/$2/Run.sh" | bash -o pipefail -o errtrace > "${ActualResultTmp}" || {
+            return 1
+        }
+    
+    # Get result
+    readarray -t ExpectedResult < "$TestsDir/$1/$2/Result.txt"
+    readarray -t ActualResult < "${ActualResultTmp}"
+    rm -rf "${ActualResultTmp}"
+
+    # check
+    if [[ -z "${ExpectedResult[*]}" ]] || [[ -z "${ActualResult[*]}" ]]; then
+        return 2
+    elif [[ "${ExpectedResult[*]}" = "${ActualResult[*]}" ]]; then
+        return 0
+    else
+        return 3
+    fi
+}
+
+
+for Lib in "${LibToRunTest[@]}"; do
+    while read -r FuncToTest; do 
+        {
+            RunFuncTest "$Lib" "$FuncToTest"
+            case "$?" in
+                "1")
+                    echo "$Lib.$FuncToTest=No File" >> "${ResultFile}"
+                    ;;
+                "2")
+                    echo "$Lib.$FuncToTest=Empty" >> "${ResultFile}"
+                    ;;
+                "3")
+                    echo "$Lib.$FuncToTest=FAILED" >> "${ResultFile}"
+                    ;;
+            esac
+        } &
+    done < <(find "$TestsDir/$Lib/" -mindepth 1 -maxdepth 1 -type d -print0  2> /dev/null | xargs -0 -L 1 basename )
+done
+
+wait
+
+cat "$ResultFile"
