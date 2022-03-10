@@ -24,7 +24,7 @@ Common(){
 #
 # @exitcode 0 This script return only 0
 Err(){
-    @Common "Error: ${*}" >&2
+    @Common "Error:" "${*}" >&2
 }
 
 # @description Output info to stdout
@@ -35,7 +35,7 @@ Err(){
 #
 # @exitcode 0 This script return only 0
 Info(){
-    @Common " Info: ${*}" >&1
+    @Common " Info:" "${*}" >&1
 }
 
 # @description Output warning to stderr
@@ -46,7 +46,7 @@ Info(){
 #
 # @exitcode 0 This script return only 0
 Warn(){
-    @Common " Warn: ${*}" >&2
+    @Common " Warn:" "${*}" >&2
 }
 
 # @description Output debug message to stderr
@@ -57,6 +57,6 @@ Warn(){
 #
 # @exitcode 0 This script return only 0
 Debug(){
-    @Common "Debug: ${*}" >&2
+    @Common "Debug:" "${*}" >&2
 }
 
