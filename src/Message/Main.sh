@@ -6,9 +6,12 @@
 #
 #    メッセージをラベルと共に適切な場所へ出力します。例えば、Error メッセージはstdoutへ出力されます。
 
+# @internal
 Common(){
-    local i
+    local i l="$1"
+    shift 1 || return 1
     for i in $(seq "$(echo -e "${*}" | wc -l)"); do
+        echo -n "$l "
         echo -e "${*}" | head -n "${i}" | tail -n 1
     done
 }
