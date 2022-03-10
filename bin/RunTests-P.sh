@@ -5,6 +5,7 @@ set -Eeu
 
 MainDir="$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)"
 BinDir="$MainDir/bin"
+LibDir="$MainDir/lib"
 TestsDir="$MainDir/tests"
 
 LibToRunTest=("${@}")
@@ -62,18 +63,29 @@ RunFuncTest(){
 
 
 for Lib in "${LibToRunTest[@]}"; do
+    while read -r Cmd; do
+        {
+            which "$Cmd" 1> /dev/null 2>&1 || {
+                echo -e "$Cmd is not found in PATH. Cannot test ${Lib}" >&2
+                echo "Lib: $Lib=Missing depends($Cmd)" >> "${ResultFile}"
+            }
+        } &
+    done < <("${LibDir}/GetMeta.sh" "$Lib" "Depends" | tr "," "\n")
     while read -r FuncToTest; do 
         {
             RunFuncTest "$Lib" "$FuncToTest"
             case "$?" in
+                "0")
+                    echo "Function: $Lib.$FuncToTest=Passed" >> "${ResultFile}"
+                    ;;
                 "1")
-                    echo "$Lib.$FuncToTest=No File" >> "${ResultFile}"
+                    echo "Function: $Lib.$FuncToTest=No File" >> "${ResultFile}"
                     ;;
                 "2")
-                    echo "$Lib.$FuncToTest=Empty" >> "${ResultFile}"
+                    echo "Function: $Lib.$FuncToTest=Empty" >> "${ResultFile}"
                     ;;
                 "3")
-                    echo "$Lib.$FuncToTest=FAILED" >> "${ResultFile}"
+                    echo "Function: $Lib.$FuncToTest=FAILED" >> "${ResultFile}"
                     ;;
             esac
         } &
@@ -82,4 +94,6 @@ done
 
 wait
 
+echo "=====TEST LOG====="
 cat "$ResultFile"
+rm -rf "$ResultFile"

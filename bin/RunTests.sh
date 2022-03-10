@@ -5,6 +5,7 @@ set -Eeu
 
 MainDir="$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)"
 BinDir="$MainDir/bin"
+LibDir="$MainDir/lib"
 TestsDir="$MainDir/tests"
 
 LibToRunTest=("${@}")
@@ -23,6 +24,15 @@ echo "ライブラリをビルドしています..." >&2
 
 
 for Lib in "${LibToRunTest[@]}"; do
+
+    while read -r Cmd; do
+        which "$Cmd" 1> /dev/null 2>&1 || {
+            echo -e "$Cmd is not found in PATH. Cannot test ${Lib}" >&2
+            exit 1
+        }
+    done < <("${LibDir}/GetMeta.sh" "$Lib" "Depends" | tr "," "\n")
+
+
     while read -r FuncToTest; do 
         echo -n "${Lib}の${FuncToTest}をテスト中..." >&2
 
