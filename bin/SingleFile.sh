@@ -101,7 +101,7 @@ while read -r Dir; do
     TmpLibFile="$TmpDir/$LibName.sh"
 
     while read -r File; do
-        printf "%s\n" "${LoadedFiles[@]}" | grep -x "${Dir}/${File}" && {
+        printf "%s\n" "${LoadedFiles[@]}" | grep -qx "${Dir}/${File}" && {
             "$Debug" && echo "Already loaded $Dir/$File" >&2
             continue
         }
