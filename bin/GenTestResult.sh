@@ -8,6 +8,7 @@ set -o errtrace
 MainDir="$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)"
 BinDir="$MainDir/bin"
 TestsDir="$MainDir/tests"
+BashDebug=()
 
 # Parse args
 while [[ -n "${1-""}" ]]; do
@@ -16,6 +17,14 @@ while [[ -n "${1-""}" ]]; do
         "-r")
             echo "Result.txtに書き込まず結果を標準出力します" >&2
             OutputFile="/dev/stdout"
+            shift 1
+            ;;
+        "-debug")
+            BashDebug+=("-x")
+            shift 1
+            ;;
+        "-verbose")
+            BashDebug+=("-v")
             shift 1
             ;;
         "--")
@@ -45,9 +54,11 @@ fi
 
 
 sed "s|%LIBPATH%|${MainLibFile}|g" "$MainDir/static/test-head.sh" | \
-    cat "/dev/stdin" "$TestsDir/$Lib/$FuncToTest/Run.sh" | bash -x -v -o pipefail -o errtrace > "${OutputFile}" || { 
+    cat "/dev/stdin" "$TestsDir/$Lib/$FuncToTest/Run.sh" | bash "${BashDebug[@]}" -o pipefail -o errtrace > "${OutputFile}" || { 
     echo "異常終了しました (コード: $?)"
     exit 1
 }
 
-echo "${OutputFile} を作成しました"
+if ! [[ "${OutputFile}" = "/dev/stdout" ]]; then
+    echo "${OutputFile} を作成しました"
+fi
