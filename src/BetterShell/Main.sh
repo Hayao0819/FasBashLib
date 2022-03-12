@@ -118,6 +118,7 @@ ArrayIncludes(){
 # RandomString <Num>
 RandomString(){
     base64 < "/dev/random" | fold -w "$1" | head -n 1
+    return 0
 }
 
 #ArrayIndex <ArrayName>
