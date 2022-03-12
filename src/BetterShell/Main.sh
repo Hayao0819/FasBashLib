@@ -139,9 +139,10 @@ GetLastSplitString(){
 
 # GetArrayIndex <text>
 GetArrayIndex(){
-    local n
-    n=$(grep -x -n "$1" | cut -d ":" -f 1)
-    test -n "${n-""}" || return 1
-    echo "$(( n - 1 ))"
+    local n=()
+    # shellcheck disable=SC2016
+    readarray -t n < <(grep -x -n "$1" | cut -d ":" -f 1 | ForEach eval echo '$(( {} - 1 ))')
+    (( "${#n[@]}" >= 1 )) || return 1
+    PrintArray "${n[@]}"
     return 0
 }
