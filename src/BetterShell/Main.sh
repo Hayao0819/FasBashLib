@@ -137,3 +137,11 @@ GetLastSplitString(){
     rev <<< "$2" | cut -d "$1" -f 1 | rev
 }
 
+# GetArrayIndex <text>
+GetArrayIndex(){
+    local n
+    n=$(grep -x -n "$1" | cut -d ":" -f 1)
+    test -n "${n-""}" || return 1
+    echo "$(( n - 1 ))"
+    return 0
+}
