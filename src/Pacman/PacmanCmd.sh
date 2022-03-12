@@ -26,14 +26,14 @@ GetConfig(){
 
 # @description パッケージがインストール済みかどうかを確認します。
 #
-# @example CheckPacmanPkg yay bash base
+# @example Pm.CheckPkg yay bash base
 #
 # @arg LONG  GNU getopt's long option
 # @arg SHORT GNU getopt's short option
 #
 # @exitcode 0 指定された全てのパッケージがインストールされています
 # @exitcode 1 指定されたどれかのパッケージがシステム上に見つかりませんでした
-CheckPacmanPkg(){
+CheckPkg(){
     local p
     for p in "$@"; do
         @RunPacman -Qq "$p" > /dev/null 2>&1 || return 1
