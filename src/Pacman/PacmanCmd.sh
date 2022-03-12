@@ -107,11 +107,11 @@ GetPacmanKernelPkg(){
     echo "there is nothing"
 }
 
-PacmanIsRepoPkg(){
+IsRepoPkg(){
     @RunPacman -Slq | grep -qx "$(@GetName <<< "$1")"
 }
 
-GetPacmanRepoPkgList(){
+GetRepoPkgList(){
     @RunPacman -Slq "$@"
 }
 
@@ -119,6 +119,6 @@ GetName(){
     cut -d "<" -f 1 | cut -d ">" -f 1 | cut -d "=" -f 1
 }
 
-GetPacmanRepoVer(){
+GetRepoVer(){
     pacman -Sp --print-format '%v' "$1"
 }
