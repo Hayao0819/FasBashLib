@@ -94,6 +94,6 @@ done
 
 wait
 
-echo "=====TEST LOG====="
+echo "=====TEST LOG=====" >&2
 cat "$ResultFile"
 rm -rf "$ResultFile"
