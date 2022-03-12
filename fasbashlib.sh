@@ -637,29 +637,29 @@ Pm.GetPacmanRepoListFromConf ()
 { 
     Pm.GetConfig --repo-list
 }
-Pm.GetPacmanRepoPkgList () 
-{ 
-    Pm.RunPacman -Slq "$@"
-}
 Pm.GetPacmanRepoServer () 
 { 
     ForEach eval 'Pm.GetConfig -r {}' | grep "^Server" | ForEach eval 'ParseIniLine; printf "%s\n" ${VALUE}'
-}
-Pm.GetPacmanRepoVer () 
-{ 
-    pacman -Sp --print-format '%v' "$1"
 }
 Pm.GetPacmanRoot () 
 { 
     Pm.GetConfig RootDir
 }
+Pm.GetRepoPkgList () 
+{ 
+    Pm.RunPacman -Slq "$@"
+}
+Pm.GetRepoVer () 
+{ 
+    pacman -Sp --print-format '%v' "$1"
+}
+Pm.IsRepoPkg () 
+{ 
+    Pm.RunPacman -Slq | grep -qx "$(Pm.GetName <<< "$1")"
+}
 Pm.PacmanGpg () 
 { 
     gpg --homedir "$(Pm.GetConfig GPGDir)" "$@"
-}
-Pm.PacmanIsRepoPkg () 
-{ 
-    Pm.RunPacman -Slq | grep -qx "$(Pm.GetName <<< "$1")"
 }
 Pm.RunPacman () 
 { 
