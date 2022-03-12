@@ -134,9 +134,21 @@ while read -r Dir; do
     else
         (
             source "${TmpLibFile}" 
+            SedArgs=()
             while read -r Func; do
                 "${Debug}" && echo "ソースコード内の@${Func}を${LibPrefix}.${Func}に置き換え" >&2
-                sed -i "" "s|@${Func}|${LibPrefix}\.${Func}|g" "$TmpLibFile"
+                # sed の共通コマンド
+                SedArgs=("s|@${Func}|${LibPrefix}\.${Func}|g" "$TmpLibFile")
+
+                # BSDかGNUか
+                if sed -h 2>&1 | grep -q "GNU"; then
+                    SedArgs=("-i" "${SedArgs[@]}")
+                else
+                    SedArgs=("-i" "" "${SedArgs[@]}")
+                fi
+
+                sed "${SedArgs[@]}"
+                unset SedArgs
             done < <(typeset -F | cut -d " " -f 3 | sed "s|^${LibPrefix}\.||g")
         ) 
     fi
