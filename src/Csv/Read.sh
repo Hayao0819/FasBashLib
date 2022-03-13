@@ -19,9 +19,9 @@ GetClmCnt(){
     return 0
 }
 
-# CsvToBashArray Array1 Array2 ...
+# Csv.ToBashArray Array1 Array2 ...
 # ArrayPrefix="{}"
-CsvToBashArray(){
+ToBashArray(){
     # 変数、並列を定義
     local _RawCsvLine=() _Line _ClmCnt=0
     local ArrayPrefix="${ArrayPrefix-"{}"}"
@@ -47,8 +47,8 @@ CsvToBashArray(){
     done < <(seq 1 "$#")
 }
 
-# getCsvClm <num>
-GetCsvClm(){
+# Csv.GetClm <num>
+GetClm(){
     # shellcheck disable=SC2031
     grep -v "^#" | sed "/^$/d" | cut -d "${CSVDELIM-","}" -f "$1"
 }
