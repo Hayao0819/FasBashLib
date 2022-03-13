@@ -582,7 +582,7 @@ Pm.CheckPkg ()
     local p;
     for p in "$@";
     do
-        Pm.RunPacman -Qq "$p" > /dev/null 2>&1 || return 1;
+        Pm.Run -Qq "$p" > /dev/null 2>&1 || return 1;
     done;
     return 0
 }
@@ -590,15 +590,27 @@ Pm.GetConfig ()
 { 
     LANG=C pacman-conf --config="${PACMAN_CONF-"/etc/pacman.conf"}" "$@"
 }
-Pm.GetName () 
-{ 
-    cut -d "<" -f 1 | cut -d ">" -f 1 | cut -d "=" -f 1
-}
-Pm.GetPacmanInstalledPkgVer () 
+Pm.GetInstalledPkgVer () 
 { 
     ForEach pacman -Qq "{}" | cut -d " " -f 2;
     PrintArray "${PIPESTATUS[@]}" | grep -qx "1" && return 1;
     return 0
+}
+Pm.GetKeyringList () 
+{ 
+    find "$(@GetnKeyringDir)" -name "*.gpg" | GetBaseName | RemoveFileExt
+}
+Pm.GetLatestPkgVer () 
+{ 
+    local _LANG="${LANG-""}";
+    export LANG=C;
+    ForEach Pm.Run -Si "{}" | grep "^Version" | cut -d ":" -f 2 | RemoveBlank;
+    [[ -n "$_LANG" ]] && export LANG="$_LANG";
+    return 0
+}
+Pm.GetName () 
+{ 
+    cut -d "<" -f 1 | cut -d ">" -f 1 | cut -d "=" -f 1
 }
 Pm.GetPacmanKernelPkg () 
 { 
@@ -609,7 +621,7 @@ Pm.GetPacmanKeyringDir ()
     local _KeyringDir="";
     _KeyringDir="$(LANG=C pacman-key -h | RemoveBlank | grep -A 1 -- "^--populate" | tail -n 1 | cut -d "/" -f 2- | sed "s|'$||g")";
     : "${_KeyringDir="usr/share/pacman/keyrings"}";
-    _KeyringDir="$(GetPacmanRoot)/$_KeyringDir";
+    _KeyringDir="$(Pm.GetRoot)/$_KeyringDir";
     _KeyringDir="$(sed -E "s|/+|/|g" <<< "$_KeyringDir")";
     if [[ -e "$_KeyringDir" ]]; then
         Readlinkf "$_KeyringDir";
@@ -617,55 +629,43 @@ Pm.GetPacmanKeyringDir ()
         echo "$_KeyringDir";
     fi
 }
-Pm.GetPacmanKeyringList () 
-{ 
-    find "$(GetPacmanKeyringDir)" -name "*.gpg" | GetBaseName | RemoveFileExt
-}
-Pm.GetPacmanLatestPkgVer () 
-{ 
-    local _LANG="${LANG-""}";
-    export LANG=C;
-    ForEach Pm.RunPacman -Si "{}" | grep "^Version" | cut -d ":" -f 2 | RemoveBlank;
-    [[ -n "$_LANG" ]] && export LANG="$_LANG";
-    return 0
-}
-Pm.GetPacmanRepoConf () 
+Pm.GetRepoConf () 
 { 
     ForEach eval 'echo [{}] && Pm.GetConfig -r {}'
 }
-Pm.GetPacmanRepoListFromConf () 
+Pm.GetRepoListFromConf () 
 { 
     Pm.GetConfig --repo-list
 }
-Pm.GetPacmanRepoServer () 
+Pm.GetRepoPkgList () 
+{ 
+    Pm.Run -Slq "$@"
+}
+Pm.GetRepoServer () 
 { 
     ForEach eval 'Pm.GetConfig -r {}' | grep "^Server" | ForEach eval 'ParseIniLine; printf "%s\n" ${VALUE}'
 }
-Pm.GetPacmanRoot () 
+Pm.GetRepoVer () 
+{ 
+    Pm.Run -Sp --print-format '%v' "$1"
+}
+Pm.GetRoot () 
 { 
     Pm.GetConfig RootDir
 }
-Pm.GetRepoPkgList () 
-{ 
-    Pm.RunPacman -Slq "$@"
-}
-Pm.GetRepoVer () 
-{ 
-    pacman -Sp --print-format '%v' "$1"
-}
 Pm.IsRepoPkg () 
 { 
-    Pm.RunPacman -Slq | grep -qx "$(Pm.GetName <<< "$1")"
+    Pm.Run -Slq | grep -qx "$(Pm.GetName <<< "$1")"
 }
 Pm.PacmanGpg () 
 { 
     gpg --homedir "$(Pm.GetConfig GPGDir)" "$@"
 }
-Pm.RunPacman () 
+Pm.Run () 
 { 
     pacman --noconfirm --config "${PACMAN_CONF-"/etc/pacman.conf"}" "$@"
 }
-Pm.RunPacmanKey () 
+Pm.RunKey () 
 { 
     pacman-key --config "${PACMAN_CONF-"/etc/pacman.conf"}" "$@"
 }
@@ -673,14 +673,14 @@ Pm.GetDbNextSection ()
 { 
     Pm.GetDbSectionList | grep -x -A 1 "^%$1%$" | GetLine 2 | sed "s|^%||g; s|%$||g"
 }
-Pm.GetDbSectionList () 
-{ 
-    grep -E "^%.*%$"
-}
-Pm.GetPacmanDbSection () 
+Pm.GetDbSection () 
 { 
     readarray -t _Stdin;
     PrintArray "${_Stdin[@]}" | sed -ne "/^%$1%$/,/^%$(PrintEvalArray _Stdin | Pm.GetDbNextSection "$1")%$/p" | sed "1d; \$d"
+}
+Pm.GetDbSectionList () 
+{ 
+    grep -E "^%.*%$"
 }
 Pm.CreateDbTmpDir () 
 { 
@@ -694,27 +694,27 @@ Pm.GetDbTmpDir ()
 { 
     echo "${TMPDIR-"/tmp"}/fasbashlib-pacman-db"
 }
-Pm.GetPacmanPkgArch () 
+Pm.GetPkgArch () 
 { 
-    GetPacmanSyncDbDesc "$1" | GetPacmanDbSection ARCH | RemoveBlank
+    Pm.GetSyncDbDesc "$1" | Pm.GetDbSection ARCH | RemoveBlank
 }
-Pm.GetPacmanRepoListFromLocalDb () 
+Pm.GetRepoListFromLocalDb () 
 { 
     find "$(Pm.GetConfig DBPath)/sync" -mindepth 1 -maxdepth 1 -type f | GetBaseName | sed "s|.db$||g";
     return 0
 }
-Pm.GetPacmanSyncAllDesc () 
+Pm.GetSyncAllDesc () 
 { 
     find "$(Pm.GetDbTmpDir)" -mindepth 3 -maxdepth 3 -name "desc" -type f
 }
-Pm.GetPacmanSyncDbDesc () 
+Pm.GetSyncDbDesc () 
 { 
     local _path;
-    _path="$(GetPacmanSyncDbDescPath "$1")";
+    _path="$(Pm.GetSyncDbDescPath "$1")";
     [[ -e "$_path" ]] || return 1;
     cat "$_path/desc"
 }
-Pm.GetPacmanSyncDbDescPath () 
+Pm.GetSyncDbDescPath () 
 { 
     local _repo;
     _repo="$(pacman -Sp --print-format '%r' "$1")";
@@ -723,18 +723,18 @@ Pm.GetPacmanSyncDbDescPath ()
     } || return 1;
     echo "$(Pm.GetDbTmpDir)/sync/$(pacman -Sp --print-format '%r/%n-%v' "$1")"
 }
-Pm.GetPacmanVirtualPkgList () 
+Pm.GetVirtualPkgList () 
 { 
-    GetPacmanRepoListFromLocalDb | ForEach OpenPacmanSyncDb {};
-    GetPacmanSyncAllDesc | ForEach eval "GetPacmanDbSection PROVIDES < {}" | RemoveBlank
+    Pm.GetRepoListFromLocalDb | ForEach Pm.OpenSyncDb {};
+    Pm.GetSyncAllDesc | ForEach eval "Pm.GetDbSection PROVIDES < {}" | RemoveBlank
 }
-Pm.IsPacmanSyncDbOpend () 
+Pm.IsOpendSyncDb () 
 { 
     readarray -t _PkgDbList < <(find "$(Pm.GetDbTmpDir)/sync/$1" -mindepth 1 -maxdepth 1 -type d );
     (( "${#_PkgDbList[@]}" > 0 )) && return 0;
     return 1
 }
-Pm.OpenPacmanSyncDb () 
+Pm.OpenSyncDb () 
 { 
     local _Dir _RepoDb;
     Pm.CreateDbTmpDir;
@@ -744,7 +744,7 @@ Pm.OpenPacmanSyncDb ()
     [[ -e "$_RepoDb" ]] || return 1;
     tar -xzf "${_RepoDb}" -C "$_Dir" || return 1
 }
-Pm.OpenedPacmanSyncDbList () 
+Pm.OpenedSyncDbList () 
 { 
     find "$(Pm.GetDbTmpDir)/sync/" -mindepth 1 -maxdepth 1 -type d
 }
@@ -768,7 +768,24 @@ Pm.ParsePkgFileName ()
     fi;
     PrintArray "${_ParsedPkg[@]}"
 }
-Csv.CsvToBashArray () 
+Csv.GetClm () 
+{ 
+    grep -v "^#" | sed "/^$/d" | cut -d "${CSVDELIM-","}" -f "$1"
+}
+Csv.GetClmCnt () 
+{ 
+    local _RawCsvLine=();
+    local _Line _ClmCnt=0;
+    readarray -t _RawCsvLine;
+    while read -r _Line; do
+        grep -qE "^#" <<< "$_Line" && continue;
+        _CurrentClmCnt=$(tr "${CSVDELIM-","}" "\n" | wc -l);
+        (( _CurrentClmCnt > _ClmCnt )) && _ClmCnt="$_CurrentClmCnt";
+    done < <(PrintArray "${_RawCsvLine[@]}");
+    RemoveBlank <<< "$_ClmCnt";
+    return 0
+}
+Csv.ToBashArray () 
 { 
     local _RawCsvLine=() _Line _ClmCnt=0;
     local ArrayPrefix="${ArrayPrefix-"{}"}";
@@ -786,23 +803,6 @@ Csv.CsvToBashArray ()
             PrintArray "${_RawCsvLine[@]}" | cut -d "${CSVDELIM-","}" -f "$_Cnt"
         );
     done < <(seq 1 "$#")
-}
-Csv.GetClmCnt () 
-{ 
-    local _RawCsvLine=();
-    local _Line _ClmCnt=0;
-    readarray -t _RawCsvLine;
-    while read -r _Line; do
-        grep -qE "^#" <<< "$_Line" && continue;
-        _CurrentClmCnt=$(tr "${CSVDELIM-","}" "\n" | wc -l);
-        (( _CurrentClmCnt > _ClmCnt )) && _ClmCnt="$_CurrentClmCnt";
-    done < <(PrintArray "${_RawCsvLine[@]}");
-    RemoveBlank <<< "$_ClmCnt";
-    return 0
-}
-Csv.GetCsvClm () 
-{ 
-    grep -v "^#" | sed "/^$/d" | cut -d "${CSVDELIM-","}" -f "$1"
 }
 Aur.CheckJson () 
 { 
