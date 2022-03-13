@@ -115,18 +115,56 @@ ArrayIncludes(){
     PrintEvalArray "$1" | grep -qx "$2"
 }
 
-# RandomString <Num>
+# @description ランダムな文字列を/dev/randomから生成します
+#
+# @example
+#    password=$(RandomString 15)
+#
+# @arg $1 桁数
+#
+# @stdout ランダムな文字列
+#
+# @exitcode 0 If successful.
+# @exitcode 1  何かしらのコマンドが異常終了しました
 RandomString(){
     base64 < "/dev/random" | fold -w "$1" | head -n 1
     return 0
 }
 
-#ArrayIndex <ArrayName>
+# @description 配列の要素数を返します
+#
+# @example
+#    NameList=(hoge fuga piyo)
+#    ArrayIndex NameList
+#
+# @arg $1 配列名（配列をシェル展開しないでください）
+#
+# @set
+# @stdout 指定された配列の要素数
+#
+# @exitcode 0 正常終了
 ArrayIndex(){
     PrintEvalArray "$1" | wc -l
 }
 
-#ArrayAppend <Arrayname>
+# @description 指定された配列に標準入力の内容を1行づつ追加します
+#
+#              内部でreadarrayを使用しているため、標準入力の引き渡しに配列を使用しないでください。
+#
+#              パイプはサブシェルとして実行され、配列の変更内容が破棄されます。
+#
+#              未定義の配列名が渡された場合は新たに定義されます。スコープは最初に定義した場所に依存します。
+#
+# @example
+#    NameList=(hoge fuga piyo)
+#    ArrayAppend NameList < /path/to/namelist
+#
+# @arg $1 配列名（配列をシェル展開しないでください）
+#
+# @set 指定された配列を新たに定義します
+# @stdout 何も出力しません
+#
+# @exitcode 0 正常終了
 ArrayAppend(){
     local _ArrName="$1"
     shift 1 || return 1
