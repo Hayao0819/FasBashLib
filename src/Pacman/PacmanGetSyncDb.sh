@@ -36,13 +36,13 @@ ParsePkgFileName(){
 # @noargs
 #
 # @exitcode 0 この関数は常に0を返します
-GetPacmanRepoListFromLocalDb(){
+GetRepoListFromLocalDb(){
     find "$(@GetConfig DBPath)/sync" -mindepth 1 -maxdepth 1 -type f | GetBaseName | sed "s|.db$||g"
     return 0
 }
 
 # GetPacmanSyncDb <repo> 
-OpenPacmanSyncDb(){
+OpenSyncDb(){
     local _Dir _RepoDb
     @CreateDbTmpDir
     _Dir="$(@GetDbTmpDir)/sync/$1"
@@ -64,18 +64,18 @@ DeleteDbTmpDir(){
     rm -rf "$(@GetDbTmpDir)"
 }
 
-IsPacmanSyncDbOpend(){
+IsOpendSyncDb(){
     readarray -t _PkgDbList < <(find "$(@GetDbTmpDir)/sync/$1" -mindepth 1 -maxdepth 1 -type d )
     (( "${#_PkgDbList[@]}" > 0 )) && return 0
     return 1
 }
 
-OpenedPacmanSyncDbList(){
+OpenedSyncDbList(){
     find "$(@GetDbTmpDir)/sync/" -mindepth 1 -maxdepth 1 -type d 
 }
 
 # GetPacmanSyncDbDescPath <pkgname>
-GetPacmanSyncDbDescPath(){
+GetSyncDbDescPath(){
     local _repo
     _repo="$(pacman -Sp --print-format '%r' "$1")"
     { IsPacmanSyncDbOpend "$_repo" || OpenPacmanSyncDb "$_repo"; } || return 1
@@ -83,22 +83,22 @@ GetPacmanSyncDbDescPath(){
 }
 
 # GetPacmanSyncDbDesc <pkgname>
-GetPacmanSyncDbDesc(){
+GetSyncDbDesc(){
     local _path
-    _path="$(GetPacmanSyncDbDescPath "$1")"
+    _path="$(@GetSyncDbDescPath "$1")"
     [[ -e "$_path" ]] || return 1
     cat "$_path/desc"
 }
 
-GetPacmanSyncAllDesc(){
+GetSyncAllDesc(){
     find "$(@GetDbTmpDir)" -mindepth 3 -maxdepth 3 -name "desc" -type f
 }
 
-GetPacmanVirtualPkgList(){
-    GetPacmanRepoListFromLocalDb | ForEach OpenPacmanSyncDb {}
-    GetPacmanSyncAllDesc | ForEach eval "GetPacmanDbSection PROVIDES < {}" | RemoveBlank
+GetVirtualPkgList(){
+    @GetRepoListFromLocalDb | ForEach @OpenSyncDb {}
+    @GetSyncAllDesc | ForEach eval "@GetDbSection PROVIDES < {}" | RemoveBlank
 }
 
-GetPacmanPkgArch(){
-    GetPacmanSyncDbDesc "$1" | GetPacmanDbSection ARCH | RemoveBlank
+GetPkgArch(){
+    @GetSyncDbDesc "$1" | @GetDbSection ARCH | RemoveBlank
 }

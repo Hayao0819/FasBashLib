@@ -11,11 +11,11 @@
 #    Pacmanの仕様変更などで動作しない場合は開発者に問題を報告してください。
 
 # @internal
-RunPacman(){
+Run(){
     pacman --noconfirm --config "${PACMAN_CONF-"/etc/pacman.conf"}" "$@"
 }
 
-RunPacmanKey(){
+RunKey(){
     pacman-key --config "${PACMAN_CONF-"/etc/pacman.conf"}" "$@"
 }
 
@@ -36,7 +36,7 @@ GetConfig(){
 CheckPkg(){
     local p
     for p in "$@"; do
-        @RunPacman -Qq "$p" > /dev/null 2>&1 || return 1
+        @Run -Qq "$p" > /dev/null 2>&1 || return 1
     done
     return 0
 }
@@ -45,17 +45,17 @@ CheckPkg(){
 #              pacman-confを使用してpacman.confを読みより、リポジトリの一覧を取得します。
 #              pacman.confを使用しないでデータベースを読み取る場合は`GetPacmanRepoListFromLocalDb`を使用してください。
 #
-# @example GetPacmanRepoListFromConf
+# @example Pm.GetRepoListFromConf
 #
 # @noargs
 #
 # @exitcode 0 この関数は常に0を返します
-GetPacmanRepoListFromConf(){
+GetRepoListFromConf(){
     #@GetConfig | GetIniSectionList 2> /dev/null| grep -vx "options"
     @GetConfig --repo-list
 }
 
-GetPacmanRoot(){
+GetRoot(){
     @GetConfig RootDir
 }
 
@@ -67,7 +67,7 @@ GetPacmanKeyringDir(){
     local _KeyringDir=""
     _KeyringDir="$(LANG=C pacman-key -h | RemoveBlank | grep -A 1 -- "^--populate" | tail -n 1 | cut -d "/" -f 2- | sed "s|'$||g")"
     : "${_KeyringDir="usr/share/pacman/keyrings"}"
-    _KeyringDir="$(GetPacmanRoot)/$_KeyringDir"
+    _KeyringDir="$(@GetRoot)/$_KeyringDir"
     _KeyringDir="$(sed -E "s|/+|/|g" <<< "$_KeyringDir")"
     if [[ -e "$_KeyringDir" ]]; then
         Readlinkf "$_KeyringDir"
@@ -76,31 +76,31 @@ GetPacmanKeyringDir(){
     fi
 }
 
-GetPacmanLatestPkgVer(){
+GetLatestPkgVer(){
     local _LANG="${LANG-""}"
     export LANG=C
-    ForEach @RunPacman -Si "{}" | grep "^Version" | cut -d ":" -f 2 | RemoveBlank
+    ForEach @Run -Si "{}" | grep "^Version" | cut -d ":" -f 2 | RemoveBlank
     [[ -n "$_LANG" ]] && export LANG="$_LANG"
     return 0
 }
 
-GetPacmanInstalledPkgVer(){
+GetInstalledPkgVer(){
     ForEach pacman -Qq "{}" | cut -d " " -f 2
     PrintArray "${PIPESTATUS[@]}" | grep -qx "1" && return 1
     return 0
 }
 
-GetPacmanRepoConf(){
+GetRepoConf(){
     ForEach eval 'echo [{}] && @GetConfig -r {}'
 }
 
-GetPacmanRepoServer(){
+GetRepoServer(){
     #shellcheck disable=SC2016
     ForEach eval '@GetConfig -r {}' | grep "^Server" | ForEach eval 'ParseIniLine; printf "%s\n" ${VALUE}'
 }
 
-GetPacmanKeyringList(){
-    find "$(GetPacmanKeyringDir)" -name "*.gpg" | GetBaseName | RemoveFileExt 
+GetKeyringList(){
+    find "$(@GetnKeyringDir)" -name "*.gpg" | GetBaseName | RemoveFileExt 
 }
 
 GetPacmanKernelPkg(){
@@ -108,11 +108,11 @@ GetPacmanKernelPkg(){
 }
 
 IsRepoPkg(){
-    @RunPacman -Slq | grep -qx "$(@GetName <<< "$1")"
+    @Run -Slq | grep -qx "$(@GetName <<< "$1")"
 }
 
 GetRepoPkgList(){
-    @RunPacman -Slq "$@"
+    @Run -Slq "$@"
 }
 
 GetName(){
@@ -120,5 +120,5 @@ GetName(){
 }
 
 GetRepoVer(){
-    pacman -Sp --print-format '%v' "$1"
+    @Run -Sp --print-format '%v' "$1"
 }

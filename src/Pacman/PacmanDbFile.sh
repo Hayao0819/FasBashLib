@@ -8,7 +8,7 @@ GetDbNextSection(){
     @GetDbSectionList | grep -x -A 1 "^%$1%$" | GetLine 2 | sed "s|^%||g; s|%$||g"
 }
 
-GetPacmanDbSection(){
+GetDbSection(){
     readarray -t _Stdin
     PrintArray "${_Stdin[@]}" | sed -ne "/^%$1%$/,/^%$(PrintEvalArray _Stdin | @GetDbNextSection "$1")%$/p" | sed "1d; \$d" # | RemoveBlank
 }
