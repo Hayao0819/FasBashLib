@@ -13,7 +13,7 @@
 #@set PARAM   変数名
 #@set VALUE   値
 #@set SECTION セクション名
-ParseIniLine(){
+ParseLine(){
     local _Line #="$1"
     TYPE="" PARAM="" VALUE="" SECTION=""
     _Line="$(RemoveBlank <<< "$(cat)")"
@@ -50,13 +50,13 @@ ParseIniLine(){
 #
 # @exitcode 0 正常に出力されました
 # @exitcode 1 一部の行で解析に失敗しました
-GetIniSectionList(){
+GetSectionList(){
     local _RawIniLine=()
     local _Line _LineNo=1 _Exit=0
     readarray -t _RawIniLine
 
     while read -r _Line;do
-        ParseIniLine <<< "$_Line"
+        @ParseLine <<< "$_Line"
         case "$TYPE" in
             "SECTION")
                 echo "$SECTION"
@@ -84,13 +84,13 @@ GetIniSectionList(){
 #
 # @exitcode 0 正常に出力されました
 # @exitcode 1 一部の行で解析に失敗しました
-GetIniParamList(){
+GetParamList(){
     local _RawIniLine=()
     local _Line _LineNo=1 _Exit=0 _InSection=false
     readarray -t _RawIniLine
 
     while read -r _Line;do
-        ParseIniLine <<< "$_Line"
+        @ParseLine <<< "$_Line"
         case "$TYPE" in
             "SECTION")
                 ! [[ "$SECTION" = "$1" ]] || _InSection=true

@@ -96,7 +96,7 @@ GetRepoConf(){
 
 GetRepoServer(){
     #shellcheck disable=SC2016
-    ForEach eval '@GetConfig -r {}' | grep "^Server" | ForEach eval 'ParseIniLine; printf "%s\n" ${VALUE}'
+    ForEach eval '@GetConfig -r {}' | grep "^Server" | ForEach eval 'Ini.ParseLine; printf "%s\n" ${VALUE}'
 }
 
 GetKeyringList(){
