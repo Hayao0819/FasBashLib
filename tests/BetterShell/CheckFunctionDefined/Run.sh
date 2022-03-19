@@ -6,7 +6,7 @@ function my_func(){
 }
 
 for f in "my_func" "undefined_func"; do
-    if CheckFunctionDefined "$f"; then
+    if CheckFuncDefined "$f"; then
         echo "$f is defined."
     else
         echo "$f is undefined."
