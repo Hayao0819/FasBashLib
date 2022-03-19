@@ -349,31 +349,6 @@ ArrayIndex ()
 { 
     PrintEvalArray "$1" | wc -l
 }
-CheckFunctionDefined () 
-{ 
-    typeset -f "${1}" > /dev/null
-}
-CutLastString () 
-{ 
-    echo "${1%%"${2}"}";
-    return 0
-}
-FileType () 
-{ 
-    file --mime-type -b "$1"
-}
-ForEach () 
-{ 
-    local _Item _Cmd _C;
-    while read -r _Item; do
-        for _C in "$@";
-        do
-            _Cmd+=("$(sed "s|{}|${_Item}|g" <<< "$_C")");
-        done;
-        "${_Cmd[@]}" || return 1;
-        _Cmd=();
-    done
-}
 GetArrayIndex () 
 { 
     local n=();
@@ -381,32 +356,6 @@ GetArrayIndex ()
     (( "${#n[@]}" >= 1 )) || return 1;
     PrintArray "${n[@]}";
     return 0
-}
-GetBaseName () 
-{ 
-    xargs -L 1 basename
-}
-GetFileExt () 
-{ 
-    GetBaseName | rev | cut -d "." -f 1 | rev
-}
-GetLastSplitString () 
-{ 
-    rev <<< "$2" | cut -d "$1" -f 1 | rev
-}
-GetLine () 
-{ 
-    head -n "$1" | tail -n 1
-}
-IsAvailable () 
-{ 
-    type "$1" 2> /dev/null 1>&2
-}
-IsUUID () 
-{ 
-    local _UUID="${1-""}";
-    [[ "${_UUID//-/}" =~ ^[[:xdigit:]]{32}$ ]] && return 0;
-    return 1
 }
 PrintArray () 
 { 
@@ -417,6 +366,66 @@ PrintEvalArray ()
 { 
     eval "PrintArray \"\${$1[@]}\""
 }
+RevArray () 
+{ 
+    readarray -t "$1" < <(PrintEvalArray "$1" | tac)
+}
+FileType () 
+{ 
+    file --mime-type -b "$1"
+}
+GetBaseName () 
+{ 
+    xargs -L 1 basename
+}
+GetFileExt () 
+{ 
+    GetBaseName | rev | cut -d "." -f 1 | rev
+}
+RemoveFileExt () 
+{ 
+    local Ext;
+    ForEach eval 'Ext=$(GetFileExt <<< {}); sed "s|.$Ext$||g" <<< {}; unset Ext'
+}
+CheckFuncDefined () 
+{ 
+    typeset -f "${1}" > /dev/null || return 1
+}
+ForEach () 
+{ 
+    local _Item _Cmd _C;
+    while read -r _Item; do
+        for _C in "$@";
+        do
+            _Cmd+=("$(sed "s|{}|${_Item}|g" <<< "$_C")");
+        done;
+        "${_Cmd[@]}" || return "$?";
+        _Cmd=();
+    done
+}
+GetLine () 
+{ 
+    head -n "$1" | tail -n 1
+}
+IsAvailable () 
+{ 
+    type "$1" 2> /dev/null 1>&2
+}
+CutLastString () 
+{ 
+    echo "${1%%"${2}"}";
+    return 0
+}
+GetLastSplitString () 
+{ 
+    rev <<< "$2" | cut -d "$1" -f 1 | rev
+}
+IsUUID () 
+{ 
+    local _UUID="${1-""}";
+    [[ "${_UUID//-/}" =~ ^[[:xdigit:]]{32}$ ]] && return 0;
+    return 1
+}
 RandomString () 
 { 
     base64 < "/dev/random" | fold -w "$1" | head -n 1;
@@ -425,15 +434,6 @@ RandomString ()
 RemoveBlank () 
 { 
     sed "s|^ *||g; s| *$||g; s|^	*||g; s|	*$||g; /^$/d"
-}
-RemoveFileExt () 
-{ 
-    local Ext;
-    ForEach eval 'Ext=$(GetFileExt <<< {}); sed "s|.$Ext$||g" <<< {}; unset Ext'
-}
-RevArray () 
-{ 
-    readarray -t "$1" < <(PrintEvalArray "$1" | tac)
 }
 Ini.GetIniParamList () 
 { 
