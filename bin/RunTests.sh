@@ -92,6 +92,8 @@ for Lib in "${LibToRunTest[@]}"; do
     done < <(find "$TestsDir/$Lib/" -mindepth 1 -maxdepth 1 -type d -print0  2> /dev/null | xargs -0 -L 1 basename )
 done
 
+sleep 0.5
+echo "テストの終了を待機中..."
 wait
 
 echo "=====TEST LOG=====" >&2
