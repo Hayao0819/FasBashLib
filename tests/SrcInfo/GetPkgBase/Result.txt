@@ -1,0 +1,10 @@
+pkgdesc=Scripts required for live environment
+pkgver=1.9
+pkgrel=1
+url=https://github.com/FascodeNet/fascode-live-tools
+arch=any
+license=SUSHI-WARE
+depends=xdg-user-dirs
+depends=bash
+source=https://github.com/FascodeNet/fascode-live-tools/archive/v1.9.zip
+md5sums=ac0c2a9c7c8e34d4a7afe9f6f5f4260d

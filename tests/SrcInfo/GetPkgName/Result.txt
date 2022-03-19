@@ -1,0 +1,4 @@
+pkgdesc=A simple script to open the official AlterLinux website
+optdepends=chromium: To open the page
+optdepends=google-chrome: To open the page
+optdepends=firefox: To open the page

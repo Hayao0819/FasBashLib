@@ -1,0 +1,8 @@
+pkgbase=alterlinux-live-tools
+pkgname=alterlinux-live-tools
+pkgname=fascode-gtk-bookmarks
+pkgname=alterlinux-welcome-page
+pkgname=alterlinux-plasma-bookmarks
+pkgname=alterlinux-desktop-file
+pkgname=alterlinux-live-info
+pkgname=alterlinux-gtk-bookmarks
