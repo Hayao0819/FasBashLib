@@ -29,9 +29,9 @@ ParsePkgFileName(){
 # @description ローカルデータベースからリポジトリの一覧を取得します。
 #              ローカルデータベース（/var/lib/pacman/sync)からリポジトリの一覧を取得します。
 #              この関数が実行される前に同じpacman.confを使ってパッケージデータベースを更新する必要があります。
-#              pacman.confを直接読み取る場合は`GetPacmanRepoListFromConf`を使用してください。
+#              pacman.confを直接読み取る場合は`GetRepoListFromConf`を使用してください。
 #
-# @example GetPacmanRepoListFromLocalDb
+# @example GetRepoListFromLocalDb
 #
 # @noargs
 #
@@ -41,7 +41,7 @@ GetRepoListFromLocalDb(){
     return 0
 }
 
-# GetPacmanSyncDb <repo> 
+# OpenSyncDb <repo> 
 OpenSyncDb(){
     local _Dir _RepoDb
     @CreateDbTmpDir
@@ -74,7 +74,7 @@ OpenedSyncDbList(){
     find "$(@GetDbTmpDir)/sync/" -mindepth 1 -maxdepth 1 -type d 
 }
 
-# GetPacmanSyncDbDescPath <pkgname>
+# GetSyncDbDescPath <pkgname>
 GetSyncDbDescPath(){
     local _repo
     _repo="$(pacman -Sp --print-format '%r' "$1")"
@@ -82,7 +82,7 @@ GetSyncDbDescPath(){
     echo "$(@GetDbTmpDir)/sync/$(pacman -Sp --print-format '%r/%n-%v' "$1")"
 }
 
-# GetPacmanSyncDbDesc <pkgname>
+# GetSyncDbDesc <pkgname>
 GetSyncDbDesc(){
     local _path
     _path="$(@GetSyncDbDescPath "$1")"
