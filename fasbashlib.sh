@@ -435,6 +435,29 @@ RemoveBlank ()
 { 
     sed "s|^ *||g; s| *$||g; s|^	*||g; s|	*$||g; /^$/d"
 }
+Ini.GetParam () 
+{ 
+    local _RawIniLine=();
+    local _Line _LineNo=1 _Exit=0 _InSection=false;
+    readarray -t _RawIniLine;
+    while read -r _Line; do
+        Ini.ParseLine <<< "$_Line";
+        case "$TYPE" in 
+            "SECTION")
+                ! [[ "$SECTION" = "$1" ]] || _InSection=true
+            ;;
+            "PARAM-VALUE")
+                [[ "$_InSection" = false ]] || echo "${VALUE}"
+            ;;
+            "ERROR")
+                echo "Line $_LineNo: Failed to parse Ini" 1>&2;
+                _Exit=1
+            ;;
+        esac;
+        _LineNo=$(( _LineNo + 1  ));
+    done < <(PrintArray "${_RawIniLine[@]}");
+    return "$_Exit"
+}
 Ini.GetParamList () 
 { 
     local _RawIniLine=();
