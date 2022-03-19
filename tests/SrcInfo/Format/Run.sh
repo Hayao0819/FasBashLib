@@ -1,7 +1,5 @@
 # shellcheck disable=SC2148,SC2034
 
-
-
 readarray -t SrcInfo << EOF
 pkgbase = alterlinux-live-tools
 	pkgdesc = Scripts required for live environment
@@ -54,6 +52,5 @@ pkgname = alterlinux-gtk-bookmarks
 	pkgdesc = Simple script to automatically generate GTK bookmarks
 	depends = fascode-gtk-bookmarks
 EOF
-
 
 PrintEvalArray SrcInfo | SrcInfo.Format

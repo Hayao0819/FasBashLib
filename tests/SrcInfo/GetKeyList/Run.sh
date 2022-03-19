@@ -1,7 +1,4 @@
 # shellcheck disable=SC2148,SC2034
-# shellcheck disable=SC2148,SC2034
-
-
 
 readarray -t SrcInfo << EOF
 pkgbase = alterlinux-live-tools

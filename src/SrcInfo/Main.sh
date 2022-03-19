@@ -132,7 +132,7 @@ GetValue(){
     if ArrayIncludes _AllValues "$1" || ArrayIncludes _AllArrays "$1"; then
         ArrayAppend _Output < <(PrintEvalArray _SrcInfo | @GetValueInPkgBase "$1")
         ArrayAppend _Output < <(PrintEvalArray _SrcInfo | @GetValueInPkgName "$2" "$1")
-        PrintEvalArray _Output
+        PrintArray "${_Output[@]}" | tail -n 1
         return 0
     fi
 
