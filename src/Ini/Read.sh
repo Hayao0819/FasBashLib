@@ -93,7 +93,11 @@ GetParamList(){
         @ParseLine <<< "$_Line"
         case "$TYPE" in
             "SECTION")
-                ! [[ "$SECTION" = "$1" ]] || _InSection=true
+                if [[ "$SECTION" = "$1" ]]; then
+                    _InSection=true
+                else
+                    _InSection=false
+                fi
                 ;;
             "PARAM-VALUE")
 
@@ -132,7 +136,11 @@ GetParam(){
         @ParseLine <<< "$_Line"
         case "$TYPE" in
             "SECTION")
-                ! [[ "$SECTION" = "$1" ]] || _InSection=true
+                if [[ "$SECTION" = "$1" ]]; then
+                    _InSection=true
+                else
+                    _InSection=false
+                fi
                 ;;
             "PARAM-VALUE")
                 [[ "$_InSection" = false ]] || echo "${VALUE}"
