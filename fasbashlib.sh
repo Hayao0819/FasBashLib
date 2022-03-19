@@ -643,7 +643,7 @@ Pm.GetRepoPkgList ()
 }
 Pm.GetRepoServer () 
 { 
-    ForEach eval 'Pm.GetConfig -r {}' | grep "^Server" | ForEach eval 'Ini.ParseLine; printf "%s\n" ${VALUE}'
+    ForEach eval 'Pm.GetConfig -r {}' | grep "^Server" | ForEach eval "Ini.ParseLine <<< '{}' ; printf '%s\n' \${VALUE}"
 }
 Pm.GetRepoVer () 
 { 
