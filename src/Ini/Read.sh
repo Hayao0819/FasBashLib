@@ -108,3 +108,41 @@ GetParamList(){
     done < <(PrintArray "${_RawIniLine[@]}")
     return "$_Exit"
 }
+
+
+# @description 指定されたセクションのパラメータを表示します
+# Iniファイルは標準入力から受け取ります。
+#
+# @example
+#    cat chromium.desktop | GetParam Desktop Name
+#
+# @arg $1 セクション
+# @arg $2 パラメータ
+#
+# @stdout 指定されたパラメータの値
+#
+# @exitcode 0 正常に出力されました
+# @exitcode 1 一部の行で解析に失敗しました
+GetParam(){
+    local _RawIniLine=()
+    local _Line _LineNo=1 _Exit=0 _InSection=false
+    readarray -t _RawIniLine
+
+    while read -r _Line;do
+        @ParseLine <<< "$_Line"
+        case "$TYPE" in
+            "SECTION")
+                ! [[ "$SECTION" = "$1" ]] || _InSection=true
+                ;;
+            "PARAM-VALUE")
+                [[ "$_InSection" = false ]] || echo "${VALUE}"
+                ;;
+            "ERROR")
+                echo "Line $_LineNo: Failed to parse Ini" >&2
+                _Exit=1
+                ;;
+        esac
+        _LineNo=$(( _LineNo + 1  ))
+    done < <(PrintArray "${_RawIniLine[@]}")
+    return "$_Exit"
+}
