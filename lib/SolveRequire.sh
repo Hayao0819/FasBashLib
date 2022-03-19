@@ -7,13 +7,18 @@ SrcDir="$MainDir/src"
 LibDir="$MainDir/lib"
 
 if (( $# < 1 )); then
-    echo "Usage: $(basename "$0") DirName Param"
+    echo "Usage: $(basename "$0") LibName"
     exit 1
 fi
 
 Target="$1"
 LibList=("$1" "Core")
 LibFrom=("<EntryPoint>" "$1")
+
+GetMeta(){
+    "$LibDir/GetMeta.sh" "$@"
+    #"$LibDir/GetMeta-ReadLine.sh" "$@"
+}
 
 SolveRequire(){
     local _Lib _Shell
@@ -22,9 +27,9 @@ SolveRequire(){
         echo "Missing library: $1" >&2
         return 1
     }
-    _Shell="$("$LibDir/GetMeta.sh" "$1" "Shell")"
+    _Shell="$(GetMeta "$1" "Shell")"
     while read -r _Lib; do
-        _LibShell="$("$LibDir/GetMeta.sh" "$_Lib" "Shell")"
+        _LibShell="$(GetMeta "$_Lib" "Shell")"
         if ! printf "%s\n" "${LibList[@]}" | grep -qx "$_Lib"; then
             # Check Shell
             [[ "$_Shell" = "Any" ]] && SolveRequire "$_Lib"
@@ -41,7 +46,7 @@ SolveRequire(){
             LibFrom+=("$1")
         fi
 
-    done < <("$LibDir/GetMeta.sh" "$1" "Require" | tr "," "\n")
+    done < <(GetMeta "$1" "Require" | tr "," "\n")
 }
 
 # Solve 
