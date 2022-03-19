@@ -1,0 +1,132 @@
+------SrcInfo.Parse Line------
+pkgbase=alterlinux-live-tools
+pkgdesc=Scripts required for live environment
+pkgver=1.9
+pkgrel=1
+url=https://github.com/FascodeNet/fascode-live-tools
+arch=any
+license=SUSHI-WARE
+depends=xdg-user-dirs
+depends=bash
+source=https://github.com/FascodeNet/fascode-live-tools/archive/v1.9.zip
+md5sums=ac0c2a9c7c8e34d4a7afe9f6f5f4260d
+pkgname=alterlinux-live-tools
+pkgdesc=Scripts required for live environment (meta package)
+depends=xdg-user-dirs
+depends=bash
+depends=alterlinux-live-tools
+depends=fascode-gtk-bookmarks
+depends=alterlinux-welcome-page
+depends=alterlinux-plasma-bookmarks
+depends=alterlinux-desktop-file
+depends=alterlinux-live-info
+depends=alterlinux-gtk-bookmarks
+pkgname=fascode-gtk-bookmarks
+pkgdesc=Simple script to automatically generate GTK bookmarks
+provides=alterlinux-gtk-bookmarks
+replaces=alterlinux-gtk-bookmarks
+pkgname=alterlinux-welcome-page
+pkgdesc=A simple script to open the official AlterLinux website
+optdepends=chromium: To open the page
+optdepends=google-chrome: To open the page
+optdepends=firefox: To open the page
+pkgname=alterlinux-plasma-bookmarks
+pkgdesc=Simple script to automatically generate Plasma bookmarks
+pkgname=alterlinux-desktop-file
+pkgdesc=Place the Calamares icon on your desktop
+depends=xdg-user-dirs
+depends=bash
+depends=glib2
+pkgname=alterlinux-live-info
+pkgdesc=Display version information of live environment
+pkgname=alterlinux-gtk-bookmarks
+pkgdesc=Simple script to automatically generate GTK bookmarks
+depends=fascode-gtk-bookmarks
+------SrcInfo.Parse  Key------
+pkgbase
+pkgdesc
+pkgver
+pkgrel
+url
+arch
+license
+depends
+depends
+source
+md5sums
+pkgname
+pkgdesc
+depends
+depends
+depends
+depends
+depends
+depends
+depends
+depends
+depends
+pkgname
+pkgdesc
+provides
+replaces
+pkgname
+pkgdesc
+optdepends
+optdepends
+optdepends
+pkgname
+pkgdesc
+pkgname
+pkgdesc
+depends
+depends
+depends
+pkgname
+pkgdesc
+pkgname
+pkgdesc
+depends
+------SrcInfo.Parse Value------
+alterlinux-live-tools
+Scripts required for live environment
+1.9
+1
+https://github.com/FascodeNet/fascode-live-tools
+any
+SUSHI-WARE
+xdg-user-dirs
+bash
+https://github.com/FascodeNet/fascode-live-tools/archive/v1.9.zip
+ac0c2a9c7c8e34d4a7afe9f6f5f4260d
+alterlinux-live-tools
+Scripts required for live environment (meta package)
+xdg-user-dirs
+bash
+alterlinux-live-tools
+fascode-gtk-bookmarks
+alterlinux-welcome-page
+alterlinux-plasma-bookmarks
+alterlinux-desktop-file
+alterlinux-live-info
+alterlinux-gtk-bookmarks
+fascode-gtk-bookmarks
+Simple script to automatically generate GTK bookmarks
+alterlinux-gtk-bookmarks
+alterlinux-gtk-bookmarks
+alterlinux-welcome-page
+A simple script to open the official AlterLinux website
+chromium: To open the page
+google-chrome: To open the page
+firefox: To open the page
+alterlinux-plasma-bookmarks
+Simple script to automatically generate Plasma bookmarks
+alterlinux-desktop-file
+Place the Calamares icon on your desktop
+xdg-user-dirs
+bash
+glib2
+alterlinux-live-info
+Display version information of live environment
+alterlinux-gtk-bookmarks
+Simple script to automatically generate GTK bookmarks
+fascode-gtk-bookmarks

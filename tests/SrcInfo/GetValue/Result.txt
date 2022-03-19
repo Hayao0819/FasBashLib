@@ -1,0 +1,5 @@
+1.9
+Simple script to automatically generate GTK bookmarks
+Display version information of live environment
+https://github.com/FascodeNet/fascode-live-tools/archive/v1.9.zip
+ac0c2a9c7c8e34d4a7afe9f6f5f4260d
