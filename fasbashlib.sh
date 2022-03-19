@@ -435,13 +435,13 @@ RemoveBlank ()
 { 
     sed "s|^ *||g; s| *$||g; s|^	*||g; s|	*$||g; /^$/d"
 }
-Ini.GetIniParamList () 
+Ini.GetParamList () 
 { 
     local _RawIniLine=();
     local _Line _LineNo=1 _Exit=0 _InSection=false;
     readarray -t _RawIniLine;
     while read -r _Line; do
-        ParseIniLine <<< "$_Line";
+        Ini.ParseLine <<< "$_Line";
         case "$TYPE" in 
             "SECTION")
                 ! [[ "$SECTION" = "$1" ]] || _InSection=true
@@ -458,13 +458,13 @@ Ini.GetIniParamList ()
     done < <(PrintArray "${_RawIniLine[@]}");
     return "$_Exit"
 }
-Ini.GetIniSectionList () 
+Ini.GetSectionList () 
 { 
     local _RawIniLine=();
     local _Line _LineNo=1 _Exit=0;
     readarray -t _RawIniLine;
     while read -r _Line; do
-        ParseIniLine <<< "$_Line";
+        Ini.ParseLine <<< "$_Line";
         case "$TYPE" in 
             "SECTION")
                 echo "$SECTION"
@@ -478,7 +478,7 @@ Ini.GetIniSectionList ()
     done < <(PrintArray "${_RawIniLine[@]}");
     return "$_Exit"
 }
-Ini.ParseIniLine () 
+Ini.ParseLine () 
 { 
     local _Line;
     TYPE="" PARAM="" VALUE="" SECTION="";
@@ -643,7 +643,7 @@ Pm.GetRepoPkgList ()
 }
 Pm.GetRepoServer () 
 { 
-    ForEach eval 'Pm.GetConfig -r {}' | grep "^Server" | ForEach eval 'ParseIniLine; printf "%s\n" ${VALUE}'
+    ForEach eval 'Pm.GetConfig -r {}' | grep "^Server" | ForEach eval 'Ini.ParseLine; printf "%s\n" ${VALUE}'
 }
 Pm.GetRepoVer () 
 { 
