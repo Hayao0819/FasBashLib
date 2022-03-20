@@ -426,6 +426,10 @@ IsUUID ()
     [[ "${_UUID//-/}" =~ ^[[:xdigit:]]{32}$ ]] && return 0;
     return 1
 }
+PrintEval () 
+{ 
+    eval echo "\${$1}"
+}
 RandomString () 
 { 
     base64 < "/dev/random" | fold -w "$1" | head -n 1;
@@ -435,6 +439,17 @@ RemoveBlank ()
 { 
     sed "s|^ *||g; s| *$||g; s|^	*||g; s|	*$||g; /^$/d"
 }
+ToLower () 
+{ 
+    local _Str="${1,,}";
+    [[ -z "${_Str-""}" ]] || echo "${_Str}"
+}
+ToLowerStdin () 
+{ 
+    local _Str;
+    ForEach eval "_Str=\"{}\"; echo \"\${_Str,,}\"";
+    unset _Str
+}
 Calc () 
 { 
     echo "$(( "$@" ))"
@@ -442,6 +457,20 @@ Calc ()
 Ntest () 
 { 
     (( "$@" )) || return 1
+}
+Bool () 
+{ 
+    case "$(ToLower "$(PrintEval "${1}")")" in 
+        "true")
+            return 0
+        ;;
+        "" | "false")
+            return 1
+        ;;
+        *)
+            return 2
+        ;;
+    esac
 }
 Ini.GetParam () 
 { 
