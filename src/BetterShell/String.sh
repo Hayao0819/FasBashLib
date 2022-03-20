@@ -55,3 +55,20 @@ RemoveBlank(){
 GetLastSplitString(){
     rev <<< "$2" | cut -d "$1" -f 1 | rev
 }
+
+# PrintEval <変数名>
+PrintEval(){
+    eval echo "\${$1}"
+}
+
+# ToLower <文字列>
+ToLower(){
+    local _Str="${1,,}"
+    [[ -z "${_Str-""}" ]] || echo "${_Str}"
+}
+
+ToLowerStdin(){
+    local _Str
+    ForEach eval "_Str=\"{}\"; echo \"\${_Str,,}\""
+    unset _Str
+}
