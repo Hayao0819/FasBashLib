@@ -435,6 +435,14 @@ RemoveBlank ()
 { 
     sed "s|^ *||g; s| *$||g; s|^	*||g; s|	*$||g; /^$/d"
 }
+Calc () 
+{ 
+    echo "$(( "$@" ))"
+}
+Ntest () 
+{ 
+    (( "$@" )) || return 1
+}
 Ini.GetParam () 
 { 
     local _RawIniLine=();
