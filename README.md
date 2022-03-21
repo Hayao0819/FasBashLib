@@ -27,18 +27,39 @@ Some functions are also for Arch Linux.
 
 ## Document
 
-You can read auto generated documents [here](https://github.com/Hayao0819/FasBashLib/tree/build-dev/docs).
+You can read the latest auto generated documents [here](https://github.com/Hayao0819/FasBashLib/tree/build-dev/docs).
 
-## Use
+Or download document from [Release Page](https://github.com/Hayao0819/FasBashLib/releases)
+
+## Use this library in your script
 
 There are two ways to use this library.
 
-### The latest dev library Online
+### Stable library Online
 
-Add this line into your script.
+See [Release Page](https://github.com/Hayao0819/FasBashLib/releases) to get the code to add into your script.
+
+To update the library version, you should change URL manually.
+
+#### Get URL with script
+
+Clone this project and run `./bin/GetLink.sh`
 
 ```bash
-source /dev/stdin < <(curl -sL https://raw.githubusercontent.com/Hayao0819/FasBashLib/build-dev/fasbashlib.sh)
+./bin/GetLink.sh "v0.1.1"
+```
+
+### Stable library Offline
+
+See [Release Page](https://github.com/Hayao0819/FasBashLib/releases) and download `fasbashlib.sh`
+
+
+### The latest dev library Online
+
+Add this line into your script. You should connect to the Internet.
+
+```bash
+source /dev/stdin < <(curl -sL "https://raw.githubusercontent.com/Hayao0819/FasBashLib/build-0.1.x/fasbashlib.sh")
 ```
 
 ### The latest dev library Offline
@@ -49,7 +70,7 @@ Run this following command (Do not write it on your script)
 
 ```bash
 # Download source code
-git clone "https://github.com/Hayao0819/FasBashLib.git"
+git clone --recursive "https://github.com/Hayao0819/FasBashLib.git"
 cd ./FasBashLib/
 
 # Build all library
@@ -59,12 +80,7 @@ make
 bash ./bin/SingleFile.sh [Lib1] [Lib2] ...
 ```
 
-And run `source`
-
-```bash
-source /path/to/your/fasbashlib.sh
-```
-
+Now, you can find built shellscript in the root of repository.
 
 ## Special thanks
 
