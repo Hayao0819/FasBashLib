@@ -34,7 +34,7 @@ while [[ -n "${1-""}" ]]; do
             Version="$2"
             shift 2
             ;;
-        -debug)
+        "-debug")
             Debug=true
             shift 1
             ;;
@@ -43,7 +43,7 @@ while [[ -n "${1-""}" ]]; do
             break
             ;;
         "-"*)
-            echo "Usage: $(basename "$0") [-out File] [-noreq] [Lib1] [Lib2] ..." >&2
+            echo "Usage: $(basename "$0") [-out File] [-ver Version] [-noreq] [-debug] [Lib1] [Lib2] ..." >&2
             [[ "${1}" = "-h" ]] && exit 0
             exit 1
             ;;
@@ -111,6 +111,7 @@ while read -r Dir; do
 
         # 関数を読み込んで一時ファイルに書き込み
         (
+            "${Debug}" && echo "Load ${Dir}/${File}" >&2
             source "${Dir}/${File}" || {
                 echo "Failed to load shell file" >&2
                 exit 1
@@ -119,6 +120,7 @@ while read -r Dir; do
             touch "$TmpLibFile"
             while read -r Func; do
                 if [[ -z "${LibPrefix}" ]]; then
+                    "$Debug" && echo "${Func}を追加" >&2
                     typeset -f "$Func" >> "$TmpLibFile"
                 else
                     "${Debug}" && echo "${Func}を${LibPrefix}.${Func}に置き換え" >&2
