@@ -1,7 +1,7 @@
 # Maintainer : Yamada Hayao <development@fascode.net>
 
 pkgname=fasbashlib-git
-pkgver=0.1.0
+pkgver=v0.1.2.r4.g5862cfc
 pkgrel=1
 pkgdesc='A collection of small but awasome functions for Bash'
 arch=('any')
@@ -10,6 +10,11 @@ license=('MIT SUSHI-WARE')
 makedepends=("git")
 source=("git+https://github.com/Hayao0819/FasBashLib.git")
 sha256sums=('SKIP')
+
+pkgver() {
+    cd "FasBashLib"
+    git describe --long --tags | sed 's/\([^-]*-g\)/r\1/;s/-/./g'
+}
 
 prepare(){
     cd "FasBashLib"

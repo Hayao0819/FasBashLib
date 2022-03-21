@@ -1,0 +1,12 @@
+pkgbase = fasbashlib-git
+	pkgdesc = A collection of small but awasome functions for Bash
+	pkgver = v0.1.2.r4.g5862cfc
+	pkgrel = 1
+	url = https:/fascode.net
+	arch = any
+	license = MIT SUSHI-WARE
+	makedepends = git
+	source = git+https://github.com/Hayao0819/FasBashLib.git
+	sha256sums = SKIP
+
+pkgname = fasbashlib-git
