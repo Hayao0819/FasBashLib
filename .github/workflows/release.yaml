@@ -1,0 +1,45 @@
+name: Build dev branch
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-01x:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+          fetch-depth: 0 
+
+      - name: Build and create archive
+        run: |
+          make
+          make docs
+          zip docs.zip docs/*
+                
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            fasbashlib.sh
+            docs.zip
+          body: |
+            ```
+            source /dev/stdin < <(curl -sL "https://github.com/Hayao0819/FasBashLib/releases/download/${{ github.ref }}/fasbashlib.sh")
+            ```
