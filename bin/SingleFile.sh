@@ -88,8 +88,8 @@ if [[ "$NoRequire" = false ]]; then
 fi
 
 # Create temp file with header
-#cat "$StaticDir/head.sh" > "$TmpFile"
-sed "s|%VERSION%|${Version-""}|g" "${StaticDir}/head.sh" > "$TmpFile"
+#cat "$StaticDir/script-head.sh" > "$TmpFile"
+sed "s|%VERSION%|${Version-""}|g" "${StaticDir}/script-head.sh" > "$TmpFile"
 
 # 作成に失敗した場合に終了
 [[ -e "$TmpFile" ]] || exit 1
