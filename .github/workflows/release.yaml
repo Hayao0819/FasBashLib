@@ -1,4 +1,4 @@
-name: Build dev branch
+name: Build tag and release
 
 on:
   push:
@@ -40,6 +40,6 @@ jobs:
             fasbashlib.sh
             docs.zip
           body: |
-            ```
+            ```bash
             source /dev/stdin < <(curl -sL "https://github.com/Hayao0819/FasBashLib/releases/download/${{ github.ref }}/fasbashlib.sh")
             ```
