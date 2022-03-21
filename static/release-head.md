@@ -1,4 +1,4 @@
-# Release %TAG%
 
+Stable releade FasBashLib %TAG%
 ## Changes
 
