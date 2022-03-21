@@ -31,7 +31,7 @@ package() {
     "${srcdir}/FasBashLib/bin/MuitlFile.sh" -out "$pkgdir/usr/lib/fasbashlib/"
 
     # install singlefile
-    "${srcdir}/FasBashLib/bin/SingleFile.sh" -debug -out "$pkgdir/usr/lib/fasbashlib.sh"
+    "${srcdir}/FasBashLib/bin/SingleFile.sh" -debug -out "$pkgdir/usr/lib/fasbashlib.sh" -ver "v${pkgver}"
 
     # install docs
     "$srcdir/FasBashLib/bin/GenDoc.sh" -out "${pkgdir}/usr/share/doc/fasbashlib/"
