@@ -27,7 +27,7 @@ git tag | grep -qx "$TargetTag" || {
 
 # Set variables
 BeforeTag="$(git tag | grep -B 1 -x -- "${TargetTag}" | head -n 1)"
-SourceURL=$("$BinDir/GetLink.sh" "$TargetTag")
+SourceURL=$("$BinDir/GetLink.sh" "$TargetTag" | grep "fasbashlib.sh$")
 TempFile="$(mktemp)"
 
 
