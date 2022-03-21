@@ -33,7 +33,7 @@ jobs:
           prerelease: false
 
       - name: Create Release Note
-        run: ./bin/GenReleaseNote.sh "${{ github.ref }}" > "RELEASE.md"
+        run: ./bin/GenReleaseNote.sh "${GITHUB_REF#refs/tags/}" > "RELEASE.md"
 
       - name: Release files
         uses: softprops/action-gh-release@v1
