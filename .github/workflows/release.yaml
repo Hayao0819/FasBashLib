@@ -32,9 +32,6 @@ jobs:
           draft: false
           prerelease: false
 
-      - name: Create Release Note
-        run: ./bin/GenReleaseNote.sh "${GITHUB_REF#refs/tags/}" > "RELEASE.md"
-
       - name: Release files
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
@@ -42,4 +39,12 @@ jobs:
           files: |
             fasbashlib.sh
             docs.zip
+
+      - name: Create Release Note
+        run: ./bin/GenReleaseNote.sh "${GITHUB_REF#refs/tags/}" > "RELEASE.md"
+
+      - name: Upload Release Note
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
           body_path: ./RELEASE.md
