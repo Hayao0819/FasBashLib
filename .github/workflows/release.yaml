@@ -20,6 +20,8 @@ jobs:
           make
           make docs
           zip docs.zip docs/*
+          ./bin/GenReleaseNote.sh "${{ github.ref }}" > "RELEASE.md"
+
                 
       - name: Create release
         id: create_release
@@ -39,7 +41,4 @@ jobs:
           files: |
             fasbashlib.sh
             docs.zip
-          body: |
-            ```bash
-            source /dev/stdin < <(curl -sL "https://github.com/Hayao0819/FasBashLib/releases/download/${{ github.ref }}/fasbashlib.sh")
-            ```
+          body_path: ./RELEASE.md
