@@ -29,7 +29,7 @@ Choice(){
     # 選択肢が1つもない場合
     (( ${#_choice_list[@]} <= 0 )) && echo "An exception error has occurred." >&2 && exit 1
     # 選択肢が1つの場合→結果を出力して終了
-    (( ${#_choice_list[@]} = 1 )) && _returnint="${_returnint:="1"}" _returnstr="${_returnstr:="${_choice_list[*]}"}"
+    (( ${#_choice_list[@]} == 1 )) && _returnint="${_returnint:="1"}" _returnstr="${_returnstr:="${_choice_list[*]}"}"
 
     # 質問文が定義されているなら表示
     [[ -n "${_question-""}" ]] && echo "   ${_question}" >&2
