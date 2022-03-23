@@ -11,9 +11,8 @@ if [[ ! -e "${MainDir}/.git" ]]; then
     exit 1
 fi
 
-
-
 # Check args
+echo "対象のタグは${TargetTag}です。" >&2
 [[ -n "$TargetTag" ]] || {
     echo "Usage: $0 Tag" >&2
     exit 1
@@ -30,12 +29,12 @@ BeforeTag="$(git tag | grep -B 1 -x -- "${TargetTag}" | head -n 1)"
 SourceURL=$("$BinDir/GetLink.sh" "$TargetTag" | grep "fasbashlib.sh$")
 TempFile="$(mktemp)"
 
+# Log
+echo "1つ前のタグは${BeforeTag}です。" >&2
+echo "ソースは\"${SourceURL}\"です。" >&2
 
 # Replaces
 SedCode="s|%SOURCEURL%|${SourceURL}|g; s|%TAG%|${TargetTag}|g"
-
-
-
 
 # %SOURCEURL% は リリースのURLへ置き換えられます
 if [[ -e "$StaticDir/release-head.md" ]]; then
