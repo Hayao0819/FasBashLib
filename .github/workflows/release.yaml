@@ -41,7 +41,9 @@ jobs:
             docs.zip
 
       - name: Create Release Note
-        run: ./bin/GenReleaseNote.sh "${GITHUB_REF#refs/tags/}" > "RELEASE.md"
+        run: |
+          sleep 1
+          ./bin/GenReleaseNote.sh "${GITHUB_REF#refs/tags/}" > "RELEASE.md"
 
       - name: Upload Release Note
         uses: softprops/action-gh-release@v1
