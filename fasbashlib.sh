@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.1.2.r104.g778255f"
+FSBLIB_VERSION="v0.1.3.r96.g6d88ce8"
 ParseArg () 
 { 
     local _Arg _Chr _Cnt;
@@ -672,7 +672,7 @@ Choice ()
     shift "$((OPTIND - 1))" || return 1;
     _choice_list=("${@}") _digit="${##}";
     (( ${#_choice_list[@]} <= 0 )) && echo "An exception error has occurred." 1>&2 && exit 1;
-    (( ${#_choice_list[@]} = 1 )) && _returnint="${_returnint:="1"}" _returnstr="${_returnstr:="${_choice_list[*]}"}";
+    (( ${#_choice_list[@]} == 1 )) && _returnint="${_returnint:="1"}" _returnstr="${_returnstr:="${_choice_list[*]}"}";
     [[ -n "${_question-""}" ]] && echo "   ${_question}" 1>&2;
     for ((_count=1; _count<=${#_choice_list[@]}; _count++))
     do
