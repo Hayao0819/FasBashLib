@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.1.3.r96.g6d88ce8"
+FSBLIB_VERSION="v0.1.3.2.r97.ge5f3b42"
 ParseArg () 
 { 
     local _Arg _Chr _Cnt;
