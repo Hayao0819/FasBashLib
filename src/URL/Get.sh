@@ -1,12 +1,8 @@
 #!/usr/bin/env bash
 
-Scheme(){
-    cut -d ":" -f 1
-}
+Scheme(){ cut -d ":" -f 1; }
 
-NoScheme(){
-    cut -d ":" -f 2-
-}
+NoScheme(){ cut -d ":" -f 2-; }
 
 Authority(){
     local i _NoScheme
@@ -64,13 +60,3 @@ Fragment(){
 Path(){
     @PathAndQueryAndFragment | cut -d "#" -f 1 | cut -d "?" -f 1
 }
-
-
-Main(){
-    #echo "https://hoge@en.wikipedia.org:45/wiki/URL
-    #https://hayao@en.wikipedia.org/wiki/URL" | @Authority
-
-    @Parse "https://hoge@en.wikipedia.org:45/wiki/URL#hoge"
-}
-
-

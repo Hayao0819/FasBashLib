@@ -23,4 +23,3 @@ HasQuery(){
 HasFragment(){
     [[ "$(@PathAndQueryAndFragment <<< "$1")" = *"#"* ]]
 }
-
