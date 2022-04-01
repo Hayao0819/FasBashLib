@@ -2,7 +2,7 @@
 
 # Parse <URL>
 Parse(){
-    local i="$1" _NoScheme
+    local i="$1"
 
     @Scheme <<< "$i"
     echo ":"
