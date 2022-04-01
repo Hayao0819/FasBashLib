@@ -18,7 +18,7 @@ Debug=false
 
 # Set version
 if [[ -e "$MainDir/.git" ]]; then
-    echo "Found git. Use git tag and id as version."
+    echo "Found git. Use git tag and id as version." >&2
     Version="$(git describe --long --tags | sed 's/\([^-]*-g\)/r\1/;s/-/./g')"
 else
     Version="0.1.x-dev"
