@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.1.3.2.r97.ge5f3b42"
+FSBLIB_VERSION="v0.1.3.2.r103.gbd4c5a2"
 ParseArg () 
 { 
     local _Arg _Chr _Cnt;
@@ -704,6 +704,118 @@ Choice ()
         echo "${_returnstr}" && return 0
     };
     return 1
+}
+URL.Authority () 
+{ 
+    local i _NoScheme;
+    while read -r i; do
+        _NoScheme=$(URL.NoScheme <<< "$i");
+        [[ "$_NoScheme" == "//"* ]] || return 1;
+        cut -d "/" -f 1 < <(sed "s|^//||g" <<< "$_NoScheme");
+    done
+}
+URL.Fragment () 
+{ 
+    URL.PathAndQueryAndFragment | cut -d "#" -f 2-
+}
+URL.Host () 
+{ 
+    URL.Authority | cut -d "@" -f 2- | cut -d ":" -f 1
+}
+URL.Main () 
+{ 
+    URL.Parse "https://hoge@en.wikipedia.org:45/wiki/URL#hoge"
+}
+URL.NoScheme () 
+{ 
+    cut -d ":" -f 2-
+}
+URL.Path () 
+{ 
+    URL.PathAndQueryAndFragment | cut -d "#" -f 1 | cut -d "?" -f 1
+}
+URL.PathAndQueryAndFragment () 
+{ 
+    local i;
+    while read -r i; do
+        sed "s|^//$(URL.Authority <<< "$i")||g" <<< "$(URL.NoScheme <<< "$i")";
+    done
+}
+URL.Port () 
+{ 
+    local i;
+    while read -r i; do
+        [[ "$i" == *":"* ]] || { 
+            echo "80";
+            continue
+        };
+        cut -d ":" -f 2 <<< "$i";
+    done < <(URL.Authority)
+}
+URL.Query () 
+{ 
+    URL.PathAndQueryAndFragment | cut -d "?" -f 2-
+}
+URL.Scheme () 
+{ 
+    cut -d ":" -f 1
+}
+URL.User () 
+{ 
+    local i;
+    while read -r i; do
+        [[ "$i" == *"@"* ]] || { 
+            echo "";
+            continue
+        };
+        cut -d "@" -f 1 <<< "$i";
+    done < <(URL.Authority)
+}
+URL.HasAuthority () 
+{ 
+    [[ "$(URL.NoScheme <<< "$1")" = "//"* ]]
+}
+URL.HasFragment () 
+{ 
+    [[ "$(URL.PathAndQueryAndFragment <<< "$1")" = *"#"* ]]
+}
+URL.HasPort () 
+{ 
+    [[ "$(URL.Authority <<< "$1")" = *":"* ]]
+}
+URL.HasQuery () 
+{ 
+    [[ "$(URL.PathAndQueryAndFragment <<< "$1")" = *"?"* ]]
+}
+URL.HasUser () 
+{ 
+    [[ "$(URL.Authority <<< "$1")" = *"@"* ]]
+}
+URL.Parse () 
+{ 
+    local i="$1" _NoScheme;
+    URL.Scheme <<< "$i";
+    echo ":";
+    if URL.HasAuthority "$i"; then
+        if URL.HasUser "$i"; then
+            URL.User <<< "$i";
+            echo "@";
+        fi;
+        URL.Host <<< "$i";
+        if URL.HasPort "$i"; then
+            echo ":";
+            URL.Port <<< "$i";
+        fi;
+    fi;
+    URL.Path <<< "$i";
+    if URL.HasFragment "$i"; then
+        echo "#";
+        URL.Fragment <<< "$i";
+    fi;
+    if URL.HasQuery "$i"; then
+        echo "?";
+        URL.Query <<< "$i";
+    fi
 }
 Pm.CheckPkg () 
 { 
