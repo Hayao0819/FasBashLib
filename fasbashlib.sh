@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.1.3.2.r106.g67eb439"
+FSBLIB_VERSION="v0.1.3.2.r109.g89f32d5"
 ParseArg () 
 { 
     local _Arg _Chr _Cnt;
@@ -721,10 +721,6 @@ URL.Fragment ()
 URL.Host () 
 { 
     URL.Authority | cut -d "@" -f 2- | cut -d ":" -f 1
-}
-URL.Main () 
-{ 
-    URL.Parse "https://hoge@en.wikipedia.org:45/wiki/URL#hoge"
 }
 URL.NoScheme () 
 { 
