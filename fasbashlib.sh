@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.1.3.2.r103.gbd4c5a2"
+FSBLIB_VERSION="v0.1.3.2.r106.g67eb439"
 ParseArg () 
 { 
     local _Arg _Chr _Cnt;
@@ -793,7 +793,7 @@ URL.HasUser ()
 }
 URL.Parse () 
 { 
-    local i="$1" _NoScheme;
+    local i="$1";
     URL.Scheme <<< "$i";
     echo ":";
     if URL.HasAuthority "$i"; then
