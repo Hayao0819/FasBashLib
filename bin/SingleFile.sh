@@ -142,6 +142,7 @@ while read -r Dir; do
             while read -r Func; do
                 # 置き換えなし
                 if [[ -z "${LibPrefix}" ]] && [[ "$SnakeCase" = false ]]; then
+                    echo "$Func" >> "$TmpFile_FuncList"
                     "$Debug" && echo "${Func}を追加" >&2
                     typeset -f "$Func" >> "$TmpLibFile"
                     continue
@@ -151,8 +152,10 @@ while read -r Dir; do
                 NewFuncName=""
                 if [[ -z "$LibPrefix" ]]; then
                     # プレフィックスなし、スネークケース置き換え
+                    echo "$Func" >> "$TmpFile_FuncList"
                     NewFuncName="$("${ToSnakeCase[@]}" <<< "$Func" | tr '[:upper:]' '[:lower:]')"
                 else
+                    echo "${LibPrefix}.${Func}" >> "$TmpFile_FuncList"
                     if [[ "$SnakeCase" = true ]]; then
                         # プレフィックスあり、スネークケース置き換えあり
                         #NewFuncName="$(eval "${ToSnakeCase[@]}" <<< "$LibPrefix").$(eval "${ToSnakeCase[@]}" <<< "$Func")"
@@ -163,9 +166,6 @@ while read -r Dir; do
                         NewFuncName="${LibPrefix}.${Func}"
                     fi
                 fi
-
-                # 関数リストに追記
-                echo "$Func" >> "$TmpFile_FuncList"
 
                 "${Debug}" && echo "置き換え1: 関数定義の${Func}を${NewFuncName}に置き換え" >&2
                 typeset -f "$Func" | sed "1 s|${Func} ()|${NewFuncName} ()|g" >> "$TmpLibFile"
