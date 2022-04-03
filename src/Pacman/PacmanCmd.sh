@@ -100,7 +100,7 @@ GetRepoServer(){
 }
 
 GetKeyringList(){
-    find "$(@GetnKeyringDir)" -name "*.gpg" | GetBaseName | RemoveFileExt 
+    find "$(@GetKeyringDir)" -name "*.gpg" | GetBaseName | RemoveFileExt 
 }
 
 GetPacmanKernelPkg(){
