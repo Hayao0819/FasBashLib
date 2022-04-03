@@ -19,7 +19,8 @@ Debug=false
 SnakeCase=false
 
 # 擬似関数
-ToSnakeCase=(sed -r -e 's/^([A-Z])/\L\1\E/' -e 's/([A-Z])/_\L\1\E/g')
+#ToSnakeCase=(sed -r -e 's/^([A-Z])/\L\1\E/' -e 's/([A-Z])/_\L\1\E/g')
+ToSnakeCase=(sed -E 's/(.)([A-Z])/\1_\2/g')
 
 # Set version
 if [[ -e "$MainDir/.git" ]]; then
@@ -112,6 +113,7 @@ sed "s|%VERSION%|${Version-""}|g" "${StaticDir}/script-head.sh" > "$TmpFile"
 [[ -e "$TmpFile" ]] || exit 1
 
 # ライブラリをサブシェル内で読み込んでファイルに追記
+echo -n > "$TmpFile_FuncList"
 while read -r Dir; do
     LibName="$(basename "$Dir")"
     LibPrefix="$("$LibDir/GetMeta.sh" "$LibName" "Prefix")"
@@ -137,7 +139,6 @@ while read -r Dir; do
             touch "$TmpLibFile"
 
             # 関数の定義部分を書き換え
-            echo -n > "$TmpFile_FuncList"
             while read -r Func; do
                 # 置き換えなし
                 if [[ -z "${LibPrefix}" ]] && [[ "$SnakeCase" = false ]]; then
@@ -150,11 +151,13 @@ while read -r Dir; do
                 NewFuncName=""
                 if [[ -z "$LibPrefix" ]]; then
                     # プレフィックスなし、スネークケース置き換え
-                    NewFuncName="$("${ToSnakeCase[@]}" <<< "$Func")"
+                    NewFuncName="$("${ToSnakeCase[@]}" <<< "$Func" | tr '[:upper:]' '[:lower:]')"
                 else
                     if [[ "$SnakeCase" = true ]]; then
                         # プレフィックスあり、スネークケース置き換えあり
-                        NewFuncName="$("${ToSnakeCase[@]}" <<< "$LibPrefix").$("${ToSnakeCase[@]}" <<< "$Func")"
+                        #NewFuncName="$(eval "${ToSnakeCase[@]}" <<< "$LibPrefix").$(eval "${ToSnakeCase[@]}" <<< "$Func")"
+                        NewFuncName="$("${ToSnakeCase[@]}" <<< "$LibPrefix" | tr '[:upper:]' '[:lower:]').$("${ToSnakeCase[@]}" <<< "$Func" | tr '[:upper:]' '[:lower:]')"
+                        
                     else
                         # プレフィックスあり、スネークケースなし
                         NewFuncName="${LibPrefix}.${Func}"
@@ -162,7 +165,7 @@ while read -r Dir; do
                 fi
 
                 # 関数リストに追記
-                echo "$NewFuncName" >> "$TmpFile_FuncList"
+                echo "$Func" >> "$TmpFile_FuncList"
 
                 "${Debug}" && echo "${Func}を${NewFuncName}に置き換え" >&2
                 typeset -f "$Func" | sed "1 s|${Func} ()|${NewFuncName} ()|g" >> "$TmpLibFile"
@@ -209,13 +212,15 @@ done < <(
 unset Dir File
 
 # @のスネークケース置き換え
+sleep 1
 if [[ "$SnakeCase" = true ]]; then
     (
         source "$TmpFile"
         while read -r Func; do
-            NewFuncName="$("${ToSnakeCase[@]}" <<< "$Func")"
+            #NewFuncName="$(eval "${ToSnakeCase[@]}" <<< "$Func")"
+            NewFuncName="$("${ToSnakeCase[@]}" <<< "$Func" | tr '[:upper:]' '[:lower:]')"
 
-            "${Debug}" && echo "ソースコード内の${Func}を${NewFuncName}に置き換え" >&2
+            "${Debug}" && echo "生成された${Func}を${NewFuncName}に置き換え" >&2
             # sed の共通コマンド
             SedArgs=("s|${Func}|${NewFuncName}|g" "$TmpFile")
 
@@ -228,7 +233,7 @@ if [[ "$SnakeCase" = true ]]; then
 
             sed "${SedArgs[@]}"
             unset SedArgs
-        done < "$TmpFile_FuncList"
+        done < <(cat "$TmpFile_FuncList")
     )
 fi
 
