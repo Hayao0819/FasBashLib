@@ -9,8 +9,8 @@ MainDir="$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)"
 #BinDir="$MainDir/bin"
 LibDir="$MainDir/lib"
 TmpDir="$(mktemp -d -t "fasbashlib.XXXXX")"
-TmpFile_Stage1="${TmpDir}/fasbashlib-1.sh"
-TmpFile_Stage2="${TmpDir}/fasbashlib-2.sh"
+TmpFile="${TmpDir}/fasbashlib-1.sh"
+TmpFile_FuncList="${TmpDir}/fasbashlib-list.sh"
 OutFile="${MainDir}/fasbashlib.sh"
 NoRequire=false
 Version=""
@@ -105,11 +105,11 @@ if [[ "$NoRequire" = false ]]; then
 fi
 
 # Create temp file with header
-#cat "$StaticDir/script-head.sh" > "$TmpFile_Stage1"
-sed "s|%VERSION%|${Version-""}|g" "${StaticDir}/script-head.sh" > "$TmpFile_Stage1"
+#cat "$StaticDir/script-head.sh" > "$TmpFile"
+sed "s|%VERSION%|${Version-""}|g" "${StaticDir}/script-head.sh" > "$TmpFile"
 
 # 作成に失敗した場合に終了
-[[ -e "$TmpFile_Stage1" ]] || exit 1
+[[ -e "$TmpFile" ]] || exit 1
 
 # ライブラリをサブシェル内で読み込んでファイルに追記
 while read -r Dir; do
@@ -137,6 +137,7 @@ while read -r Dir; do
             touch "$TmpLibFile"
 
             # 関数の定義部分を書き換え
+            echo -n > "$TmpFile_FuncList"
             while read -r Func; do
                 # 置き換えなし
                 if [[ -z "${LibPrefix}" ]] && [[ "$SnakeCase" = false ]]; then
@@ -159,6 +160,10 @@ while read -r Dir; do
                         NewFuncName="${LibPrefix}.${Func}"
                     fi
                 fi
+
+                # 関数リストに追記
+                echo "$NewFuncName" >> "$TmpFile_FuncList"
+
                 "${Debug}" && echo "${Func}を${NewFuncName}に置き換え" >&2
                 typeset -f "$Func" | sed "1 s|${Func} ()|${NewFuncName} ()|g" >> "$TmpLibFile"
             done < <(typeset -F | cut -d " " -f 3)
@@ -189,7 +194,7 @@ while read -r Dir; do
             done < <(typeset -F | cut -d " " -f 3 | sed "s|^${LibPrefix}\.||g")
         ) 
     fi
-    cat "$TmpLibFile" >> "$TmpFile_Stage1"
+    cat "$TmpLibFile" >> "$TmpFile"
     unset LibPrefix FuncPrefix LibName
 done < <(
     LoadLibDir=()
@@ -205,14 +210,31 @@ unset Dir File
 
 # @のスネークケース置き換え
 if [[ "$SnakeCase" = true ]]; then
-    :
-else
-    cat "$TmpFile_Stage1" > "$TmpFile_Stage2"
+    (
+        source "$TmpFile"
+        while read -r Func; do
+            NewFuncName="$("${ToSnakeCase[@]}" <<< "$Func")"
+
+            "${Debug}" && echo "ソースコード内の${Func}を${NewFuncName}に置き換え" >&2
+            # sed の共通コマンド
+            SedArgs=("s|${Func}|${NewFuncName}|g" "$TmpFile")
+
+            # BSDかGNUか
+            if sed -h 2>&1 | grep -q "GNU"; then
+                SedArgs=("-i" "${SedArgs[@]}")
+            else
+                SedArgs=("-i" "" "${SedArgs[@]}")
+            fi
+
+            sed "${SedArgs[@]}"
+            unset SedArgs
+        done < "$TmpFile_FuncList"
+    )
 fi
 
 
 # Minify
-#bash "$LibDir/minifier/Minify.sh" -f="$TmpFile_Stage1" > "$OutFile"
-cat "$TmpFile_Stage1" > "$OutFile"
+#bash "$LibDir/minifier/Minify.sh" -f="$TmpFile" > "$OutFile"
+cat "$TmpFile" > "$OutFile"
 rm -rf "$TmpDir"
 echo "$OutFile にビルドされました" >&2
