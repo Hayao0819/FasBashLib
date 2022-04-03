@@ -53,6 +53,7 @@ while [[ -n "${1-""}" ]]; do
             ;;
         "-snake")
             SnakeCase=true
+            shift 1
             ;;
         "--")
             shift 1
