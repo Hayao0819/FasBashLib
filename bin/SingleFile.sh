@@ -167,7 +167,7 @@ while read -r Dir; do
                 # 関数リストに追記
                 echo "$Func" >> "$TmpFile_FuncList"
 
-                "${Debug}" && echo "${Func}を${NewFuncName}に置き換え" >&2
+                "${Debug}" && echo "置き換え1: 関数定義の${Func}を${NewFuncName}に置き換え" >&2
                 typeset -f "$Func" | sed "1 s|${Func} ()|${NewFuncName} ()|g" >> "$TmpLibFile"
             done < <(typeset -F | cut -d " " -f 3)
         )
@@ -181,7 +181,7 @@ while read -r Dir; do
             source "${TmpLibFile}" 
             SedArgs=()
             while read -r Func; do
-                "${Debug}" && echo "ソースコード内の@${Func}を${LibPrefix}.${Func}に置き換え" >&2
+                "${Debug}" && echo "置き換え2: 関数内の@${Func}を${LibPrefix}.${Func}に置き換え" >&2
                 # sed の共通コマンド
                 SedArgs=("s|@${Func}|${LibPrefix}\.${Func}|g" "$TmpLibFile")
 
@@ -212,7 +212,6 @@ done < <(
 unset Dir File
 
 # @のスネークケース置き換え
-sleep 1
 if [[ "$SnakeCase" = true ]]; then
     (
         source "$TmpFile"
@@ -220,7 +219,7 @@ if [[ "$SnakeCase" = true ]]; then
             #NewFuncName="$(eval "${ToSnakeCase[@]}" <<< "$Func")"
             NewFuncName="$("${ToSnakeCase[@]}" <<< "$Func" | tr '[:upper:]' '[:lower:]')"
 
-            "${Debug}" && echo "生成された${Func}を${NewFuncName}に置き換え" >&2
+            "${Debug}" && echo "置き換え3: 全ての${Func}を${NewFuncName}に置き換え" >&2
             # sed の共通コマンド
             SedArgs=("s|${Func}|${NewFuncName}|g" "$TmpFile")
 
