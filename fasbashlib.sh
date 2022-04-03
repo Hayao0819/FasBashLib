@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.1.4.2.r121.g43afad6"
+FSBLIB_VERSION="v0.1.4.2.r124.gca2876c"
 ParseArg () 
 { 
     local _Arg _Chr _Cnt;
@@ -834,7 +834,7 @@ Pm.GetInstalledPkgVer ()
 }
 Pm.GetKeyringList () 
 { 
-    find "$(@GetnKeyringDir)" -name "*.gpg" | GetBaseName | RemoveFileExt
+    find "$(@GetKeyringDir)" -name "*.gpg" | GetBaseName | RemoveFileExt
 }
 Pm.GetLatestPkgVer () 
 { 
