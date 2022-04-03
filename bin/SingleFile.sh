@@ -10,7 +10,7 @@ MainDir="$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)"
 LibDir="$MainDir/lib"
 TmpDir="$(mktemp -d -t "fasbashlib.XXXXX")"
 TmpFile="${TmpDir}/fasbashlib-1.sh"
-TmpFile_FuncList="${TmpDir}/fasbashlib-list.sh"
+TmpFile_FuncList="${TmpDir}/fasbashlib-list.sh" # スネークケース置き換え用の関数一覧: <prefix> = <func>の形式で記述されます
 OutFile="${MainDir}/fasbashlib.sh"
 NoRequire=false
 Version=""
@@ -89,6 +89,13 @@ for Dir in "$SrcDir" "$StaticDir" "$LibDir"; do
     }
 done
 
+# 環境表示
+if "$Debug"; then
+    echo "TmpDir=$TmpDir"
+    echo "TmpFile=$TmpFile"
+    echo "TmpFile_FuncList=$TmpFile_FuncList"
+fi
+
 # Check function
 while read -r Func; do
     echo "Unset $Func" >&2
@@ -118,7 +125,11 @@ while read -r Dir; do
     LibName="$(basename "$Dir")"
     LibPrefix="$("$LibDir/GetMeta.sh" "$LibName" "Prefix")"
     TmpLibFile="$TmpDir/$LibName.sh"
+    TmpFuncList="$TmpDir/$LibName-FuncList.sh" #置き換え前のプレフィックスなしの純粋な関数名の一覧
+    echo -n >> "${TmpFuncList}"
 
+    # ライブラリのファイルごとに関数を読み取ってTmpLibFileに関数を書き込み
+    # この際に関数定義部分のプレフィックスとスネークケース置き換えを行う
     while read -r File; do
         printf "%s\n" "${LoadedFiles[@]}" | grep -qx "${Dir}/${File}" && {
             "$Debug" && echo "Already loaded $Dir/$File" >&2
@@ -140,9 +151,15 @@ while read -r Dir; do
 
             # 関数の定義部分を書き換え
             while read -r Func; do
+                # TmpFuncListはライブラリごとの関数の一覧
+                # プレフィックスは除外されており、元のソースコードの関数名がそのまま記述されます。
+                # それに対してTmpFile_FuncListはプレフィックス置き換えまで済ませた全てのライブラリの関数をグローバルに列挙します。
+                # TmpFile_FuncListは最終処理で他ライブラリの関数呼び出しをスネークケースに置き換えるのに使用されます。
+                echo "$Func" >> "${TmpFuncList}"
+
                 # 置き換えなし
                 if [[ -z "${LibPrefix}" ]] && [[ "$SnakeCase" = false ]]; then
-                    echo "$Func" >> "$TmpFile_FuncList"
+                    echo " = $Func" >> "$TmpFile_FuncList"
                     "$Debug" && echo "${Func}を追加" >&2
                     typeset -f "$Func" >> "$TmpLibFile"
                     continue
@@ -152,14 +169,14 @@ while read -r Dir; do
                 NewFuncName=""
                 if [[ -z "$LibPrefix" ]]; then
                     # プレフィックスなし、スネークケース置き換え
-                    echo "$Func" >> "$TmpFile_FuncList"
+                    echo " = $Func" >> "$TmpFile_FuncList"
                     NewFuncName="$("${ToSnakeCase[@]}" <<< "$Func" | tr '[:upper:]' '[:lower:]')"
                 else
-                    echo "${LibPrefix}.${Func}" >> "$TmpFile_FuncList"
+                    echo "${LibPrefix} = ${Func}" >> "$TmpFile_FuncList"
                     if [[ "$SnakeCase" = true ]]; then
                         # プレフィックスあり、スネークケース置き換えあり
                         #NewFuncName="$(eval "${ToSnakeCase[@]}" <<< "$LibPrefix").$(eval "${ToSnakeCase[@]}" <<< "$Func")"
-                        NewFuncName="$("${ToSnakeCase[@]}" <<< "$LibPrefix" | tr '[:upper:]' '[:lower:]').$("${ToSnakeCase[@]}" <<< "$Func" | tr '[:upper:]' '[:lower:]')"
+                        NewFuncName="$(tr '[:upper:]' '[:lower:]' <<< "$LibPrefix").$("${ToSnakeCase[@]}" <<< "$Func" | tr '[:upper:]' '[:lower:]')"
                         
                     else
                         # プレフィックスあり、スネークケースなし
@@ -173,18 +190,29 @@ while read -r Dir; do
         )
     done < <("$LibDir/GetMeta.sh" "${LibName}" "Files" | tr "," "\n")
 
-    # 一時ファイルを元に関数内のコードを置き換え
+    # 同じライブラリ内での関数呼び出しを置き換え
+    # 置き換えは全てTmpLibFileのみで完結します
+    # 
+    echo "${LibName}の@呼び出しを置き換え" >&2
     if [[ -z "${LibPrefix-""}" ]]; then
         "${Debug}" && echo "プレフィックスが設定されていないため、${LibName}の置き換えをスキップ" >&2
     else
+        if [[ "${SnakeCase}" = true ]]; then
+            LibPrefix=$(tr '[:upper:]' '[:lower:]' <<< "$LibPrefix")
+        fi
         (
-            source "${TmpLibFile}" 
+            #source "${TmpLibFile}" 
             SedArgs=()
             while read -r Func; do
-                "${Debug}" && echo "置き換え2: 関数内の@${Func}を${LibPrefix}.${Func}に置き換え" >&2
+                if [[ "$SnakeCase" = true ]]; then
+                    NewFuncName="$("${ToSnakeCase[@]}" <<< "$Func" | tr '[:upper:]' '[:lower:]')"
+                else
+                    NewFuncName="$Func"
+                fi
+            
+                "${Debug}" && echo "置き換え2: 関数内の@${Func}を${LibPrefix}.${NewFuncName}に置き換え" >&2
                 # sed の共通コマンド
-                SedArgs=("s|@${Func}|${LibPrefix}\.${Func}|g" "$TmpLibFile")
-
+                    SedArgs=("s|@${Func}|${LibPrefix}\.${NewFuncName}|g" "$TmpLibFile")
                 # BSDかGNUか
                 if sed -h 2>&1 | grep -q "GNU"; then
                     SedArgs=("-i" "${SedArgs[@]}")
@@ -194,7 +222,8 @@ while read -r Dir; do
 
                 sed "${SedArgs[@]}"
                 unset SedArgs
-            done < <(typeset -F | cut -d " " -f 3 | sed "s|^${LibPrefix}\.||g")
+            #done < <(typeset -F | cut -d " " -f 3 | sed "s|^${LibPrefix}\.||g")
+            done < "${TmpFuncList}"
         ) 
     fi
     cat "$TmpLibFile" >> "$TmpFile"
@@ -211,17 +240,28 @@ done < <(
     )
 unset Dir File
 
-# @のスネークケース置き換え
+# 全ての呼び出しのスネークケース置き換え
+# TmpFile_FuncListを元に生成されたスクリプト全体を置き換えます
 if [[ "$SnakeCase" = true ]]; then
     (
-        source "$TmpFile"
-        while read -r Func; do
+        #source "$TmpFile"
+        while read -r Line; do
             #NewFuncName="$(eval "${ToSnakeCase[@]}" <<< "$Func")"
-            NewFuncName="$("${ToSnakeCase[@]}" <<< "$Func" | tr '[:upper:]' '[:lower:]')"
+            LibPrefix="$(cut -d "=" -f 1 <<< "$Line" | sed "s|^ *||g; s| *$||g")"
+            Func="$(cut -d "=" -f 2 <<< "$Line" | sed "s|^ *||g; s| *$||g")"
+            
+            #NewFuncName="$("${ToSnakeCase[@]}" <<< "$Func" | tr '[:upper:]' '[:lower:]')"
+            if [[ -z "$LibPrefix" ]]; then
+                OldFuncName="$Func"
+                NewFuncName="$("${ToSnakeCase[@]}" <<< "$Func" | tr '[:upper:]' '[:lower:]')"
+            else
+                OldFuncName="${LibPrefix}.$Func"
+                NewFuncName="$(tr '[:upper:]' '[:lower:]' <<< "$LibPrefix").$("${ToSnakeCase[@]}" <<< "$Func" | tr '[:upper:]' '[:lower:]')"
+            fi
 
-            "${Debug}" && echo "置き換え3: 全ての${Func}を${NewFuncName}に置き換え" >&2
+            "${Debug}" && echo "置き換え3: 全ての${OldFuncName}を${NewFuncName}に置き換え" >&2
             # sed の共通コマンド
-            SedArgs=("s|${Func}|${NewFuncName}|g" "$TmpFile")
+            SedArgs=("s|${OldFuncName}|${NewFuncName}|g" "$TmpFile")
 
             # BSDかGNUか
             if sed -h 2>&1 | grep -q "GNU"; then
