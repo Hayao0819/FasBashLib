@@ -204,7 +204,6 @@ while read -r Dir; do
             fi
             (
                 #source "${TmpLibFile}" 
-                SedArgs=()
                 while read -r Func; do
                     if [[ "$SnakeCase" = true ]]; then
                         NewFuncName="$("${ToSnakeCase[@]}" <<< "$Func" | tr '[:upper:]' '[:lower:]')"
@@ -214,7 +213,10 @@ while read -r Dir; do
                 
                     "${Debug}" && echo "置き換え2: 関数内の@${Func}を${LibPrefix}.${NewFuncName}に置き換え" >&2
                     # sed の共通コマンド
-                    SedArgs=("s|@${Func}\([^a-zA-Z0-9]\)|${LibPrefix}\.${NewFuncName}\1|g" "$TmpLibFile")
+                    SedArgs=()
+                    SedArgs+=(-e "s|@${Func}$|${LibPrefix}\.${NewFuncName}|g") #行末に書かれた関数用の置き換え
+                    SedArgs+=(-e "s|@${Func}\([^a-zA-Z0-9]\)|${LibPrefix}\.${NewFuncName}\1|g")
+                    SedArgs+=("$TmpLibFile")
                     # BSDかGNUか
                     if sed -h 2>&1 | grep -q "GNU"; then
                         SedArgs=("-i" "${SedArgs[@]}")
@@ -247,7 +249,7 @@ unset Dir File
 
 # 全ての呼び出しのスネークケース置き換え
 # TmpFile_FuncListを元に生成されたスクリプト全体を置き換えます
-if [[ "$SnakeCase" = HOGE ]]; then
+if [[ "$SnakeCase" = true ]]; then
     (
         #source "$TmpFile"
         while read -r Line; do
