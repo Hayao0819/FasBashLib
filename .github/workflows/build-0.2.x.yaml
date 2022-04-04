@@ -7,7 +7,7 @@ on:
       - dev-0.2.x
 
 jobs:
-  build-01x:
+  build-02x:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -26,8 +26,14 @@ jobs:
         with:
           name: FasBashLib
           path: ./fasbashlib.sh
-
+  
       - name: Upload built files
+        uses: actions/upload-artifact@v2
+        with:
+          name: FasBashLib
+          path: ./fasbashlib-snake.sh
+
+      - name: Upload built documents
         uses: actions/upload-artifact@v2
         with:
           name: FasBashLib Documents
