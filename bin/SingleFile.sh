@@ -195,7 +195,7 @@ while read -r Dir; do
     if [[ "${DontRunAtMarkReplacement}" = false ]]; then
         # 同じライブラリ内での関数呼び出しを置き換え
         # 置き換えは全てTmpLibFileのみで完結します
-        echo "${LibName}の@呼び出しを置き換え" >&2
+        "$Debug" && echo "${LibName}の@呼び出しを置き換え" >&2
         if [[ -z "${LibPrefix-""}" ]]; then
             "${Debug}" && echo "プレフィックスが設定されていないため、${LibName}の置き換えをスキップ" >&2
         else
@@ -214,7 +214,7 @@ while read -r Dir; do
                 
                     "${Debug}" && echo "置き換え2: 関数内の@${Func}を${LibPrefix}.${NewFuncName}に置き換え" >&2
                     # sed の共通コマンド
-                        SedArgs=("s|@${Func}|${LibPrefix}\.${NewFuncName}|g" "$TmpLibFile")
+                    SedArgs=("s|@${Func}\([^a-zA-Z0-9]\)|${LibPrefix}\.${NewFuncName}\1|g" "$TmpLibFile")
                     # BSDかGNUか
                     if sed -h 2>&1 | grep -q "GNU"; then
                         SedArgs=("-i" "${SedArgs[@]}")
@@ -222,6 +222,7 @@ while read -r Dir; do
                         SedArgs=("-i" "" "${SedArgs[@]}")
                     fi
 
+                    echo "sed ${SedArgs[*]}"
                     sed "${SedArgs[@]}"
                     unset SedArgs
                 #done < <(typeset -F | cut -d " " -f 3 | sed "s|^${LibPrefix}\.||g")
