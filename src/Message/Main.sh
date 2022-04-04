@@ -29,7 +29,7 @@ Err(){
 
 # @description Output info to stdout
 #
-# @example MsgInfo "Found file.\nCopy it to the dir."
+# @example Msg.Info "Found file.\nCopy it to the dir."
 #
 # @arg $* string A value to print
 #
@@ -40,7 +40,7 @@ Info(){
 
 # @description Output warning to stderr
 #
-# @example MsgWarn "File does not exist!\nSkip it."
+# @example Msg.Warn "File does not exist!\nSkip it."
 #
 # @arg $* string A value to print
 #
