@@ -2,3 +2,5 @@
 /docs
 /docs.zip
 .DS_Store
+/fasbashlib-snake.sh
+/fasbashlib-list
