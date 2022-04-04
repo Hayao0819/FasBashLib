@@ -76,7 +76,7 @@ ParseArg(){
             if printf "%s\n" "${_LongWithArg[@]}" | grep -qx "${1#--}"; then
                 # Check argument
                 if [[ "${2}" = "-"* ]]; then
-                    MsgError "${1} の引数が指定されていません"
+                    Msg.Err "${1} の引数が指定されていません"
                     return 2
                 else
                     _OutArg+=("${1}" "${2}")
@@ -86,7 +86,7 @@ ParseArg(){
                 _OutArg+=("${1}")
                 shift 1
             else
-                MsgError "${1} は不正なオプションです。-hで使い方を確認してください。"
+                Msg.Err "${1} は不正なオプションです。-hで使い方を確認してください。"
                 return 1
             fi
         elif [[ "${1}" = "-"* ]]; then
@@ -98,14 +98,14 @@ ParseArg(){
                         _OutArg+=("-${_Chr}" "${2}")
                         _Shift=2
                     else
-                        MsgError "-${_Chr} の引数が指定されていません"
+                        Msg.Err "-${_Chr} の引数が指定されていません"
                         return 2
                     fi
                 elif printf "%s\n" "${_Short[@]}" | grep -qx "${_Chr}"; then
                     _OutArg+=("-${_Chr}")
                     _Shift=1
                 else
-                    MsgError "-${_Chr} は不正なオプションです。-hで使い方を確認してください。"
+                    Msg.Err "-${_Chr} は不正なオプションです。-hで使い方を確認してください。"
                     return 1
                 fi
             done < <(grep -o . <<< "${1#-}")
