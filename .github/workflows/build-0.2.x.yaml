@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - dev-0.1.x
+      - dev-0.2.x
 
 jobs:
   build-01x:
@@ -43,7 +43,7 @@ jobs:
       - name: Git Push
         env: 
           GH_PAGES_REPO_DEPLOY_KEY: ${{ secrets.GH_PAGES_REPO_DEPLOY_KEY }}
-          PUSH_BRANCH: build-0.1.x
+          PUSH_BRANCH: build-0.2.x
         run: |
           echo "$GH_PAGES_REPO_DEPLOY_KEY" > ~/deploy_key.pem
           chmod 600 ~/deploy_key.pem
