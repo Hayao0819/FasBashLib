@@ -63,7 +63,7 @@ jobs:
           make
           make docs
           rm -rf .gitignore && echo "Removed .gitignore"
-          git add --force ./docs/ ./fasbashlib.sh
+          git add --force ./docs/ ./fasbashlib.sh ./fasbashlib-snake.sh
           git commit -m "Update: Updated built docs and fasbashlib.sh (${GITHUB_SHA})" || true
           git push --force origin "${PUSH_BRANCH}"
     
