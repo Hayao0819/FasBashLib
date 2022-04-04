@@ -1,6 +1,6 @@
 # "THE MIT SUSHI-WARE LICENSE"
 
-Copyright [YEAR] [COPYRIGHT HOLDER]
+Copyright 2022 Yamada Hayao
 
 - You agree that "the author (copyright holder) is not responsible for the software".
 - You place a copyright notice or this permission notice on all copies of the Software or any other material part of the Software.
