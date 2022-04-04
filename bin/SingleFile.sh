@@ -17,6 +17,7 @@ Version=""
 LoadedFiles=()
 Debug=false
 SnakeCase=false
+GenerateFuncList=false
 DontRunAtMarkReplacement=false
 
 # 擬似関数
@@ -48,6 +49,10 @@ while [[ -n "${1-""}" ]]; do
         "-ver")
             Version="$2"
             shift 2
+            ;;
+        "-list")
+            GenerateFuncList=true
+            shift 1
             ;;
         "-debug")
             Debug=true
@@ -291,5 +296,8 @@ fi
 # Minify
 #bash "$LibDir/minifier/Minify.sh" -f="$TmpOutFile" > "$OutFile"
 cat "$TmpOutFile" > "$OutFile"
+if [[ "$GenerateFuncList" = true ]]; then
+    cat "$TmpFile_FuncList" > "${OutFile%.sh}-list"
+fi
 rm -rf "$TmpDir"
 echo "$OutFile にビルドされました" >&2
