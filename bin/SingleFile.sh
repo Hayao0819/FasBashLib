@@ -291,6 +291,5 @@ fi
 # Minify
 #bash "$LibDir/minifier/Minify.sh" -f="$TmpOutFile" > "$OutFile"
 cat "$TmpOutFile" > "$OutFile"
-echo "$TmpDir"
-#rm -rf "$TmpDir"
+rm -rf "$TmpDir"
 echo "$OutFile にビルドされました" >&2
