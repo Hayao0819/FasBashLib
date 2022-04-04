@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.1.4.2.r18.g8ff7214"
+FSBLIB_VERSION="v0.1.4.2.r23.gf9acb8d"
 SrcInfo.Format () 
 { 
     RemoveBlank | sed "/^$/d" | grep -v "^#" | ForEach eval "SrcInfo.Parse Line <<< \"{}\""
