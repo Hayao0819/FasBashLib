@@ -232,7 +232,6 @@ while read -r Dir; do
                     SedArgs=("-i" "" "${SedArgs[@]}")
                 fi
 
-                echo "sed ${SedArgs[*]}"
                 sed "${SedArgs[@]}"
                 unset SedArgs
             done < "${Lib_RawFuncList}"
