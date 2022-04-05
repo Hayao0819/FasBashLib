@@ -8,6 +8,7 @@ set -Eeu -o pipefail
 MainDir="$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)"
 SrcDir="$MainDir/src"
 BinDir="$MainDir/bin"
+LibDir="$MainDir/lib"
 #TmpFile="/tmp/single_runfunc.sh"
 
 (( $# >= 2 )) || {
@@ -25,9 +26,11 @@ if [[ ! -e "$SrcDir/$LibName/Meta.ini" ]]; then
     exit 1
 fi
 
+LibPrefix="$("$LibDir/GetMeta.sh" "$LibName" "Prefix")"
+
 source /dev/stdin < <("$BinDir/SingleFile.sh" -out "/dev/stdout" "$LibName")
 
-Func="${LibName}.$FuncName"
+Func="${LibPrefix}.$FuncName"
 
 typeset -f "${Func}" 1> /dev/null || {
     echo "$Func is not defined." >&2
