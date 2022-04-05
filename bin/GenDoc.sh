@@ -37,6 +37,7 @@ fi
 
 while read -r Lib; do
     echo > "${DocsDir}/${Lib}.md"
-    readarray -t FileList < <("$LibDir/GetMeta.sh" "$Lib" Files | tr "," "\n")
+    readarray -t FileList < <("$LibDir/GetMeta.sh" "$Lib" Files | tr "," "\n" | sed "s|^ *||g; s| *$||g; s|^	*||g; s|	*$||g; /^$/d" )
+    printf "${SrcDir}/$Lib/%s\n" "${FileList[@]}" | xargs -I{} echo "Load: {}"
     printf "${SrcDir}/$Lib/%s\n" "${FileList[@]}" | xargs cat | gawk -f "$LibDir/shdoc/shdoc" >> "${DocsDir}/${Lib}.md"
 done < <("${BinDir}/GetLibList.sh" -q)
