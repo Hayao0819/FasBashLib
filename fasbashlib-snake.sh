@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.1.4.2.r30.g18efbcd"
+FSBLIB_VERSION="v0.1.5.r33.gf89e106"
 srcinfo.format () 
 { 
     remove_blank | sed "/^$/d" | grep -v "^#" | for_each eval "srcinfo.parse Line <<< \"{}\""
