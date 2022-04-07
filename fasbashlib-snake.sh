@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.1.5.r42.g6866045"
+FSBLIB_VERSION="v0.1.5.r45.gc8b48ce"
 FSBLIB_REQUIRE="ModernBash"
 
 srcinfo.format () 
@@ -945,9 +945,13 @@ bool ()
         ;;
     esac
 }
+get_func_list () 
+{ 
+    declare -F | cut -d " " -f 3
+}
 unset_all_func () 
 { 
-    for_each unset "{}" < <(declare -F | cut -d " " -f 3)
+    for_each unset "{}" < <(get_func_list)
 }
 readlinkf () 
 { 
