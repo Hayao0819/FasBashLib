@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.1.5.r62.g987c061"
+FSBLIB_VERSION="v0.1.5.r65.g4d9a665"
 FSBLIB_REQUIRE=""
 
 Csv.GetClm () 
@@ -129,7 +129,7 @@ CheckFuncDefined ()
 }
 ForEach () 
 { 
-    local _Item _Cmd _C;
+    local _Item;
     while read -r _Item; do
         "${@//"{}"/"${_Item}"}" || return "${?}";
     done
