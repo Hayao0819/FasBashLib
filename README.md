@@ -5,7 +5,7 @@
         <img src="https://img.shields.io/badge/license-MIT--SUSHI-orange?style=flat-square">
     </a>
     <a href="https://github.com/Hayao0819/FasBashLib/actions">
-        <img src="https://img.shields.io/github/workflow/status/Hayao0819/FasBashLib/Test%20library">
+        <img src="https://img.shields.io/github/workflow/status/Hayao0819/FasBashLib/Test%20library?style=flat-square">
     </a>
     <a href="https://github.com/Hayao0819/FasBashLib/stargazers">
         <img src="https://img.shields.io/github/stars/Hayao0819/FasBashLib?color=yellow&style=flat-square&logo=github">
