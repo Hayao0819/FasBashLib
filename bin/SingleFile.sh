@@ -84,6 +84,7 @@ _Make_Prepare(){
         echo "TmpDir=$TmpDir"
         echo "TmpFile=$TmpOutFile"
         echo "TmpFile_FuncList=$TmpFile_FuncList"
+        echo "BASH_VERSION=$BASH_VERSION"
     fi
 }
 
