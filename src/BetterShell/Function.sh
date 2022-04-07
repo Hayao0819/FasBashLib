@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
 UnsetAllFunc(){
-    ForEach unset "{}" < <(declare -F | cut -d " " -f 3)
+    ForEach unset "{}" < <(GetFuncList)
+}
+
+
+GetFuncList(){
+    declare -F | cut -d " " -f 3
 }
