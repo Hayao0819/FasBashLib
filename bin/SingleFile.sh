@@ -4,28 +4,35 @@
 
 set -Eeu
 
-# Init
+# Directory
 MainDir="$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)"
-#BinDir="$MainDir/bin"
 SrcDir="$MainDir/src"
 LibDir="$MainDir/lib"
 StaticDir="${MainDir}/static"
+
+# Temp
 TmpDir="$(mktemp -d -t "fasbashlib.XXXXX")"
-TmpOutFile="${TmpDir}/fasbashlib-1.sh"
+TmpOutFile="${TmpDir}/fasbashlib-1.sh" # ビルドされたソースコードはここに書いてください OutFileへの書き込みは行わないでください
 TmpFile_FuncList="${TmpDir}/fasbashlib-list.sh" # スネークケース置き換え用の関数一覧: <prefix> = <func>の形式で記述されます
+
+# Build Configs
 OutFile="${MainDir}/fasbashlib.sh"
 NoRequire=false
-Version=""
-LoadedFiles=()
-Debug=false
 SnakeCase=false
-GenerateFuncList=false
+
+# Debug
+Debug=false
 DontRunAtMarkReplacement=false
-ShellList=()
+GenerateFuncList=false
+
+# Environment
+Version=""
+RequireShell="Any"
+
+# Global Array
+LoadedFiles=()
 TargetLib=()
 RequireLib=()
-RequireShell="Any"
-Version=""
 
 _ToSnakeCase(){
     sed -E 's/(.)([A-Z])/\1_\2/g' | tr '[:upper:]' '[:lower:]'
@@ -43,7 +50,6 @@ SedI(){
 
     sed "${SedArgs[@]}" "$@"
 }
-
 
 _Make_Version(){
     # Set version
@@ -70,15 +76,7 @@ _Make_Prepare(){
         echo "TmpFile=$TmpOutFile"
         echo "TmpFile_FuncList=$TmpFile_FuncList"
     fi
-
-    # Check function
-    #while read -r Func; do
-    #    echo "Unset $Func" >&2
-    #    unset "$Func"
-    #done < <(declare -F | cut -d " " -f 3)
-    #unset Func
 }
-
 
 _Make_Require(){
     # Solve require
@@ -107,12 +105,14 @@ _Make_TargetLib(){
 }
 
 _Make_Shell(){
+    local ShellList=()
+
     # Shellに設定可能な値の一覧と優先順位
     readarray -t ShellList < <(grep -v "^#" "$StaticDir/shell.txt" | grep -v "^$")
 
     # 要求されるシェル
     RequireShell=$(
-        MaxIndex=0
+        local MaxIndex=0 Shell Index
         while read -r Shell; do
             Index=$(grep -x -n "$Shell" < <(printf "%s\n" "${ShellList[@]}") | cut -d ":" -f 1)
             if (( MaxIndex < Index )); then
@@ -120,6 +120,7 @@ _Make_Shell(){
             fi
         done < <(
             # 読み込む
+            local Lib
             for Lib in "${TargetLib[@]}"; do
                 "${LibDir}/GetMeta.sh" "$(basename "$Lib")" "Shell"
             done
@@ -149,7 +150,11 @@ _Make_Lib(){
         LibPrefix="$("$LibDir/GetMeta.sh" "$LibName" "Prefix")"
         TmpLibFile="$TmpDir/$LibName.sh"
         Lib_RawFuncList="$TmpDir/$LibName-FuncList.sh" #置き換え前のプレフィックスなしの純粋な関数名の一覧
-        echo -n >> "${Lib_RawFuncList}"
+
+
+        # ファイルの初期化
+        echo -n > "${Lib_RawFuncList}"
+        echo -n > "$TmpLibFile"
 
         # ライブラリのファイルごとに関数を読み取ってTmpLibFileに関数を書き込み
         # この際に関数定義部分のプレフィックスとスネークケース置き換えを行う
@@ -165,19 +170,19 @@ _Make_Lib(){
             # 関数を読み込んで一時ファイルに書き込み
             # sourceを使用するためサブシェル内で実行
             (
+                # このスクリプトで定義された関数を削除する
                 while read -r Func; do
                     #echo "Unset $Func" >&2
                     unset "$Func"
                 done < <(declare -F | cut -d " " -f 3)
                 unset Func
 
+                # ライブラリのソースコードを読み込む
                 "${Debug}" && echo "Load ${Dir}/${File}" >&2
                 source "${Dir}/${File}" || {
                     echo "Failed to load shell file" >&2
                     exit 1
                 }
-
-                touch "$TmpLibFile"
 
                 # 関数の定義部分を書き換え
                 while read -r Func; do
@@ -196,7 +201,7 @@ _Make_Lib(){
                     fi
 
                     # 置き換えあり
-                    NewFuncName=""
+                    local NewFuncName=""
                     if [[ -z "$LibPrefix" ]]; then
                         # プレフィックスなし、スネークケース置き換え
                         echo " = $Func" >> "$TmpFile_FuncList"
@@ -226,7 +231,10 @@ _Make_Lib(){
             "$Debug" && echo "${LibName}の@呼び出しを置き換え" >&2
             if [[ -z "${LibPrefix-""}" ]]; then
                 "${Debug}" && echo "プレフィックスが設定されていないため、${LibName}の置き換えをスキップ" >&2
+                # プレフィックスが設定されていない場合、@関数は存在しない
+                # スネークケースへの置き換えは全てまとめて最後に行う
             else
+                # スネークケースが有効化されている場合、プレフィックスは小文字にする
                 if [[ "${SnakeCase}" = true ]]; then
                     LibPrefix=$(tr '[:upper:]' '[:lower:]' <<< "$LibPrefix")
                 fi
@@ -234,6 +242,7 @@ _Make_Lib(){
                 # Func: ソースコードに記述されたそのままの関数名
                 # 例えば、SrcInfo.GetValueなら"GetValue"の部分
                 while read -r Func; do
+                    # ドット以降の関数名を_ToSnakeCaseに渡す
                     if [[ "$SnakeCase" = true ]]; then
                         NewFuncName="$(_ToSnakeCase <<< "$Func")"
                     else
@@ -242,7 +251,8 @@ _Make_Lib(){
                 
                     "${Debug}" && echo "置き換え2: 関数内の@${Func}を${LibPrefix}.${NewFuncName}に置き換え" >&2
 
-                    #行末に書かれた関数用の置き換え
+                    # 1つめは行末に書かれた関数の置き換え
+                    # 2つめは関数の後に数字やアルファベット以外がある場合の置き換え
                     SedI \
                         -e "s|@${Func}$|${LibPrefix}\.${NewFuncName}|g" \
                         -e "s|@${Func}\([^a-zA-Z0-9]\)|${LibPrefix}\.${NewFuncName}\1|g" \
