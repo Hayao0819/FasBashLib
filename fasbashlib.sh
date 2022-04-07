@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.1.4.2.r127.g108d96e"
+FSBLIB_VERSION="v0.1.5.r128.g2a8615c"
 SrcInfo.Format () 
 { 
     RemoveBlank | sed "/^$/d" | grep -v "^#" | ForEach eval "SrcInfo.Parse Line <<< \"{}\""
