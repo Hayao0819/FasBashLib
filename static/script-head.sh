@@ -28,3 +28,5 @@
 # shellcheck disable=all
 
 FSBLIB_VERSION="%VERSION%"
+FSBLIB_REQUIRE="%REQUIRE%"
+

@@ -1,0 +1,8 @@
+# Meta.iniに指定可能なShellの一覧
+# 下に行くほど優先順位が下がる
+# 
+
+Any
+PosixShell
+LegacyBash
+ModernBash

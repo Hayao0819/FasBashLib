@@ -8,6 +8,7 @@ set -Eeu
 MainDir="$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)"
 #BinDir="$MainDir/bin"
 LibDir="$MainDir/lib"
+StaticDir="${MainDir}/static"
 TmpDir="$(mktemp -d -t "fasbashlib.XXXXX")"
 TmpOutFile="${TmpDir}/fasbashlib-1.sh"
 TmpFile_FuncList="${TmpDir}/fasbashlib-list.sh" # スネークケース置き換え用の関数一覧: <prefix> = <func>の形式で記述されます
@@ -19,6 +20,9 @@ Debug=false
 SnakeCase=false
 GenerateFuncList=false
 DontRunAtMarkReplacement=false
+ShellList=()
+TargetLib=()
+RequireShell="Any"
 
 # 擬似関数
 #ToSnakeCase=(sed -r -e 's/^([A-Z])/\L\1\E/' -e 's/([A-Z])/_\L\1\E/g')
@@ -79,7 +83,6 @@ while [[ -n "${1-""}" ]]; do
 done
 set -- "${NoArg[@]}"
 
-TargetLib=("$@")
 RequireLib=()
 
 # Ccnfigure dir
@@ -111,16 +114,53 @@ unset Func
 
 # Solve require
 if [[ "$NoRequire" = false ]]; then
-    for Lib in "${TargetLib[@]}"; do
+    for Lib in "${@}"; do
         "${Debug}" && echo "Solving require of $Lib" >&2
         readarray -O "${#RequireLib[@]}" -t RequireLib < <("$LibDir/SolveRequire.sh" "$Lib" | grep -xv "$Lib")
     done
     unset Lib
 fi
 
+# 読み込むライブラリの一覧
+# 配列にはライブラリのディレクトリへのフルパスが代入されています
+readarray -t TargetLib < <(
+    LoadLibDir=()
+    if (( "${#}" > 0 )); then
+        readarray -t LoadLibDir < <(printf "${SrcDir}/%s\n" "${RequireLib[@]}" "${@}")
+    else
+        readarray -t LoadLibDir < <(find "$SrcDir" -mindepth 1 -maxdepth 1 -type d )
+    fi
+    echo "Load libs: $(printf "%s\n" "${LoadLibDir[@]}" | xargs -L 1 basename | tr "\n" " ")" >&2
+    printf "%s\n" "${LoadLibDir[@]}"
+)
+
+# Shellに設定可能な値の一覧と優先順位
+readarray -t ShellList < <(grep -v "^#" "$StaticDir/shell.txt" | grep -v "^$")
+
+# 要求されるシェル
+RequireShell=$(
+    MaxIndex=0
+    while read -r Shell; do
+        Index=$(grep -x -n "$Shell" < <(printf "%s\n" "${ShellList[@]}") | cut -d ":" -f 1)
+        if (( MaxIndex < Index )); then
+            MaxIndex="$Index"
+        fi
+    done < <(
+        # 読み込む
+        for Lib in "${TargetLib[@]}"; do
+            "${LibDir}/GetMeta.sh" "$(basename "$Lib")" "Shell"
+        done
+    )
+    printf "%s\n" "${ShellList[@]}" | head -n "$MaxIndex" | tail -n 1
+    unset Shell Index MaxIndex
+)
+
 # Create temp file with header
 #cat "$StaticDir/script-head.sh" > "$TmpOutFile"
-sed "s|%VERSION%|${Version-""}|g" "${StaticDir}/script-head.sh" > "$TmpOutFile"
+sed \
+    -e "s|%VERSION%|${Version-""}|g" \
+    -e "s|%REQUIRE%|${RequireShell}|g" \
+    "${StaticDir}/script-head.sh" > "$TmpOutFile"
 
 # 作成に失敗した場合に終了
 [[ -e "$TmpOutFile" ]] || exit 1
@@ -197,7 +237,6 @@ while read -r Dir; do
         )
     done < <("$LibDir/GetMeta.sh" "${LibName}" "Files" | tr "," "\n")
 
-
     if [[ "${DontRunAtMarkReplacement}" = false ]]; then
         # 同じライブラリ内での関数呼び出し(@関数)を置き換え
         # 置き換えは全てTmpLibFileのみで完結します
@@ -245,16 +284,7 @@ while read -r Dir; do
     cat "$TmpLibFile" >> "$TmpOutFile"
 
     unset LibPrefix FuncPrefix LibName
-done < <(
-    LoadLibDir=()
-    if (( "${#TargetLib[@]}" > 0 )); then
-        readarray -t LoadLibDir < <(printf "${SrcDir}/%s\n" "${RequireLib[@]}" "${TargetLib[@]}")
-    else
-        readarray -t LoadLibDir < <(find "$SrcDir" -mindepth 1 -maxdepth 1 -type d )
-    fi
-    echo "Load libs: $(printf "%s\n" "${LoadLibDir[@]}" | xargs -L 1 basename | tr "\n" " ")" >&2
-    printf "%s\n" "${LoadLibDir[@]}"
-    )
+done < <(printf "%s\n" "${TargetLib[@]}")
 unset Dir File
 
 # 全ての呼び出しのスネークケース置き換え
