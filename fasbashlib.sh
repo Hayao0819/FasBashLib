@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.1.5.r39.g1bb934f"
+FSBLIB_VERSION="v0.1.5.r42.g6866045"
 FSBLIB_REQUIRE="ModernBash"
 
 SrcInfo.Format () 
@@ -944,6 +944,10 @@ Bool ()
             return 2
         ;;
     esac
+}
+UnsetAllFunc () 
+{ 
+    ForEach unset "{}" < <(declare -F | cut -d " " -f 3)
 }
 Readlinkf () 
 { 
