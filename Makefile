@@ -5,10 +5,10 @@ CURRENT_DIR = ${shell dirname $(dir $(abspath $(lastword $(MAKEFILE_LIST))))}/${
 all: single single-snake
 
 single:
-	bash ${CURRENT_DIR}/bin/SingleFile.sh -debug
+	bash ${CURRENT_DIR}/bin/SingleFile.sh -debug -verbose
 
 single-snake:
-	bash ${CURRENT_DIR}/bin/SingleFile.sh -debug -snake -out ${CURRENT_DIR}/fasbashlib-snake.sh
+	bash ${CURRENT_DIR}/bin/SingleFile.sh -verbose -debug -snake -out ${CURRENT_DIR}/fasbashlib-snake.sh
 
 docs:
 	bash ${CURRENT_DIR}/bin/GenDoc.sh

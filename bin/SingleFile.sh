@@ -338,6 +338,10 @@ while [[ -n "${1-""}" ]]; do
             SnakeCase=true
             shift 1
             ;;
+        "-verbose")
+            set -xv
+            shift 1
+            ;;
         "--")
             shift 1
             break
