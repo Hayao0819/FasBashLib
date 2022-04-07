@@ -39,6 +39,17 @@ RequireLib=()
 
 ToSnakeCase="${LibDir}/ToSnakeCase.sh"
 
+ForEach(){
+    local _Item _Cmd _C
+    while read -r _Item; do
+        for _C in "$@"; do
+            _Cmd+=("${_C//"{}"/"${_Item}"}")
+        done
+        "${_Cmd[@]}" || return "$?"
+        _Cmd=()
+    done
+}
+
 SedI(){
     local SedArgs=()
 
