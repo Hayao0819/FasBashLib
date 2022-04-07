@@ -3,10 +3,6 @@
 
 set -Eeu
 
-# Load FasBashLib
-# shellcheck source=/dev/null
-source /dev/stdin < <(curl -sL "https://raw.githubusercontent.com/Hayao0819/FasBashLib/build-0.2.x/fasbashlib.sh")
-
 # Directory
 MainDir="$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)"
 SrcDir="$MainDir/src"
@@ -39,6 +35,12 @@ RequireLib=()
 
 ToSnakeCase="${LibDir}/ToSnakeCase.sh"
 
+
+#-- FasBashLib --#
+GetFuncList(){
+    declare -F | cut -d " " -f 3
+}
+
 UnsetAllFunc(){
     #ForEach eval "unset \"{}\"" < <(GetFuncList)
     local Func
@@ -46,6 +48,13 @@ UnsetAllFunc(){
         unset "$Func"
     done < <(GetFuncList)
 }
+
+PrintArray(){
+    (( $# >= 1 )) || return 0
+    printf "%s\n" "${@}"
+}
+
+
 
 SedI(){
     local SedArgs=()
