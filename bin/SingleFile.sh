@@ -31,6 +31,20 @@ _ToSnakeCase(){
     sed -E 's/(.)([A-Z])/\1_\2/g' | tr '[:upper:]' '[:lower:]'
 }
 
+SedI(){
+    local SedArgs=()
+
+    # BSDかGNUか
+    if sed -h 2>&1 | grep -q "GNU"; then
+        SedArgs=("-i" "${SedArgs[@]}")
+    else
+        SedArgs=("-i" "" "${SedArgs[@]}")
+    fi
+
+    sed "${SedArgs[@]}" "$@"
+}
+
+
 _Make_Version(){
     # Set version
     if [[ -e "$MainDir/.git" ]]; then
@@ -227,20 +241,12 @@ _Make_Lib(){
                     fi
                 
                     "${Debug}" && echo "置き換え2: 関数内の@${Func}を${LibPrefix}.${NewFuncName}に置き換え" >&2
-                    # sed の共通コマンド
-                    SedArgs=()
-                    SedArgs+=(-e "s|@${Func}$|${LibPrefix}\.${NewFuncName}|g") #行末に書かれた関数用の置き換え
-                    SedArgs+=(-e "s|@${Func}\([^a-zA-Z0-9]\)|${LibPrefix}\.${NewFuncName}\1|g")
-                    SedArgs+=("$TmpLibFile")
-                    # BSDかGNUか
-                    if sed -h 2>&1 | grep -q "GNU"; then
-                        SedArgs=("-i" "${SedArgs[@]}")
-                    else
-                        SedArgs=("-i" "" "${SedArgs[@]}")
-                    fi
 
-                    sed "${SedArgs[@]}"
-                    unset SedArgs
+                    #行末に書かれた関数用の置き換え
+                    SedI \
+                        -e "s|@${Func}$|${LibPrefix}\.${NewFuncName}|g" \
+                        -e "s|@${Func}\([^a-zA-Z0-9]\)|${LibPrefix}\.${NewFuncName}\1|g" \
+                        "$TmpLibFile"
                 done < "${Lib_RawFuncList}"
             fi
         fi
@@ -274,19 +280,8 @@ _Make_All_Replace(){
             fi
 
             "${Debug}" && echo "置き換え3: 全ての${OldFuncName}を${NewFuncName}に置き換え" >&2
-            # sed の共通コマンド
-            SedArgs=("s|${OldFuncName}|${NewFuncName}|g" "$TmpOutFile")
-
-            # BSDかGNUか
-            if sed -h 2>&1 | grep -q "GNU"; then
-                SedArgs=("-i" "${SedArgs[@]}")
-            else
-                SedArgs=("-i" "" "${SedArgs[@]}")
-            fi
-
-            sed "${SedArgs[@]}"
-            unset SedArgs
-        done < <(cat "$TmpFile_FuncList")
+            SedI "s|${OldFuncName}|${NewFuncName}|g" "$TmpOutFile"
+        done < "$TmpFile_FuncList"
     fi
 }
 
