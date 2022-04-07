@@ -35,8 +35,8 @@ ForEach(){
     local _Item _Cmd _C
     while read -r _Item; do
         for _C in "$@"; do
-            #shellcheck disable=SC2001
-            _Cmd+=("$(sed "s|{}|${_Item}|g" <<< "$_C")")
+            #_Cmd+=("$(sed "s|{}|${_Item}|g" <<< "$_C")")
+            _Cmd+=("${_C//"{}"/"${_Item}"}")
         done
         "${_Cmd[@]}" || return "$?"
         _Cmd=()
