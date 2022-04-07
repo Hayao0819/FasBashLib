@@ -9,12 +9,18 @@ MainDir="$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)"
 #BinDir="$MainDir/bin"
 LibDir="$MainDir/lib"
 TmpDir="$(mktemp -d -t "fasbashlib.XXXXX")"
-TmpFile="${TmpDir}/fasbashlib.sh"
+TmpFile="${TmpDir}/fasbashlib-1.sh"
+TmpFile_FuncList="${TmpDir}/fasbashlib-list.sh"
 OutFile="${MainDir}/fasbashlib.sh"
 NoRequire=false
 Version=""
 LoadedFiles=()
 Debug=false
+SnakeCase=false
+
+# 擬似関数
+#ToSnakeCase=(sed -r -e 's/^([A-Z])/\L\1\E/' -e 's/([A-Z])/_\L\1\E/g')
+ToSnakeCase=(sed -E 's/(.)([A-Z])/\1_\2/g')
 
 # Set version
 if [[ -e "$MainDir/.git" ]]; then
@@ -44,6 +50,10 @@ while [[ -n "${1-""}" ]]; do
             ;;
         "-debug")
             Debug=true
+            shift 1
+            ;;
+        "-snake")
+            SnakeCase=true
             shift 1
             ;;
         "--")
@@ -103,6 +113,7 @@ sed "s|%VERSION%|${Version-""}|g" "${StaticDir}/script-head.sh" > "$TmpFile"
 [[ -e "$TmpFile" ]] || exit 1
 
 # ライブラリをサブシェル内で読み込んでファイルに追記
+echo -n > "$TmpFile_FuncList"
 while read -r Dir; do
     LibName="$(basename "$Dir")"
     LibPrefix="$("$LibDir/GetMeta.sh" "$LibName" "Prefix")"
@@ -126,14 +137,38 @@ while read -r Dir; do
             }
 
             touch "$TmpLibFile"
+
+            # 関数の定義部分を書き換え
             while read -r Func; do
-                if [[ -z "${LibPrefix}" ]]; then
+                # 置き換えなし
+                if [[ -z "${LibPrefix}" ]] && [[ "$SnakeCase" = false ]]; then
+                    echo "$Func" >> "$TmpFile_FuncList"
                     "$Debug" && echo "${Func}を追加" >&2
                     typeset -f "$Func" >> "$TmpLibFile"
-                else
-                    "${Debug}" && echo "${Func}を${LibPrefix}.${Func}に置き換え" >&2
-                    typeset -f "$Func" | sed "1 s|${Func} ()|${LibPrefix}.${Func} ()|g" >> "$TmpLibFile"
+                    continue
                 fi
+
+                # 置き換えあり
+                NewFuncName=""
+                if [[ -z "$LibPrefix" ]]; then
+                    # プレフィックスなし、スネークケース置き換え
+                    echo "$Func" >> "$TmpFile_FuncList"
+                    NewFuncName="$("${ToSnakeCase[@]}" <<< "$Func" | tr '[:upper:]' '[:lower:]')"
+                else
+                    echo "${LibPrefix}.${Func}" >> "$TmpFile_FuncList"
+                    if [[ "$SnakeCase" = true ]]; then
+                        # プレフィックスあり、スネークケース置き換えあり
+                        #NewFuncName="$(eval "${ToSnakeCase[@]}" <<< "$LibPrefix").$(eval "${ToSnakeCase[@]}" <<< "$Func")"
+                        NewFuncName="$("${ToSnakeCase[@]}" <<< "$LibPrefix" | tr '[:upper:]' '[:lower:]').$("${ToSnakeCase[@]}" <<< "$Func" | tr '[:upper:]' '[:lower:]')"
+                        
+                    else
+                        # プレフィックスあり、スネークケースなし
+                        NewFuncName="${LibPrefix}.${Func}"
+                    fi
+                fi
+
+                "${Debug}" && echo "置き換え1: 関数定義の${Func}を${NewFuncName}に置き換え" >&2
+                typeset -f "$Func" | sed "1 s|${Func} ()|${NewFuncName} ()|g" >> "$TmpLibFile"
             done < <(typeset -F | cut -d " " -f 3)
         )
     done < <("$LibDir/GetMeta.sh" "${LibName}" "Files" | tr "," "\n")
@@ -146,7 +181,7 @@ while read -r Dir; do
             source "${TmpLibFile}" 
             SedArgs=()
             while read -r Func; do
-                "${Debug}" && echo "ソースコード内の@${Func}を${LibPrefix}.${Func}に置き換え" >&2
+                "${Debug}" && echo "置き換え2: 関数内の@${Func}を${LibPrefix}.${Func}に置き換え" >&2
                 # sed の共通コマンド
                 SedArgs=("s|@${Func}|${LibPrefix}\.${Func}|g" "$TmpLibFile")
 
@@ -176,7 +211,30 @@ done < <(
     )
 unset Dir File
 
-# @を置き換え
+# @のスネークケース置き換え
+if [[ "$SnakeCase" = true ]]; then
+    (
+        source "$TmpFile"
+        while read -r Func; do
+            #NewFuncName="$(eval "${ToSnakeCase[@]}" <<< "$Func")"
+            NewFuncName="$("${ToSnakeCase[@]}" <<< "$Func" | tr '[:upper:]' '[:lower:]')"
+
+            "${Debug}" && echo "置き換え3: 全ての${Func}を${NewFuncName}に置き換え" >&2
+            # sed の共通コマンド
+            SedArgs=("s|${Func}|${NewFuncName}|g" "$TmpFile")
+
+            # BSDかGNUか
+            if sed -h 2>&1 | grep -q "GNU"; then
+                SedArgs=("-i" "${SedArgs[@]}")
+            else
+                SedArgs=("-i" "" "${SedArgs[@]}")
+            fi
+
+            sed "${SedArgs[@]}"
+            unset SedArgs
+        done < <(cat "$TmpFile_FuncList")
+    )
+fi
 
 
 # Minify
