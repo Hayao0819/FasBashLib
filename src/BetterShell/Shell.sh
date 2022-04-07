@@ -32,7 +32,7 @@ GetLine(){
 # @exitcode 0 正常に実行されました
 # @exitcode 0以外 指定されたコマンドが0以外で終了し、ループを中止しました
 ForEach(){
-    local _Item _Cmd _C
+    local _Item
     while read -r _Item; do
         "${@//"{}"/"${_Item}"}" || return "${?}"
     done
