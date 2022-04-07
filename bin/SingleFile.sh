@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
-# Do not use FasBashLib in this file
 # shellcheck disable=SC1090,SC1091
 
 set -Eeu
+
+# Load FasBashLib
+# shellcheck source=/dev/null
+source /dev/stdin < <(curl -sL "https://raw.githubusercontent.com/Hayao0819/FasBashLib/344809e5c11e48f14ccb8180dc214943af4d3612/fasbashlib.sh")
 
 # Directory
 MainDir="$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)"
@@ -119,11 +122,8 @@ _Make_Shell(){
                 MaxIndex="$Index"
             fi
         done < <(
-            # 読み込む
-            local Lib
-            for Lib in "${TargetLib[@]}"; do
-                "${LibDir}/GetMeta.sh" "$(basename "$Lib")" "Shell"
-            done
+            # shellcheck disable=SC2016
+            PrintArray "${TargetLib[@]}" | ForEach eval '${LibDir}/GetMeta.sh $(basename "{}") Shell'
         )
         printf "%s\n" "${ShellList[@]}" | head -n "$MaxIndex" | tail -n 1
         unset Shell Index MaxIndex
@@ -151,7 +151,6 @@ _Make_Lib(){
         TmpLibFile="$TmpDir/$LibName.sh"
         Lib_RawFuncList="$TmpDir/$LibName-FuncList.sh" #置き換え前のプレフィックスなしの純粋な関数名の一覧
 
-
         # ファイルの初期化
         echo -n > "${Lib_RawFuncList}"
         echo -n > "$TmpLibFile"
@@ -171,11 +170,7 @@ _Make_Lib(){
             # sourceを使用するためサブシェル内で実行
             (
                 # このスクリプトで定義された関数を削除する
-                while read -r Func; do
-                    #echo "Unset $Func" >&2
-                    unset "$Func"
-                done < <(declare -F | cut -d " " -f 3)
-                unset Func
+                UnsetAllFunc
 
                 # ライブラリのソースコードを読み込む
                 "${Debug}" && echo "Load ${Dir}/${File}" >&2
@@ -184,43 +179,43 @@ _Make_Lib(){
                     exit 1
                 }
 
-                # 関数の定義部分を書き換え
-                while read -r Func; do
-                    # Lib_RawFuncListはライブラリごとの関数の一覧
-                    # プレフィックスは除外されており、元のソースコードの関数名がそのまま記述されます。
-                    # それに対してTmpFile_FuncListはプレフィックス置き換えまで済ませた全てのライブラリの関数をグローバルに列挙します。
-                    # TmpFile_FuncListは最終処理で他ライブラリの関数呼び出しをスネークケースに置き換えるのに使用されます。
-                    echo "$Func" >> "${Lib_RawFuncList}"
+                # Lib_RawFuncListはライブラリごとの関数の一覧
+                # プレフィックスは除外されており、元のソースコードの関数名がそのまま記述されます。
+                # それに対してTmpFile_FuncListはプレフィックス置き換えまで済ませた全てのライブラリの関数をグローバルに列挙します。
+                # TmpFile_FuncListは最終処理で他ライブラリの関数呼び出しをスネークケースに置き換えるのに使用されます。
+                typeset -F | cut -d " " -f 3 >> "$Lib_RawFuncList"
 
-                    # 置き換えなし
-                    if [[ -z "${LibPrefix}" ]] && [[ "$SnakeCase" = false ]]; then
+                # 関数の置き換えを一切行わない場合
+                if [[ -z "${LibPrefix}" ]] && [[ "$SnakeCase" = false ]]; then
+                    while read -r Func; do
                         echo " = $Func" >> "$TmpFile_FuncList"
                         "$Debug" && echo "${Func}を追加" >&2
                         typeset -f "$Func" >> "$TmpLibFile"
-                        continue
-                    fi
-
-                    # 置き換えあり
-                    local NewFuncName=""
-                    if [[ -z "$LibPrefix" ]]; then
-                        # プレフィックスなし、スネークケース置き換え
-                        echo " = $Func" >> "$TmpFile_FuncList"
-                        NewFuncName="$(_ToSnakeCase <<< "$Func")"
-                    else
-                        echo "${LibPrefix} = ${Func}" >> "$TmpFile_FuncList"
-                        if [[ "$SnakeCase" = true ]]; then
-                            # プレフィックスあり、スネークケース置き換えあり
-                            #NewFuncName="$(eval "${ToSnakeCase[@]}" <<< "$LibPrefix").$(eval "${ToSnakeCase[@]}" <<< "$Func")"
-                            NewFuncName="$(tr '[:upper:]' '[:lower:]' <<< "$LibPrefix").$(_ToSnakeCase <<< "$Func")"
+                    done < <(typeset -F | cut -d " " -f 3)
+                else
+                    # 関数の定義部分を書き換え
+                    while read -r Func; do
+                        # 置き換えあり
+                        local NewFuncName=""
+                        if [[ -z "$LibPrefix" ]]; then
+                            # プレフィックスなし、スネークケース置き換え
+                            echo " = $Func" >> "$TmpFile_FuncList"
+                            NewFuncName="$(_ToSnakeCase <<< "$Func")"
                         else
-                            # プレフィックスあり、スネークケースなし
-                            NewFuncName="${LibPrefix}.${Func}"
+                            echo "${LibPrefix} = ${Func}" >> "$TmpFile_FuncList"
+                            if [[ "$SnakeCase" = true ]]; then
+                                # プレフィックスあり、スネークケース置き換えあり
+                                #NewFuncName="$(eval "${ToSnakeCase[@]}" <<< "$LibPrefix").$(eval "${ToSnakeCase[@]}" <<< "$Func")"
+                                NewFuncName="$(tr '[:upper:]' '[:lower:]' <<< "$LibPrefix").$(_ToSnakeCase <<< "$Func")"
+                            else
+                                # プレフィックスあり、スネークケースなし
+                                NewFuncName="${LibPrefix}.${Func}"
+                            fi
                         fi
-                    fi
-
-                    "${Debug}" && echo "置き換え1: 関数定義の${Func}を${NewFuncName}に置き換え" >&2
-                    typeset -f "$Func" | sed "1 s|${Func} ()|${NewFuncName} ()|g" >> "$TmpLibFile"
-                done < <(typeset -F | cut -d " " -f 3)
+                        "${Debug}" && echo "置き換え1: 関数定義の${Func}を${NewFuncName}に置き換え" >&2
+                        typeset -f "$Func" | sed "1 s|${Func} ()|${NewFuncName} ()|g" >> "$TmpLibFile"
+                    done < <(typeset -F | cut -d " " -f 3)
+                fi
             )
         done < <("$LibDir/GetMeta.sh" "${LibName}" "Files" | tr "," "\n")
 
