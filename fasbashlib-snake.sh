@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.1.5.r36.g65c0ec8"
+FSBLIB_VERSION="v0.1.5.r39.g1bb934f"
 FSBLIB_REQUIRE="ModernBash"
 
 srcinfo.format () 
@@ -1009,6 +1009,17 @@ readlinkf__readlink ()
         target=$(readlink -- "$target" 2>/dev/null) || break;
     done;
     return 1
+}
+fsblib_env_check () 
+{ 
+    case "$FSBLIB_REQUIRE" in 
+        "Any")
+            return 0
+        ;;
+        "ModernShell")
+            [[ "$(cut -d "." -f 1 <<< "$BASH_VERSION")" = "5" ]] && return 0
+        ;;
+    esac
 }
 url.authority () 
 { 
