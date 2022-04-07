@@ -27,148 +27,9 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.1.5.r45.gc8b48ce"
-FSBLIB_REQUIRE="ModernBash"
+FSBLIB_VERSION="v0.1.5.r62.g987c061"
+FSBLIB_REQUIRE=""
 
-srcinfo.format () 
-{ 
-    remove_blank | sed "/^$/d" | grep -v "^#" | for_each eval "srcinfo.parse Line <<< \"{}\""
-}
-srcinfo.get_key_list () 
-{ 
-    srcinfo.format | cut -d "=" -f 1
-}
-srcinfo.get_pkg_base () 
-{ 
-    local _Line _Key _InSection=false;
-    while read -r _Line; do
-        _Key="$(srcinfo.parse Key <<< "$_Line")";
-        case "$_Key" in 
-            "pkgbase")
-                _InSection=true
-            ;;
-            "pkgname")
-                _InSection=false
-            ;;
-            *)
-                if [[ "${_InSection}" = true ]]; then
-                    echo "$_Line";
-                fi
-            ;;
-        esac;
-    done < <(srcinfo.format)
-}
-srcinfo.get_pkg_name () 
-{ 
-    local _Line _Key _InSection=false _TargetPkgName="$1";
-    while read -r _Line; do
-        _Key="$(srcinfo.parse Key <<< "$_Line")";
-        case "$_Key" in 
-            "pkgname")
-                if [[ "$(srcinfo.parse Value <<< "$_Line")" = "$_TargetPkgName" ]]; then
-                    _InSection=true;
-                else
-                    _InSection=false;
-                fi
-            ;;
-            "pkgbase")
-                _InSection=false
-            ;;
-            *)
-                if [[ "${_InSection}" = true ]]; then
-                    echo "$_Line";
-                fi
-            ;;
-        esac;
-    done < <(srcinfo.format)
-}
-srcinfo.get_section_list () 
-{ 
-    srcinfo.format | grep -e "^pkgbase" -e "^pkgname"
-}
-srcinfo.get_value () 
-{ 
-    local _SrcInfo=();
-    local _Output=();
-    local _PkgBaseValues=("pkgver" "pkgrel" "epoch");
-    local _AllValues=("pkgdesc" "url" "install" "changelog");
-    local _AllArrays=("arch" "groups" "license" "noextract" "options" "backup" "validpgpkeys");
-    local _AllArraysWithArch=("source" "depends" "checkdepends" "makedepends" "optdepends" "provides" "conflicts" "replaces" "md5sums" "sha1sums" "sha224sums" "sha256sums" "sha384sums" "sha512sums");
-    array_append _SrcInfo;
-    array_includes _PkgBaseValues "$1" && { 
-        print_eval_array _SrcInfo | srcinfo.get_value_in_pkg_base "$1";
-        return 0
-    };
-    [[ -n "${2-""}" ]] || return 1;
-    if array_includes _AllValues "$1" || array_includes _AllArrays "$1"; then
-        array_append _Output < <(print_eval_array _SrcInfo | srcinfo.get_value_in_pkg_base "$1");
-        array_append _Output < <(print_eval_array _SrcInfo | srcinfo.get_value_in_pkg_name "$2" "$1");
-        print_array "${_Output[@]}" | tail -n 1;
-        return 0;
-    fi;
-    array_includes _AllArraysWithArch "$1" || return 1;
-    local _Arch _ArchList;
-    if [[ -z "${3-""}" ]]; then
-        array_append _ArchList < <(print_eval_array _SrcInfo | srcinfo.get_value arch "$2");
-    else
-        array_append _ArchList < <(tr "," "\n" <<< "$3" | remove_blank);
-    fi;
-    array_append _Output < <(print_eval_array _SrcInfo | srcinfo.get_value_in_pkg_base "$1");
-    array_append _Output < <(print_eval_array _SrcInfo | srcinfo.get_value_in_pkg_name "$2" "$1");
-    for _Arch in "${_ArchList[@]}";
-    do
-        array_append _Output < <(print_eval_array _SrcInfo | srcinfo.get_value_in_pkg_base "$1_${_Arch}");
-        array_append _Output < <(print_eval_array _SrcInfo | srcinfo.get_value_in_pkg_name "$2" "$1_${_Arch}");
-    done;
-    print_eval_array _Output;
-    return 0
-}
-srcinfo.get_value_in_pkg_base () 
-{ 
-    local _Line;
-    while read -r _Line; do
-        _Key="$(srcinfo.parse Key <<< "$_Line")";
-        case "$_Key" in 
-            "$1")
-                srcinfo.parse Value <<< "$_Line"
-            ;;
-        esac;
-    done < <(srcinfo.get_pkg_base)
-}
-srcinfo.get_value_in_pkg_name () 
-{ 
-    local _Line;
-    while read -r _Line; do
-        _Key="$(srcinfo.parse Key <<< "$_Line")";
-        case "$_Key" in 
-            "$2")
-                srcinfo.parse Value <<< "$_Line"
-            ;;
-        esac;
-    done < <(srcinfo.get_pkg_name "$1")
-}
-srcinfo.parse () 
-{ 
-    local _Output="${1-""}";
-    [[ -n "${_Output}" ]] || return 1;
-    shift 1;
-    local _String _Key _Value;
-    _String="$(cat)";
-    _Key="$(cut -d "=" -f 1 <<<  "$_String" | remove_blank)";
-    _Value="$(cut -d "=" -f 2- <<< "$_String" | remove_blank)";
-    case "$_Output" in 
-        "Line")
-            echo "$_Key=$_Value"
-        ;;
-        "Key")
-            echo "$_Key"
-        ;;
-        "Value")
-            echo "$_Value"
-        ;;
-    esac;
-    return 0
-}
 csv.get_clm () 
 { 
     grep -v "^#" | sed "/^$/d" | cut -d "${CSVDELIM-","}" -f "$1"
@@ -205,208 +66,153 @@ csv.to_bash_array ()
         );
     done < <(seq 1 "$#")
 }
-pm.check_pkg () 
+add_new_to_array () 
 { 
-    local p;
-    for p in "$@";
-    do
-        pm.run -Qq "$p" > /dev/null 2>&1 || return 1;
-    done;
+    eval "print_array \"\${$1[@]}\"" | grep -qx "$2" && return 0;
+    eval "$1+=(\"$2\")"
+}
+array_append () 
+{ 
+    local _ArrName="$1";
+    shift 1 || return 1;
+    readarray -t -O "$(array_index "$_ArrName")" "$_ArrName" < <(cat)
+}
+array_includes () 
+{ 
+    print_eval_array "$1" | grep -qx "$2"
+}
+array_index () 
+{ 
+    print_eval_array "$1" | wc -l
+}
+get_array_index () 
+{ 
+    local n=();
+    readarray -t n < <(grep -x -n "$1" | cut -d ":" -f 1 | for_each eval echo '$(( {} - 1 ))');
+    (( "${#n[@]}" >= 1 )) || return 1;
+    print_array "${n[@]}";
     return 0
 }
-pm.get_config () 
+print_array () 
 { 
-    LANG=C pacman-conf --config="${PACMAN_CONF-"/etc/pacman.conf"}" "$@"
+    (( $# >= 1 )) || return 0;
+    printf "%s\n" "${@}"
 }
-pm.get_installed_pkg_ver () 
+print_eval_array () 
 { 
-    for_each pacman -Qq "{}" | cut -d " " -f 2;
-    print_array "${PIPESTATUS[@]}" | grep -qx "1" && return 1;
+    eval "print_array \"\${$1[@]}\""
+}
+rev_array () 
+{ 
+    readarray -t "$1" < <(print_eval_array "$1" | tac)
+}
+file_type () 
+{ 
+    file --mime-type -b "$1"
+}
+get_base_name () 
+{ 
+    xargs -L 1 basename
+}
+get_file_ext () 
+{ 
+    get_base_name | rev | cut -d "." -f 1 | rev
+}
+remove_file_ext () 
+{ 
+    local Ext;
+    for_each eval 'Ext=$(get_file_ext <<< {}); sed "s|.$Ext$||g" <<< {}; unset Ext'
+}
+check_func_defined () 
+{ 
+    typeset -f "${1}" > /dev/null || return 1
+}
+for_each () 
+{ 
+    local _Item _Cmd _C;
+    while read -r _Item; do
+        "${@//"{}"/"${_Item}"}" || return "${?}";
+    done
+}
+get_line () 
+{ 
+    head -n "$1" | tail -n 1
+}
+is_available () 
+{ 
+    type "$1" 2> /dev/null 1>&2
+}
+cut_last_string () 
+{ 
+    echo "${1%%"${2}"}";
     return 0
 }
-pm.get_keyring_list () 
+get_last_split_string () 
 { 
-    find "$(@GetKeyringDir)" -name "*.gpg" | get_base_name | remove_file_ext
+    rev <<< "$2" | cut -d "$1" -f 1 | rev
 }
-pm.get_latest_pkg_ver () 
+is_uu_id () 
 { 
-    local _LANG="${LANG-""}";
-    export LANG=C;
-    for_each pm.run -Si "{}" | grep "^Version" | cut -d ":" -f 2 | remove_blank;
-    [[ -n "$_LANG" ]] && export LANG="$_LANG";
-    return 0
-}
-pm.get_name () 
-{ 
-    cut -d "<" -f 1 | cut -d ">" -f 1 | cut -d "=" -f 1
-}
-pm.get_pacman_kernel_pkg () 
-{ 
-    echo "there is nothing"
-}
-pm.get_pacman_keyring_dir () 
-{ 
-    local _KeyringDir="";
-    _KeyringDir="$(LANG=C pacman-key -h | remove_blank | grep -A 1 -- "^--populate" | tail -n 1 | cut -d "/" -f 2- | sed "s|'$||g")";
-    : "${_KeyringDir="usr/share/pacman/keyrings"}";
-    _KeyringDir="$(pm.get_root)/$_KeyringDir";
-    _KeyringDir="$(sed -E "s|/+|/|g" <<< "$_KeyringDir")";
-    if [[ -e "$_KeyringDir" ]]; then
-        readlinkf "$_KeyringDir";
-    else
-        echo "$_KeyringDir";
-    fi
-}
-pm.get_repo_conf () 
-{ 
-    for_each eval 'echo [{}] && pm.get_config -r {}'
-}
-pm.get_repo_list_from_conf () 
-{ 
-    pm.get_config --repo-list
-}
-pm.get_repo_pkg_list () 
-{ 
-    pm.run -Slq "$@"
-}
-pm.get_repo_server () 
-{ 
-    for_each eval 'pm.get_config -r {}' | grep "^Server" | for_each eval "ini.parse_line <<< '{}' ; printf '%s\n' \${VALUE}"
-}
-pm.get_repo_ver () 
-{ 
-    pm.run -Sp --print-format '%v' "$1"
-}
-pm.get_root () 
-{ 
-    pm.get_config RootDir
-}
-pm.is_repo_pkg () 
-{ 
-    pm.run -Slq | grep -qx "$(pm.get_name <<< "$1")"
-}
-pm.pacman_gpg () 
-{ 
-    gpg --homedir "$(pm.get_config GPGDir)" "$@"
-}
-pm.run () 
-{ 
-    pacman --noconfirm --config "${PACMAN_CONF-"/etc/pacman.conf"}" "$@"
-}
-pm.run_key () 
-{ 
-    pacman-key --config "${PACMAN_CONF-"/etc/pacman.conf"}" "$@"
-}
-pm.get_db_next_section () 
-{ 
-    pm.get_db_section_list | grep -x -A 1 "^%$1%$" | get_line 2 | sed "s|^%||g; s|%$||g"
-}
-pm.get_db_section () 
-{ 
-    readarray -t _Stdin;
-    print_array "${_Stdin[@]}" | sed -ne "/^%$1%$/,/^%$(print_eval_array _Stdin | pm.get_db_next_section "$1")%$/p" | sed "1d; \$d"
-}
-pm.get_db_section_list () 
-{ 
-    grep -E "^%.*%$"
-}
-pm.create_db_tmp_dir () 
-{ 
-    mkdir -p "$(pm.get_db_tmp_dir)"
-}
-pm.delete_db_tmp_dir () 
-{ 
-    rm -rf "$(pm.get_db_tmp_dir)"
-}
-pm.get_db_tmp_dir () 
-{ 
-    echo "${TMPDIR-"/tmp"}/fasbashlib-pacman-db"
-}
-pm.get_pkg_arch () 
-{ 
-    pm.get_sync_db_desc "$1" | pm.get_db_section ARCH | remove_blank
-}
-pm.get_repo_list_from_local_db () 
-{ 
-    find "$(pm.get_config DBPath)/sync" -mindepth 1 -maxdepth 1 -type f | get_base_name | sed "s|.db$||g";
-    return 0
-}
-pm.get_sync_all_desc () 
-{ 
-    find "$(pm.get_db_tmp_dir)" -mindepth 3 -maxdepth 3 -name "desc" -type f
-}
-pm.get_sync_db_desc () 
-{ 
-    local _path;
-    _path="$(pm.get_sync_db_desc_path "$1")";
-    [[ -e "$_path" ]] || return 1;
-    cat "$_path/desc"
-}
-pm.get_sync_db_desc_path () 
-{ 
-    local _repo;
-    _repo="$(pacman -Sp --print-format '%r' "$1")";
-    { 
-        IsPacmanSyncDbOpend "$_repo" || OpenPacmanSyncDb "$_repo"
-    } || return 1;
-    echo "$(pm.get_db_tmp_dir)/sync/$(pacman -Sp --print-format '%r/%n-%v' "$1")"
-}
-pm.get_virtual_pkg_list () 
-{ 
-    pm.get_repo_list_from_local_db | for_each pm.open_sync_db {};
-    pm.get_sync_all_desc | for_each eval "pm.get_db_section PROVIDES < {}" | remove_blank
-}
-pm.is_opend_sync_db () 
-{ 
-    readarray -t _PkgDbList < <(find "$(pm.get_db_tmp_dir)/sync/$1" -mindepth 1 -maxdepth 1 -type d );
-    (( "${#_PkgDbList[@]}" > 0 )) && return 0;
+    local _UUID="${1-""}";
+    [[ "${_UUID//-/}" =~ ^[[:xdigit:]]{32}$ ]] && return 0;
     return 1
 }
-pm.open_sync_db () 
+print_eval () 
 { 
-    local _Dir _RepoDb;
-    pm.create_db_tmp_dir;
-    _Dir="$(pm.get_db_tmp_dir)/sync/$1";
-    mkdir -p "$_Dir";
-    _RepoDb="$(pm.get_config DBPath)/sync/$1.db";
-    [[ -e "$_RepoDb" ]] || return 1;
-    tar -xzf "${_RepoDb}" -C "$_Dir" || return 1
+    eval echo "\${$1}"
 }
-pm.opened_sync_db_list () 
+random_string () 
 { 
-    find "$(pm.get_db_tmp_dir)/sync/" -mindepth 1 -maxdepth 1 -type d
+    base64 < "/dev/random" | fold -w "$1" | head -n 1;
+    return 0
 }
-pm.parse_pkg_file_name () 
+remove_blank () 
 { 
-    local _Pkg="$1";
-    local _PkgName _PkgVer _PkgRel _Arch _FileExt;
-    local _PkgWithOutExt;
-    if grep "/" <<< "$_Pkg"; then
-        _Pkg="$(basename "$_Pkg")";
-    fi;
-    _FileExt="$(get_last_split_string "-" "$_Pkg" | cut -d "." -f 2-)";
-    _PkgWithOutExt="${_Pkg%%".${_FileExt}"}";
-    _Arch=$(get_last_split_string "-" "${_PkgWithOutExt}");
-    _PkgRel=$(get_last_split_string "-" "${_PkgWithOutExt%%"-${_Arch}"}");
-    _PkgVer=$(get_last_split_string "-" "${_PkgWithOutExt%%"-${_PkgRel}-${_Arch}"}");
-    _PkgName="${_PkgWithOutExt%%"-${_PkgVer}-${_PkgRel}-${_Arch}"}";
-    _ParsedPkg=("${_PkgName}" "-" "$_PkgVer" "-" "$_PkgRel" "-" "$_Arch" ".$_FileExt");
-    if [[ ! "$(print_array "${_ParsedPkg[@]}" | tr -d "\n")" = "${_Pkg}" ]]; then
-        return 1;
-    fi;
-    print_array "${_ParsedPkg[@]}"
+    sed "s|^ *||g; s| *$||g; s|^	*||g; s|	*$||g; /^$/d"
 }
-arch.get_kernel_file_list () 
+to_lower () 
 { 
-    find "/boot" -maxdepth 1 -mindepth 1 -name "vmlinuz-*"
+    local _Str="${1,,}";
+    [[ -z "${_Str-""}" ]] || echo "${_Str}"
 }
-arch.get_kernel_src_list () 
+to_lower_stdin () 
 { 
-    find "/usr/src" -mindepth 1 -maxdepth 1 -type l -name "linux*"
+    local _Str;
+    for_each eval "_Str=\"{}\"; echo \"\${_Str,,}\"";
+    unset _Str
 }
-arch.get_mkinitcpio_preset_list () 
+calc () 
 { 
-    find "/etc/mkinitcpio.d/" -name "*.preset" -type f | get_base_name | remove_file_ext
+    echo "$(( "$@" ))"
+}
+ntest () 
+{ 
+    (( "$@" )) || return 1
+}
+bool () 
+{ 
+    case "$(to_lower "$(print_eval "${1}")")" in 
+        "true")
+            return 0
+        ;;
+        "" | "false")
+            return 1
+        ;;
+        *)
+            return 2
+        ;;
+    esac
+}
+get_func_list () 
+{ 
+    declare -F | cut -d " " -f 3
+}
+unset_all_func () 
+{ 
+    local Func;
+    while read -r Func; do
+        unset "$Func";
+    done < <(get_func_list)
 }
 msg.common () 
 { 
@@ -705,6 +511,104 @@ choice ()
     };
     return 1
 }
+parse_arg () 
+{ 
+    local _Arg _Chr _Cnt;
+    local _Long=() _LongWithArg=() _Short=() _ShortWithArg=();
+    local _OutArg=() _NoArg=();
+    for _Arg in "${@}";
+    do
+        local _TempArray=();
+        case "${_Arg}" in 
+            "LONG="*)
+                readarray -t _TempArray < <(tr -d "\"" <<< "${_Arg#LONG=}" | tr "," "\n");
+                for _Chr in "${_TempArray[@]}";
+                do
+                    if [[ "${_Chr}" = *":" ]]; then
+                        _LongWithArg+=("${_Chr%":"}");
+                    else
+                        _Long+=("${_Chr}");
+                    fi;
+                done;
+                shift 1
+            ;;
+            "SHORT="*)
+                readarray -t _TempArray < <(tr -d "\"" <<< "${_Arg#SHORT=}" | grep -o .);
+                for ((_Cnt=0; _Cnt<= "${#_TempArray[@]}" - 1; _Cnt++ ))
+                do
+                    if [[ "${_TempArray["$(( _Cnt + 1))"]-""}" = ":" ]]; then
+                        _ShortWithArg+=("${_TempArray["${_Cnt}"]}");
+                        _Cnt=$(( _Cnt + 1 ));
+                    else
+                        _Short+=("${_TempArray["${_Cnt}"]}");
+                    fi;
+                done;
+                shift 1
+            ;;
+            "--")
+                shift 1;
+                break
+            ;;
+        esac;
+    done;
+    while (( "$#" > 0 )); do
+        if [[ "${1}" = "--" ]]; then
+            shift 1;
+            _NoArg+=("${@}");
+            shift "$#";
+            break;
+        else
+            if [[ "${1}" = "--"* ]]; then
+                if printf "%s\n" "${_LongWithArg[@]}" | grep -qx "${1#--}"; then
+                    if [[ "${2}" = "-"* ]]; then
+                        msg.err "${1} の引数が指定されていません";
+                        return 2;
+                    else
+                        _OutArg+=("${1}" "${2}");
+                        shift 2;
+                    fi;
+                else
+                    if printf "%s\n" "${_Long[@]}" | grep -qx "${1#--}"; then
+                        _OutArg+=("${1}");
+                        shift 1;
+                    else
+                        msg.err "${1} は不正なオプションです。-hで使い方を確認してください。";
+                        return 1;
+                    fi;
+                fi;
+            else
+                if [[ "${1}" = "-"* ]]; then
+                    local _Shift=0;
+                    while read -r _Chr; do
+                        if printf "%s\n" "${_ShortWithArg[@]}" | grep -qx "${_Chr}"; then
+                            if [[ "${1}" = *"${_Chr}" ]] && [[ ! "${2}" = "-"* ]]; then
+                                _OutArg+=("-${_Chr}" "${2}");
+                                _Shift=2;
+                            else
+                                msg.err "-${_Chr} の引数が指定されていません";
+                                return 2;
+                            fi;
+                        else
+                            if printf "%s\n" "${_Short[@]}" | grep -qx "${_Chr}"; then
+                                _OutArg+=("-${_Chr}");
+                                _Shift=1;
+                            else
+                                msg.err "-${_Chr} は不正なオプションです。-hで使い方を確認してください。";
+                                return 1;
+                            fi;
+                        fi;
+                    done < <(grep -o . <<< "${1#-}");
+                    shift "${_Shift}";
+                else
+                    _NoArg+=("${1}");
+                    shift 1;
+                fi;
+            fi;
+        fi;
+    done;
+    OPTRET=("${_OutArg[@]}" -- "${_NoArg[@]}");
+    return 0
+}
 ini.get_param () 
 { 
     local _RawIniLine=();
@@ -803,155 +707,196 @@ ini.parse_line ()
     esac;
     return 0
 }
-add_new_to_array () 
+pm.check_pkg () 
 { 
-    eval "print_array \"\${$1[@]}\"" | grep -qx "$2" && return 0;
-    eval "$1+=(\"$2\")"
-}
-array_append () 
-{ 
-    local _ArrName="$1";
-    shift 1 || return 1;
-    readarray -t -O "$(array_index "$_ArrName")" "$_ArrName" < <(cat)
-}
-array_includes () 
-{ 
-    print_eval_array "$1" | grep -qx "$2"
-}
-array_index () 
-{ 
-    print_eval_array "$1" | wc -l
-}
-get_array_index () 
-{ 
-    local n=();
-    readarray -t n < <(grep -x -n "$1" | cut -d ":" -f 1 | for_each eval echo '$(( {} - 1 ))');
-    (( "${#n[@]}" >= 1 )) || return 1;
-    print_array "${n[@]}";
+    local p;
+    for p in "$@";
+    do
+        pm.run -Qq "$p" > /dev/null 2>&1 || return 1;
+    done;
     return 0
 }
-print_array () 
+pm.get_config () 
 { 
-    (( $# >= 1 )) || return 0;
-    printf "%s\n" "${@}"
+    LANG=C pacman-conf --config="${PACMAN_CONF-"/etc/pacman.conf"}" "$@"
 }
-print_eval_array () 
+pm.get_installed_pkg_ver () 
 { 
-    eval "print_array \"\${$1[@]}\""
-}
-rev_array () 
-{ 
-    readarray -t "$1" < <(print_eval_array "$1" | tac)
-}
-file_type () 
-{ 
-    file --mime-type -b "$1"
-}
-get_base_name () 
-{ 
-    xargs -L 1 basename
-}
-get_file_ext () 
-{ 
-    get_base_name | rev | cut -d "." -f 1 | rev
-}
-remove_file_ext () 
-{ 
-    local Ext;
-    for_each eval 'Ext=$(get_file_ext <<< {}); sed "s|.$Ext$||g" <<< {}; unset Ext'
-}
-check_func_defined () 
-{ 
-    typeset -f "${1}" > /dev/null || return 1
-}
-for_each () 
-{ 
-    local _Item _Cmd _C;
-    while read -r _Item; do
-        for _C in "$@";
-        do
-            _Cmd+=("$(sed "s|{}|${_Item}|g" <<< "$_C")");
-        done;
-        "${_Cmd[@]}" || return "$?";
-        _Cmd=();
-    done
-}
-get_line () 
-{ 
-    head -n "$1" | tail -n 1
-}
-is_available () 
-{ 
-    type "$1" 2> /dev/null 1>&2
-}
-cut_last_string () 
-{ 
-    echo "${1%%"${2}"}";
+    for_each pacman -Qq "{}" | cut -d " " -f 2;
+    print_array "${PIPESTATUS[@]}" | grep -qx "1" && return 1;
     return 0
 }
-get_last_split_string () 
+pm.get_keyring_list () 
 { 
-    rev <<< "$2" | cut -d "$1" -f 1 | rev
+    find "$(@GetKeyringDir)" -name "*.gpg" | get_base_name | remove_file_ext
 }
-is_uu_id () 
+pm.get_latest_pkg_ver () 
 { 
-    local _UUID="${1-""}";
-    [[ "${_UUID//-/}" =~ ^[[:xdigit:]]{32}$ ]] && return 0;
+    local _LANG="${LANG-""}";
+    export LANG=C;
+    for_each pm.run -Si "{}" | grep "^Version" | cut -d ":" -f 2 | remove_blank;
+    [[ -n "$_LANG" ]] && export LANG="$_LANG";
+    return 0
+}
+pm.get_name () 
+{ 
+    cut -d "<" -f 1 | cut -d ">" -f 1 | cut -d "=" -f 1
+}
+pm.get_pacman_kernel_pkg () 
+{ 
+    echo "there is nothing"
+}
+pm.get_pacman_keyring_dir () 
+{ 
+    local _KeyringDir="";
+    _KeyringDir="$(LANG=C pacman-key -h | remove_blank | grep -A 1 -- "^--populate" | tail -n 1 | cut -d "/" -f 2- | sed "s|'$||g")";
+    : "${_KeyringDir="usr/share/pacman/keyrings"}";
+    _KeyringDir="$(pm.get_root)/$_KeyringDir";
+    _KeyringDir="$(sed -E "s|/+|/|g" <<< "$_KeyringDir")";
+    if [[ -e "$_KeyringDir" ]]; then
+        readlinkf "$_KeyringDir";
+    else
+        echo "$_KeyringDir";
+    fi
+}
+pm.get_repo_conf () 
+{ 
+    for_each eval 'echo [{}] && pm.get_config -r {}'
+}
+pm.get_repo_list_from_conf () 
+{ 
+    pm.get_config --repo-list
+}
+pm.get_repo_pkg_list () 
+{ 
+    pm.run -Slq "$@"
+}
+pm.get_repo_server () 
+{ 
+    for_each eval 'pm.get_config -r {}' | grep "^Server" | for_each eval "ini.parse_line <<< '{}' ; printf '%s\n' \${VALUE}"
+}
+pm.get_repo_ver () 
+{ 
+    pm.run -Sp --print-format '%v' "$1"
+}
+pm.get_root () 
+{ 
+    pm.get_config RootDir
+}
+pm.is_repo_pkg () 
+{ 
+    pm.run -Slq | grep -qx "$(pm.get_name <<< "$1")"
+}
+pm.pacman_gpg () 
+{ 
+    gpg --homedir "$(pm.get_config GPGDir)" "$@"
+}
+pm.run () 
+{ 
+    pacman --noconfirm --config "${PACMAN_CONF-"/etc/pacman.conf"}" "$@"
+}
+pm.run_key () 
+{ 
+    pacman-key --config "${PACMAN_CONF-"/etc/pacman.conf"}" "$@"
+}
+pm.get_db_next_section () 
+{ 
+    pm.get_db_section_list | grep -x -A 1 "^%$1%$" | get_line 2 | sed "s|^%||g; s|%$||g"
+}
+pm.get_db_section () 
+{ 
+    readarray -t _Stdin;
+    print_array "${_Stdin[@]}" | sed -ne "/^%$1%$/,/^%$(print_eval_array _Stdin | pm.get_db_next_section "$1")%$/p" | sed "1d; \$d"
+}
+pm.get_db_section_list () 
+{ 
+    grep -E "^%.*%$"
+}
+pm.create_db_tmp_dir () 
+{ 
+    mkdir -p "$(pm.get_db_tmp_dir)"
+}
+pm.delete_db_tmp_dir () 
+{ 
+    rm -rf "$(pm.get_db_tmp_dir)"
+}
+pm.get_db_tmp_dir () 
+{ 
+    echo "${TMPDIR-"/tmp"}/fasbashlib-pacman-db"
+}
+pm.get_pkg_arch () 
+{ 
+    pm.get_sync_db_desc "$1" | pm.get_db_section ARCH | remove_blank
+}
+pm.get_repo_list_from_local_db () 
+{ 
+    find "$(pm.get_config DBPath)/sync" -mindepth 1 -maxdepth 1 -type f | get_base_name | sed "s|.db$||g";
+    return 0
+}
+pm.get_sync_all_desc () 
+{ 
+    find "$(pm.get_db_tmp_dir)" -mindepth 3 -maxdepth 3 -name "desc" -type f
+}
+pm.get_sync_db_desc () 
+{ 
+    local _path;
+    _path="$(pm.get_sync_db_desc_path "$1")";
+    [[ -e "$_path" ]] || return 1;
+    cat "$_path/desc"
+}
+pm.get_sync_db_desc_path () 
+{ 
+    local _repo;
+    _repo="$(pacman -Sp --print-format '%r' "$1")";
+    { 
+        IsPacmanSyncDbOpend "$_repo" || OpenPacmanSyncDb "$_repo"
+    } || return 1;
+    echo "$(pm.get_db_tmp_dir)/sync/$(pacman -Sp --print-format '%r/%n-%v' "$1")"
+}
+pm.get_virtual_pkg_list () 
+{ 
+    pm.get_repo_list_from_local_db | for_each pm.open_sync_db {};
+    pm.get_sync_all_desc | for_each eval "pm.get_db_section PROVIDES < {}" | remove_blank
+}
+pm.is_opend_sync_db () 
+{ 
+    readarray -t _PkgDbList < <(find "$(pm.get_db_tmp_dir)/sync/$1" -mindepth 1 -maxdepth 1 -type d );
+    (( "${#_PkgDbList[@]}" > 0 )) && return 0;
     return 1
 }
-print_eval () 
+pm.open_sync_db () 
 { 
-    eval echo "\${$1}"
+    local _Dir _RepoDb;
+    pm.create_db_tmp_dir;
+    _Dir="$(pm.get_db_tmp_dir)/sync/$1";
+    mkdir -p "$_Dir";
+    _RepoDb="$(pm.get_config DBPath)/sync/$1.db";
+    [[ -e "$_RepoDb" ]] || return 1;
+    tar -xzf "${_RepoDb}" -C "$_Dir" || return 1
 }
-random_string () 
+pm.opened_sync_db_list () 
 { 
-    base64 < "/dev/random" | fold -w "$1" | head -n 1;
-    return 0
+    find "$(pm.get_db_tmp_dir)/sync/" -mindepth 1 -maxdepth 1 -type d
 }
-remove_blank () 
+pm.parse_pkg_file_name () 
 { 
-    sed "s|^ *||g; s| *$||g; s|^	*||g; s|	*$||g; /^$/d"
-}
-to_lower () 
-{ 
-    local _Str="${1,,}";
-    [[ -z "${_Str-""}" ]] || echo "${_Str}"
-}
-to_lower_stdin () 
-{ 
-    local _Str;
-    for_each eval "_Str=\"{}\"; echo \"\${_Str,,}\"";
-    unset _Str
-}
-calc () 
-{ 
-    echo "$(( "$@" ))"
-}
-ntest () 
-{ 
-    (( "$@" )) || return 1
-}
-bool () 
-{ 
-    case "$(to_lower "$(print_eval "${1}")")" in 
-        "true")
-            return 0
-        ;;
-        "" | "false")
-            return 1
-        ;;
-        *)
-            return 2
-        ;;
-    esac
-}
-get_func_list () 
-{ 
-    declare -F | cut -d " " -f 3
-}
-unset_all_func () 
-{ 
-    for_each unset "{}" < <(get_func_list)
+    local _Pkg="$1";
+    local _PkgName _PkgVer _PkgRel _Arch _FileExt;
+    local _PkgWithOutExt;
+    if grep "/" <<< "$_Pkg"; then
+        _Pkg="$(basename "$_Pkg")";
+    fi;
+    _FileExt="$(get_last_split_string "-" "$_Pkg" | cut -d "." -f 2-)";
+    _PkgWithOutExt="${_Pkg%%".${_FileExt}"}";
+    _Arch=$(get_last_split_string "-" "${_PkgWithOutExt}");
+    _PkgRel=$(get_last_split_string "-" "${_PkgWithOutExt%%"-${_Arch}"}");
+    _PkgVer=$(get_last_split_string "-" "${_PkgWithOutExt%%"-${_PkgRel}-${_Arch}"}");
+    _PkgName="${_PkgWithOutExt%%"-${_PkgVer}-${_PkgRel}-${_Arch}"}";
+    _ParsedPkg=("${_PkgName}" "-" "$_PkgVer" "-" "$_PkgRel" "-" "$_Arch" ".$_FileExt");
+    if [[ ! "$(print_array "${_ParsedPkg[@]}" | tr -d "\n")" = "${_Pkg}" ]]; then
+        return 1;
+    fi;
+    print_array "${_ParsedPkg[@]}"
 }
 readlinkf () 
 { 
@@ -1017,17 +962,6 @@ readlinkf__readlink ()
         target=$(readlink -- "$target" 2>/dev/null) || break;
     done;
     return 1
-}
-fsblib_env_check () 
-{ 
-    case "$FSBLIB_REQUIRE" in 
-        "Any")
-            return 0
-        ;;
-        "ModernShell")
-            [[ "$(cut -d "." -f 1 <<< "$BASH_VERSION")" = "5" ]] && return 0
-        ;;
-    esac
 }
 url.authority () 
 { 
@@ -1137,101 +1071,165 @@ url.parse ()
         url.query <<< "$i";
     fi
 }
-parse_arg () 
+srcinfo.format () 
 { 
-    local _Arg _Chr _Cnt;
-    local _Long=() _LongWithArg=() _Short=() _ShortWithArg=();
-    local _OutArg=() _NoArg=();
-    for _Arg in "${@}";
-    do
-        local _TempArray=();
-        case "${_Arg}" in 
-            "LONG="*)
-                readarray -t _TempArray < <(tr -d "\"" <<< "${_Arg#LONG=}" | tr "," "\n");
-                for _Chr in "${_TempArray[@]}";
-                do
-                    if [[ "${_Chr}" = *":" ]]; then
-                        _LongWithArg+=("${_Chr%":"}");
-                    else
-                        _Long+=("${_Chr}");
-                    fi;
-                done;
-                shift 1
+    remove_blank | sed "/^$/d" | grep -v "^#" | for_each eval "srcinfo.parse Line <<< \"{}\""
+}
+srcinfo.get_key_list () 
+{ 
+    srcinfo.format | cut -d "=" -f 1
+}
+srcinfo.get_pkg_base () 
+{ 
+    local _Line _Key _InSection=false;
+    while read -r _Line; do
+        _Key="$(srcinfo.parse Key <<< "$_Line")";
+        case "$_Key" in 
+            "pkgbase")
+                _InSection=true
             ;;
-            "SHORT="*)
-                readarray -t _TempArray < <(tr -d "\"" <<< "${_Arg#SHORT=}" | grep -o .);
-                for ((_Cnt=0; _Cnt<= "${#_TempArray[@]}" - 1; _Cnt++ ))
-                do
-                    if [[ "${_TempArray["$(( _Cnt + 1))"]-""}" = ":" ]]; then
-                        _ShortWithArg+=("${_TempArray["${_Cnt}"]}");
-                        _Cnt=$(( _Cnt + 1 ));
-                    else
-                        _Short+=("${_TempArray["${_Cnt}"]}");
-                    fi;
-                done;
-                shift 1
+            "pkgname")
+                _InSection=false
             ;;
-            "--")
-                shift 1;
-                break
+            *)
+                if [[ "${_InSection}" = true ]]; then
+                    echo "$_Line";
+                fi
             ;;
         esac;
-    done;
-    while (( "$#" > 0 )); do
-        if [[ "${1}" = "--" ]]; then
-            shift 1;
-            _NoArg+=("${@}");
-            shift "$#";
-            break;
-        else
-            if [[ "${1}" = "--"* ]]; then
-                if printf "%s\n" "${_LongWithArg[@]}" | grep -qx "${1#--}"; then
-                    if [[ "${2}" = "-"* ]]; then
-                        msg.err "${1} の引数が指定されていません";
-                        return 2;
-                    else
-                        _OutArg+=("${1}" "${2}");
-                        shift 2;
-                    fi;
+    done < <(srcinfo.format)
+}
+srcinfo.get_pkg_name () 
+{ 
+    local _Line _Key _InSection=false _TargetPkgName="$1";
+    while read -r _Line; do
+        _Key="$(srcinfo.parse Key <<< "$_Line")";
+        case "$_Key" in 
+            "pkgname")
+                if [[ "$(srcinfo.parse Value <<< "$_Line")" = "$_TargetPkgName" ]]; then
+                    _InSection=true;
                 else
-                    if printf "%s\n" "${_Long[@]}" | grep -qx "${1#--}"; then
-                        _OutArg+=("${1}");
-                        shift 1;
-                    else
-                        msg.err "${1} は不正なオプションです。-hで使い方を確認してください。";
-                        return 1;
-                    fi;
-                fi;
-            else
-                if [[ "${1}" = "-"* ]]; then
-                    local _Shift=0;
-                    while read -r _Chr; do
-                        if printf "%s\n" "${_ShortWithArg[@]}" | grep -qx "${_Chr}"; then
-                            if [[ "${1}" = *"${_Chr}" ]] && [[ ! "${2}" = "-"* ]]; then
-                                _OutArg+=("-${_Chr}" "${2}");
-                                _Shift=2;
-                            else
-                                msg.err "-${_Chr} の引数が指定されていません";
-                                return 2;
-                            fi;
-                        else
-                            if printf "%s\n" "${_Short[@]}" | grep -qx "${_Chr}"; then
-                                _OutArg+=("-${_Chr}");
-                                _Shift=1;
-                            else
-                                msg.err "-${_Chr} は不正なオプションです。-hで使い方を確認してください。";
-                                return 1;
-                            fi;
-                        fi;
-                    done < <(grep -o . <<< "${1#-}");
-                    shift "${_Shift}";
-                else
-                    _NoArg+=("${1}");
-                    shift 1;
-                fi;
-            fi;
-        fi;
+                    _InSection=false;
+                fi
+            ;;
+            "pkgbase")
+                _InSection=false
+            ;;
+            *)
+                if [[ "${_InSection}" = true ]]; then
+                    echo "$_Line";
+                fi
+            ;;
+        esac;
+    done < <(srcinfo.format)
+}
+srcinfo.get_section_list () 
+{ 
+    srcinfo.format | grep -e "^pkgbase" -e "^pkgname"
+}
+srcinfo.get_value () 
+{ 
+    local _SrcInfo=();
+    local _Output=();
+    local _PkgBaseValues=("pkgver" "pkgrel" "epoch");
+    local _AllValues=("pkgdesc" "url" "install" "changelog");
+    local _AllArrays=("arch" "groups" "license" "noextract" "options" "backup" "validpgpkeys");
+    local _AllArraysWithArch=("source" "depends" "checkdepends" "makedepends" "optdepends" "provides" "conflicts" "replaces" "md5sums" "sha1sums" "sha224sums" "sha256sums" "sha384sums" "sha512sums");
+    array_append _SrcInfo;
+    array_includes _PkgBaseValues "$1" && { 
+        print_eval_array _SrcInfo | srcinfo.get_value_in_pkg_base "$1";
+        return 0
+    };
+    [[ -n "${2-""}" ]] || return 1;
+    if array_includes _AllValues "$1" || array_includes _AllArrays "$1"; then
+        array_append _Output < <(print_eval_array _SrcInfo | srcinfo.get_value_in_pkg_base "$1");
+        array_append _Output < <(print_eval_array _SrcInfo | srcinfo.get_value_in_pkg_name "$2" "$1");
+        print_array "${_Output[@]}" | tail -n 1;
+        return 0;
+    fi;
+    array_includes _AllArraysWithArch "$1" || return 1;
+    local _Arch _ArchList;
+    if [[ -z "${3-""}" ]]; then
+        array_append _ArchList < <(print_eval_array _SrcInfo | srcinfo.get_value arch "$2");
+    else
+        array_append _ArchList < <(tr "," "\n" <<< "$3" | remove_blank);
+    fi;
+    array_append _Output < <(print_eval_array _SrcInfo | srcinfo.get_value_in_pkg_base "$1");
+    array_append _Output < <(print_eval_array _SrcInfo | srcinfo.get_value_in_pkg_name "$2" "$1");
+    for _Arch in "${_ArchList[@]}";
+    do
+        array_append _Output < <(print_eval_array _SrcInfo | srcinfo.get_value_in_pkg_base "$1_${_Arch}");
+        array_append _Output < <(print_eval_array _SrcInfo | srcinfo.get_value_in_pkg_name "$2" "$1_${_Arch}");
     done;
-    OPTRET=("${_OutArg[@]}" -- "${_NoArg[@]}");
+    print_eval_array _Output;
     return 0
+}
+srcinfo.get_value_in_pkg_base () 
+{ 
+    local _Line;
+    while read -r _Line; do
+        _Key="$(srcinfo.parse Key <<< "$_Line")";
+        case "$_Key" in 
+            "$1")
+                srcinfo.parse Value <<< "$_Line"
+            ;;
+        esac;
+    done < <(srcinfo.get_pkg_base)
+}
+srcinfo.get_value_in_pkg_name () 
+{ 
+    local _Line;
+    while read -r _Line; do
+        _Key="$(srcinfo.parse Key <<< "$_Line")";
+        case "$_Key" in 
+            "$2")
+                srcinfo.parse Value <<< "$_Line"
+            ;;
+        esac;
+    done < <(srcinfo.get_pkg_name "$1")
+}
+srcinfo.parse () 
+{ 
+    local _Output="${1-""}";
+    [[ -n "${_Output}" ]] || return 1;
+    shift 1;
+    local _String _Key _Value;
+    _String="$(cat)";
+    _Key="$(cut -d "=" -f 1 <<<  "$_String" | remove_blank)";
+    _Value="$(cut -d "=" -f 2- <<< "$_String" | remove_blank)";
+    case "$_Output" in 
+        "Line")
+            echo "$_Key=$_Value"
+        ;;
+        "Key")
+            echo "$_Key"
+        ;;
+        "Value")
+            echo "$_Value"
+        ;;
+    esac;
+    return 0
+}
+fsblib_env_check () 
+{ 
+    case "$FSBLIB_REQUIRE" in 
+        "Any")
+            return 0
+        ;;
+        "ModernShell")
+            [[ "$(cut -d "." -f 1 <<< "$BASH_VERSION")" = "5" ]] && return 0
+        ;;
+    esac
+}
+arch.get_kernel_file_list () 
+{ 
+    find "/boot" -maxdepth 1 -mindepth 1 -name "vmlinuz-*"
+}
+arch.get_kernel_src_list () 
+{ 
+    find "/usr/src" -mindepth 1 -maxdepth 1 -type l -name "linux*"
+}
+arch.get_mkinitcpio_preset_list () 
+{ 
+    find "/etc/mkinitcpio.d/" -name "*.preset" -type f | get_base_name | remove_file_ext
 }
