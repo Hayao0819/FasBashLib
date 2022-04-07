@@ -16,6 +16,7 @@ TmpFile_FuncList="${TmpDir}/fasbashlib-list.sh" # スネークケース置き換
 
 # Build Configs
 OutFile="${MainDir}/fasbashlib.sh"
+Delimiter="."
 NoRequire=false
 SnakeCase=false
 
@@ -54,7 +55,12 @@ PrintArray(){
     printf "%s\n" "${@}"
 }
 
-
+ForEach(){
+    local _Item
+    while read -r _Item; do
+        "${@//"{}"/"${_Item}"}" || return "${?}"
+    done
+}
 
 SedI(){
     local SedArgs=()
@@ -221,10 +227,10 @@ _Make_Lib(){
                             echo "${LibPrefix} = ${Func}" >> "$TmpFile_FuncList"
                             if [[ "$SnakeCase" = true ]]; then
                                 # プレフィックスあり、スネークケース置き換えあり
-                                NewFuncName="$(tr '[:upper:]' '[:lower:]' <<< "$LibPrefix").$("${ToSnakeCase}" <<< "$Func")"
+                                NewFuncName="$(tr '[:upper:]' '[:lower:]' <<< "$LibPrefix")${Delimiter}$("${ToSnakeCase}" <<< "$Func")"
                             else
                                 # プレフィックスあり、スネークケースなし
-                                NewFuncName="${LibPrefix}.${Func}"
+                                NewFuncName="${LibPrefix}${Delimiter}${Func}"
                             fi
                         fi
                         "${Debug}" && echo "置き換え1: 関数定義の${Func}を${NewFuncName}に置き換え" >&2
@@ -259,13 +265,13 @@ _Make_Lib(){
                         NewFuncName="$Func"
                     fi
                 
-                    "${Debug}" && echo "置き換え2: 関数内の@${Func}を${LibPrefix}.${NewFuncName}に置き換え" >&2
+                    "${Debug}" && echo "置き換え2: 関数内の@${Func}を${LibPrefix}${Delimiter}${NewFuncName}に置き換え" >&2
 
                     # 1つめは行末に書かれた関数の置き換え
                     # 2つめは関数の後に数字やアルファベット以外がある場合の置き換え
                     SedI \
-                        -e "s|@${Func}$|${LibPrefix}\.${NewFuncName}|g" \
-                        -e "s|@${Func}\([^a-zA-Z0-9]\)|${LibPrefix}\.${NewFuncName}\1|g" \
+                        -e "s|@${Func}$|${LibPrefix}${Delimiter}${NewFuncName}|g" \
+                        -e "s|@${Func}\([^a-zA-Z0-9]\)|${LibPrefix}${Delimiter}${NewFuncName}\1|g" \
                         "$TmpLibFile"
                 done < "${Lib_RawFuncList}"
             fi
@@ -295,9 +301,26 @@ _Make_All_Replace(){
                 OldFuncName="$Func"
                 NewFuncName="$("${ToSnakeCase}" <<< "$Func")"
             else
-                OldFuncName="${LibPrefix}.$Func"
-                NewFuncName="$(tr '[:upper:]' '[:lower:]' <<< "$LibPrefix").$("${ToSnakeCase}" <<< "$Func")"
+                OldFuncName="${LibPrefix}.${Func}"
+                NewFuncName="$(tr '[:upper:]' '[:lower:]' <<< "$LibPrefix")${Delimiter}$("${ToSnakeCase}" <<< "$Func")"
             fi
+
+            "${Debug}" && echo "置き換え3: 全ての${OldFuncName}を${NewFuncName}に置き換え" >&2
+            SedI "s|${OldFuncName}|${NewFuncName}|g" "$TmpOutFile"
+        done < "$TmpFile_FuncList"
+    elif [[ "$Delimiter" != "." ]]; then
+        # 区切り文字の置き換え
+        while read -r Line; do
+            LibPrefix="$(cut -d "=" -f 1 <<< "$Line" | sed "s|^ *||g; s| *$||g")"
+            Func="$(cut -d "=" -f 2 <<< "$Line" | sed "s|^ *||g; s| *$||g")"
+            
+            if [[ -z "$LibPrefix" ]]; then
+                continue
+            fi
+            
+            OldFuncName="${LibPrefix}.${Func}"
+            NewFuncName="${LibPrefix}${Delimiter}${Func}"
+            
 
             "${Debug}" && echo "置き換え3: 全ての${OldFuncName}を${NewFuncName}に置き換え" >&2
             SedI "s|${OldFuncName}|${NewFuncName}|g" "$TmpOutFile"
