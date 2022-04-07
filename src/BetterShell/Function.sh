@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 UnsetAllFunc(){
-    ForEach unset "{}" < <(GetFuncList)
+    ForEach eval "unset \"{}\"" < <(GetFuncList)
 }
 
 
