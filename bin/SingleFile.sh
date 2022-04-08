@@ -256,21 +256,17 @@ _Make_Lib(){
             # それに対してTmpFile_FuncListはプレフィックス置き換えまで済ませた全てのライブラリの関数をグローバルに列挙します。
             # TmpFile_FuncListは最終処理で他ライブラリの関数呼び出しをスネークケースに置き換えるのに使用されます。
             readarray -t _DefinedFuncInFile < <(_GetFuncListFromFile "${Dir}/${File}")
-            #PrintArray "${_DefinedFuncInFile[@]}" >> "$Lib_RawFuncList"
             _DefinedFuncInLib+=("${_DefinedFuncInFile[@]}")
 
             # 関数の置き換えを一切行わない場合
             if [[ -z "${LibPrefix}" ]] && [[ "$SnakeCase" = false ]]; then
-                #while read -r Func; do
                 for Func in "${_DefinedFuncInFile[@]}"; do
                     echo " = $Func" >> "$TmpFile_FuncList"
                     "$Debug" && echo "${Func}を追加" >&2
                     _GetFuncCodeFromFile "${Dir}/${File}" "$Func" >> "$TmpLibFile"
-                #done < <(typeset -F | cut -d " " -f 3)
                 done
             else
                 # 関数の定義部分を書き換え
-                #while read -r Func; do
                 for Func in "${_DefinedFuncInFile[@]}"; do
                     # 置き換えあり
                     local NewFuncName=""
@@ -290,7 +286,6 @@ _Make_Lib(){
                     fi
                     "${Debug}" && echo "置き換え1: 関数定義の${Func}を${NewFuncName}に置き換え" >&2
                     _GetFuncCodeFromFile "${Dir}/${File}" "$Func" | sed "1 s|${Func} ()|${NewFuncName} ()|g" >> "$TmpLibFile"
-                #done < <(typeset -F | cut -d " " -f 3)
                 done
             fi
         done < <("$LibDir/GetMeta.sh" "${LibName}" "Files" | tr "," "\n")
@@ -312,7 +307,6 @@ _Make_Lib(){
 
                 # Func: ソースコードに記述されたそのままの関数名
                 # 例えば、SrcInfo.GetValueなら"GetValue"の部分
-                #while read -r Func; do
                 for Func in "${_DefinedFuncInLib[@]}"; do
                     # ドット以降の関数名を"${ToSnakeCase}"に渡す
                     if [[ "$SnakeCase" = true ]]; then
@@ -329,7 +323,6 @@ _Make_Lib(){
                         -e "s|@${Func}$|${LibPrefix}${Delimiter}${NewFuncName}|g" \
                         -e "s|@${Func}\([^a-zA-Z0-9]\)|${LibPrefix}${Delimiter}${NewFuncName}\1|g" \
                         "$TmpLibFile"
-                #done < "${Lib_RawFuncList}"
                 done
             fi
         fi
