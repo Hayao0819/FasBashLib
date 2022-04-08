@@ -173,6 +173,57 @@ _Make_Header(){
     [[ -e "$TmpOutFile" ]] || exit 1
 }
 
+# _GetFuncListFromFile <File>
+_GetFuncListFromFile(){
+    local _File="$1"
+    (
+        # すべての関数をリセット
+        UnsetAllFunc
+
+        # ファイルをsource
+        source "${Dir}/${File}" || {
+            echo "Failed to load shell file" >&2
+            exit 1
+        }
+
+        # 関数のリストを出力
+        declare -F | cut -d " " -f 3
+    )
+}
+
+# _GetFuncCodeFromFile _ 
+_GetFuncCodeFromFile(){
+    local _File="$1" _Func="$2"
+    (
+        # すべての関数をリセット
+        UnsetAllFunc
+
+        # ファイルをsource
+        source "${Dir}/${File}" || {
+            echo "Failed to load shell file" >&2
+            exit 1
+        }
+
+        # 関数を出力
+        typeset -f "$_Func"
+    )
+}
+
+# _CheckLoadedFile <Path>
+# $? = 0: 読み込まれていません
+# $? = 1: 既に読み込まれています
+_CheckLoadedFile(){
+    local _File="$1"
+    printf "%s\n" "${LoadedFiles[@]}" | grep -qx "${File}" && {
+        "$Debug" && echo "Already loaded $Dir/$File" >&2
+        return 1
+    }
+
+    echo "Load file: ${Dir}/${File}" >&2
+    LoadedFiles+=("${Dir}/${File}")
+    return 0
+}
+
 _Make_Lib(){
     # ライブラリをサブシェル内で読み込んでファイルに追記
     echo -n > "$TmpFile_FuncList"
@@ -181,6 +232,7 @@ _Make_Lib(){
         LibPrefix="$("$LibDir/GetMeta.sh" "$LibName" "Prefix")"
         TmpLibFile="$TmpDir/$LibName.sh"
         Lib_RawFuncList="$TmpDir/$LibName-FuncList.sh" #置き換え前のプレフィックスなしの純粋な関数名の一覧
+        _DefinedFuncInLib=()
 
         # ファイルの初期化
         echo -n > "${Lib_RawFuncList}"
@@ -189,6 +241,8 @@ _Make_Lib(){
         # ライブラリのファイルごとに関数を読み取ってTmpLibFileに関数を書き込み
         # この際に関数定義部分のプレフィックスとスネークケース置き換えを行う
         while read -r File; do
+            local _DefinedFuncInFile=()
+
             printf "%s\n" "${LoadedFiles[@]}" | grep -qx "${Dir}/${File}" && {
                 "$Debug" && echo "Already loaded $Dir/$File" >&2
                 continue
@@ -197,56 +251,48 @@ _Make_Lib(){
             echo "Load file: ${Dir}/${File}" >&2
             LoadedFiles+=("${Dir}/${File}")
 
-            # 関数を読み込んで一時ファイルに書き込み
-            # sourceを使用するためサブシェル内で実行
-            (
-                # このスクリプトで定義された関数を削除する
-                UnsetAllFunc
+            # Lib_RawFuncListはライブラリごとの関数の一覧
+            # プレフィックスは除外されており、元のソースコードの関数名がそのまま記述されます。
+            # それに対してTmpFile_FuncListはプレフィックス置き換えまで済ませた全てのライブラリの関数をグローバルに列挙します。
+            # TmpFile_FuncListは最終処理で他ライブラリの関数呼び出しをスネークケースに置き換えるのに使用されます。
+            readarray -t _DefinedFuncInFile < <(_GetFuncListFromFile "${Dir}/${File}")
+            #PrintArray "${_DefinedFuncInFile[@]}" >> "$Lib_RawFuncList"
+            _DefinedFuncInLib+=("${_DefinedFuncInFile[@]}")
 
-                # ライブラリのソースコードを読み込む
-                "${Debug}" && echo "Load ${Dir}/${File}" >&2
-                source "${Dir}/${File}" || {
-                    echo "Failed to load shell file" >&2
-                    exit 1
-                }
-
-                # Lib_RawFuncListはライブラリごとの関数の一覧
-                # プレフィックスは除外されており、元のソースコードの関数名がそのまま記述されます。
-                # それに対してTmpFile_FuncListはプレフィックス置き換えまで済ませた全てのライブラリの関数をグローバルに列挙します。
-                # TmpFile_FuncListは最終処理で他ライブラリの関数呼び出しをスネークケースに置き換えるのに使用されます。
-                typeset -F | cut -d " " -f 3 >> "$Lib_RawFuncList"
-
-                # 関数の置き換えを一切行わない場合
-                if [[ -z "${LibPrefix}" ]] && [[ "$SnakeCase" = false ]]; then
-                    while read -r Func; do
+            # 関数の置き換えを一切行わない場合
+            if [[ -z "${LibPrefix}" ]] && [[ "$SnakeCase" = false ]]; then
+                #while read -r Func; do
+                for Func in "${_DefinedFuncInFile[@]}"; do
+                    echo " = $Func" >> "$TmpFile_FuncList"
+                    "$Debug" && echo "${Func}を追加" >&2
+                    _GetFuncCodeFromFile "${Dir}/${File}" "$Func" >> "$TmpLibFile"
+                #done < <(typeset -F | cut -d " " -f 3)
+                done
+            else
+                # 関数の定義部分を書き換え
+                #while read -r Func; do
+                for Func in "${_DefinedFuncInFile[@]}"; do
+                    # 置き換えあり
+                    local NewFuncName=""
+                    if [[ -z "$LibPrefix" ]]; then
+                        # プレフィックスなし、スネークケース置き換え
                         echo " = $Func" >> "$TmpFile_FuncList"
-                        "$Debug" && echo "${Func}を追加" >&2
-                        typeset -f "$Func" >> "$TmpLibFile"
-                    done < <(typeset -F | cut -d " " -f 3)
-                else
-                    # 関数の定義部分を書き換え
-                    while read -r Func; do
-                        # 置き換えあり
-                        local NewFuncName=""
-                        if [[ -z "$LibPrefix" ]]; then
-                            # プレフィックスなし、スネークケース置き換え
-                            echo " = $Func" >> "$TmpFile_FuncList"
-                            NewFuncName="$("${ToSnakeCase}" <<< "$Func")"
+                        NewFuncName="$("${ToSnakeCase}" <<< "$Func")"
+                    else
+                        echo "${LibPrefix} = ${Func}" >> "$TmpFile_FuncList"
+                        if [[ "$SnakeCase" = true ]]; then
+                            # プレフィックスあり、スネークケース置き換えあり
+                            NewFuncName="$(tr '[:upper:]' '[:lower:]' <<< "$LibPrefix")${Delimiter}$("${ToSnakeCase}" <<< "$Func")"
                         else
-                            echo "${LibPrefix} = ${Func}" >> "$TmpFile_FuncList"
-                            if [[ "$SnakeCase" = true ]]; then
-                                # プレフィックスあり、スネークケース置き換えあり
-                                NewFuncName="$(tr '[:upper:]' '[:lower:]' <<< "$LibPrefix")${Delimiter}$("${ToSnakeCase}" <<< "$Func")"
-                            else
-                                # プレフィックスあり、スネークケースなし
-                                NewFuncName="${LibPrefix}${Delimiter}${Func}"
-                            fi
+                            # プレフィックスあり、スネークケースなし
+                            NewFuncName="${LibPrefix}${Delimiter}${Func}"
                         fi
-                        "${Debug}" && echo "置き換え1: 関数定義の${Func}を${NewFuncName}に置き換え" >&2
-                        typeset -f "$Func" | sed "1 s|${Func} ()|${NewFuncName} ()|g" >> "$TmpLibFile"
-                    done < <(typeset -F | cut -d " " -f 3)
-                fi
-            )
+                    fi
+                    "${Debug}" && echo "置き換え1: 関数定義の${Func}を${NewFuncName}に置き換え" >&2
+                    _GetFuncCodeFromFile "${Dir}/${File}" "$Func" | sed "1 s|${Func} ()|${NewFuncName} ()|g" >> "$TmpLibFile"
+                #done < <(typeset -F | cut -d " " -f 3)
+                done
+            fi
         done < <("$LibDir/GetMeta.sh" "${LibName}" "Files" | tr "," "\n")
 
         if [[ "${DontRunAtMarkReplacement}" = false ]]; then
@@ -266,7 +312,8 @@ _Make_Lib(){
 
                 # Func: ソースコードに記述されたそのままの関数名
                 # 例えば、SrcInfo.GetValueなら"GetValue"の部分
-                while read -r Func; do
+                #while read -r Func; do
+                for Func in "${_DefinedFuncInLib[@]}"; do
                     # ドット以降の関数名を"${ToSnakeCase}"に渡す
                     if [[ "$SnakeCase" = true ]]; then
                         NewFuncName="$("${ToSnakeCase}" <<< "$Func")"
@@ -282,7 +329,8 @@ _Make_Lib(){
                         -e "s|@${Func}$|${LibPrefix}${Delimiter}${NewFuncName}|g" \
                         -e "s|@${Func}\([^a-zA-Z0-9]\)|${LibPrefix}${Delimiter}${NewFuncName}\1|g" \
                         "$TmpLibFile"
-                done < "${Lib_RawFuncList}"
+                #done < "${Lib_RawFuncList}"
+                done
             fi
         fi
 
