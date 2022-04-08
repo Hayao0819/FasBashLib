@@ -35,8 +35,6 @@ LoadedFiles=()
 TargetLib=()
 RequireLib=()
 
-ToSnakeCase="${LibDir}/ToSnakeCase.sh"
-
 
 #-- BSD or GNU --#
 if sed -h 2>&1 | grep -q "GNU"; then
@@ -88,6 +86,10 @@ SedI(){
 ToLower(){
     local _Str="${1,,}"
     [[ -z "${_Str-""}" ]] || echo "${_Str}"
+}
+
+ToSnakeCase(){
+    sed -E 's/(.)([A-Z])/\1_\2/g' | ForEach ToLower "{}"
 }
 
 _Make_Version(){
@@ -273,12 +275,12 @@ _Make_Lib(){
                     if [[ -z "$LibPrefix" ]]; then
                         # プレフィックスなし、スネークケース置き換え
                         echo " = $Func" >> "$TmpFile_FuncList"
-                        NewFuncName="$("${ToSnakeCase}" <<< "$Func")"
+                        NewFuncName="$(ToSnakeCase <<< "$Func")"
                     else
                         echo "${LibPrefix} = ${Func}" >> "$TmpFile_FuncList"
                         if [[ "$SnakeCase" = true ]]; then
                             # プレフィックスあり、スネークケース置き換えあり
-                            NewFuncName="$(ToLower "$LibPrefix")${Delimiter}$("${ToSnakeCase}" <<< "$Func")"
+                            NewFuncName="$(ToLower "$LibPrefix")${Delimiter}$(ToSnakeCase <<< "$Func")"
                         else
                             # プレフィックスあり、スネークケースなし
                             NewFuncName="${LibPrefix}${Delimiter}${Func}"
@@ -308,9 +310,9 @@ _Make_Lib(){
                 # Func: ソースコードに記述されたそのままの関数名
                 # 例えば、SrcInfo.GetValueなら"GetValue"の部分
                 for Func in "${_DefinedFuncInLib[@]}"; do
-                    # ドット以降の関数名を"${ToSnakeCase}"に渡す
+                    # ドット以降の関数名をToSnakeCaseに渡す
                     if [[ "$SnakeCase" = true ]]; then
-                        NewFuncName="$("${ToSnakeCase}" <<< "$Func")"
+                        NewFuncName="$(ToSnakeCase <<< "$Func")"
                     else
                         NewFuncName="$Func"
                     fi
@@ -343,10 +345,10 @@ _Make_All_Replace(){
             
             if [[ -z "$LibPrefix" ]]; then
                 OldFuncName="$Func"
-                NewFuncName="$("${ToSnakeCase}" <<< "$Func")"
+                NewFuncName="$(ToSnakeCase <<< "$Func")"
             else
                 OldFuncName="${LibPrefix}.${Func}"
-                NewFuncName="$(ToLower "$LibPrefix")${Delimiter}$("${ToSnakeCase}" <<< "$Func")"
+                NewFuncName="$(ToLower "$LibPrefix")${Delimiter}$(ToSnakeCase <<< "$Func")"
             fi
 
             "${Debug}" && echo "置き換え3: 全ての${OldFuncName}を${NewFuncName}に置き換え" >&2
@@ -358,13 +360,10 @@ _Make_All_Replace(){
             LibPrefix="$(cut -d "=" -f 1 <<< "$Line" | sed "s|^ *||g; s| *$||g")"
             Func="$(cut -d "=" -f 2 <<< "$Line" | sed "s|^ *||g; s| *$||g")"
             
-            if [[ -z "$LibPrefix" ]]; then
-                continue
-            fi
+            [[ -z "$LibPrefix" ]] && continue
             
             OldFuncName="${LibPrefix}.${Func}"
             NewFuncName="${LibPrefix}${Delimiter}${Func}"
-            
 
             "${Debug}" && echo "置き換え3: 全ての${OldFuncName}を${NewFuncName}に置き換え" >&2
             SedI "s|${OldFuncName}|${NewFuncName}|g" "$TmpOutFile"
