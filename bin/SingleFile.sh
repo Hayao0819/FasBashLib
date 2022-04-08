@@ -214,44 +214,37 @@ _GetFuncCodeFromFile(){
 # $? = 1: 既に読み込まれています
 _CheckLoadedFile(){
     local _File="$1"
-    printf "%s\n" "${LoadedFiles[@]}" | grep -qx "${File}" && {
-        "$Debug" && echo "Already loaded $Dir/$File" >&2
+    printf "%s\n" "${LoadedFiles[@]}" | grep -qx "${_File}" && {
+        "$Debug" && echo "Already loaded $_File" >&2
         return 1
     }
 
-    echo "Load file: ${Dir}/${File}" >&2
-    LoadedFiles+=("${Dir}/${File}")
+    echo "Load file: ${_File}" >&2
+    LoadedFiles+=("${_File}")
     return 0
 }
 
 _Make_Lib(){
+    local LibName LibPrefix TmpLibFile NewFuncName # 文字列変数
+    local _DefinedFuncInFile _DefinedFuncInLib # 配列
+    local Func File Dir # ループ変数
+
     # ライブラリをサブシェル内で読み込んでファイルに追記
     echo -n > "$TmpFile_FuncList"
     for Dir in "${TargetLib[@]}"; do
         LibName="$(basename "$Dir")"
         LibPrefix="$("$LibDir/GetMeta.sh" "$LibName" "Prefix")"
         TmpLibFile="$TmpDir/$LibName.sh"
-        Lib_RawFuncList="$TmpDir/$LibName-FuncList.sh" #置き換え前のプレフィックスなしの純粋な関数名の一覧
-        _DefinedFuncInLib=()
 
         # ファイルの初期化
-        echo -n > "${Lib_RawFuncList}"
         echo -n > "$TmpLibFile"
 
         # ライブラリのファイルごとに関数を読み取ってTmpLibFileに関数を書き込み
         # この際に関数定義部分のプレフィックスとスネークケース置き換えを行う
         while read -r File; do
-            local _DefinedFuncInFile=()
+            _CheckLoadedFile "${Dir}/${File}"
 
-            printf "%s\n" "${LoadedFiles[@]}" | grep -qx "${Dir}/${File}" && {
-                "$Debug" && echo "Already loaded $Dir/$File" >&2
-                continue
-            }
-
-            echo "Load file: ${Dir}/${File}" >&2
-            LoadedFiles+=("${Dir}/${File}")
-
-            # Lib_RawFuncListはライブラリごとの関数の一覧
+            # _DefinedFuncInFile と _DefinedFuncInLib はライブラリごとの関数の一覧
             # プレフィックスは除外されており、元のソースコードの関数名がそのまま記述されます。
             # それに対してTmpFile_FuncListはプレフィックス置き換えまで済ませた全てのライブラリの関数をグローバルに列挙します。
             # TmpFile_FuncListは最終処理で他ライブラリの関数呼び出しをスネークケースに置き換えるのに使用されます。
@@ -293,7 +286,7 @@ _Make_Lib(){
         if [[ "${DontRunAtMarkReplacement}" = false ]]; then
             # 同じライブラリ内での関数呼び出し(@関数)を置き換え
             # 置き換えは全てTmpLibFileのみで完結します
-            # 置き換える関数の一覧はLib_RawFuncListから取得
+            # 置き換える関数の一覧は _DefinedFuncInLib から取得
             "$Debug" && echo "${LibName}の@呼び出しを置き換え" >&2
             if [[ -z "${LibPrefix-""}" ]]; then
                 "${Debug}" && echo "プレフィックスが設定されていないため、${LibName}の置き換えをスキップ" >&2
@@ -327,13 +320,8 @@ _Make_Lib(){
             fi
         fi
 
-        # ライブラリごとの関数リストを削除
-        rm -rf "${Lib_RawFuncList}"
-
         # 完成したライブラリを全体に追加
         cat "$TmpLibFile" >> "$TmpOutFile"
-
-        unset LibPrefix FuncPrefix LibName
     done
     unset Dir File
 }
