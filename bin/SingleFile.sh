@@ -94,6 +94,7 @@ ToSnakeCase(){
 
 _Make_Version(){
     # Set version
+    [[ -z "${Version-""}" ]] || return 0 # 引数で既にバージョンが設定済みの場合はこの関数を終了する
     if [[ -e "$MainDir/.git" ]]; then
         echo "Found git. Use git tag and id as version." >&2
         Version="$(git describe --long --tags | sed 's/\([^-]*-g\)/r\1/;s/-/./g')"
