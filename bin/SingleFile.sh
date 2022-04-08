@@ -28,6 +28,7 @@ GenerateFuncList=false
 # Environment
 Version=""
 RequireShell="Any"
+GNUSed=false
 
 # Global Array
 LoadedFiles=()
@@ -35,6 +36,14 @@ TargetLib=()
 RequireLib=()
 
 ToSnakeCase="${LibDir}/ToSnakeCase.sh"
+
+
+#-- BSD or GNU --#
+if sed -h 2>&1 | grep -q "GNU"; then
+    GNUSed=true
+else
+    GNUSed=false
+fi
 
 
 #-- FasBashLib --#
@@ -66,7 +75,7 @@ SedI(){
     local SedArgs=()
 
     # BSDかGNUか
-    if sed -h 2>&1 | grep -q "GNU"; then
+    if "${GNUSed}"; then
         SedArgs=("-i" "${SedArgs[@]}")
     else
         SedArgs=("-i" "" "${SedArgs[@]}")
