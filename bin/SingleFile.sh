@@ -278,7 +278,7 @@ _Make_Lib(){
                         echo "${LibPrefix} = ${Func}" >> "$TmpFile_FuncList"
                         if [[ "$SnakeCase" = true ]]; then
                             # プレフィックスあり、スネークケース置き換えあり
-                            NewFuncName="$(tr '[:upper:]' '[:lower:]' <<< "$LibPrefix")${Delimiter}$("${ToSnakeCase}" <<< "$Func")"
+                            NewFuncName="$(ToLower "$LibPrefix")${Delimiter}$("${ToSnakeCase}" <<< "$Func")"
                         else
                             # プレフィックスあり、スネークケースなし
                             NewFuncName="${LibPrefix}${Delimiter}${Func}"
@@ -302,7 +302,7 @@ _Make_Lib(){
             else
                 # スネークケースが有効化されている場合、プレフィックスは小文字にする
                 if [[ "${SnakeCase}" = true ]]; then
-                    LibPrefix=$(tr '[:upper:]' '[:lower:]' <<< "$LibPrefix")
+                    LibPrefix=$(ToLower "${LibPrefix}")
                 fi
 
                 # Func: ソースコードに記述されたそのままの関数名
@@ -346,7 +346,7 @@ _Make_All_Replace(){
                 NewFuncName="$("${ToSnakeCase}" <<< "$Func")"
             else
                 OldFuncName="${LibPrefix}.${Func}"
-                NewFuncName="$(tr '[:upper:]' '[:lower:]' <<< "$LibPrefix")${Delimiter}$("${ToSnakeCase}" <<< "$Func")"
+                NewFuncName="$(ToLower "$LibPrefix")${Delimiter}$("${ToSnakeCase}" <<< "$Func")"
             fi
 
             "${Debug}" && echo "置き換え3: 全ての${OldFuncName}を${NewFuncName}に置き換え" >&2
