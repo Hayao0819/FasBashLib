@@ -84,6 +84,12 @@ SedI(){
     sed "${SedArgs[@]}" "$@"
 }
 
+# ToLower <文字列>
+ToLower(){
+    local _Str="${1,,}"
+    [[ -z "${_Str-""}" ]] || echo "${_Str}"
+}
+
 _Make_Version(){
     # Set version
     if [[ -e "$MainDir/.git" ]]; then
