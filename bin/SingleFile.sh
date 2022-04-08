@@ -238,6 +238,7 @@ _Make_Lib(){
     # ライブラリをサブシェル内で読み込んでファイルに追記
     echo -n > "$TmpFile_FuncList"
     for Dir in "${TargetLib[@]}"; do
+        _DefinedFuncInLib=()
         LibName="$(basename "$Dir")"
         LibPrefix="$("$LibDir/GetMeta.sh" "$LibName" "Prefix")"
         TmpLibFile="$TmpDir/$LibName.sh"
@@ -329,7 +330,6 @@ _Make_Lib(){
         # 完成したライブラリを全体に追加
         cat "$TmpLibFile" >> "$TmpOutFile"
     done
-    unset Dir File
 }
 
 _Make_All_Replace(){
