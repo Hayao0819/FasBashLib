@@ -4,6 +4,13 @@ Ntest(){
     (( "$@" )) || return 1
 }
 
-Calc(){
+CalcInt(){
     echo "$(( "$@" ))"
+}
+
+Sum(){
+    local _Arg=()
+    ForEach eval '_Arg+=("{}" "+")' < <(PrintArray "$@")
+    readarray -t _Arg < <(PrintArray "${_Arg[@]}" | sed "${#_Arg[@]}d")
+    CalcInt "${_Arg[@]}"
 }
