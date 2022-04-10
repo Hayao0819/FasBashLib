@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.1.5.r92.g72388a1"
+FSBLIB_VERSION="v0.1.5.r97.gd7fe810"
 FSBLIB_REQUIRE="ModernBash"
 
 csv.get_clm () 
@@ -332,7 +332,7 @@ aur.get_recursive_depends ()
     local _Pkg;
     _Pkg="$(pm.get_name <<< "$1")";
     _AurDependList=();
-    SCRIPTCACHEID="FasBashLib_Aur";
+    export FSBLIB_CACHEID="FasBashLib_Aur";
     ExistCache "InstalledPackage" || RunPacman -Qq | CreateCache "InstalledPackage" > /dev/null;
     ExistCache "RepoPackage" || GetPacmanRepoPkgList | CreateCache "RepoPackage" > /dev/null;
     function _Resolve () 
@@ -403,20 +403,13 @@ cache.exist ()
     (( "$(cache.get_time_diff_from_last_update "$_File")" > "${KEEPCACHESEC-"86400"}" )) && return 2;
     return 0
 }
-cache.get_cache () 
+cache.get () 
 { 
     cat "$(cache.get_dir)/$1" 2> /dev/null || return 1
 }
-cache.get_cache_id () 
-{ 
-    if [[ -z "${SCRIPTCACHEID-""}" ]]; then
-        cache.create_dir > /dev/null;
-    fi;
-    echo "$SCRIPTCACHEID"
-}
 cache.get_dir () 
 { 
-    echo "${TMPDIR-"/tmp"}/$(cache.get_cache_id)"
+    echo "${TMPDIR-"/tmp"}/$(cache.get_id)"
 }
 cache.get_file_last_update () 
 { 
@@ -431,6 +424,13 @@ cache.get_file_last_update ()
         };
     fi
 }
+cache.get_id () 
+{ 
+    if [[ -z "${FSBLIB_CACHEID-""}" ]]; then
+        cache.create_dir > /dev/null;
+    fi;
+    echo "$FSBLIB_CACHEID"
+}
 cache.get_time_diff_from_last_update () 
 { 
     local _Now _Last;
@@ -439,7 +439,7 @@ cache.get_time_diff_from_last_update ()
     echo "$(( _Now - _Last ))";
     return 0
 }
-cache.create_cache () 
+cache.create () 
 { 
     cache.create_dir > /dev/null;
     cat > "$(cache.get_dir)/${1}";
@@ -447,13 +447,10 @@ cache.create_cache ()
 }
 cache.create_dir () 
 { 
-    [[ -z "${SCRIPTCACHEID-""}" ]] || { 
-        echo "Set SCRIPTCACHEID variable" 1>&2;
-        return 1
-    };
-    export SCRIPTCACHEID="$SCRIPTCACHEID";
+    FSBLIB_CACHEID="${FSBLIB_CACHEID-"$(random_string "10")"}";
+    export FSBLIB_CACHEID="$FSBLIB_CACHEID";
     local TMPDIR="${TMPDIR-"/tmp"}";
-    local _Dir="$TMPDIR/${SCRIPTCACHEID}";
+    local _Dir="$TMPDIR/${FSBLIB_CACHEID}";
     mkdir -p "$_Dir";
     echo "$_Dir";
     return 0
