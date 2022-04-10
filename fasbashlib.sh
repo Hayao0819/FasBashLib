@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.1.5.r87.gdabe9a6"
+FSBLIB_VERSION="v0.1.5.r92.g72388a1"
 FSBLIB_REQUIRE="ModernBash"
 
 Csv.GetClm () 
@@ -181,13 +181,20 @@ ToLowerStdin ()
     ForEach eval "_Str=\"{}\"; echo \"\${_Str,,}\"";
     unset _Str
 }
-Calc () 
+CalcInt () 
 { 
     echo "$(( "$@" ))"
 }
 Ntest () 
 { 
     (( "$@" )) || return 1
+}
+Sum () 
+{ 
+    local _Arg=();
+    ForEach eval '_Arg+=("{}" "+")' < <(PrintArray "$@");
+    readarray -t _Arg < <(PrintArray "${_Arg[@]}" | sed "${#_Arg[@]}d");
+    CalcInt "${_Arg[@]}"
 }
 Bool () 
 { 
@@ -608,6 +615,35 @@ ParseArg ()
     done;
     OPTRET=("${_OutArg[@]}" -- "${_NoArg[@]}");
     return 0
+}
+Awk.AwkPrint () 
+{ 
+    awk "BEGIN {print $*}"
+}
+Awk.Cos () 
+{ 
+    @Calc "cos($*)"
+}
+Awk.Log () 
+{ 
+    local _Base="$1" _Number="$2";
+    @Calc "log(${_Number}) / log($_Base)"
+}
+Awk.Pi () 
+{ 
+    @Calc "atan2(0, -0)"
+}
+Awk.Rad () 
+{ 
+    @Calc "$1 * $(Awk.Pi) / 180 "
+}
+Awk.Sin () 
+{ 
+    @Calc "sin($*)"
+}
+Awk.Tan () 
+{ 
+    @Calc "sin($1)/tan($1)"
 }
 Ini.GetParam () 
 { 

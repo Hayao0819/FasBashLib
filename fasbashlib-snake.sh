@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.1.5.r87.gdabe9a6"
+FSBLIB_VERSION="v0.1.5.r92.g72388a1"
 FSBLIB_REQUIRE="ModernBash"
 
 csv.get_clm () 
@@ -181,13 +181,20 @@ to_lower_stdin ()
     for_each eval "_Str=\"{}\"; echo \"\${_Str,,}\"";
     unset _Str
 }
-calc () 
+calc_int () 
 { 
     echo "$(( "$@" ))"
 }
 ntest () 
 { 
     (( "$@" )) || return 1
+}
+sum () 
+{ 
+    local _Arg=();
+    for_each eval '_Arg+=("{}" "+")' < <(print_array "$@");
+    readarray -t _Arg < <(print_array "${_Arg[@]}" | sed "${#_Arg[@]}d");
+    calc_int "${_Arg[@]}"
 }
 bool () 
 { 
@@ -608,6 +615,35 @@ parse_arg ()
     done;
     OPTRET=("${_OutArg[@]}" -- "${_NoArg[@]}");
     return 0
+}
+awk.awk_print () 
+{ 
+    awk "BEGIN {print $*}"
+}
+awk.cos () 
+{ 
+    @Calc "cos($*)"
+}
+awk.log () 
+{ 
+    local _Base="$1" _Number="$2";
+    @Calc "log(${_Number}) / log($_Base)"
+}
+awk.pi () 
+{ 
+    @Calc "atan2(0, -0)"
+}
+awk.rad () 
+{ 
+    @Calc "$1 * $(awk.pi) / 180 "
+}
+awk.sin () 
+{ 
+    @Calc "sin($*)"
+}
+awk.tan () 
+{ 
+    @Calc "sin($1)/tan($1)"
 }
 ini.get_param () 
 { 
