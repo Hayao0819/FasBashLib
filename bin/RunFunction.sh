@@ -32,6 +32,10 @@ source /dev/stdin < <("$BinDir/SingleFile.sh" -out "/dev/stdout" "$LibName")
 
 Func="${LibPrefix}.$FuncName"
 
+if [[ -z "${LibPrefix-""}" ]]; then
+    Func="$FuncName"
+fi
+
 typeset -f "${Func}" 1> /dev/null || {
     echo "$Func is not defined." >&2
     exit 1
