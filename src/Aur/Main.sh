@@ -93,7 +93,7 @@ GetRecursiveDepends(){
 
     # Installed package list
     # shellcheck disable=SC2034
-    SCRIPTCACHEID="FasBashLib_Aur"
+    export FSBLIB_CACHEID="FasBashLib_Aur"
     ExistCache "InstalledPackage" || RunPacman -Qq | CreateCache "InstalledPackage" > /dev/null
 
     # Repository package list
