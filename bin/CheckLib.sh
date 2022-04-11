@@ -22,7 +22,7 @@ while read -r Dir; do
     # ShellCheckを実行
     while read -r File; do
         if [[ "$(file --mime-type "$File" | cut -d " " -f 2)" = "text/x-shellscript" ]]; then
-            echo "Run shell check $File"
+            echo "Run shell check $File" >&2
             shellcheck -s bash -x "$File" || Errors=$(( Errors + 1 ))
         fi
     done < <(find "$Dir" -type f)
