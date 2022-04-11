@@ -68,7 +68,7 @@ echo -n > "${ResultFile}"
 for Lib in "${LibToRunTest[@]}"; do
     while read -r Cmd; do
         {
-            which "$Cmd" 1> /dev/null 2>&1 || {
+            type -P "$Cmd" 1> /dev/null 2>&1 || {
                 echo -e "$Cmd is not found in PATH. Cannot test ${Lib}" >&2
                 echo "Lib: $Lib=Missing depends($Cmd)" >> "${ResultFile}"
             }
