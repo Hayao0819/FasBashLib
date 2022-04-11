@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.1.5.r97.gd7fe810"
+FSBLIB_VERSION="v0.1.5.r102.g93ab430"
 FSBLIB_REQUIRE="ModernBash"
 
 Csv.GetClm () 
