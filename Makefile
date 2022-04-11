@@ -18,3 +18,4 @@ install:
 
 test:
 	bash ${CURRENT_DIR}/bin/CheckLib.sh
+	bash ${CURRENT_DIR}/bin/CheckBin.sh
