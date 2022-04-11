@@ -27,146 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.1.5.r131.g022682d"
-SrcInfo.Format () 
-{ 
-    RemoveBlank | sed "/^$/d" | grep -v "^#" | ForEach eval "SrcInfo.Parse Line <<< \"{}\""
-}
-SrcInfo.GetKeyList () 
-{ 
-    SrcInfo.Format | cut -d "=" -f 1
-}
-SrcInfo.GetPkgBase () 
-{ 
-    local _Line _Key _InSection=false;
-    while read -r _Line; do
-        _Key="$(SrcInfo.Parse Key <<< "$_Line")";
-        case "$_Key" in 
-            "pkgbase")
-                _InSection=true
-            ;;
-            "pkgname")
-                _InSection=false
-            ;;
-            *)
-                if [[ "${_InSection}" = true ]]; then
-                    echo "$_Line";
-                fi
-            ;;
-        esac;
-    done < <(SrcInfo.Format)
-}
-SrcInfo.GetPkgName () 
-{ 
-    local _Line _Key _InSection=false _TargetPkgName="$1";
-    while read -r _Line; do
-        _Key="$(SrcInfo.Parse Key <<< "$_Line")";
-        case "$_Key" in 
-            "pkgname")
-                if [[ "$(SrcInfo.Parse Value <<< "$_Line")" = "$_TargetPkgName" ]]; then
-                    _InSection=true;
-                else
-                    _InSection=false;
-                fi
-            ;;
-            "pkgbase")
-                _InSection=false
-            ;;
-            *)
-                if [[ "${_InSection}" = true ]]; then
-                    echo "$_Line";
-                fi
-            ;;
-        esac;
-    done < <(SrcInfo.Format)
-}
-SrcInfo.GetSectionList () 
-{ 
-    SrcInfo.Format | grep -e "^pkgbase" -e "^pkgname"
-}
-SrcInfo.GetValue () 
-{ 
-    local _SrcInfo=();
-    local _Output=();
-    local _PkgBaseValues=("pkgver" "pkgrel" "epoch");
-    local _AllValues=("pkgdesc" "url" "install" "changelog");
-    local _AllArrays=("arch" "groups" "license" "noextract" "options" "backup" "validpgpkeys");
-    local _AllArraysWithArch=("source" "depends" "checkdepends" "makedepends" "optdepends" "provides" "conflicts" "replaces" "md5sums" "sha1sums" "sha224sums" "sha256sums" "sha384sums" "sha512sums");
-    ArrayAppend _SrcInfo;
-    ArrayIncludes _PkgBaseValues "$1" && { 
-        PrintEvalArray _SrcInfo | SrcInfo.GetValueInPkgBase "$1";
-        return 0
-    };
-    [[ -n "${2-""}" ]] || return 1;
-    if ArrayIncludes _AllValues "$1" || ArrayIncludes _AllArrays "$1"; then
-        ArrayAppend _Output < <(PrintEvalArray _SrcInfo | SrcInfo.GetValueInPkgBase "$1");
-        ArrayAppend _Output < <(PrintEvalArray _SrcInfo | SrcInfo.GetValueInPkgName "$2" "$1");
-        PrintArray "${_Output[@]}" | tail -n 1;
-        return 0;
-    fi;
-    ArrayIncludes _AllArraysWithArch "$1" || return 1;
-    local _Arch _ArchList;
-    if [[ -z "${3-""}" ]]; then
-        ArrayAppend _ArchList < <(PrintEvalArray _SrcInfo | SrcInfo.GetValue arch "$2");
-    else
-        ArrayAppend _ArchList < <(tr "," "\n" <<< "$3" | RemoveBlank);
-    fi;
-    ArrayAppend _Output < <(PrintEvalArray _SrcInfo | SrcInfo.GetValueInPkgBase "$1");
-    ArrayAppend _Output < <(PrintEvalArray _SrcInfo | SrcInfo.GetValueInPkgName "$2" "$1");
-    for _Arch in "${_ArchList[@]}";
-    do
-        ArrayAppend _Output < <(PrintEvalArray _SrcInfo | SrcInfo.GetValueInPkgBase "$1_${_Arch}");
-        ArrayAppend _Output < <(PrintEvalArray _SrcInfo | SrcInfo.GetValueInPkgName "$2" "$1_${_Arch}");
-    done;
-    PrintEvalArray _Output;
-    return 0
-}
-SrcInfo.GetValueInPkgBase () 
-{ 
-    local _Line;
-    while read -r _Line; do
-        _Key="$(SrcInfo.Parse Key <<< "$_Line")";
-        case "$_Key" in 
-            "$1")
-                SrcInfo.Parse Value <<< "$_Line"
-            ;;
-        esac;
-    done < <(SrcInfo.GetPkgBase)
-}
-SrcInfo.GetValueInPkgName () 
-{ 
-    local _Line;
-    while read -r _Line; do
-        _Key="$(SrcInfo.Parse Key <<< "$_Line")";
-        case "$_Key" in 
-            "$2")
-                SrcInfo.Parse Value <<< "$_Line"
-            ;;
-        esac;
-    done < <(SrcInfo.GetPkgName "$1")
-}
-SrcInfo.Parse () 
-{ 
-    local _Output="${1-""}";
-    [[ -n "${_Output}" ]] || return 1;
-    shift 1;
-    local _String _Key _Value;
-    _String="$(cat)";
-    _Key="$(cut -d "=" -f 1 <<<  "$_String" | RemoveBlank)";
-    _Value="$(cut -d "=" -f 2- <<< "$_String" | RemoveBlank)";
-    case "$_Output" in 
-        "Line")
-            echo "$_Key=$_Value"
-        ;;
-        "Key")
-            echo "$_Key"
-        ;;
-        "Value")
-            echo "$_Value"
-        ;;
-    esac;
-    return 0
-}
+FSBLIB_VERSION="v0.1.5.r134.gc867d59"
 Csv.GetClm () 
 { 
     grep -v "^#" | sed "/^$/d" | cut -d "${CSVDELIM-","}" -f "$1"
@@ -203,208 +64,147 @@ Csv.ToBashArray ()
         );
     done < <(seq 1 "$#")
 }
-Pm.CheckPkg () 
+AddNewToArray () 
 { 
-    local p;
-    for p in "$@";
-    do
-        Pm.Run -Qq "$p" > /dev/null 2>&1 || return 1;
-    done;
+    eval "PrintArray \"\${$1[@]}\"" | grep -qx "$2" && return 0;
+    eval "$1+=(\"$2\")"
+}
+ArrayAppend () 
+{ 
+    local _ArrName="$1";
+    shift 1 || return 1;
+    readarray -t -O "$(ArrayIndex "$_ArrName")" "$_ArrName" < <(cat)
+}
+ArrayIncludes () 
+{ 
+    PrintEvalArray "$1" | grep -qx "$2"
+}
+ArrayIndex () 
+{ 
+    PrintEvalArray "$1" | wc -l
+}
+GetArrayIndex () 
+{ 
+    local n=();
+    readarray -t n < <(grep -x -n "$1" | cut -d ":" -f 1 | ForEach eval echo '$(( {} - 1 ))');
+    (( "${#n[@]}" >= 1 )) || return 1;
+    PrintArray "${n[@]}";
     return 0
 }
-Pm.GetConfig () 
+PrintArray () 
 { 
-    LANG=C pacman-conf --config="${PACMAN_CONF-"/etc/pacman.conf"}" "$@"
+    (( $# >= 1 )) || return 0;
+    printf "%s\n" "${@}"
 }
-Pm.GetInstalledPkgVer () 
+PrintEvalArray () 
 { 
-    ForEach pacman -Qq "{}" | cut -d " " -f 2;
-    PrintArray "${PIPESTATUS[@]}" | grep -qx "1" && return 1;
+    eval "PrintArray \"\${$1[@]}\""
+}
+RevArray () 
+{ 
+    readarray -t "$1" < <(PrintEvalArray "$1" | tac)
+}
+FileType () 
+{ 
+    file --mime-type -b "$1"
+}
+GetBaseName () 
+{ 
+    xargs -L 1 basename
+}
+GetFileExt () 
+{ 
+    GetBaseName | rev | cut -d "." -f 1 | rev
+}
+RemoveFileExt () 
+{ 
+    local Ext;
+    ForEach eval 'Ext=$(GetFileExt <<< {}); sed "s|.$Ext$||g" <<< {}; unset Ext'
+}
+CheckFuncDefined () 
+{ 
+    typeset -f "${1}" > /dev/null || return 1
+}
+ForEach () 
+{ 
+    local _Item _Cmd _C;
+    while read -r _Item; do
+        for _C in "$@";
+        do
+            _Cmd+=("$(sed "s|{}|${_Item}|g" <<< "$_C")");
+        done;
+        "${_Cmd[@]}" || return "$?";
+        _Cmd=();
+    done
+}
+GetLine () 
+{ 
+    head -n "$1" | tail -n 1
+}
+IsAvailable () 
+{ 
+    type "$1" 2> /dev/null 1>&2
+}
+CutLastString () 
+{ 
+    echo "${1%%"${2}"}";
     return 0
 }
-Pm.GetKeyringList () 
+GetLastSplitString () 
 { 
-    find "$(@GetKeyringDir)" -name "*.gpg" | GetBaseName | RemoveFileExt
+    rev <<< "$2" | cut -d "$1" -f 1 | rev
 }
-Pm.GetLatestPkgVer () 
+IsUUID () 
 { 
-    local _LANG="${LANG-""}";
-    export LANG=C;
-    ForEach Pm.Run -Si "{}" | grep "^Version" | cut -d ":" -f 2 | RemoveBlank;
-    [[ -n "$_LANG" ]] && export LANG="$_LANG";
-    return 0
-}
-Pm.GetName () 
-{ 
-    cut -d "<" -f 1 | cut -d ">" -f 1 | cut -d "=" -f 1
-}
-Pm.GetPacmanKernelPkg () 
-{ 
-    echo "there is nothing"
-}
-Pm.GetPacmanKeyringDir () 
-{ 
-    local _KeyringDir="";
-    _KeyringDir="$(LANG=C pacman-key -h | RemoveBlank | grep -A 1 -- "^--populate" | tail -n 1 | cut -d "/" -f 2- | sed "s|'$||g")";
-    : "${_KeyringDir="usr/share/pacman/keyrings"}";
-    _KeyringDir="$(Pm.GetRoot)/$_KeyringDir";
-    _KeyringDir="$(sed -E "s|/+|/|g" <<< "$_KeyringDir")";
-    if [[ -e "$_KeyringDir" ]]; then
-        Readlinkf "$_KeyringDir";
-    else
-        echo "$_KeyringDir";
-    fi
-}
-Pm.GetRepoConf () 
-{ 
-    ForEach eval 'echo [{}] && Pm.GetConfig -r {}'
-}
-Pm.GetRepoListFromConf () 
-{ 
-    Pm.GetConfig --repo-list
-}
-Pm.GetRepoPkgList () 
-{ 
-    Pm.Run -Slq "$@"
-}
-Pm.GetRepoServer () 
-{ 
-    ForEach eval 'Pm.GetConfig -r {}' | grep "^Server" | ForEach eval "Ini.ParseLine <<< '{}' ; printf '%s\n' \${VALUE}"
-}
-Pm.GetRepoVer () 
-{ 
-    Pm.Run -Sp --print-format '%v' "$1"
-}
-Pm.GetRoot () 
-{ 
-    Pm.GetConfig RootDir
-}
-Pm.IsRepoPkg () 
-{ 
-    Pm.Run -Slq | grep -qx "$(Pm.GetName <<< "$1")"
-}
-Pm.PacmanGpg () 
-{ 
-    gpg --homedir "$(Pm.GetConfig GPGDir)" "$@"
-}
-Pm.Run () 
-{ 
-    pacman --noconfirm --config "${PACMAN_CONF-"/etc/pacman.conf"}" "$@"
-}
-Pm.RunKey () 
-{ 
-    pacman-key --config "${PACMAN_CONF-"/etc/pacman.conf"}" "$@"
-}
-Pm.GetDbNextSection () 
-{ 
-    Pm.GetDbSectionList | grep -x -A 1 "^%$1%$" | GetLine 2 | sed "s|^%||g; s|%$||g"
-}
-Pm.GetDbSection () 
-{ 
-    readarray -t _Stdin;
-    PrintArray "${_Stdin[@]}" | sed -ne "/^%$1%$/,/^%$(PrintEvalArray _Stdin | Pm.GetDbNextSection "$1")%$/p" | sed "1d; \$d"
-}
-Pm.GetDbSectionList () 
-{ 
-    grep -E "^%.*%$"
-}
-Pm.CreateDbTmpDir () 
-{ 
-    mkdir -p "$(Pm.GetDbTmpDir)"
-}
-Pm.DeleteDbTmpDir () 
-{ 
-    rm -rf "$(Pm.GetDbTmpDir)"
-}
-Pm.GetDbTmpDir () 
-{ 
-    echo "${TMPDIR-"/tmp"}/fasbashlib-pacman-db"
-}
-Pm.GetPkgArch () 
-{ 
-    Pm.GetSyncDbDesc "$1" | Pm.GetDbSection ARCH | RemoveBlank
-}
-Pm.GetRepoListFromLocalDb () 
-{ 
-    find "$(Pm.GetConfig DBPath)/sync" -mindepth 1 -maxdepth 1 -type f | GetBaseName | sed "s|.db$||g";
-    return 0
-}
-Pm.GetSyncAllDesc () 
-{ 
-    find "$(Pm.GetDbTmpDir)" -mindepth 3 -maxdepth 3 -name "desc" -type f
-}
-Pm.GetSyncDbDesc () 
-{ 
-    local _path;
-    _path="$(Pm.GetSyncDbDescPath "$1")";
-    [[ -e "$_path" ]] || return 1;
-    cat "$_path/desc"
-}
-Pm.GetSyncDbDescPath () 
-{ 
-    local _repo;
-    _repo="$(pacman -Sp --print-format '%r' "$1")";
-    { 
-        IsPacmanSyncDbOpend "$_repo" || OpenPacmanSyncDb "$_repo"
-    } || return 1;
-    echo "$(Pm.GetDbTmpDir)/sync/$(pacman -Sp --print-format '%r/%n-%v' "$1")"
-}
-Pm.GetVirtualPkgList () 
-{ 
-    Pm.GetRepoListFromLocalDb | ForEach Pm.OpenSyncDb {};
-    Pm.GetSyncAllDesc | ForEach eval "Pm.GetDbSection PROVIDES < {}" | RemoveBlank
-}
-Pm.IsOpendSyncDb () 
-{ 
-    readarray -t _PkgDbList < <(find "$(Pm.GetDbTmpDir)/sync/$1" -mindepth 1 -maxdepth 1 -type d );
-    (( "${#_PkgDbList[@]}" > 0 )) && return 0;
+    local _UUID="${1-""}";
+    [[ "${_UUID//-/}" =~ ^[[:xdigit:]]{32}$ ]] && return 0;
     return 1
 }
-Pm.OpenSyncDb () 
+PrintEval () 
 { 
-    local _Dir _RepoDb;
-    Pm.CreateDbTmpDir;
-    _Dir="$(Pm.GetDbTmpDir)/sync/$1";
-    mkdir -p "$_Dir";
-    _RepoDb="$(Pm.GetConfig DBPath)/sync/$1.db";
-    [[ -e "$_RepoDb" ]] || return 1;
-    tar -xzf "${_RepoDb}" -C "$_Dir" || return 1
+    eval echo "\${$1}"
 }
-Pm.OpenedSyncDbList () 
+RandomString () 
 { 
-    find "$(Pm.GetDbTmpDir)/sync/" -mindepth 1 -maxdepth 1 -type d
+    base64 < "/dev/random" | fold -w "$1" | head -n 1;
+    return 0
 }
-Pm.ParsePkgFileName () 
+RemoveBlank () 
 { 
-    local _Pkg="$1";
-    local _PkgName _PkgVer _PkgRel _Arch _FileExt;
-    local _PkgWithOutExt;
-    if grep "/" <<< "$_Pkg"; then
-        _Pkg="$(basename "$_Pkg")";
-    fi;
-    _FileExt="$(GetLastSplitString "-" "$_Pkg" | cut -d "." -f 2-)";
-    _PkgWithOutExt="${_Pkg%%".${_FileExt}"}";
-    _Arch=$(GetLastSplitString "-" "${_PkgWithOutExt}");
-    _PkgRel=$(GetLastSplitString "-" "${_PkgWithOutExt%%"-${_Arch}"}");
-    _PkgVer=$(GetLastSplitString "-" "${_PkgWithOutExt%%"-${_PkgRel}-${_Arch}"}");
-    _PkgName="${_PkgWithOutExt%%"-${_PkgVer}-${_PkgRel}-${_Arch}"}";
-    _ParsedPkg=("${_PkgName}" "-" "$_PkgVer" "-" "$_PkgRel" "-" "$_Arch" ".$_FileExt");
-    if [[ ! "$(PrintArray "${_ParsedPkg[@]}" | tr -d "\n")" = "${_Pkg}" ]]; then
-        return 1;
-    fi;
-    PrintArray "${_ParsedPkg[@]}"
+    sed "s|^ *||g; s| *$||g; s|^	*||g; s|	*$||g; /^$/d"
 }
-Arch.GetKernelFileList () 
+ToLower () 
 { 
-    find "/boot" -maxdepth 1 -mindepth 1 -name "vmlinuz-*"
+    local _Str="${1,,}";
+    [[ -z "${_Str-""}" ]] || echo "${_Str}"
 }
-Arch.GetKernelSrcList () 
+ToLowerStdin () 
 { 
-    find "/usr/src" -mindepth 1 -maxdepth 1 -type l -name "linux*"
+    local _Str;
+    ForEach eval "_Str=\"{}\"; echo \"\${_Str,,}\"";
+    unset _Str
 }
-Arch.GetMkinitcpioPresetList () 
+Calc () 
 { 
-    find "/etc/mkinitcpio.d/" -name "*.preset" -type f | GetBaseName | RemoveFileExt
+    echo "$(( "$@" ))"
+}
+Ntest () 
+{ 
+    (( "$@" )) || return 1
+}
+Bool () 
+{ 
+    case "$(ToLower "$(PrintEval "${1}")")" in 
+        "true")
+            return 0
+        ;;
+        "" | "false")
+            return 1
+        ;;
+        *)
+            return 2
+        ;;
+    esac
 }
 Msg.Common () 
 { 
@@ -703,6 +503,104 @@ Choice ()
     };
     return 1
 }
+ParseArg () 
+{ 
+    local _Arg _Chr _Cnt;
+    local _Long=() _LongWithArg=() _Short=() _ShortWithArg=();
+    local _OutArg=() _NoArg=();
+    for _Arg in "${@}";
+    do
+        local _TempArray=();
+        case "${_Arg}" in 
+            "LONG="*)
+                readarray -t _TempArray < <(tr -d "\"" <<< "${_Arg#LONG=}" | tr "," "\n");
+                for _Chr in "${_TempArray[@]}";
+                do
+                    if [[ "${_Chr}" = *":" ]]; then
+                        _LongWithArg+=("${_Chr%":"}");
+                    else
+                        _Long+=("${_Chr}");
+                    fi;
+                done;
+                shift 1
+            ;;
+            "SHORT="*)
+                readarray -t _TempArray < <(tr -d "\"" <<< "${_Arg#SHORT=}" | grep -o .);
+                for ((_Cnt=0; _Cnt<= "${#_TempArray[@]}" - 1; _Cnt++ ))
+                do
+                    if [[ "${_TempArray["$(( _Cnt + 1))"]-""}" = ":" ]]; then
+                        _ShortWithArg+=("${_TempArray["${_Cnt}"]}");
+                        _Cnt=$(( _Cnt + 1 ));
+                    else
+                        _Short+=("${_TempArray["${_Cnt}"]}");
+                    fi;
+                done;
+                shift 1
+            ;;
+            "--")
+                shift 1;
+                break
+            ;;
+        esac;
+    done;
+    while (( "$#" > 0 )); do
+        if [[ "${1}" = "--" ]]; then
+            shift 1;
+            _NoArg+=("${@}");
+            shift "$#";
+            break;
+        else
+            if [[ "${1}" = "--"* ]]; then
+                if printf "%s\n" "${_LongWithArg[@]}" | grep -qx "${1#--}"; then
+                    if [[ "${2}" = "-"* ]]; then
+                        MsgError "${1} の引数が指定されていません";
+                        return 2;
+                    else
+                        _OutArg+=("${1}" "${2}");
+                        shift 2;
+                    fi;
+                else
+                    if printf "%s\n" "${_Long[@]}" | grep -qx "${1#--}"; then
+                        _OutArg+=("${1}");
+                        shift 1;
+                    else
+                        MsgError "${1} は不正なオプションです。-hで使い方を確認してください。";
+                        return 1;
+                    fi;
+                fi;
+            else
+                if [[ "${1}" = "-"* ]]; then
+                    local _Shift=0;
+                    while read -r _Chr; do
+                        if printf "%s\n" "${_ShortWithArg[@]}" | grep -qx "${_Chr}"; then
+                            if [[ "${1}" = *"${_Chr}" ]] && [[ ! "${2}" = "-"* ]]; then
+                                _OutArg+=("-${_Chr}" "${2}");
+                                _Shift=2;
+                            else
+                                MsgError "-${_Chr} の引数が指定されていません";
+                                return 2;
+                            fi;
+                        else
+                            if printf "%s\n" "${_Short[@]}" | grep -qx "${_Chr}"; then
+                                _OutArg+=("-${_Chr}");
+                                _Shift=1;
+                            else
+                                MsgError "-${_Chr} は不正なオプションです。-hで使い方を確認してください。";
+                                return 1;
+                            fi;
+                        fi;
+                    done < <(grep -o . <<< "${1#-}");
+                    shift "${_Shift}";
+                else
+                    _NoArg+=("${1}");
+                    shift 1;
+                fi;
+            fi;
+        fi;
+    done;
+    OPTRET=("${_OutArg[@]}" -- "${_NoArg[@]}");
+    return 0
+}
 Ini.GetParam () 
 { 
     local _RawIniLine=();
@@ -801,147 +699,196 @@ Ini.ParseLine ()
     esac;
     return 0
 }
-AddNewToArray () 
+Pm.CheckPkg () 
 { 
-    eval "PrintArray \"\${$1[@]}\"" | grep -qx "$2" && return 0;
-    eval "$1+=(\"$2\")"
-}
-ArrayAppend () 
-{ 
-    local _ArrName="$1";
-    shift 1 || return 1;
-    readarray -t -O "$(ArrayIndex "$_ArrName")" "$_ArrName" < <(cat)
-}
-ArrayIncludes () 
-{ 
-    PrintEvalArray "$1" | grep -qx "$2"
-}
-ArrayIndex () 
-{ 
-    PrintEvalArray "$1" | wc -l
-}
-GetArrayIndex () 
-{ 
-    local n=();
-    readarray -t n < <(grep -x -n "$1" | cut -d ":" -f 1 | ForEach eval echo '$(( {} - 1 ))');
-    (( "${#n[@]}" >= 1 )) || return 1;
-    PrintArray "${n[@]}";
+    local p;
+    for p in "$@";
+    do
+        Pm.Run -Qq "$p" > /dev/null 2>&1 || return 1;
+    done;
     return 0
 }
-PrintArray () 
+Pm.GetConfig () 
 { 
-    (( $# >= 1 )) || return 0;
-    printf "%s\n" "${@}"
+    LANG=C pacman-conf --config="${PACMAN_CONF-"/etc/pacman.conf"}" "$@"
 }
-PrintEvalArray () 
+Pm.GetInstalledPkgVer () 
 { 
-    eval "PrintArray \"\${$1[@]}\""
-}
-RevArray () 
-{ 
-    readarray -t "$1" < <(PrintEvalArray "$1" | tac)
-}
-FileType () 
-{ 
-    file --mime-type -b "$1"
-}
-GetBaseName () 
-{ 
-    xargs -L 1 basename
-}
-GetFileExt () 
-{ 
-    GetBaseName | rev | cut -d "." -f 1 | rev
-}
-RemoveFileExt () 
-{ 
-    local Ext;
-    ForEach eval 'Ext=$(GetFileExt <<< {}); sed "s|.$Ext$||g" <<< {}; unset Ext'
-}
-CheckFuncDefined () 
-{ 
-    typeset -f "${1}" > /dev/null || return 1
-}
-ForEach () 
-{ 
-    local _Item _Cmd _C;
-    while read -r _Item; do
-        for _C in "$@";
-        do
-            _Cmd+=("$(sed "s|{}|${_Item}|g" <<< "$_C")");
-        done;
-        "${_Cmd[@]}" || return "$?";
-        _Cmd=();
-    done
-}
-GetLine () 
-{ 
-    head -n "$1" | tail -n 1
-}
-IsAvailable () 
-{ 
-    type "$1" 2> /dev/null 1>&2
-}
-CutLastString () 
-{ 
-    echo "${1%%"${2}"}";
+    ForEach pacman -Qq "{}" | cut -d " " -f 2;
+    PrintArray "${PIPESTATUS[@]}" | grep -qx "1" && return 1;
     return 0
 }
-GetLastSplitString () 
+Pm.GetKeyringList () 
 { 
-    rev <<< "$2" | cut -d "$1" -f 1 | rev
+    find "$(@GetKeyringDir)" -name "*.gpg" | GetBaseName | RemoveFileExt
 }
-IsUUID () 
+Pm.GetLatestPkgVer () 
 { 
-    local _UUID="${1-""}";
-    [[ "${_UUID//-/}" =~ ^[[:xdigit:]]{32}$ ]] && return 0;
+    local _LANG="${LANG-""}";
+    export LANG=C;
+    ForEach Pm.Run -Si "{}" | grep "^Version" | cut -d ":" -f 2 | RemoveBlank;
+    [[ -n "$_LANG" ]] && export LANG="$_LANG";
+    return 0
+}
+Pm.GetName () 
+{ 
+    cut -d "<" -f 1 | cut -d ">" -f 1 | cut -d "=" -f 1
+}
+Pm.GetPacmanKernelPkg () 
+{ 
+    echo "there is nothing"
+}
+Pm.GetPacmanKeyringDir () 
+{ 
+    local _KeyringDir="";
+    _KeyringDir="$(LANG=C pacman-key -h | RemoveBlank | grep -A 1 -- "^--populate" | tail -n 1 | cut -d "/" -f 2- | sed "s|'$||g")";
+    : "${_KeyringDir="usr/share/pacman/keyrings"}";
+    _KeyringDir="$(Pm.GetRoot)/$_KeyringDir";
+    _KeyringDir="$(sed -E "s|/+|/|g" <<< "$_KeyringDir")";
+    if [[ -e "$_KeyringDir" ]]; then
+        Readlinkf "$_KeyringDir";
+    else
+        echo "$_KeyringDir";
+    fi
+}
+Pm.GetRepoConf () 
+{ 
+    ForEach eval 'echo [{}] && Pm.GetConfig -r {}'
+}
+Pm.GetRepoListFromConf () 
+{ 
+    Pm.GetConfig --repo-list
+}
+Pm.GetRepoPkgList () 
+{ 
+    Pm.Run -Slq "$@"
+}
+Pm.GetRepoServer () 
+{ 
+    ForEach eval 'Pm.GetConfig -r {}' | grep "^Server" | ForEach eval "Ini.ParseLine <<< '{}' ; printf '%s\n' \${VALUE}"
+}
+Pm.GetRepoVer () 
+{ 
+    Pm.Run -Sp --print-format '%v' "$1"
+}
+Pm.GetRoot () 
+{ 
+    Pm.GetConfig RootDir
+}
+Pm.IsRepoPkg () 
+{ 
+    Pm.Run -Slq | grep -qx "$(Pm.GetName <<< "$1")"
+}
+Pm.PacmanGpg () 
+{ 
+    gpg --homedir "$(Pm.GetConfig GPGDir)" "$@"
+}
+Pm.Run () 
+{ 
+    pacman --noconfirm --config "${PACMAN_CONF-"/etc/pacman.conf"}" "$@"
+}
+Pm.RunKey () 
+{ 
+    pacman-key --config "${PACMAN_CONF-"/etc/pacman.conf"}" "$@"
+}
+Pm.GetDbNextSection () 
+{ 
+    Pm.GetDbSectionList | grep -x -A 1 "^%$1%$" | GetLine 2 | sed "s|^%||g; s|%$||g"
+}
+Pm.GetDbSection () 
+{ 
+    readarray -t _Stdin;
+    PrintArray "${_Stdin[@]}" | sed -ne "/^%$1%$/,/^%$(PrintEvalArray _Stdin | Pm.GetDbNextSection "$1")%$/p" | sed "1d; \$d"
+}
+Pm.GetDbSectionList () 
+{ 
+    grep -E "^%.*%$"
+}
+Pm.CreateDbTmpDir () 
+{ 
+    mkdir -p "$(Pm.GetDbTmpDir)"
+}
+Pm.DeleteDbTmpDir () 
+{ 
+    rm -rf "$(Pm.GetDbTmpDir)"
+}
+Pm.GetDbTmpDir () 
+{ 
+    echo "${TMPDIR-"/tmp"}/fasbashlib-pacman-db"
+}
+Pm.GetPkgArch () 
+{ 
+    Pm.GetSyncDbDesc "$1" | Pm.GetDbSection ARCH | RemoveBlank
+}
+Pm.GetRepoListFromLocalDb () 
+{ 
+    find "$(Pm.GetConfig DBPath)/sync" -mindepth 1 -maxdepth 1 -type f | GetBaseName | sed "s|.db$||g";
+    return 0
+}
+Pm.GetSyncAllDesc () 
+{ 
+    find "$(Pm.GetDbTmpDir)" -mindepth 3 -maxdepth 3 -name "desc" -type f
+}
+Pm.GetSyncDbDesc () 
+{ 
+    local _path;
+    _path="$(Pm.GetSyncDbDescPath "$1")";
+    [[ -e "$_path" ]] || return 1;
+    cat "$_path/desc"
+}
+Pm.GetSyncDbDescPath () 
+{ 
+    local _repo;
+    _repo="$(pacman -Sp --print-format '%r' "$1")";
+    { 
+        IsPacmanSyncDbOpend "$_repo" || OpenPacmanSyncDb "$_repo"
+    } || return 1;
+    echo "$(Pm.GetDbTmpDir)/sync/$(pacman -Sp --print-format '%r/%n-%v' "$1")"
+}
+Pm.GetVirtualPkgList () 
+{ 
+    Pm.GetRepoListFromLocalDb | ForEach Pm.OpenSyncDb {};
+    Pm.GetSyncAllDesc | ForEach eval "Pm.GetDbSection PROVIDES < {}" | RemoveBlank
+}
+Pm.IsOpendSyncDb () 
+{ 
+    readarray -t _PkgDbList < <(find "$(Pm.GetDbTmpDir)/sync/$1" -mindepth 1 -maxdepth 1 -type d );
+    (( "${#_PkgDbList[@]}" > 0 )) && return 0;
     return 1
 }
-PrintEval () 
+Pm.OpenSyncDb () 
 { 
-    eval echo "\${$1}"
+    local _Dir _RepoDb;
+    Pm.CreateDbTmpDir;
+    _Dir="$(Pm.GetDbTmpDir)/sync/$1";
+    mkdir -p "$_Dir";
+    _RepoDb="$(Pm.GetConfig DBPath)/sync/$1.db";
+    [[ -e "$_RepoDb" ]] || return 1;
+    tar -xzf "${_RepoDb}" -C "$_Dir" || return 1
 }
-RandomString () 
+Pm.OpenedSyncDbList () 
 { 
-    base64 < "/dev/random" | fold -w "$1" | head -n 1;
-    return 0
+    find "$(Pm.GetDbTmpDir)/sync/" -mindepth 1 -maxdepth 1 -type d
 }
-RemoveBlank () 
+Pm.ParsePkgFileName () 
 { 
-    sed "s|^ *||g; s| *$||g; s|^	*||g; s|	*$||g; /^$/d"
-}
-ToLower () 
-{ 
-    local _Str="${1,,}";
-    [[ -z "${_Str-""}" ]] || echo "${_Str}"
-}
-ToLowerStdin () 
-{ 
-    local _Str;
-    ForEach eval "_Str=\"{}\"; echo \"\${_Str,,}\"";
-    unset _Str
-}
-Calc () 
-{ 
-    echo "$(( "$@" ))"
-}
-Ntest () 
-{ 
-    (( "$@" )) || return 1
-}
-Bool () 
-{ 
-    case "$(ToLower "$(PrintEval "${1}")")" in 
-        "true")
-            return 0
-        ;;
-        "" | "false")
-            return 1
-        ;;
-        *)
-            return 2
-        ;;
-    esac
+    local _Pkg="$1";
+    local _PkgName _PkgVer _PkgRel _Arch _FileExt;
+    local _PkgWithOutExt;
+    if grep "/" <<< "$_Pkg"; then
+        _Pkg="$(basename "$_Pkg")";
+    fi;
+    _FileExt="$(GetLastSplitString "-" "$_Pkg" | cut -d "." -f 2-)";
+    _PkgWithOutExt="${_Pkg%%".${_FileExt}"}";
+    _Arch=$(GetLastSplitString "-" "${_PkgWithOutExt}");
+    _PkgRel=$(GetLastSplitString "-" "${_PkgWithOutExt%%"-${_Arch}"}");
+    _PkgVer=$(GetLastSplitString "-" "${_PkgWithOutExt%%"-${_PkgRel}-${_Arch}"}");
+    _PkgName="${_PkgWithOutExt%%"-${_PkgVer}-${_PkgRel}-${_Arch}"}";
+    _ParsedPkg=("${_PkgName}" "-" "$_PkgVer" "-" "$_PkgRel" "-" "$_Arch" ".$_FileExt");
+    if [[ ! "$(PrintArray "${_ParsedPkg[@]}" | tr -d "\n")" = "${_Pkg}" ]]; then
+        return 1;
+    fi;
+    PrintArray "${_ParsedPkg[@]}"
 }
 Readlinkf () 
 { 
@@ -1116,101 +1063,154 @@ URL.Parse ()
         URL.Query <<< "$i";
     fi
 }
-ParseArg () 
+SrcInfo.Format () 
 { 
-    local _Arg _Chr _Cnt;
-    local _Long=() _LongWithArg=() _Short=() _ShortWithArg=();
-    local _OutArg=() _NoArg=();
-    for _Arg in "${@}";
-    do
-        local _TempArray=();
-        case "${_Arg}" in 
-            "LONG="*)
-                readarray -t _TempArray < <(tr -d "\"" <<< "${_Arg#LONG=}" | tr "," "\n");
-                for _Chr in "${_TempArray[@]}";
-                do
-                    if [[ "${_Chr}" = *":" ]]; then
-                        _LongWithArg+=("${_Chr%":"}");
-                    else
-                        _Long+=("${_Chr}");
-                    fi;
-                done;
-                shift 1
+    RemoveBlank | sed "/^$/d" | grep -v "^#" | ForEach eval "SrcInfo.Parse Line <<< \"{}\""
+}
+SrcInfo.GetKeyList () 
+{ 
+    SrcInfo.Format | cut -d "=" -f 1
+}
+SrcInfo.GetPkgBase () 
+{ 
+    local _Line _Key _InSection=false;
+    while read -r _Line; do
+        _Key="$(SrcInfo.Parse Key <<< "$_Line")";
+        case "$_Key" in 
+            "pkgbase")
+                _InSection=true
             ;;
-            "SHORT="*)
-                readarray -t _TempArray < <(tr -d "\"" <<< "${_Arg#SHORT=}" | grep -o .);
-                for ((_Cnt=0; _Cnt<= "${#_TempArray[@]}" - 1; _Cnt++ ))
-                do
-                    if [[ "${_TempArray["$(( _Cnt + 1))"]-""}" = ":" ]]; then
-                        _ShortWithArg+=("${_TempArray["${_Cnt}"]}");
-                        _Cnt=$(( _Cnt + 1 ));
-                    else
-                        _Short+=("${_TempArray["${_Cnt}"]}");
-                    fi;
-                done;
-                shift 1
+            "pkgname")
+                _InSection=false
             ;;
-            "--")
-                shift 1;
-                break
+            *)
+                if [[ "${_InSection}" = true ]]; then
+                    echo "$_Line";
+                fi
             ;;
         esac;
-    done;
-    while (( "$#" > 0 )); do
-        if [[ "${1}" = "--" ]]; then
-            shift 1;
-            _NoArg+=("${@}");
-            shift "$#";
-            break;
-        else
-            if [[ "${1}" = "--"* ]]; then
-                if printf "%s\n" "${_LongWithArg[@]}" | grep -qx "${1#--}"; then
-                    if [[ "${2}" = "-"* ]]; then
-                        MsgError "${1} の引数が指定されていません";
-                        return 2;
-                    else
-                        _OutArg+=("${1}" "${2}");
-                        shift 2;
-                    fi;
+    done < <(SrcInfo.Format)
+}
+SrcInfo.GetPkgName () 
+{ 
+    local _Line _Key _InSection=false _TargetPkgName="$1";
+    while read -r _Line; do
+        _Key="$(SrcInfo.Parse Key <<< "$_Line")";
+        case "$_Key" in 
+            "pkgname")
+                if [[ "$(SrcInfo.Parse Value <<< "$_Line")" = "$_TargetPkgName" ]]; then
+                    _InSection=true;
                 else
-                    if printf "%s\n" "${_Long[@]}" | grep -qx "${1#--}"; then
-                        _OutArg+=("${1}");
-                        shift 1;
-                    else
-                        MsgError "${1} は不正なオプションです。-hで使い方を確認してください。";
-                        return 1;
-                    fi;
-                fi;
-            else
-                if [[ "${1}" = "-"* ]]; then
-                    local _Shift=0;
-                    while read -r _Chr; do
-                        if printf "%s\n" "${_ShortWithArg[@]}" | grep -qx "${_Chr}"; then
-                            if [[ "${1}" = *"${_Chr}" ]] && [[ ! "${2}" = "-"* ]]; then
-                                _OutArg+=("-${_Chr}" "${2}");
-                                _Shift=2;
-                            else
-                                MsgError "-${_Chr} の引数が指定されていません";
-                                return 2;
-                            fi;
-                        else
-                            if printf "%s\n" "${_Short[@]}" | grep -qx "${_Chr}"; then
-                                _OutArg+=("-${_Chr}");
-                                _Shift=1;
-                            else
-                                MsgError "-${_Chr} は不正なオプションです。-hで使い方を確認してください。";
-                                return 1;
-                            fi;
-                        fi;
-                    done < <(grep -o . <<< "${1#-}");
-                    shift "${_Shift}";
-                else
-                    _NoArg+=("${1}");
-                    shift 1;
-                fi;
-            fi;
-        fi;
+                    _InSection=false;
+                fi
+            ;;
+            "pkgbase")
+                _InSection=false
+            ;;
+            *)
+                if [[ "${_InSection}" = true ]]; then
+                    echo "$_Line";
+                fi
+            ;;
+        esac;
+    done < <(SrcInfo.Format)
+}
+SrcInfo.GetSectionList () 
+{ 
+    SrcInfo.Format | grep -e "^pkgbase" -e "^pkgname"
+}
+SrcInfo.GetValue () 
+{ 
+    local _SrcInfo=();
+    local _Output=();
+    local _PkgBaseValues=("pkgver" "pkgrel" "epoch");
+    local _AllValues=("pkgdesc" "url" "install" "changelog");
+    local _AllArrays=("arch" "groups" "license" "noextract" "options" "backup" "validpgpkeys");
+    local _AllArraysWithArch=("source" "depends" "checkdepends" "makedepends" "optdepends" "provides" "conflicts" "replaces" "md5sums" "sha1sums" "sha224sums" "sha256sums" "sha384sums" "sha512sums");
+    ArrayAppend _SrcInfo;
+    ArrayIncludes _PkgBaseValues "$1" && { 
+        PrintEvalArray _SrcInfo | SrcInfo.GetValueInPkgBase "$1";
+        return 0
+    };
+    [[ -n "${2-""}" ]] || return 1;
+    if ArrayIncludes _AllValues "$1" || ArrayIncludes _AllArrays "$1"; then
+        ArrayAppend _Output < <(PrintEvalArray _SrcInfo | SrcInfo.GetValueInPkgBase "$1");
+        ArrayAppend _Output < <(PrintEvalArray _SrcInfo | SrcInfo.GetValueInPkgName "$2" "$1");
+        PrintArray "${_Output[@]}" | tail -n 1;
+        return 0;
+    fi;
+    ArrayIncludes _AllArraysWithArch "$1" || return 1;
+    local _Arch _ArchList;
+    if [[ -z "${3-""}" ]]; then
+        ArrayAppend _ArchList < <(PrintEvalArray _SrcInfo | SrcInfo.GetValue arch "$2");
+    else
+        ArrayAppend _ArchList < <(tr "," "\n" <<< "$3" | RemoveBlank);
+    fi;
+    ArrayAppend _Output < <(PrintEvalArray _SrcInfo | SrcInfo.GetValueInPkgBase "$1");
+    ArrayAppend _Output < <(PrintEvalArray _SrcInfo | SrcInfo.GetValueInPkgName "$2" "$1");
+    for _Arch in "${_ArchList[@]}";
+    do
+        ArrayAppend _Output < <(PrintEvalArray _SrcInfo | SrcInfo.GetValueInPkgBase "$1_${_Arch}");
+        ArrayAppend _Output < <(PrintEvalArray _SrcInfo | SrcInfo.GetValueInPkgName "$2" "$1_${_Arch}");
     done;
-    OPTRET=("${_OutArg[@]}" -- "${_NoArg[@]}");
+    PrintEvalArray _Output;
     return 0
+}
+SrcInfo.GetValueInPkgBase () 
+{ 
+    local _Line;
+    while read -r _Line; do
+        _Key="$(SrcInfo.Parse Key <<< "$_Line")";
+        case "$_Key" in 
+            "$1")
+                SrcInfo.Parse Value <<< "$_Line"
+            ;;
+        esac;
+    done < <(SrcInfo.GetPkgBase)
+}
+SrcInfo.GetValueInPkgName () 
+{ 
+    local _Line;
+    while read -r _Line; do
+        _Key="$(SrcInfo.Parse Key <<< "$_Line")";
+        case "$_Key" in 
+            "$2")
+                SrcInfo.Parse Value <<< "$_Line"
+            ;;
+        esac;
+    done < <(SrcInfo.GetPkgName "$1")
+}
+SrcInfo.Parse () 
+{ 
+    local _Output="${1-""}";
+    [[ -n "${_Output}" ]] || return 1;
+    shift 1;
+    local _String _Key _Value;
+    _String="$(cat)";
+    _Key="$(cut -d "=" -f 1 <<<  "$_String" | RemoveBlank)";
+    _Value="$(cut -d "=" -f 2- <<< "$_String" | RemoveBlank)";
+    case "$_Output" in 
+        "Line")
+            echo "$_Key=$_Value"
+        ;;
+        "Key")
+            echo "$_Key"
+        ;;
+        "Value")
+            echo "$_Value"
+        ;;
+    esac;
+    return 0
+}
+Arch.GetKernelFileList () 
+{ 
+    find "/boot" -maxdepth 1 -mindepth 1 -name "vmlinuz-*"
+}
+Arch.GetKernelSrcList () 
+{ 
+    find "/usr/src" -mindepth 1 -maxdepth 1 -type l -name "linux*"
+}
+Arch.GetMkinitcpioPresetList () 
+{ 
+    find "/etc/mkinitcpio.d/" -name "*.preset" -type f | GetBaseName | RemoveFileExt
 }
