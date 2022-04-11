@@ -6,6 +6,8 @@ SrcDir="$MainDir/src"
 BinDir="$MainDir/bin"
 DocsDir="$MainDir/docs"
 
+LibList=("${@}")
+
 
 # Parse args
 while [[ -n "${1-""}" ]]; do
@@ -35,9 +37,15 @@ if [[ ! -e "$LibDir/shdoc/shdoc" ]]; then
     exit 1
 fi
 
-while read -r Lib; do
+export SHDOC_DEBUG=1
+
+if [[ -z "${LibList[*]}" ]]; then
+    readarray -t LibList < <("${BinDir}/GetLibList.sh" -q)
+fi
+
+for Lib in "${LibList[@]}"; do
     echo > "${DocsDir}/${Lib}.md"
     readarray -t FileList < <("$LibDir/GetMeta.sh" "$Lib" Files | tr "," "\n" | sed "s|^ *||g; s| *$||g; s|^	*||g; s|	*$||g; /^$/d" )
     printf "${SrcDir}/$Lib/%s\n" "${FileList[@]}" | xargs -I{} echo "Load: {}"
     printf "${SrcDir}/$Lib/%s\n" "${FileList[@]}" | xargs cat | gawk -f "$LibDir/shdoc/shdoc" >> "${DocsDir}/${Lib}.md"
-done < <("${BinDir}/GetLibList.sh" -q)
+done
