@@ -27,6 +27,7 @@ git tag | grep -qx "$TargetTag" || {
 # Set variables
 BeforeTag="$(git tag | grep -B 1 -x -- "${TargetTag}" | head -n 1)"
 SourceURL=$("$BinDir/GetLink.sh" "$TargetTag" | grep "fasbashlib.sh$")
+SourceURL_Snake=$("$BinDir/GetLink.sh" "$TargetTag" | grep "fasbashlib-snake.sh$")
 TempFile="$(mktemp)"
 
 # Log
@@ -34,7 +35,7 @@ echo "1つ前のタグは${BeforeTag}です。" >&2
 echo "ソースは\"${SourceURL}\"です。" >&2
 
 # Replaces
-SedCode="s|%SOURCEURL%|${SourceURL}|g; s|%TAG%|${TargetTag}|g"
+SedCode="s|%SOURCEURL%|${SourceURL}|g; s|%TAG%|${TargetTag}|g; s|%SNAKESOURCEURL%|${SourceURL_Snake}|g"
 
 # %SOURCEURL% は リリースのURLへ置き換えられます
 if [[ -e "$StaticDir/release-head.md" ]]; then

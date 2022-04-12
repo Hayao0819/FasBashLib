@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+set -Eeu
+
+
+LibraryPATH=(
+    "/usr/lib/fasbashlib.sh"
+
+)
+
+HelpDoc(){
+    echo " |------------------------------------|"
+    echo " | Return installed FasBashLib PATH   |"
+    echo " | Usage: ${0} <version>              |"
+    echo " |                                    |"
+    echo " | Options:                           |"
+    echo " |     -h    Show this message        |"
+    echo " |     -p    Add library path         |"
+    echo " |     -s    Enable snake case        |"
+    echo " |                                    |"
+    echo " |------------------------------------|"
+}
+
+while getopts hp: OPT;do
+    case "${OPT}" in
+        p)
+            LibraryPATH+=("${OPTARG}")
+            ;;
+        h)
+            HelpDoc
+            ;;
+        *)
+            HelpDoc
+            exit 1
+            ;;
+    esac
+done
+
+shift $((OPTIND - 1))

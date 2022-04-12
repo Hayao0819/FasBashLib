@@ -17,7 +17,8 @@ jobs:
 
       - name: Build and create archive
         run: |
-          ./bin/SingleFile.sh -ver "${GITHUB_REF#refs/tags/}" 
+          ./bin/SingleFile.sh -ver "${GITHUB_REF#refs/tags/}"
+          ./bin/SingleFile.sh -snake -ver "${GITHUB_REF#refs/tags/}-snake" 
           make docs
           zip docs.zip docs/*
 
@@ -37,6 +38,7 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
+            fasbashlib-snake.sh
             fasbashlib.sh
             docs.zip
 
