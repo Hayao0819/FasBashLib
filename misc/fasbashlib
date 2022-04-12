@@ -2,32 +2,69 @@
 
 set -Eeu
 
-
 LibraryPATH=(
-    "/usr/lib/fasbashlib.sh"
-
+    "/usr/lib/"
+    "/lib/"
+    "${HOME}/.local/lib/"
 )
 
-HelpDoc(){
-    echo " |------------------------------------|"
-    echo " | Return installed FasBashLib PATH   |"
-    echo " | Usage: ${0} <version>              |"
-    echo " |                                    |"
-    echo " | Options:                           |"
-    echo " |     -h    Show this message        |"
-    echo " |     -p    Add library path         |"
-    echo " |     -s    Enable snake case        |"
-    echo " |                                    |"
-    echo " |------------------------------------|"
+FileName="fasbashlib.sh"
+FileName_SnakeCase="fasbashlib-snake.sh"
+UseSnakeCase=false
+ExitCode=1
+
+PrintArray(){
+    (( $# >= 1 )) || return 0
+    printf "%s\n" "${@}"
 }
 
-while getopts hp: OPT;do
+ForEach(){
+    local _Item
+    while read -r _Item; do
+        "${@//"{}"/"${_Item}"}"| return "${?}"
+    done
+}
+
+TextBox(){
+    local _Content=() _Length _Vertical="|" _Line="="
+    readarray -t _Content
+    _Length="$(PrintArray "${_Content[@]}" | awk '{ if ( length > x ) { x = length } }END{ print x }')"
+    echo "${_Vertical}${_Line}$(yes "${_Line}" | head -n "$_Length" | tr -d "\n")${_Vertical}"
+    for _Str in "${_Content[@]}"; do
+        echo "${_Vertical}${_Str}$(yes " " | head -n "$(( _Length + 1 - "${#_Str}"))" | tr -d "\n")${_Vertical}"
+    done
+    echo "${_Vertical}${_Line}$(yes "${_Line}" | head -n "$_Length" | tr -d "\n")${_Vertical}"
+}
+
+HelpDoc(){
+    {
+        echo " <Fasbashlib local path finder>"
+        echo " Return installed FasBashLib PATH"
+        echo " The library must have a specific name"
+        echo
+        echo " Usage: ${0} <version>"
+        echo
+        echo " Options:"
+        echo "     -h    Show this message"
+        echo "     -p    Add library dir"
+        echo "     -s    Enable snake case (Find $FileName_SnakeCase )"
+        echo
+        echo " Support filename:"
+        printf "           %s/${FileName}\n" "${LibraryPATH[@]%/}"
+        printf "           %s/${FileName_SnakeCase}\n" "${LibraryPATH[@]%/}"
+    } | TextBox
+}
+
+while getopts hp:s OPT;do
     case "${OPT}" in
         p)
             LibraryPATH+=("${OPTARG}")
             ;;
         h)
             HelpDoc
+            ;;
+        s)
+            UseSnakeCase=true
             ;;
         *)
             HelpDoc
@@ -37,3 +74,26 @@ while getopts hp: OPT;do
 done
 
 shift $((OPTIND - 1))
+
+RequireVersion="${1-""}"
+
+
+if [[ "${UseSnakeCase}" = true ]]; then
+    FileName="${FileName_SnakeCase}"
+fi
+
+for Dir in "${LibraryPATH[@]}"; do
+    LibPath="${Dir%/}/${FileName}"
+    [[ -e "$LibPath" ]] || continue
+    LibVersion=$(
+        # shellcheck source=/dev/null
+        source "$LibPath"
+        echo "${FSBLIB_VERSION}"
+    )
+    if [[ "$LibVersion" = "${RequireVersion}"* ]]; then
+        echo "${LibPath}"
+        ExitCode=0
+        break
+    fi
+done
+exit "$ExitCode"
