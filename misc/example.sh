@@ -1,11 +1,15 @@
 #!/usr/bin/env bash
 set -Eeu
-source /dev/stdin < <(curl -sL https://raw.githubusercontent.com/Hayao0819/FasBashLib/build-dev/fasbashlib.sh)
+
+# shellcheck source=/dev/null
+source /dev/stdin < <(
+    fasbashlib 2> /dev/null || curl -sL https://raw.githubusercontent.com/Hayao0819/FasBashLib/build-dev/fasbashlib.sh
+)
 
 ExampleArray=("Hello" "FasBashLib!")
 
 IsAvailable "cowsay" || {
-    MsgErr "Please install cowsay"
+    Msg.Err "Please install cowsay"
     exit 1
 }
 
