@@ -38,4 +38,7 @@ package() {
 
     # install license
     install -Dm 644 "$srcdir/FasBashLib/LICENSE.md" "$pkgdir/usr/share/licenses/fasbashlib/LICENSE.md"
+
+    # install fasbashlib command
+    install -Dm 755 "$srcdir/FasBashLib/misc/fasbashlib" "$pkgdir/usr/bin/fasbashlib"
 }
