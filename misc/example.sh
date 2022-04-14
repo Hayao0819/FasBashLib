@@ -3,7 +3,7 @@ set -Eeu
 
 # shellcheck source=/dev/null
 source /dev/stdin < <(
-    fasbashlib 2> /dev/null || curl -sL https://raw.githubusercontent.com/Hayao0819/FasBashLib/build-dev/fasbashlib.sh
+    fasbashlib -x 2> /dev/null || curl -sL https://raw.githubusercontent.com/Hayao0819/FasBashLib/build-dev/fasbashlib.sh
 )
 
 ExampleArray=("Hello" "FasBashLib!")
