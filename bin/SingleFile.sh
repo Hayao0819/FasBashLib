@@ -92,14 +92,25 @@ ToSnakeCase(){
     sed -E 's/(.)([A-Z])/\1_\2/g' | ForEach ToLower "{}"
 }
 
+# Set version
 _Make_Version(){
-    # Set version
-    [[ -z "${Version-""}" ]] || return 0 # 引数で既にバージョンが設定済みの場合はこの関数を終了する
+    # 引数で既にバージョンが設定済みの場合
+    if [[ -n "${Version-""}" ]]; then
+        [[ "${SnakeCase}" = true ]] || return 0 # スネークケースでない場合何もしないでこの関数を終了
+        Version="${Version%-snake}-snake" # バージョンの末尾に-snakeをつける
+        return 0
+    fi
+
+    # Versionが未設定の場合
     if [[ -e "$MainDir/.git" ]]; then
         echo "Found git. Use git tag and id as version." >&2
         Version="$(git describe --long --tags | sed 's/\([^-]*-g\)/r\1/;s/-/./g')"
     else
         Version="0.2.x-dev"
+    fi
+
+    if [[ "${SnakeCase}" = true ]]; then
+        Version="${Version%-snake}-snake" # バージョンの末尾に-snakeをつける
     fi
 }
 
