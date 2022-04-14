@@ -5,7 +5,6 @@ LibDir="$MainDir/lib"
 SrcDir="$MainDir/src"
 BinDir="$MainDir/bin"
 DocsDir="$MainDir/docs"
-LibList=("${@}")
 
 # sedコマンド
 if sed -h 2>&1 | grep -q "GNU"; then
@@ -70,6 +69,8 @@ while [[ -n "${1-""}" ]]; do
             ;;
     esac
 done
+
+LibList=("${@}")
 
 mkdir -p "${DocsDir}"
 
