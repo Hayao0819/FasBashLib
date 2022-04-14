@@ -33,6 +33,7 @@ done
 SrcDir="$MainDir/src"
 StaticDir="$MainDir/static"
 LibDir="$MainDir/lib"
+BinDir="$MainDir/bin"
 
 # Check dir
 mkdir -p "$OutDir"
@@ -48,5 +49,5 @@ done
 while read -r Dir; do
     _Lib="$(basename "$Dir")"
     "$MainDir/bin/SingleFile.sh" -out "$OutDir/$_Lib.sh" -noreq "$_Lib"
-done < <(find "$SrcDir" -type d -mindepth 1 -maxdepth 1)
+done < <("$BinDir/GetLibList.sh" -q)
 unset Dir File
