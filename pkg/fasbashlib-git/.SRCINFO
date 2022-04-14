@@ -6,7 +6,7 @@ pkgbase = fasbashlib-git
 	arch = any
 	license = MIT SUSHI-WARE
 	makedepends = git
-	source = git+https://github.com/Hayao0819/FasBashLib.git
+	source = git+https://github.com/Hayao0819/FasBashLib.git#branch=dev-0.2.x
 	sha256sums = SKIP
 
 pkgname = fasbashlib-git

@@ -8,7 +8,8 @@ arch=('any')
 url='https:/fascode.net'
 license=('MIT SUSHI-WARE')
 makedepends=("git")
-source=("git+https://github.com/Hayao0819/FasBashLib.git")
+gitbranch="dev-0.2.x"
+source=("git+https://github.com/Hayao0819/FasBashLib.git#branch=${gitbranch}")
 sha256sums=('SKIP')
 
 pkgver() {
