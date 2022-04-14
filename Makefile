@@ -24,6 +24,9 @@ install:
 	# install singlefile
 	"${CURRENT_DIR}/bin/SingleFile.sh" -debug -out "${DESTDIR}/usr/lib/fasbashlib.sh" -ver "${VERSION}"
 
+	# install single snakecase
+	"${CURRENT_DIR}/bin/SingleFile.sh" -debug -snake -out "${DESTDIR}/usr/lib/fasbashlib-snake.sh" -ver "${VERSION}"
+
 	# install docs
 	"${CURRENT_DIR}/bin/GenDoc.sh" -out "${DESTDIR}/usr/share/doc/fasbashlib/"
 
