@@ -22,5 +22,6 @@ prepare(){
 }
 
 package() {
+    cd "FasBashLib"
     make DESTDIR="${pkgdir}" install
 }
