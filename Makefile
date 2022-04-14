@@ -1,4 +1,3 @@
-LibDIR  := /usr/lib/fasbashlib/
 DESTDIR := /
 CURRENT_DIR = ${shell dirname $(dir $(abspath $(lastword $(MAKEFILE_LIST))))}/${shell basename $(dir $(abspath $(lastword $(MAKEFILE_LIST))))}
 VERSION := ""
