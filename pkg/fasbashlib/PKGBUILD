@@ -17,23 +17,6 @@ prepare(){
 }
 
 package() {
-    # Create dir
-    mkdir -p "$pkgdir/usr/lib/fasbashlib/"
-    mkdir -p "$pkgdir/usr/share/doc/fasbashlib/"
-    mkdir -p "$pkgdir/usr/share/licenses/fasbashlib"
-
-    # install multifile
-    "${srcdir}/FasBashLib/bin/MuitlFile.sh" -out "$pkgdir/usr/lib/fasbashlib/"
-
-    # install singlefile
-    "${srcdir}/FasBashLib/bin/SingleFile.sh" -debug -out "$pkgdir/usr/lib/fasbashlib.sh" -ver "v${pkgver}"
-
-    # install docs
-    "$srcdir/FasBashLib/bin/GenDoc.sh" -out "${pkgdir}/usr/share/doc/fasbashlib/"
-
-    # install license
-    install -Dm 644 "$srcdir/FasBashLib/LICENSE.md" "$pkgdir/usr/share/licenses/fasbashlib/LICENSE.md"
-
-    # install fasbashlib command
-    install -Dm 755 "$srcdir/FasBashLib/misc/fasbashlib" "$pkgdir/usr/bin/fasbashlib"
+    cd "FasBashLib"
+    make DESTDIR="${pkgdir}" install
 }
