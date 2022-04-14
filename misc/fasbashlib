@@ -11,7 +11,6 @@ LibraryPATH=(
 FileName="fasbashlib.sh"
 FileName_SnakeCase="fasbashlib-snake.sh"
 UseSnakeCase=false
-ExitCode=1
 SourceMode=false
 
 PrintArray(){
@@ -54,6 +53,8 @@ HelpDoc(){
         echo " Support filename:"
         printf "           %s/${FileName}\n" "${LibraryPATH[@]%/}"
         printf "           %s/${FileName_SnakeCase}\n" "${LibraryPATH[@]%/}"
+        echo
+        echo " Version example: \"0.1\", \"0\", \"0.1.5\""
     } | TextBox
 }
 
@@ -95,7 +96,7 @@ for Dir in "${LibraryPATH[@]}"; do
         source "$LibPath"
         echo "${FSBLIB_VERSION}"
     )
-    if [[ -n "${RequireVersion-""}" ]] && [[ ! "$LibVersion" = "${RequireVersion}"* ]]; then
+    if [[ -n "${RequireVersion-""}" ]] && [[ ! "${LibVersion}" = "v${RequireVersion#v}"* ]]; then
         continue
     fi
     if [[ "$SourceMode" = true ]]; then
