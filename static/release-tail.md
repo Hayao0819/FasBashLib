@@ -5,12 +5,16 @@
 
 ```bash
 # shellcheck source=/dev/null
-source /dev/stdin < <(curl -sL "%SOURCEURL%")
+source /dev/stdin < <(
+    fasbashlib -x "%TAG%" 2> /dev/null || curl -sL "%SOURCEURL%"
+)
 ```
 
 ### SnakeCase Version
 
 ```bash
 # shellcheck source=/dev/null
-source /dev/stdin < <(curl -sL "%SNAKESOURCEURL%")
+source /dev/stdin < <(
+    fasbashlib -s -x "%TAG%" 2> /dev/null || curl -sL "%SNAKESOURCEURL%"
+)
 ```
