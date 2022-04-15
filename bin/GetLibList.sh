@@ -1,6 +1,4 @@
 #!/usr/bin/env bash
-
-#!/usr/bin/env bash
 # Do not use FasBashLib in this file
 # shellcheck disable=SC1090,SC1091
 
