@@ -1,0 +1,5 @@
+==実行前==
+GetFuncList
+MyNewVerySuperPerfectFunction
+UnsetAllFunc
+==実行後==
