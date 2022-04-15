@@ -6,7 +6,7 @@ on:
       - 'v*'
 
 jobs:
-  build-01x:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
