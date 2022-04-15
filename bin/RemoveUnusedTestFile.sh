@@ -5,9 +5,6 @@ set -Eeu
 
 # Directory
 MainDir="$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)"
-SrcDir="$MainDir/src"
-LibDir="$MainDir/lib"
-BinDir="$MainDir/bin"
 TestDir="$MainDir/tests"
 
 
