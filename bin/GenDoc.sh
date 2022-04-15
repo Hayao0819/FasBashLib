@@ -4,7 +4,7 @@ MainDir="$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)"
 LibDir="$MainDir/lib"
 SrcDir="$MainDir/src"
 BinDir="$MainDir/bin"
-DocsDir="$MainDir/docs"
+DocsDir="$MainDir/docs/lib"
 
 # sedコマンド
 if sed -h 2>&1 | grep -q "GNU"; then
