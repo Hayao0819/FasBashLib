@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.1.5.r164.g880c8a1-snake"
+FSBLIB_VERSION="v0.2.0.r74.g8b58b24-snake"
 FSBLIB_REQUIRE="ModernBash"
 
 csv.get_clm () 
