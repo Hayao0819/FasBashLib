@@ -17,9 +17,8 @@ jobs:
 
       - name: Build and create archive
         run: |
-          ./bin/SingleFile.sh -ver "${GITHUB_REF#refs/tags/}"
-          ./bin/SingleFile.sh -snake -ver "${GITHUB_REF#refs/tags/}" 
-          make docs
+          make -B
+          make -B docs
           zip docs.zip docs/*
 
       - name: Create release
