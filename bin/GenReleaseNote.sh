@@ -25,6 +25,8 @@ git tag | grep -qx "$TargetTag" || {
 }
 
 # Set variables
+CurrentBranch="$(git rev-parse --abbrev-ref HEAD)"
+HeadCommitID="$(git rev-parse HEAD)"
 BeforeTag="$(git tag | grep -B 1 -x -- "${TargetTag}" | head -n 1)"
 SourceURL=$("$BinDir/GetLink.sh" "$TargetTag" | grep "fasbashlib.sh$")
 SourceURL_Snake=$("$BinDir/GetLink.sh" "$TargetTag" | grep "fasbashlib-snake.sh$")
@@ -36,6 +38,9 @@ echo "ソースは\"${SourceURL}\"です。" >&2
 
 # Replaces
 SedCode="s|%SOURCEURL%|${SourceURL}|g; s|%TAG%|${TargetTag}|g; s|%SNAKESOURCEURL%|${SourceURL_Snake}|g"
+
+# Checkout
+git checkout "$TargetTag" > /dev/null 2>&1
 
 # %SOURCEURL% は リリースのURLへ置き換えられます
 if [[ -e "$StaticDir/release-head.md" ]]; then
@@ -49,3 +54,10 @@ fi
 # 一時ファイルをオープン
 cat "$TempFile"
 rm -rf "$TempFile"
+
+# Checkout
+if [[ "$CurrentBranch" = "HEAD" ]]; then
+    git checkout "$HeadCommitID" > /dev/null 2>&1
+else
+    git checkout "$CurrentBranch" > /dev/null 2>&1
+fi
