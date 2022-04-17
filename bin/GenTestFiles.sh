@@ -3,9 +3,11 @@
 
 MainDir="$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)"
 LibDir="$MainDir/lib"
-SrcDir="$MainDir/src"
 BinDir="$MainDir/bin"
 TestsDir="$MainDir/tests"
+
+LibList=()
+FuncList=()
 
 # Parse args
 while [[ -n "${1-""}" ]]; do
@@ -16,7 +18,7 @@ while [[ -n "${1-""}" ]]; do
             break
             ;;
         *)
-            echo "Usage: $(basename "$0") -- [Lib1] [Lib2] ..."
+            echo "Usage: $(basename "$0") -- [Lib] [Function] ..."
             [[ "${1}" = "-h" ]] && exit 0
             exit 1
             ;;
@@ -25,7 +27,8 @@ done
 
 # Get library list
 if (( "${#}" > 0 )); then
-    LibList=("$@")
+    LibList=("${1}")
+    FuncList=("${2}")
 else
     readarray -t LibList < <("$BinDir/GetLibList.sh" -q)
 fi
@@ -34,29 +37,18 @@ fi
 printf "%s\n" "${LibList[@]}" | xargs -I{} mkdir -p "$TestsDir/{}"
 
 # Create function dirs
-while read -r Dir; do
-    LibName="$(basename "$Dir")"
-    while read -r File; do
-        
+for Lib in "${LibList[@]}"; do
+    while read -r Func; do
+        FuncTestDir="$TestsDir/$Lib/${Func}/"
+        mkdir -p "$FuncTestDir"
 
-        (
-            source "${Dir}/${File}" || {
-                echo "Failed to load shell file" >&2
-                exit 1
-            }
-
-            while read -r Func; do
-                FuncTestDir="$TestsDir/$LibName/${Func}/"
-                mkdir -p "$FuncTestDir"
-                #TestFiles=("Run.sh" "Result.txt")
-                #for _File in "${TestFiles[@]}"; do
-                #    touch "$FuncTestDir/$_File"
-                #done
-                [[ -e "$FuncTestDir/Run.sh"    ]] || echo "# shellcheck disable=SC2148,SC2034" >  "$FuncTestDir/Run.sh"
-                [[ -e "$FuncTestDir/Result.txt" ]] || echo > "$FuncTestDir/Result.txt"
-            done < <(typeset -F | cut -d " " -f 3)
+        [[ -e "$FuncTestDir/Run.sh"    ]] || echo "# shellcheck disable=SC2148,SC2034" >  "$FuncTestDir/Run.sh"
+        [[ -e "$FuncTestDir/Result.txt" ]] || echo > "$FuncTestDir/Result.txt"
+    done < <(
+        if (( "${#FuncList[@]}" > 0 )); then
+            printf "%s\n" "${FuncList[@]}"
+        else
+            "$LibDir/GetFuncList.sh" "$Lib"
+        fi
         )
-    done < <("$LibDir/GetMeta.sh" "${LibName}" "Files" | tr "," "\n")
-
-done < <(printf "${SrcDir}/%s\n" "${LibList[@]}")
-
+done
