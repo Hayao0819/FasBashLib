@@ -25,6 +25,8 @@ done < <(find "${TestDir}" -type f)
 # Remove empty directory
 while read -r Dir; do
     [[ -e "$Dir" ]] || continue
+    # shellcheck disable=SC2143
+    #if [[ -z "$(find "${Dir}")" ]] || [[ -z "$(find "$Dir" -type f | grep -v "Exit.txt")" ]]; then
     if [[ -z "$(find "${Dir}")" ]]; then
         Remove "$Dir"
     fi
