@@ -51,6 +51,7 @@ for Lib in "${LibList[@]}"; do
 
         [[ -e "$FuncTestDir/Run.sh"    ]] || echo "# shellcheck disable=SC2148,SC2034" >  "$FuncTestDir/Run.sh"
         [[ -e "$FuncTestDir/Result.txt" ]] || echo > "$FuncTestDir/Result.txt"
+        [[ -e "$FuncTestDir/Exit.txt" ]] || echo "0" > "$FuncTestDir/Exit.txt"
     done < <(
         if (( "${#FuncList[@]}" > 0 )); then
             printf "%s\n" "${FuncList[@]}"
