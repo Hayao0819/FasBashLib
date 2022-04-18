@@ -26,12 +26,19 @@ while [[ -n "${1-""}" ]]; do
 done
 
 # Get library list
-if (( "${#}" > 0 )); then
-    LibList=("${1}")
-    FuncList=("${2}")
-else
-    readarray -t LibList < <("$BinDir/GetLibList.sh" -q)
-fi
+case "$#" in
+    0)
+        readarray -t LibList < <("$BinDir/GetLibList.sh" -q)
+        ;;
+    1)
+        LibList=("${1}")
+        ;;
+    2 | *)
+        LibList=("${1}")
+        FuncList=("${2}")
+        ;;
+esac
+
 
 # Create lib dirs
 printf "%s\n" "${LibList[@]}" | xargs -I{} mkdir -p "$TestsDir/{}"
@@ -48,7 +55,7 @@ for Lib in "${LibList[@]}"; do
         if (( "${#FuncList[@]}" > 0 )); then
             printf "%s\n" "${FuncList[@]}"
         else
-            "$LibDir/GetFuncList.sh" "$Lib"
+            "$LibDir/GetFuncList.sh" -noprefix "$Lib"
         fi
         )
 done
