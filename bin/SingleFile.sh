@@ -263,7 +263,7 @@ _Make_Lib(){
         # ライブラリのファイルごとに関数を読み取ってTmpLibFileに関数を書き込み
         # この際に関数定義部分のプレフィックスとスネークケース置き換えを行う
         while read -r File; do
-            _CheckLoadedFile "${Dir}/${File}"
+            _CheckLoadedFile "${Dir}/${File}" || continue
 
             # _DefinedFuncInFile と _DefinedFuncInLib はライブラリごとの関数の一覧
             # プレフィックスは除外されており、元のソースコードの関数名がそのまま記述されます。
