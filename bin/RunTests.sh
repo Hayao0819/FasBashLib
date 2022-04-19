@@ -34,32 +34,33 @@ RunFuncTest(){
     ExitTestStatus=0
     ActualResultTmp="$(mktemp -t "fasbashlib.result.XXXXX")"
 
-    #if [[ ! -e "$TestsDir/$Lib/$FuncToTest/Result.txt" ]] || [[ ! -e "$TestsDir/$Lib/$FuncToTest/Run.sh" ]]; then
-    #    echo "テストに必要なファイルが見つかりませんでした" >&2
-    #    return 1
-    #fi
+    local _TargetDir="$TestsDir/${1}/${2}${3+"/${3}/"}"
 
     local _F
     # $TestsDir/$1/$2
     for _F in "Result.txt" "Run.sh" "Exit.txt"; do
-        [[ -e "$TestsDir/$1/$2/$3/$_F" ]] || {
-            echo "テストに必要なファイルが見つかりませんでした" >&2
+        [[ -e "${_TargetDir}/$_F" ]] || {
+            [[ -z "${3-""}" ]] || echo "${1}/${2}: テストに必要なファイルが見つかりませんでした" >&2
             return 1
         }
     done
 
-    echo "${1}/${2}の${3}をテスト中..." >&2
+    if [[ -n "${3-""}" ]]; then
+        echo "${1}/${2}の${3}をテスト中..." >&2
+    else
+        echo "${1}の${2}をテスト中..." >&2
+    fi
 
     # Initilize
     echo > "${ActualResultTmp}"
 
     # run
     sed "s|%LIBPATH%|${MainLibFile}|g" "$MainDir/static/test-head.sh" | \
-        cat "/dev/stdin" "$TestsDir/$1/$2/$3/Run.sh" | bash -o pipefail -o errtrace > "${ActualResultTmp}" || ExitTestStatus="$?"
+        cat "/dev/stdin" "$_TargetDir/Run.sh" | bash -o pipefail -o errtrace > "${ActualResultTmp}" || ExitTestStatus="$?"
 
     # Get result
-    ExpectedExitStatus="$(grep -v "^$" "$TestsDir/$1/$2/$3/Exit.txt")"
-    readarray -t ExpectedResult < "$TestsDir/$1/$2/$3/Result.txt"
+    ExpectedExitStatus="$(grep -v "^$" "$_TargetDir/Exit.txt")"
+    readarray -t ExpectedResult < "$_TargetDir/Result.txt"
     readarray -t ActualResult < "${ActualResultTmp}"
     rm -rf "${ActualResultTmp}"
 
@@ -79,6 +80,32 @@ RunFuncTest(){
     fi
 }
 
+RunTestAndWriteResult(){
+    local ExitCode=0 Args=("$Lib" "$FuncToTest")
+    [[ -z "${TestName-""}" ]] || Args+=("${TestName}")
+    RunFuncTest "${Args[@]}" || ExitCode="$?"
+    case "$ExitCode" in
+        "0")
+            #echo "Function: $Lib.$FuncToTest=Passed"
+            ;;
+        "1")
+            #echo "Function: $Lib.$FuncToTest=No File"
+            ;;
+        "2")
+            echo "Function: $Lib.$FuncToTest=Empty"
+            ;;
+        "3")
+            echo "Function: $Lib.$FuncToTest=Missing exit code (Expect: ${ExpectedExitStatus} Result: ${ExitTestStatus})"
+            ;;
+        "4")
+            echo "Function: $Lib.$FuncToTest=No Match With Result"
+            ;;
+        *)
+            echo "Function: $Lib.$FuncToTest=Unknown Error"
+            ;;
+    esac
+}
+
 # Initilize
 echo -n > "${ResultFile}"
 
@@ -91,32 +118,10 @@ for Lib in "${LibToRunTest[@]}"; do
             }
         } &
     done < <("${LibDir}/GetDepends.sh" "$Lib")
-    while read -r FuncToTest; do 
+    while read -r FuncToTest; do
+        RunTestAndWriteResult >> "${ResultFile}"
         while read -r TestName; do
-            {
-                ExitCode=0
-                RunFuncTest "$Lib" "$FuncToTest" "$TestName" || ExitCode="$?"
-                case "$ExitCode" in
-                    "0")
-                        #echo "Function: $Lib.$FuncToTest=Passed" >> "${ResultFile}"
-                        ;;
-                    "1")
-                        #echo "Function: $Lib.$FuncToTest=No File" >> "${ResultFile}"
-                        ;;
-                    "2")
-                        echo "Function: $Lib.$FuncToTest=Empty" >> "${ResultFile}"
-                        ;;
-                    "3")
-                        echo "Function: $Lib.$FuncToTest=Missing exit code (Expect: ${ExpectedExitStatus} Result: ${ExitTestStatus})" >> "${ResultFile}"
-                        ;;
-                    "4")
-                        echo "Function: $Lib.$FuncToTest=No Match With Result" >> "${ResultFile}"
-                        ;;
-                    *)
-                        echo "Function: $Lib.$FuncToTest=Unknown Error" >> "${ResultFile}"
-                        ;;
-                esac
-            } &
+            RunTestAndWriteResult >> "${ResultFile}"
         done < <(find "${TestsDir}/${Lib}/${FuncToTest}/" -mindepth 1 -maxdepth 1 -type d -print0  2> /dev/null | xargs -0 -L 1 basename )
     done < <(find "$TestsDir/$Lib/" -mindepth 1 -maxdepth 1 -type d -print0  2> /dev/null | xargs -0 -L 1 basename )
 done
