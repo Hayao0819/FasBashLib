@@ -39,25 +39,27 @@ while [[ -n "${1-""}" ]]; do
     esac
 done
 
-Lib="$1" FuncToTest="$2"
-: "${OutputFile="$TestsDir/$Lib/$FuncToTest/Result.txt"}"
-
+Lib="$1" FuncToTest="$2" TestName="$3"
+: "${OutputFile="$TestsDir/$Lib/$FuncToTest/$TestName/Result.txt"}"
+: "${ExitFile="$TestsDir/$Lib/$FuncToTest/$TestName/Exit.txt"}"
+ExitCode=0
 
 # Build fasbashlib
 MainLibFile="${TMPDIR-"/tmp"}/fasbashlib.sh"
 "$BinDir/SingleFile.sh" -out "$MainLibFile" "${Lib}" 1> /dev/null 2>&1
 
-if [[ ! -e "$TestsDir/$Lib/$FuncToTest/Run.sh" ]]; then
+if [[ ! -e "$TestsDir/$Lib/$FuncToTest/$TestName/Run.sh" ]]; then
     echo "テストに必要なファイルが見つかりませんでした" >&2
     exit 1
 fi
 
-
 sed "s|%LIBPATH%|${MainLibFile}|g" "$MainDir/static/test-head.sh" | \
-    cat "/dev/stdin" "$TestsDir/$Lib/$FuncToTest/Run.sh" | bash "${BashDebug[@]}" -o pipefail -o errtrace > "${OutputFile}" || { 
-    echo "異常終了しました (コード: $?)"
-    exit 1
-}
+    cat "/dev/stdin" "$TestsDir/$Lib/$FuncToTest/$TestName/Run.sh" | bash "${BashDebug[@]}" -o pipefail -o errtrace > "${OutputFile}" || ExitCode="$?"
+
+if ! [[ "${OutputFile}" = "/dev/stdout" ]]; then
+    echo "$ExitCode" > "$ExitFile"
+    echo "${ExitFile} を作成しました"
+fi
 
 if ! [[ "${OutputFile}" = "/dev/stdout" ]]; then
     echo "${OutputFile} を作成しました"
