@@ -1,12 +1,9 @@
 #!/usr/bin/env bash
 # Do not use FasBashLib in this file
-# shellcheck disable=SC1090,SC1091
+# shellcheck disable=SC1090,SC1091,SC2154
 
-set -Eeu
-
-# Init
-MainDir="$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)"
-OutDir="$MainDir/out"
+# shellcheck source=/dev/null
+source "$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)/lib/Common.sh"
 
 # Parse args
 while [[ -n "${1-""}" ]]; do

@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2154
 
-set -Eeu
+# shellcheck source=/dev/null
+source "$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)/lib/Common.sh"
 
-MainDir="$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)"
-BinDir="$MainDir/bin"
 Errors=0
 
 for File in "$BinDir/"*".sh"; do
