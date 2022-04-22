@@ -51,7 +51,11 @@ fi
 
 # Checkout
 echo "Checkout to Target source code" >&2
-git checkout "$TargetTag"
+git checkout "$TargetTag" 2> /dev/null || {
+    echo "Failed to checkout to target."
+    git checkout "$TargetTag" || true
+    exit 1
+}
 
 # %SOURCEURL% は リリースのURLへ置き換えられます
 if [[ -e "$StaticDir/release-head.md" ]]; then
