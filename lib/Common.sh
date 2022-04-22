@@ -8,7 +8,7 @@ LibDir="$MainDir/lib"
 SrcDir="$MainDir/src"
 StaticDir="$MainDir/static"
 BinDir="$MainDir/bin"
-DocsDir="$MainDir/docs/lib"
+DocsDir="$MainDir/docs"
 
 # sedコマンド
 if sed -h 2>&1 | grep -q "GNU"; then
@@ -49,3 +49,33 @@ _GetFuncListFromStdin(){
     )
 }
 
+GetFuncList(){
+    declare -F | cut -d " " -f 3
+}
+
+UnsetAllFunc(){
+    #ForEach eval "unset \"{}\"" < <(GetFuncList)
+    local Func
+    while read -r Func; do
+        unset "$Func"
+    done < <(GetFuncList)
+}
+
+PrintArray(){
+    (( $# >= 1 )) || return 0
+    printf "%s\n" "${@}"
+}
+
+
+ForEach(){
+    local _Item
+    while read -r _Item; do
+        "${@//"{}"/"${_Item}"}" || return "${?}"
+    done
+}
+
+# ToLower <文字列>
+ToLower(){
+    local _Str="${1,,}"
+    [[ -z "${_Str-""}" ]] || echo "${_Str}"
+}
