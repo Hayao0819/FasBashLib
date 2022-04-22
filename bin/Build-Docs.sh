@@ -39,7 +39,7 @@ if [[ ! -e "$LibDir/shdoc/shdoc" ]]; then
 fi
 
 if [[ -z "${LibList[*]}" ]]; then
-    readarray -t LibList < <("${BinDir}/GetLibList.sh" -q)
+    readarray -t LibList < <("${BinDir}/List.sh" -q)
 fi
 
 for Lib in "${LibList[@]}"; do

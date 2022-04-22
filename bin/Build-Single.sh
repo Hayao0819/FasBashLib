@@ -1,13 +1,10 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC1090,SC1091
+# shellcheck disable=SC1090,SC1091,SC2154
 
 set -Eeu
 
-# Directory
-MainDir="$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)"
-SrcDir="$MainDir/src"
-LibDir="$MainDir/lib"
-StaticDir="${MainDir}/static"
+# shellcheck source=/dev/null
+source "$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)/lib/Common.sh"
 
 # Temp
 TmpDir="$(mktemp -d -t "fasbashlib.XXXXX")"

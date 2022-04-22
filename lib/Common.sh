@@ -6,6 +6,7 @@ set -Eeu -o pipefail
 MainDir="$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)"
 LibDir="$MainDir/lib"
 SrcDir="$MainDir/src"
+StaticDir="$MainDir/static"
 BinDir="$MainDir/bin"
 DocsDir="$MainDir/docs/lib"
 

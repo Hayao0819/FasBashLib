@@ -35,7 +35,7 @@ done
 
 LibList+=("${1-""}")
 if [[ -z "${1-""}" ]]; then
-    readarray -t LibList < <("$BinDir/GetLibList.sh" -q)
+    readarray -t LibList < <("$BinDir/List.sh" -q)
 fi
 
 for Lib in "${LibList[@]}"; do

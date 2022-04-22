@@ -10,7 +10,7 @@ TestsDir="$MainDir/tests"
 
 LibToRunTest=("${@}")
 if (( "${#LibToRunTest[@]}" < 1 )); then
-    readarray -t LibToRunTest < <("$BinDir/GetLibList.sh" -q)
+    readarray -t LibToRunTest < <("$BinDir/List.sh" -q)
 fi
 
 MainLibFile="${TMPDIR-"/tmp"}/fasbashlib.sh"

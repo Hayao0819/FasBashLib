@@ -16,7 +16,7 @@ LibName="$1" FuncName="$2" TestName="$3"
 FuncTestDir="$TestsDir/$LibName/${FuncName}/${TestName}"
 
 # Check
-"$BinDir/GetLibList.sh" -q | grep -qx "${LibName}" || {
+"$BinDir/List.sh" -q | grep -qx "${LibName}" || {
     echo "No such library found." >&2
     exit 1
 }

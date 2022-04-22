@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2154
 
-MainDir="$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)"
-StaticDir="$MainDir/static"
-BinDir="$MainDir/bin"
+# shellcheck source=/dev/null
+source "$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)/lib/Common.sh"
 TargetTag="${1-""}"
 
 # Check git

@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC1090,SC1091
+# shellcheck disable=SC1090,SC1091,SC2154
 
 set -Eeu
 set -o pipefail
 set -o errtrace
 
-MainDir="$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)"
-BinDir="$MainDir/bin"
-TestsDir="$MainDir/tests"
+# shellcheck source=/dev/null
+source "$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)/lib/Common.sh"
+
 BashDebug=()
 
 # Parse args
