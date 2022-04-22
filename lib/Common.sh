@@ -9,6 +9,7 @@ SrcDir="$MainDir/src"
 StaticDir="$MainDir/static"
 BinDir="$MainDir/bin"
 DocsDir="$MainDir/docs"
+TestsDir="$MainDir/tests"
 
 # sedコマンド
 if sed -h 2>&1 | grep -q "GNU"; then
