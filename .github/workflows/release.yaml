@@ -44,7 +44,7 @@ jobs:
       - name: Create Release Note
         run: |
           sleep 1
-          ./bin/GenReleaseNote.sh "${GITHUB_REF#refs/tags/}" > "RELEASE.md"
+          ./bin/Release-Note.sh "${GITHUB_REF#refs/tags/}" > "RELEASE.md"
 
       - name: Upload Release Note
         uses: softprops/action-gh-release@v1
