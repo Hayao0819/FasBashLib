@@ -18,7 +18,7 @@ cd ./FasBashLib/
 make
 
 # Build library you need
-bash ./bin/SingleFile.sh [Lib1] [Lib2] ...
+bash ./bin/Build-Single.sh [Lib1] [Lib2] ...
 ```
 
 Now, you can find built shellscript in the root of repository.

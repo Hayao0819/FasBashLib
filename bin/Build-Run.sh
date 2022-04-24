@@ -22,7 +22,7 @@ fi
 
 LibPrefix="$("$LibDir/GetMeta.sh" "$LibName" "Prefix")"
 
-source /dev/stdin < <("$BinDir/SingleFile.sh" -out "/dev/stdout" "$LibName")
+source /dev/stdin < <("$BinDir/Build-Single.sh" -out "/dev/stdout" "$LibName")
 
 Func="${LibPrefix}.$FuncName"
 

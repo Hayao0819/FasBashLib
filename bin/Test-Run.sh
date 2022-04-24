@@ -15,7 +15,7 @@ ResultFile="${TMPDIR-"/tmp"}/fasbashlib-result.txt"
 
 # Build fasbashlib
 echo "ライブラリをビルドしています..." >&2
-"$BinDir/SingleFile.sh" -out "$MainLibFile" "${LibToRunTest[@]}" || {
+"$BinDir/Build-Single.sh" -out "$MainLibFile" "${LibToRunTest[@]}" || {
     echo "Failed to build library!" >&2
     exit 1
 }
