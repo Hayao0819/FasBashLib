@@ -12,7 +12,7 @@ DocsDir="$MainDir/docs"
 TestsDir="$MainDir/tests"
 
 # sedコマンド
-if sed -h 2>&1 | grep -q "GNU"; then
+if sed --help 2>&1 | grep -q "GNU"; then
     GNUSed=true
 else
     GNUSed=false
