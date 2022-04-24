@@ -218,7 +218,7 @@ _Make_Lib(){
             if [[ -z "${LibPrefix}" ]] && [[ "$SnakeCase" = false ]]; then
                 for Func in "${_DefinedFuncInFile[@]}"; do
                     echo " = $Func" >> "$TmpFile_FuncList"
-                    "$Debug" && echo "${Func}を追加" >&2
+                    "$Debug" && echo "${Func}を${TmpLibFile}に書き込み" >&2
                     _GetFuncCodeFromFile "${Dir}/${File}" "$Func" >> "$TmpLibFile"
                 done
             else
@@ -240,7 +240,7 @@ _Make_Lib(){
                             NewFuncName="${LibPrefix}${Delimiter}${Func}"
                         fi
                     fi
-                    "${Debug}" && echo "置き換え1: 関数定義の${Func}を${NewFuncName}に置き換え" >&2
+                    "${Debug}" && echo "置き換え1: 関数定義の${Func}を${NewFuncName}に置き換えて${TmpLibFile}に書き込み" >&2
                     _GetFuncCodeFromFile "${Dir}/${File}" "$Func" | sed "1 s|${Func} ()|${NewFuncName} ()|g" >> "$TmpLibFile"
                 done
             fi
@@ -271,7 +271,7 @@ _Make_Lib(){
                         NewFuncName="$Func"
                     fi
                 
-                    "${Debug}" && echo "置き換え2: 関数内の@${Func}を${LibPrefix}${Delimiter}${NewFuncName}に置き換え" >&2
+                    "${Debug}" && echo "置き換え2: ${TmpLibFile}内の@${Func}を${LibPrefix}${Delimiter}${NewFuncName}に置き換え" >&2
 
                     # 1つめは行末に書かれた関数の置き換え
                     # 2つめは関数の後に数字やアルファベット以外がある場合の置き換え
