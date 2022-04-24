@@ -5,13 +5,13 @@ VERSION := ""
 all: single single-snake
 
 single:
-	bash ${CURRENT_DIR}/bin/SingleFile.sh -debug -verbose
+	bash ${CURRENT_DIR}/bin/Build-Single.sh -debug -verbose
 
 single-snake:
-	bash ${CURRENT_DIR}/bin/SingleFile.sh -verbose -debug -snake -out ${CURRENT_DIR}/fasbashlib-snake.sh
+	bash ${CURRENT_DIR}/bin/Build-Single.sh -verbose -debug -snake -out ${CURRENT_DIR}/fasbashlib-snake.sh
 
 docs:
-	bash ${CURRENT_DIR}/bin/GenDoc.sh
+	bash ${CURRENT_DIR}/bin/Build-Docs.sh
 
 install:
 	mkdir -p "${DESTDIR}/usr/lib/fasbashlib/"
@@ -19,16 +19,16 @@ install:
 	mkdir -p "${DESTDIR}/usr/share/licenses/fasbashlib"
 
 	# install multifile
-	"${CURRENT_DIR}/bin/MuitlFile.sh" -out "${DESTDIR}/usr/lib/fasbashlib/"
+	"${CURRENT_DIR}/bin/Build-Multi.sh" -out "${DESTDIR}/usr/lib/fasbashlib/"
 
-	# install singlefile
-	"${CURRENT_DIR}/bin/SingleFile.sh" -debug -out "${DESTDIR}/usr/lib/fasbashlib.sh" -ver "${VERSION}"
+	# install single file
+	"${CURRENT_DIR}/bin/Build-Single.sh" -debug -out "${DESTDIR}/usr/lib/fasbashlib.sh" -ver "${VERSION}"
 
 	# install single snakecase
-	"${CURRENT_DIR}/bin/SingleFile.sh" -debug -snake -out "${DESTDIR}/usr/lib/fasbashlib-snake.sh" -ver "${VERSION}"
+	"${CURRENT_DIR}/bin/Build-Single.sh" -debug -snake -out "${DESTDIR}/usr/lib/fasbashlib-snake.sh" -ver "${VERSION}"
 
 	# install docs
-	"${CURRENT_DIR}/bin/GenDoc.sh" -out "${DESTDIR}/usr/share/doc/fasbashlib/"
+	"${CURRENT_DIR}/bin/Build-Docs.sh" -out "${DESTDIR}/usr/share/doc/fasbashlib/"
 
 	# install license
 	install -Dm 644 "${CURRENT_DIR}/LICENSE.md" "${DESTDIR}/usr/share/licenses/fasbashlib/LICENSE.md"
@@ -37,5 +37,5 @@ install:
 	install -Dm 755 "${CURRENT_DIR}/misc/fasbashlib" "${DESTDIR}/usr/bin/fasbashlib"
 
 test:
-	bash ${CURRENT_DIR}/bin/CheckLib.sh
-	bash ${CURRENT_DIR}/bin/CheckBin.sh
+	bash ${CURRENT_DIR}/bin/Check-Lib.sh
+	bash ${CURRENT_DIR}/bin/Check-Bin.sh
