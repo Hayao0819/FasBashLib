@@ -1,15 +1,9 @@
 #!/usr/bin/env bash
 # Do not use FasBashLib in this file
-# shellcheck disable=SC1090,SC1091
+# shellcheck disable=SC1090,SC1091,SC2154
 
-set -Eeu -o pipefail
-
-# Init
-MainDir="$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)"
-SrcDir="$MainDir/src"
-BinDir="$MainDir/bin"
-LibDir="$MainDir/lib"
-#TmpFile="/tmp/single_runfunc.sh"
+# shellcheck source=/dev/null
+source "$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)/lib/Common.sh"
 
 (( $# >= 2 )) || {
     echo "Usage: $(basename "$0") <Lib> <Func>" 
@@ -28,7 +22,7 @@ fi
 
 LibPrefix="$("$LibDir/GetMeta.sh" "$LibName" "Prefix")"
 
-source /dev/stdin < <("$BinDir/SingleFile.sh" -out "/dev/stdout" "$LibName")
+source /dev/stdin < <("$BinDir/Build-Single.sh" -out "/dev/stdout" "$LibName")
 
 Func="${LibPrefix}.$FuncName"
 

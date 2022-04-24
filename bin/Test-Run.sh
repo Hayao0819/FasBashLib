@@ -1,16 +1,12 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC1090,SC1091
+# shellcheck disable=SC1090,SC1091,SC2154
 
-set -Eeu
-
-MainDir="$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)"
-BinDir="$MainDir/bin"
-LibDir="$MainDir/lib"
-TestsDir="$MainDir/tests"
+# shellcheck source=/dev/null
+source "$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)/lib/Common.sh"
 
 LibToRunTest=("${@}")
 if (( "${#LibToRunTest[@]}" < 1 )); then
-    readarray -t LibToRunTest < <("$BinDir/GetLibList.sh" -q)
+    readarray -t LibToRunTest < <("$BinDir/List.sh" -q)
 fi
 
 MainLibFile="${TMPDIR-"/tmp"}/fasbashlib.sh"
@@ -19,7 +15,7 @@ ResultFile="${TMPDIR-"/tmp"}/fasbashlib-result.txt"
 
 # Build fasbashlib
 echo "ライブラリをビルドしています..." >&2
-"$BinDir/SingleFile.sh" -out "$MainLibFile" "${LibToRunTest[@]}" || {
+"$BinDir/Build-Single.sh" -out "$MainLibFile" "${LibToRunTest[@]}" || {
     echo "Failed to build library!" >&2
     exit 1
 }

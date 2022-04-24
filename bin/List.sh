@@ -1,13 +1,15 @@
 #!/usr/bin/env bash
 # Do not use FasBashLib in this file
-# shellcheck disable=SC1090,SC1091
+# shellcheck disable=SC1090,SC1091,SC2154
 
 set -Eeu
 
+# shellcheck source=/dev/null
+source "$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)/lib/Common.sh"
+
 # Init
-MainDir="$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)"
-SrcDir="$MainDir/src"
-LibDir="$MainDir/lib"
+
+
 Quiet=false
 LibList=()
 

@@ -1,12 +1,9 @@
 #!/usr/bin/env bash
 # Do not use FasBashLib in this file
-# shellcheck disable=SC1090,SC1091
+# shellcheck disable=SC1090,SC1091,SC2154
 
-set -Eeu
-
-# Init
-MainDir="$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)"
-OutDir="$MainDir/out"
+# shellcheck source=/dev/null
+source "$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)/lib/Common.sh"
 
 # Parse args
 while [[ -n "${1-""}" ]]; do
@@ -30,10 +27,7 @@ while [[ -n "${1-""}" ]]; do
 done
 
 # Ccnfigure dir
-SrcDir="$MainDir/src"
-StaticDir="$MainDir/static"
-LibDir="$MainDir/lib"
-BinDir="$MainDir/bin"
+OutDir="$MainDir/out"
 
 # Check dir
 mkdir -p "$OutDir"
@@ -48,6 +42,6 @@ done
 # Load src
 while read -r Dir; do
     _Lib="$(basename "$Dir")"
-    "$MainDir/bin/SingleFile.sh" -out "$OutDir/$_Lib.sh" -noreq "$_Lib"
-done < <("$BinDir/GetLibList.sh" -q)
+    "$MainDir/bin/Build-Single.sh" -out "$OutDir/$_Lib.sh" -noreq "$_Lib"
+done < <("$BinDir/List.sh" -q)
 unset Dir File

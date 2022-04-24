@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC1090,SC1091
+# shellcheck disable=SC1090,SC1091,SC2154
 
 set -Eeu
 set -o pipefail
 set -o errtrace
 
-MainDir="$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)"
-BinDir="$MainDir/bin"
-TestsDir="$MainDir/tests"
+# shellcheck source=/dev/null
+source "$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)/lib/Common.sh"
+
 BashDebug=()
 
 # Parse args
@@ -39,14 +39,14 @@ while [[ -n "${1-""}" ]]; do
     esac
 done
 
-Lib="$1" FuncToTest="$2" TestName="$3"
+Lib="$1" FuncToTest="$2" TestName="${3-""}"
 : "${OutputFile="$TestsDir/$Lib/$FuncToTest/$TestName/Result.txt"}"
 : "${ExitFile="$TestsDir/$Lib/$FuncToTest/$TestName/Exit.txt"}"
 ExitCode=0
 
 # Build fasbashlib
 MainLibFile="${TMPDIR-"/tmp"}/fasbashlib.sh"
-"$BinDir/SingleFile.sh" -out "$MainLibFile" "${Lib}" 1> /dev/null 2>&1
+"$BinDir/Build-Single.sh" -out "$MainLibFile" "${Lib}" 1> /dev/null 2>&1
 
 if [[ ! -e "$TestsDir/$Lib/$FuncToTest/$TestName/Run.sh" ]]; then
     echo "テストに必要なファイルが見つかりませんでした" >&2

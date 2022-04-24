@@ -1,12 +1,8 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC1090,SC1091
+# shellcheck disable=SC1090,SC1091,SC2154
 
-set -Eeu
-
-MainDir="$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)"
-LibDir="$MainDir/lib"
-BinDir="$MainDir/bin"
-TestsDir="$MainDir/tests"
+# shellcheck source=/dev/null
+source "$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)/lib/Common.sh"
 
 LibList=()
 FuncList=()
@@ -35,7 +31,7 @@ done
 
 LibList+=("${1-""}")
 if [[ -z "${1-""}" ]]; then
-    readarray -t LibList < <("$BinDir/GetLibList.sh" -q)
+    readarray -t LibList < <("$BinDir/List.sh" -q)
 fi
 
 for Lib in "${LibList[@]}"; do

@@ -1,2 +1,0 @@
-Variable = true
-Variable = false

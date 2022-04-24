@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2154
 
-set -Eeu
+# shellcheck source=/dev/null
+source "$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)/lib/Common.sh"
 
-MainDir="$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)"
-SrcDir="$MainDir/src"
-LibDir="$MainDir/lib"
 ShellList=("ModernBash" "Any" "LegacySh")
 Errors=0
 

@@ -1,13 +1,8 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC1090,SC1091
+# shellcheck disable=SC1090,SC1091,SC2154
 
-set -Eeu
-
-# Directory
-MainDir="$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)"
-SrcDir="$MainDir/src"
-LibDir="$MainDir/lib"
-StaticDir="${MainDir}/static"
+# shellcheck source=/dev/null
+source "$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)/lib/Common.sh"
 
 # Temp
 TmpDir="$(mktemp -d -t "fasbashlib.XXXXX")"
@@ -28,66 +23,13 @@ GenerateFuncList=false
 # Environment
 Version=""
 RequireShell="Any"
-GNUSed=false
 
 # Global Array
 LoadedFiles=()
 TargetLib=()
 RequireLib=()
 
-
-#-- BSD or GNU --#
-if sed -h 2>&1 | grep -q "GNU"; then
-    GNUSed=true
-else
-    GNUSed=false
-fi
-
-
-#-- FasBashLib --#
-GetFuncList(){
-    declare -F | cut -d " " -f 3
-}
-
-UnsetAllFunc(){
-    #ForEach eval "unset \"{}\"" < <(GetFuncList)
-    local Func
-    while read -r Func; do
-        unset "$Func"
-    done < <(GetFuncList)
-}
-
-PrintArray(){
-    (( $# >= 1 )) || return 0
-    printf "%s\n" "${@}"
-}
-
-ForEach(){
-    local _Item
-    while read -r _Item; do
-        "${@//"{}"/"${_Item}"}" || return "${?}"
-    done
-}
-
-SedI(){
-    local SedArgs=()
-
-    # BSDかGNUか
-    if "${GNUSed}"; then
-        SedArgs=("-i" "${SedArgs[@]}")
-    else
-        SedArgs=("-i" "" "${SedArgs[@]}")
-    fi
-
-    sed "${SedArgs[@]}" "$@"
-}
-
-# ToLower <文字列>
-ToLower(){
-    local _Str="${1,,}"
-    [[ -z "${_Str-""}" ]] || echo "${_Str}"
-}
-
+#-- Funcions --#
 ToSnakeCase(){
     sed -E 's/(.)([A-Z])/\1_\2/g' | ForEach ToLower "{}"
 }
