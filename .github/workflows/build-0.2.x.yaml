@@ -58,6 +58,7 @@ jobs:
           git config pull.rebase false
           git config remote.origin.url "git@github.com:Hayao0819/FasBashLib.git"
           echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+          git clean  -d  -f .
           git pull --allow-unrelated-histories origin "${PUSH_BRANCH}"
           git checkout -b "${PUSH_BRANCH}"
           make -B
