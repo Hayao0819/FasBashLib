@@ -22,7 +22,7 @@ while [[ -n "${1-""}" ]]; do
             break
             ;;
         *)
-            echo "Usage: $(basename "$0") -- [Lib]"
+            echo "Usage: $(basename "$0") -- [-lib] [Lib]"
             [[ "$1" = "-h" ]] && exit 0
             exit 1
             ;;
