@@ -45,7 +45,7 @@ ToSnakeCase(){
 
 # MakeFuncName <Prefix> <Name>
 MakeFuncName(){
-    local _P _N1
+    local _P _N
     if (( "$#" >= 2 )); then
         _P="$1" _N="$2"
     else
