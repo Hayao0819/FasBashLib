@@ -14,11 +14,9 @@ OutFile="${MainDir}/fasbashlib.sh"
 Delimiter="."
 NoRequire=false
 
-#SnakeCase=false
 CodeType="Upper"
 #CodeType="Lower"
 #CodeType="Snake"
-
 
 # Debug
 Debug=false
@@ -280,21 +278,6 @@ _Make_Lib(){
                 for Func in "${_DefinedFuncInFile[@]}"; do
                     # 置き換えあり
                     local NewFuncName=""
-                    #if [[ -z "$LibPrefix" ]]; then
-                        # プレフィックスなし
-                        #echo " = $Func" >> "$TmpFile_FuncList"
-                        #NewFuncName="$(ToSnakeCase <<< "$Func")"
-                    #else
-                        #echo "${LibPrefix} = ${Func}" >> "$TmpFile_FuncList"
-                        #if [[ "$SnakeCase" = true ]]; then
-                            # プレフィックスあり、スネークケース置き換えあり
-                        #    NewFuncName="$(ToLower "$LibPrefix")${Delimiter}$(ToSnakeCase <<< "$Func")"
-                        #else
-                        #    # プレフィックスあり、スネークケースなし
-                        #    NewFuncName="${LibPrefix}${Delimiter}${Func}"
-                        #fi
-                        
-                    #fi
 
                     echo "${LibPrefix-""} = ${Func}" >> "$TmpFile_FuncList"
                     NewFuncName="$(MakeFuncName "${LibPrefix-""}" "$Func")"
@@ -354,14 +337,8 @@ _Make_All_Replace(){
             LibPrefix="$(cut -d "=" -f 1 <<< "$Line" | sed "s|^ *||g; s| *$||g")"
             Func="$(cut -d "=" -f 2 <<< "$Line" | sed "s|^ *||g; s| *$||g")"
             
-            if [[ -z "$LibPrefix" ]]; then
-                OldFuncName="$Func"
-            #    NewFuncName="$(ToSnakeCase <<< "$Func")"
-            else
-                OldFuncName="${LibPrefix}.${Func}"
-            #    NewFuncName="$(ToLower "$LibPrefix")${Delimiter}$(ToSnakeCase <<< "$Func")"
-            fi
-            #OldFuncName="${LibPrefix+"${LibPrefix}."}"
+            OldFuncName="$Func"
+            [[ -n "$LibPrefix" ]] && OldFuncName="${LibPrefix}.${Func}"
             NewFuncName=$(MakeFuncName "${LibPrefix-""}" "$Func")
 
             "${Debug}" && echo "置き換え3: 全ての${OldFuncName}を${NewFuncName}に置き換え" >&2
@@ -421,7 +398,6 @@ while [[ -n "${1-""}" ]]; do
             shift 1
             ;;
         "-snake")
-            #SnakeCase=true
             CodeType="Snake"
             shift 1
             ;;
