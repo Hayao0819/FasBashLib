@@ -258,7 +258,7 @@ _Make_Lib(){
             else
                 # スネークケースが有効化されている場合、プレフィックスは小文字にする
                 if [[ "${SnakeCase}" = true ]]; then
-                    LibPrefix=$(ToLower "${LibPrefix}")
+                    LibPrefix="$(ToLower "${LibPrefix}")"
                 fi
 
                 # Func: ソースコードに記述されたそのままの関数名
