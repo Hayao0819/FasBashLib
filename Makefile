@@ -1,14 +1,18 @@
 DESTDIR := /
 CURRENT_DIR = ${shell dirname $(dir $(abspath $(lastword $(MAKEFILE_LIST))))}/${shell basename $(dir $(abspath $(lastword $(MAKEFILE_LIST))))}
 VERSION := ""
+BUILD_ARGS= #-debug -verbose
 
-all: single single-snake
+all: single single-snake single-lower
 
 single:
-	bash ${CURRENT_DIR}/bin/Build-Single.sh -debug -verbose
+	bash ${CURRENT_DIR}/bin/Build-Single.sh ${BUILD_ARGS}
 
 single-snake:
-	bash ${CURRENT_DIR}/bin/Build-Single.sh -verbose -debug -snake -out ${CURRENT_DIR}/fasbashlib-snake.sh
+	bash ${CURRENT_DIR}/bin/Build-Single.sh ${BUILD_ARGS} -snake -out ${CURRENT_DIR}/fasbashlib-snake.sh
+
+single-lower:
+	bash ${CURRENT_DIR}/bin/Build-Single.sh ${BUILD_ARGS} -lower -out ${CURRENT_DIR}/fasbashlib-lower.sh
 
 docs:
 	bash ${CURRENT_DIR}/bin/Build-Docs.sh

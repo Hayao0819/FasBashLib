@@ -41,6 +41,15 @@ ToSnakeCase(){
     sed -E 's/(.)([A-Z])/\1_\2/g' | ForEach ToLower "{}"
 }
 
+ToLowerCase(){
+    #awk '{ print toupper(substr($0, 1, 1)) substr($0, 2, length($0) - 1) }'
+    local s 
+    while read -r s; do
+        echo "${s,}"
+    done
+
+}
+
 # MakeFuncName <Prefix> <Name>
 MakeFuncName(){
     local _P _N
@@ -59,6 +68,9 @@ MakeFuncName(){
             "Snake")
                 ToSnakeCase <<< "$_N"
                 ;;
+            "Lower")
+                ToLowerCase <<< "$_N"
+                ;;
         esac
     else
         case "${CodeType}" in
@@ -67,6 +79,9 @@ MakeFuncName(){
                 ;;
             "Snake")
                 echo "$(ToLower "${_P}")${Delimiter}$(ToSnakeCase <<< "$_N")"
+                ;;
+            "Lower")
+                echo "${_P}${Delimiter}$(ToLowerCase <<< "$_N")"
                 ;;
         esac
     fi
@@ -101,6 +116,9 @@ _Make_CodeType(){
             ;;
         "Upper")
             Version="${Version}-upper" # バージョンの末尾に-snakeをつける
+            ;;
+        "Lower")
+            Version="$Version-lower"
             ;;
         *)
             ;;
@@ -399,6 +417,10 @@ while [[ -n "${1-""}" ]]; do
             ;;
         "-snake")
             CodeType="Snake"
+            shift 1
+            ;;
+        "-lower")
+            CodeType="Lower"
             shift 1
             ;;
         "-verbose")
