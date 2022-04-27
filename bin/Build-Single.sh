@@ -13,7 +13,12 @@ TmpFile_FuncList="${TmpDir}/fasbashlib-list.sh" # スネークケース置き換
 OutFile="${MainDir}/fasbashlib.sh"
 Delimiter="."
 NoRequire=false
-SnakeCase=false
+
+#SnakeCase=false
+CodeType="Upper"
+#CodeType="Lower"
+#CodeType="Snake"
+
 
 # Debug
 Debug=false
@@ -29,17 +34,54 @@ LoadedFiles=()
 TargetLib=()
 RequireLib=()
 
+# Set default
+DefaultCodeType="Upper"
+: "${CodeType="$DefaultCodeType"}"
+
 #-- Funcions --#
 ToSnakeCase(){
     sed -E 's/(.)([A-Z])/\1_\2/g' | ForEach ToLower "{}"
 }
 
+# MakeFuncName <Prefix> <Name>
+MakeFuncName(){
+    local _P _N1
+    if (( "$#" >= 2 )); then
+        _P="$1" _N="$2"
+    else
+        _N="$1"
+    fi
+
+    if [[ -z "${_P-""}" ]]; then
+        # プレフィックスなし
+        case "${CodeType}" in
+            "Upper")
+                echo "${_N}"
+                ;;
+            "Snake")
+                ToSnakeCase <<< "$_N"
+                ;;
+        esac
+    else
+        case "${CodeType}" in
+            "Upper")
+                echo "${_P}${Delimiter}${_N}"
+                ;;
+            "Snake")
+                echo "$(ToLower "${_P}")${Delimiter}$(ToSnakeCase <<< "$_N")"
+                ;;
+        esac
+    fi
+    return 0
+}
+
 # Set version
 _Make_Version(){
+    # 初期化
+    Version="${Version%-snake}"
+
     # 引数で既にバージョンが設定済みの場合
     if [[ -n "${Version-""}" ]]; then
-        [[ "${SnakeCase}" = true ]] || return 0 # スネークケースでない場合何もしないでこの関数を終了
-        Version="${Version%-snake}-snake" # バージョンの末尾に-snakeをつける
         return 0
     fi
 
@@ -51,9 +93,21 @@ _Make_Version(){
         Version="0.2.x-dev"
     fi
 
-    if [[ "${SnakeCase}" = true ]]; then
-        Version="${Version%-snake}-snake" # バージョンの末尾に-snakeをつける
-    fi
+    return 0
+}
+
+_Make_CodeType(){
+    case "${CodeType}" in
+        "Snake")
+            Version="${Version}-snake" # バージョンの末尾に-snakeをつける
+            ;;
+        "Upper")
+            Version="${Version}-upper" # バージョンの末尾に-snakeをつける
+            ;;
+        *)
+            ;;
+    esac
+    return 0
 }
 
 _Make_Prepare(){
@@ -215,7 +269,7 @@ _Make_Lib(){
             _DefinedFuncInLib+=("${_DefinedFuncInFile[@]}")
 
             # 関数の置き換えを一切行わない場合
-            if [[ -z "${LibPrefix}" ]] && [[ "$SnakeCase" = false ]]; then
+            if [[ -z "${LibPrefix}" ]] && [[ "$CodeType" = "$DefaultCodeType" ]]; then
                 for Func in "${_DefinedFuncInFile[@]}"; do
                     echo " = $Func" >> "$TmpFile_FuncList"
                     "$Debug" && echo "${Func}を${TmpLibFile}に書き込み" >&2
@@ -226,20 +280,24 @@ _Make_Lib(){
                 for Func in "${_DefinedFuncInFile[@]}"; do
                     # 置き換えあり
                     local NewFuncName=""
-                    if [[ -z "$LibPrefix" ]]; then
-                        # プレフィックスなし、スネークケース置き換え
-                        echo " = $Func" >> "$TmpFile_FuncList"
-                        NewFuncName="$(ToSnakeCase <<< "$Func")"
-                    else
-                        echo "${LibPrefix} = ${Func}" >> "$TmpFile_FuncList"
-                        if [[ "$SnakeCase" = true ]]; then
+                    #if [[ -z "$LibPrefix" ]]; then
+                        # プレフィックスなし
+                        #echo " = $Func" >> "$TmpFile_FuncList"
+                        #NewFuncName="$(ToSnakeCase <<< "$Func")"
+                    #else
+                        #echo "${LibPrefix} = ${Func}" >> "$TmpFile_FuncList"
+                        #if [[ "$SnakeCase" = true ]]; then
                             # プレフィックスあり、スネークケース置き換えあり
-                            NewFuncName="$(ToLower "$LibPrefix")${Delimiter}$(ToSnakeCase <<< "$Func")"
-                        else
-                            # プレフィックスあり、スネークケースなし
-                            NewFuncName="${LibPrefix}${Delimiter}${Func}"
-                        fi
-                    fi
+                        #    NewFuncName="$(ToLower "$LibPrefix")${Delimiter}$(ToSnakeCase <<< "$Func")"
+                        #else
+                        #    # プレフィックスあり、スネークケースなし
+                        #    NewFuncName="${LibPrefix}${Delimiter}${Func}"
+                        #fi
+                        
+                    #fi
+
+                    echo "${LibPrefix-""} = ${Func}" >> "$TmpFile_FuncList"
+                    NewFuncName="$(MakeFuncName "${LibPrefix-""}" "$Func")"
                     "${Debug}" && echo "置き換え1: 関数定義の${Func}を${NewFuncName}に置き換えて${TmpLibFile}に書き込み" >&2
                     _GetFuncCodeFromFile "${Dir}/${File}" "$Func" | sed "1 s|${Func} ()|${NewFuncName} ()|g" >> "$TmpLibFile"
                 done
@@ -247,6 +305,8 @@ _Make_Lib(){
         done < <("$LibDir/GetMeta.sh" "${LibName}" "Files" | tr "," "\n")
 
         if [[ "${DontRunAtMarkReplacement}" = false ]]; then
+            local NewLibPrefix="$LibPrefix" #LibPrefixの置換え用変数
+
             # 同じライブラリ内での関数呼び出し(@関数)を置き換え
             # 置き換えは全てTmpLibFileのみで完結します
             # 置き換える関数の一覧は _DefinedFuncInLib から取得
@@ -257,27 +317,23 @@ _Make_Lib(){
                 # スネークケースへの置き換えは全てまとめて最後に行う
             else
                 # スネークケースが有効化されている場合、プレフィックスは小文字にする
-                if [[ "${SnakeCase}" = true ]]; then
-                    LibPrefix="$(ToLower "${LibPrefix}")"
+                #if [[ "${SnakeCase}" = true ]]; then
+                if [[ "$CodeType" = "Snake" ]]; then
+                    NewLibPrefix="$(ToLower "${LibPrefix}")"
                 fi
 
                 # Func: ソースコードに記述されたそのままの関数名
                 # 例えば、SrcInfo.GetValueなら"GetValue"の部分
                 for Func in "${_DefinedFuncInLib[@]}"; do
-                    # ドット以降の関数名をToSnakeCaseに渡す
-                    if [[ "$SnakeCase" = true ]]; then
-                        NewFuncName="$(ToSnakeCase <<< "$Func")"
-                    else
-                        NewFuncName="$Func"
-                    fi
-                
-                    "${Debug}" && echo "置き換え2: ${TmpLibFile}内の@${Func}を${LibPrefix}${Delimiter}${NewFuncName}に置き換え" >&2
+                    # ドット以降の関数名を変換
+                    NewFuncName=$(MakeFuncName "" "$Func")
+                    "${Debug}" && echo "置き換え2: ${TmpLibFile}内の@${Func}を${NewLibPrefix}${Delimiter}${NewFuncName}に置き換え" >&2
 
                     # 1つめは行末に書かれた関数の置き換え
                     # 2つめは関数の後に数字やアルファベット以外がある場合の置き換え
                     SedI \
-                        -e "s|@${Func}$|${LibPrefix}${Delimiter}${NewFuncName}|g" \
-                        -e "s|@${Func}\([^a-zA-Z0-9]\)|${LibPrefix}${Delimiter}${NewFuncName}\1|g" \
+                        -e "s|@${Func}$|${NewLibPrefix}${Delimiter}${NewFuncName}|g" \
+                        -e "s|@${Func}\([^a-zA-Z0-9]\)|${NewLibPrefix}${Delimiter}${NewFuncName}\1|g" \
                         "$TmpLibFile"
                 done
             fi
@@ -291,7 +347,8 @@ _Make_Lib(){
 _Make_All_Replace(){
     # 全ての呼び出しのスネークケース置き換え
     # TmpFile_FuncListを元に生成されたスクリプト全体を置き換えます
-    if [[ "$SnakeCase" = true ]]; then
+    #if [[ "$SnakeCase" = true ]]; then
+    if ! [[ ! "$CodeType" = "Upper" ]]; then
         # 関数一覧をプレフィックスを含んだ
         while read -r Line; do
             LibPrefix="$(cut -d "=" -f 1 <<< "$Line" | sed "s|^ *||g; s| *$||g")"
@@ -299,11 +356,13 @@ _Make_All_Replace(){
             
             if [[ -z "$LibPrefix" ]]; then
                 OldFuncName="$Func"
-                NewFuncName="$(ToSnakeCase <<< "$Func")"
+            #    NewFuncName="$(ToSnakeCase <<< "$Func")"
             else
                 OldFuncName="${LibPrefix}.${Func}"
-                NewFuncName="$(ToLower "$LibPrefix")${Delimiter}$(ToSnakeCase <<< "$Func")"
+            #    NewFuncName="$(ToLower "$LibPrefix")${Delimiter}$(ToSnakeCase <<< "$Func")"
             fi
+            #OldFuncName="${LibPrefix+"${LibPrefix}."}"
+            NewFuncName=$(MakeFuncName "${LibPrefix-""}" "$Func")
 
             "${Debug}" && echo "置き換え3: 全ての${OldFuncName}を${NewFuncName}に置き換え" >&2
             SedI "s|${OldFuncName}|${NewFuncName}|g" "$TmpOutFile"
@@ -362,7 +421,8 @@ while [[ -n "${1-""}" ]]; do
             shift 1
             ;;
         "-snake")
-            SnakeCase=true
+            #SnakeCase=true
+            CodeType="Snake"
             shift 1
             ;;
         "-verbose")
@@ -388,6 +448,7 @@ set -- "${NoArg[@]}"
 
 
 _Make_Version
+_Make_CodeType
 _Make_Prepare
 _Make_Require "$@"
 _Make_TargetLib "$@"
