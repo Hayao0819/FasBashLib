@@ -10,6 +10,7 @@ StaticDir="$MainDir/static"
 BinDir="$MainDir/bin"
 DocsDir="$MainDir/docs"
 TestsDir="$MainDir/tests"
+DockerDir="$MainDir/docker"
 
 # sedコマンド
 if sed --help 2>&1 | grep -q "GNU"; then
