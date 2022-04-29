@@ -27,44 +27,309 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.2.0.r157.g024f9af-snake"
+FSBLIB_VERSION="v0.2.0.r162.gdbf9f27-snake"
 FSBLIB_REQUIRE="ModernBash"
 
-csv.get_clm () 
+awk.awk_print () 
 { 
-    grep -v "^#" | sed "/^$/d" | cut -d "${CSVDELIM-","}" -f "$1"
+    awk "BEGIN {print $*}"
 }
-csv.get_clm_cnt () 
+awk.cos () 
 { 
-    local _RawCsvLine=();
-    local _Line _ClmCnt=0;
-    readarray -t _RawCsvLine;
+    @Calc "cos($*)"
+}
+awk.log () 
+{ 
+    local _Base="$1" _Number="$2";
+    @Calc "log(${_Number}) / log($_Base)"
+}
+awk.pi () 
+{ 
+    @Calc "atan2(0, -0)"
+}
+awk.rad () 
+{ 
+    @Calc "$1 * $(awk.pi) / 180 "
+}
+awk.sin () 
+{ 
+    @Calc "sin($*)"
+}
+awk.tan () 
+{ 
+    @Calc "sin($1)/tan($1)"
+}
+fsblib_env_check () 
+{ 
+    case "$FSBLIB_REQUIRE" in 
+        "Any")
+            return 0
+        ;;
+        "ModernShell")
+            [[ "$(cut -d "." -f 1 <<< "$BASH_VERSION")" = "5" ]] && return 0
+        ;;
+    esac
+}
+ini.get_param () 
+{ 
+    local _RawIniLine=();
+    local _Line _LineNo=1 _Exit=0 _InSection=false;
+    readarray -t _RawIniLine;
     while read -r _Line; do
-        grep -qE "^#" <<< "$_Line" && continue;
-        _CurrentClmCnt=$(tr "${CSVDELIM-","}" "\n" | wc -l);
-        (( _CurrentClmCnt > _ClmCnt )) && _ClmCnt="$_CurrentClmCnt";
-    done < <(PrintArray "${_RawCsvLine[@]}");
-    RemoveBlank <<< "$_ClmCnt";
+        ini.parse_line <<< "$_Line";
+        case "$TYPE" in 
+            "SECTION")
+                if [[ "$SECTION" = "$1" ]]; then
+                    _InSection=true;
+                else
+                    _InSection=false;
+                fi
+            ;;
+            "PARAM-VALUE")
+                [[ "$_InSection" = false ]] || echo "${VALUE}"
+            ;;
+            "ERROR")
+                echo "Line $_LineNo: Failed to parse Ini" 1>&2;
+                _Exit=1
+            ;;
+        esac;
+        _LineNo=$(( _LineNo + 1  ));
+    done < <(PrintArray "${_RawIniLine[@]}");
+    return "$_Exit"
+}
+ini.get_param_list () 
+{ 
+    local _RawIniLine=();
+    local _Line _LineNo=1 _Exit=0 _InSection=false;
+    readarray -t _RawIniLine;
+    while read -r _Line; do
+        ini.parse_line <<< "$_Line";
+        case "$TYPE" in 
+            "SECTION")
+                if [[ "$SECTION" = "$1" ]]; then
+                    _InSection=true;
+                else
+                    _InSection=false;
+                fi
+            ;;
+            "PARAM-VALUE")
+                [[ "$_InSection" = false ]] || echo "$PARAM"
+            ;;
+            "ERROR")
+                echo "Line $_LineNo: Failed to parse Ini" 1>&2;
+                _Exit=1
+            ;;
+        esac;
+        _LineNo=$(( _LineNo + 1  ));
+    done < <(PrintArray "${_RawIniLine[@]}");
+    return "$_Exit"
+}
+ini.get_section_list () 
+{ 
+    local _RawIniLine=();
+    local _Line _LineNo=1 _Exit=0;
+    readarray -t _RawIniLine;
+    while read -r _Line; do
+        ini.parse_line <<< "$_Line";
+        case "$TYPE" in 
+            "SECTION")
+                echo "$SECTION"
+            ;;
+            "ERROR")
+                echo "Line $_LineNo: Failed to parse Ini" 1>&2;
+                _Exit=1
+            ;;
+        esac;
+        _LineNo=$(( _LineNo + 1  ));
+    done < <(PrintArray "${_RawIniLine[@]}");
+    return "$_Exit"
+}
+ini.parse_line () 
+{ 
+    local _Line;
+    TYPE="" PARAM="" VALUE="" SECTION="";
+    _Line="$(RemoveBlank <<< "$(cat)")";
+    case "$_Line" in 
+        "["*"]")
+            TYPE="SECTION";
+            SECTION=$(sed "s|^\[||g; s|\]$||g" <<< "$_Line")
+        ;;
+        "" | "#"*)
+            TYPE="NOTHING"
+        ;;
+        *"="*)
+            TYPE="PARAM-VALUE";
+            PARAM="$(RemoveBlank <<< "$(cut -d "=" -f 1 <<< "$_Line")")";
+            VALUE="$(RemoveBlank <<< "$(cut -d "=" -f 2- <<< "$_Line")")"
+        ;;
+        *)
+            TYPE="ERROR"
+        ;;
+    esac;
     return 0
 }
-csv.to_bash_array () 
+readlinkf () 
 { 
-    local _RawCsvLine=() _Line _ClmCnt=0;
-    local ArrayPrefix="${ArrayPrefix-"{}"}";
-    readarray -t _RawCsvLine < <(
-        # 標準入力からCSVのみを抽出
-        while read -r _Line; do
-            # shellcheck disable=SC2031
-            (( $(tr "${CSVDELIM-","}" "\n" <<< "$_Line" | wc -l) >= ${#} )) && echo "$_Line"
-        done < <(grep -v "^#")
-    );
-    _ClmCnt=$(PrintArray "${_RawCsvLine[@]}" | csv.get_clm_cnt);
-    while read -r _Cnt; do
-        readarray -t "$(sed "s|{}|$(eval "echo \"\${${_Cnt}}\"")|g" <<< "$ArrayPrefix")" < <(
-            # shellcheck disable=SC2031
-            PrintArray "${_RawCsvLine[@]}" | cut -d "${CSVDELIM-","}" -f "$_Cnt"
-        );
-    done < <(seq 1 "$#")
+    Readlinkf_Posix "$@"
+}
+readlinkf__posix () 
+{ 
+    [ "${1:-}" ] || return 1;
+    max_symlinks=40;
+    CDPATH='';
+    target=$1;
+    [ -e "${target%/}" ] || target=${1%"${1##*[!/]}"};
+    [ -d "${target:-/}" ] && target="$target/";
+    cd -P . 2> /dev/null || return 1;
+    while [ "$max_symlinks" -ge 0 ] && max_symlinks=$((max_symlinks - 1)); do
+        if [ ! "$target" = "${target%/*}" ]; then
+            case $target in 
+                /*)
+                    cd -P "${target%/*}/" 2> /dev/null || break
+                ;;
+                *)
+                    cd -P "./${target%/*}" 2> /dev/null || break
+                ;;
+            esac;
+            target=${target##*/};
+        fi;
+        if [ ! -L "$target" ]; then
+            target="${PWD%/}${target:+/}${target}";
+            printf '%s\n' "${target:-/}";
+            return 0;
+        fi;
+        link=$(ls -dl -- "$target" 2>/dev/null) || break;
+        target=${link#*" $target -> "};
+    done;
+    return 1
+}
+readlinkf__readlink () 
+{ 
+    [ "${1:-}" ] || return 1;
+    max_symlinks=40;
+    CDPATH='';
+    target=$1;
+    [ -e "${target%/}" ] || target=${1%"${1##*[!/]}"};
+    [ -d "${target:-/}" ] && target="$target/";
+    cd -P . 2> /dev/null || return 1;
+    while [ "$max_symlinks" -ge 0 ] && max_symlinks=$((max_symlinks - 1)); do
+        if [ ! "$target" = "${target%/*}" ]; then
+            case $target in 
+                /*)
+                    cd -P "${target%/*}/" 2> /dev/null || break
+                ;;
+                *)
+                    cd -P "./${target%/*}" 2> /dev/null || break
+                ;;
+            esac;
+            target=${target##*/};
+        fi;
+        if [ ! -L "$target" ]; then
+            target="${PWD%/}${target:+/}${target}";
+            printf '%s\n' "${target:-/}";
+            return 0;
+        fi;
+        target=$(readlink -- "$target" 2>/dev/null) || break;
+    done;
+    return 1
+}
+parse_arg () 
+{ 
+    local _Arg _Chr _Cnt;
+    local _Long=() _LongWithArg=() _Short=() _ShortWithArg=();
+    local _OutArg=() _NoArg=();
+    for _Arg in "${@}";
+    do
+        local _TempArray=();
+        case "${_Arg}" in 
+            "LONG="*)
+                readarray -t _TempArray < <(tr -d "\"" <<< "${_Arg#LONG=}" | tr "," "\n");
+                for _Chr in "${_TempArray[@]}";
+                do
+                    if [[ "${_Chr}" = *":" ]]; then
+                        _LongWithArg+=("${_Chr%":"}");
+                    else
+                        _Long+=("${_Chr}");
+                    fi;
+                done;
+                shift 1
+            ;;
+            "SHORT="*)
+                readarray -t _TempArray < <(tr -d "\"" <<< "${_Arg#SHORT=}" | grep -o .);
+                for ((_Cnt=0; _Cnt<= "${#_TempArray[@]}" - 1; _Cnt++ ))
+                do
+                    if [[ "${_TempArray["$(( _Cnt + 1))"]-""}" = ":" ]]; then
+                        _ShortWithArg+=("${_TempArray["${_Cnt}"]}");
+                        _Cnt=$(( _Cnt + 1 ));
+                    else
+                        _Short+=("${_TempArray["${_Cnt}"]}");
+                    fi;
+                done;
+                shift 1
+            ;;
+            "--")
+                shift 1;
+                break
+            ;;
+        esac;
+    done;
+    while (( "$#" > 0 )); do
+        if [[ "${1}" = "--" ]]; then
+            shift 1;
+            _NoArg+=("${@}");
+            shift "$#";
+            break;
+        else
+            if [[ "${1}" = "--"* ]]; then
+                if printf "%s\n" "${_LongWithArg[@]}" | grep -qx "${1#--}"; then
+                    if [[ "${2}" = "-"* ]]; then
+                        Msg.Err "${1} の引数が指定されていません";
+                        return 2;
+                    else
+                        _OutArg+=("${1}" "${2}");
+                        shift 2;
+                    fi;
+                else
+                    if printf "%s\n" "${_Long[@]}" | grep -qx "${1#--}"; then
+                        _OutArg+=("${1}");
+                        shift 1;
+                    else
+                        Msg.Err "${1} は不正なオプションです。-hで使い方を確認してください。";
+                        return 1;
+                    fi;
+                fi;
+            else
+                if [[ "${1}" = "-"* ]]; then
+                    local _Shift=0;
+                    while read -r _Chr; do
+                        if printf "%s\n" "${_ShortWithArg[@]}" | grep -qx "${_Chr}"; then
+                            if [[ "${1}" = *"${_Chr}" ]] && [[ ! "${2}" = "-"* ]]; then
+                                _OutArg+=("-${_Chr}" "${2}");
+                                _Shift=2;
+                            else
+                                Msg.Err "-${_Chr} の引数が指定されていません";
+                                return 2;
+                            fi;
+                        else
+                            if printf "%s\n" "${_Short[@]}" | grep -qx "${_Chr}"; then
+                                _OutArg+=("-${_Chr}");
+                                _Shift=1;
+                            else
+                                Msg.Err "-${_Chr} は不正なオプションです。-hで使い方を確認してください。";
+                                return 1;
+                            fi;
+                        fi;
+                    done < <(grep -o . <<< "${1#-}");
+                    shift "${_Shift}";
+                else
+                    _NoArg+=("${1}");
+                    shift 1;
+                fi;
+            fi;
+        fi;
+    done;
+    OPTRET=("${_OutArg[@]}" -- "${_NoArg[@]}");
+    return 0
 }
 add_new_to_array () 
 { 
@@ -233,6 +498,145 @@ unset_all_func ()
         unset "$Func";
     done < <(GetFuncList)
 }
+srcinfo.format () 
+{ 
+    RemoveBlank | sed "/^$/d" | grep -v "^#" | ForEach eval "srcinfo.parse Line <<< \"{}\""
+}
+srcinfo.get_key_list () 
+{ 
+    srcinfo.format | cut -d "=" -f 1
+}
+srcinfo.get_pkg_base () 
+{ 
+    local _Line _Key _InSection=false;
+    while read -r _Line; do
+        _Key="$(srcinfo.parse Key <<< "$_Line")";
+        case "$_Key" in 
+            "pkgbase")
+                _InSection=true
+            ;;
+            "pkgname")
+                _InSection=false
+            ;;
+            *)
+                if [[ "${_InSection}" = true ]]; then
+                    echo "$_Line";
+                fi
+            ;;
+        esac;
+    done < <(srcinfo.format)
+}
+srcinfo.get_pkg_name () 
+{ 
+    local _Line _Key _InSection=false _TargetPkgName="$1";
+    while read -r _Line; do
+        _Key="$(srcinfo.parse Key <<< "$_Line")";
+        case "$_Key" in 
+            "pkgname")
+                if [[ "$(srcinfo.parse Value <<< "$_Line")" = "$_TargetPkgName" ]]; then
+                    _InSection=true;
+                else
+                    _InSection=false;
+                fi
+            ;;
+            "pkgbase")
+                _InSection=false
+            ;;
+            *)
+                if [[ "${_InSection}" = true ]]; then
+                    echo "$_Line";
+                fi
+            ;;
+        esac;
+    done < <(srcinfo.format)
+}
+srcinfo.get_section_list () 
+{ 
+    srcinfo.format | grep -e "^pkgbase" -e "^pkgname"
+}
+srcinfo.get_value () 
+{ 
+    local _SrcInfo=();
+    local _Output=();
+    local _PkgBaseValues=("pkgver" "pkgrel" "epoch");
+    local _AllValues=("pkgdesc" "url" "install" "changelog");
+    local _AllArrays=("arch" "groups" "license" "noextract" "options" "backup" "validpgpkeys");
+    local _AllArraysWithArch=("source" "depends" "checkdepends" "makedepends" "optdepends" "provides" "conflicts" "replaces" "md5sums" "sha1sums" "sha224sums" "sha256sums" "sha384sums" "sha512sums");
+    ArrayAppend _SrcInfo;
+    ArrayIncludes _PkgBaseValues "$1" && { 
+        PrintEvalArray _SrcInfo | srcinfo.get_value_in_pkg_base "$1";
+        return 0
+    };
+    [[ -n "${2-""}" ]] || return 1;
+    if ArrayIncludes _AllValues "$1" || ArrayIncludes _AllArrays "$1"; then
+        ArrayAppend _Output < <(PrintEvalArray _SrcInfo | srcinfo.get_value_in_pkg_base "$1");
+        ArrayAppend _Output < <(PrintEvalArray _SrcInfo | srcinfo.get_value_in_pkg_name "$2" "$1");
+        PrintArray "${_Output[@]}" | tail -n 1;
+        return 0;
+    fi;
+    ArrayIncludes _AllArraysWithArch "$1" || return 1;
+    local _Arch _ArchList;
+    if [[ -z "${3-""}" ]]; then
+        ArrayAppend _ArchList < <(PrintEvalArray _SrcInfo | srcinfo.get_value arch "$2");
+    else
+        ArrayAppend _ArchList < <(tr "," "\n" <<< "$3" | RemoveBlank);
+    fi;
+    ArrayAppend _Output < <(PrintEvalArray _SrcInfo | srcinfo.get_value_in_pkg_base "$1");
+    ArrayAppend _Output < <(PrintEvalArray _SrcInfo | srcinfo.get_value_in_pkg_name "$2" "$1");
+    for _Arch in "${_ArchList[@]}";
+    do
+        ArrayAppend _Output < <(PrintEvalArray _SrcInfo | srcinfo.get_value_in_pkg_base "$1_${_Arch}");
+        ArrayAppend _Output < <(PrintEvalArray _SrcInfo | srcinfo.get_value_in_pkg_name "$2" "$1_${_Arch}");
+    done;
+    PrintEvalArray _Output;
+    return 0
+}
+srcinfo.get_value_in_pkg_base () 
+{ 
+    local _Line;
+    while read -r _Line; do
+        _Key="$(srcinfo.parse Key <<< "$_Line")";
+        case "$_Key" in 
+            "$1")
+                srcinfo.parse Value <<< "$_Line"
+            ;;
+        esac;
+    done < <(srcinfo.get_pkg_base)
+}
+srcinfo.get_value_in_pkg_name () 
+{ 
+    local _Line;
+    while read -r _Line; do
+        _Key="$(srcinfo.parse Key <<< "$_Line")";
+        case "$_Key" in 
+            "$2")
+                srcinfo.parse Value <<< "$_Line"
+            ;;
+        esac;
+    done < <(srcinfo.get_pkg_name "$1")
+}
+srcinfo.parse () 
+{ 
+    local _Output="${1-""}";
+    [[ -n "${_Output}" ]] || return 1;
+    shift 1;
+    local _String _Key _Value;
+    _String="$(cat)";
+    _Key="$(cut -d "=" -f 1 <<<  "$_String" | RemoveBlank)";
+    _Value="$(cut -d "=" -f 2- <<< "$_String" | RemoveBlank)";
+    case "$_Output" in 
+        "Line")
+            echo "$_Key=$_Value"
+        ;;
+        "Key")
+            echo "$_Key"
+        ;;
+        "Value")
+            echo "$_Value"
+        ;;
+    esac;
+    return 0
+}
 msg.common () 
 { 
     local i l="$1";
@@ -258,6 +662,42 @@ msg.info ()
 msg.warn () 
 { 
     msg.common " Warn:" "${*}" 1>&2
+}
+csv.get_clm () 
+{ 
+    grep -v "^#" | sed "/^$/d" | cut -d "${CSVDELIM-","}" -f "$1"
+}
+csv.get_clm_cnt () 
+{ 
+    local _RawCsvLine=();
+    local _Line _ClmCnt=0;
+    readarray -t _RawCsvLine;
+    while read -r _Line; do
+        grep -qE "^#" <<< "$_Line" && continue;
+        _CurrentClmCnt=$(tr "${CSVDELIM-","}" "\n" | wc -l);
+        (( _CurrentClmCnt > _ClmCnt )) && _ClmCnt="$_CurrentClmCnt";
+    done < <(PrintArray "${_RawCsvLine[@]}");
+    RemoveBlank <<< "$_ClmCnt";
+    return 0
+}
+csv.to_bash_array () 
+{ 
+    local _RawCsvLine=() _Line _ClmCnt=0;
+    local ArrayPrefix="${ArrayPrefix-"{}"}";
+    readarray -t _RawCsvLine < <(
+        # 標準入力からCSVのみを抽出
+        while read -r _Line; do
+            # shellcheck disable=SC2031
+            (( $(tr "${CSVDELIM-","}" "\n" <<< "$_Line" | wc -l) >= ${#} )) && echo "$_Line"
+        done < <(grep -v "^#")
+    );
+    _ClmCnt=$(PrintArray "${_RawCsvLine[@]}" | csv.get_clm_cnt);
+    while read -r _Cnt; do
+        readarray -t "$(sed "s|{}|$(eval "echo \"\${${_Cnt}}\"")|g" <<< "$ArrayPrefix")" < <(
+            # shellcheck disable=SC2031
+            PrintArray "${_RawCsvLine[@]}" | cut -d "${CSVDELIM-","}" -f "$_Cnt"
+        );
+    done < <(seq 1 "$#")
 }
 aur.check_json () 
 { 
@@ -407,66 +847,6 @@ aur.is_pkg_out_of_dated ()
         ;;
     esac
 }
-cache.exist () 
-{ 
-    local _File;
-    _File="$(cache.create_dir)/$1";
-    [[ -e "$_File" ]] || return 1;
-    (( "$(cache.get_time_diff_from_last_update "$_File")" > "${KEEPCACHESEC-"86400"}" )) && return 2;
-    return 0
-}
-cache.get () 
-{ 
-    cat "$(cache.get_dir)/$1" 2> /dev/null || return 1
-}
-cache.get_dir () 
-{ 
-    echo "${TMPDIR-"/tmp"}/$(cache.get_id)"
-}
-cache.get_file_last_update () 
-{ 
-    local _isGnu=false;
-    date --help 2> /dev/null | grep -q "GNU" && _isGnu=true;
-    if [[ "$_isGnu" = true ]]; then
-        date +%s -r "$1";
-    else
-        { 
-            eval "$(stat -s "$1")";
-            echo "$st_mtime"
-        };
-    fi
-}
-cache.get_id () 
-{ 
-    if [[ -z "${FSBLIB_CACHEID-""}" ]]; then
-        cache.create_dir > /dev/null;
-    fi;
-    echo "$FSBLIB_CACHEID"
-}
-cache.get_time_diff_from_last_update () 
-{ 
-    local _Now _Last;
-    _Now="$(date "+%s")";
-    _Last="$(cache.get_file_last_update "$1")";
-    echo "$(( _Now - _Last ))";
-    return 0
-}
-cache.create () 
-{ 
-    cache.create_dir > /dev/null;
-    cat > "$(cache.get_dir)/${1}";
-    cat "$(cache.get_dir)/$1"
-}
-cache.create_dir () 
-{ 
-    FSBLIB_CACHEID="${FSBLIB_CACHEID-"$(RandomString "10")"}";
-    export FSBLIB_CACHEID="$FSBLIB_CACHEID";
-    local TMPDIR="${TMPDIR-"/tmp"}";
-    local _Dir="$TMPDIR/${FSBLIB_CACHEID}";
-    mkdir -p "$_Dir";
-    echo "$_Dir";
-    return 0
-}
 choice () 
 { 
     local arg OPTARG OPTIND;
@@ -527,230 +907,173 @@ choice ()
     };
     return 1
 }
-parse_arg () 
+cache.exist () 
 { 
-    local _Arg _Chr _Cnt;
-    local _Long=() _LongWithArg=() _Short=() _ShortWithArg=();
-    local _OutArg=() _NoArg=();
-    for _Arg in "${@}";
-    do
-        local _TempArray=();
-        case "${_Arg}" in 
-            "LONG="*)
-                readarray -t _TempArray < <(tr -d "\"" <<< "${_Arg#LONG=}" | tr "," "\n");
-                for _Chr in "${_TempArray[@]}";
-                do
-                    if [[ "${_Chr}" = *":" ]]; then
-                        _LongWithArg+=("${_Chr%":"}");
-                    else
-                        _Long+=("${_Chr}");
-                    fi;
-                done;
-                shift 1
-            ;;
-            "SHORT="*)
-                readarray -t _TempArray < <(tr -d "\"" <<< "${_Arg#SHORT=}" | grep -o .);
-                for ((_Cnt=0; _Cnt<= "${#_TempArray[@]}" - 1; _Cnt++ ))
-                do
-                    if [[ "${_TempArray["$(( _Cnt + 1))"]-""}" = ":" ]]; then
-                        _ShortWithArg+=("${_TempArray["${_Cnt}"]}");
-                        _Cnt=$(( _Cnt + 1 ));
-                    else
-                        _Short+=("${_TempArray["${_Cnt}"]}");
-                    fi;
-                done;
-                shift 1
-            ;;
-            "--")
-                shift 1;
-                break
-            ;;
-        esac;
-    done;
-    while (( "$#" > 0 )); do
-        if [[ "${1}" = "--" ]]; then
-            shift 1;
-            _NoArg+=("${@}");
-            shift "$#";
-            break;
-        else
-            if [[ "${1}" = "--"* ]]; then
-                if printf "%s\n" "${_LongWithArg[@]}" | grep -qx "${1#--}"; then
-                    if [[ "${2}" = "-"* ]]; then
-                        Msg.Err "${1} の引数が指定されていません";
-                        return 2;
-                    else
-                        _OutArg+=("${1}" "${2}");
-                        shift 2;
-                    fi;
-                else
-                    if printf "%s\n" "${_Long[@]}" | grep -qx "${1#--}"; then
-                        _OutArg+=("${1}");
-                        shift 1;
-                    else
-                        Msg.Err "${1} は不正なオプションです。-hで使い方を確認してください。";
-                        return 1;
-                    fi;
-                fi;
-            else
-                if [[ "${1}" = "-"* ]]; then
-                    local _Shift=0;
-                    while read -r _Chr; do
-                        if printf "%s\n" "${_ShortWithArg[@]}" | grep -qx "${_Chr}"; then
-                            if [[ "${1}" = *"${_Chr}" ]] && [[ ! "${2}" = "-"* ]]; then
-                                _OutArg+=("-${_Chr}" "${2}");
-                                _Shift=2;
-                            else
-                                Msg.Err "-${_Chr} の引数が指定されていません";
-                                return 2;
-                            fi;
-                        else
-                            if printf "%s\n" "${_Short[@]}" | grep -qx "${_Chr}"; then
-                                _OutArg+=("-${_Chr}");
-                                _Shift=1;
-                            else
-                                Msg.Err "-${_Chr} は不正なオプションです。-hで使い方を確認してください。";
-                                return 1;
-                            fi;
-                        fi;
-                    done < <(grep -o . <<< "${1#-}");
-                    shift "${_Shift}";
-                else
-                    _NoArg+=("${1}");
-                    shift 1;
-                fi;
-            fi;
+    local _File;
+    _File="$(cache.create_dir)/$1";
+    [[ -e "$_File" ]] || return 1;
+    (( "$(cache.get_time_diff_from_last_update "$_File")" > "${KEEPCACHESEC-"86400"}" )) && return 2;
+    return 0
+}
+cache.get () 
+{ 
+    cat "$(cache.get_dir)/$1" 2> /dev/null || return 1
+}
+cache.get_dir () 
+{ 
+    echo "${TMPDIR-"/tmp"}/$(cache.get_id)"
+}
+cache.get_file_last_update () 
+{ 
+    local _isGnu=false;
+    date --help 2> /dev/null | grep -q "GNU" && _isGnu=true;
+    if [[ "$_isGnu" = true ]]; then
+        date +%s -r "$1";
+    else
+        { 
+            eval "$(stat -s "$1")";
+            echo "$st_mtime"
+        };
+    fi
+}
+cache.get_id () 
+{ 
+    if [[ -z "${FSBLIB_CACHEID-""}" ]]; then
+        cache.create_dir > /dev/null;
+    fi;
+    echo "$FSBLIB_CACHEID"
+}
+cache.get_time_diff_from_last_update () 
+{ 
+    local _Now _Last;
+    _Now="$(date "+%s")";
+    _Last="$(cache.get_file_last_update "$1")";
+    echo "$(( _Now - _Last ))";
+    return 0
+}
+cache.create () 
+{ 
+    cache.create_dir > /dev/null;
+    cat > "$(cache.get_dir)/${1}";
+    cat "$(cache.get_dir)/$1"
+}
+cache.create_dir () 
+{ 
+    FSBLIB_CACHEID="${FSBLIB_CACHEID-"$(RandomString "10")"}";
+    export FSBLIB_CACHEID="$FSBLIB_CACHEID";
+    local TMPDIR="${TMPDIR-"/tmp"}";
+    local _Dir="$TMPDIR/${FSBLIB_CACHEID}";
+    mkdir -p "$_Dir";
+    echo "$_Dir";
+    return 0
+}
+url.authority () 
+{ 
+    local i _NoScheme;
+    while read -r i; do
+        _NoScheme=$(url.no_scheme <<< "$i");
+        [[ "$_NoScheme" == "//"* ]] || return 1;
+        cut -d "/" -f 1 < <(sed "s|^//||g" <<< "$_NoScheme");
+    done
+}
+url.fragment () 
+{ 
+    url.path_and_query_and_fragment | cut -d "#" -f 2-
+}
+url.host () 
+{ 
+    url.authority | cut -d "@" -f 2- | cut -d ":" -f 1
+}
+url.no_scheme () 
+{ 
+    cut -d ":" -f 2-
+}
+url.path () 
+{ 
+    url.path_and_query_and_fragment | cut -d "#" -f 1 | cut -d "?" -f 1
+}
+url.path_and_query_and_fragment () 
+{ 
+    local i;
+    while read -r i; do
+        sed "s|^//$(url.authority <<< "$i")||g" <<< "$(url.no_scheme <<< "$i")";
+    done
+}
+url.port () 
+{ 
+    local i;
+    while read -r i; do
+        [[ "$i" == *":"* ]] || { 
+            echo "80";
+            continue
+        };
+        cut -d ":" -f 2 <<< "$i";
+    done < <(url.authority)
+}
+url.query () 
+{ 
+    url.path_and_query_and_fragment | cut -d "?" -f 2-
+}
+url.scheme () 
+{ 
+    cut -d ":" -f 1
+}
+url.user () 
+{ 
+    local i;
+    while read -r i; do
+        [[ "$i" == *"@"* ]] || { 
+            echo "";
+            continue
+        };
+        cut -d "@" -f 1 <<< "$i";
+    done < <(url.authority)
+}
+url.has_authority () 
+{ 
+    [[ "$(url.no_scheme <<< "$1")" = "//"* ]]
+}
+url.has_fragment () 
+{ 
+    [[ "$(url.path_and_query_and_fragment <<< "$1")" = *"#"* ]]
+}
+url.has_port () 
+{ 
+    [[ "$(url.authority <<< "$1")" = *":"* ]]
+}
+url.has_query () 
+{ 
+    [[ "$(url.path_and_query_and_fragment <<< "$1")" = *"?"* ]]
+}
+url.has_user () 
+{ 
+    [[ "$(url.authority <<< "$1")" = *"@"* ]]
+}
+url.parse () 
+{ 
+    local i="$1";
+    url.scheme <<< "$i";
+    echo ":";
+    if url.has_authority "$i"; then
+        if url.has_user "$i"; then
+            url.user <<< "$i";
+            echo "@";
         fi;
-    done;
-    OPTRET=("${_OutArg[@]}" -- "${_NoArg[@]}");
-    return 0
-}
-awk.awk_print () 
-{ 
-    awk "BEGIN {print $*}"
-}
-awk.cos () 
-{ 
-    @Calc "cos($*)"
-}
-awk.log () 
-{ 
-    local _Base="$1" _Number="$2";
-    @Calc "log(${_Number}) / log($_Base)"
-}
-awk.pi () 
-{ 
-    @Calc "atan2(0, -0)"
-}
-awk.rad () 
-{ 
-    @Calc "$1 * $(awk.pi) / 180 "
-}
-awk.sin () 
-{ 
-    @Calc "sin($*)"
-}
-awk.tan () 
-{ 
-    @Calc "sin($1)/tan($1)"
-}
-ini.get_param () 
-{ 
-    local _RawIniLine=();
-    local _Line _LineNo=1 _Exit=0 _InSection=false;
-    readarray -t _RawIniLine;
-    while read -r _Line; do
-        ini.parse_line <<< "$_Line";
-        case "$TYPE" in 
-            "SECTION")
-                if [[ "$SECTION" = "$1" ]]; then
-                    _InSection=true;
-                else
-                    _InSection=false;
-                fi
-            ;;
-            "PARAM-VALUE")
-                [[ "$_InSection" = false ]] || echo "${VALUE}"
-            ;;
-            "ERROR")
-                echo "Line $_LineNo: Failed to parse Ini" 1>&2;
-                _Exit=1
-            ;;
-        esac;
-        _LineNo=$(( _LineNo + 1  ));
-    done < <(PrintArray "${_RawIniLine[@]}");
-    return "$_Exit"
-}
-ini.get_param_list () 
-{ 
-    local _RawIniLine=();
-    local _Line _LineNo=1 _Exit=0 _InSection=false;
-    readarray -t _RawIniLine;
-    while read -r _Line; do
-        ini.parse_line <<< "$_Line";
-        case "$TYPE" in 
-            "SECTION")
-                if [[ "$SECTION" = "$1" ]]; then
-                    _InSection=true;
-                else
-                    _InSection=false;
-                fi
-            ;;
-            "PARAM-VALUE")
-                [[ "$_InSection" = false ]] || echo "$PARAM"
-            ;;
-            "ERROR")
-                echo "Line $_LineNo: Failed to parse Ini" 1>&2;
-                _Exit=1
-            ;;
-        esac;
-        _LineNo=$(( _LineNo + 1  ));
-    done < <(PrintArray "${_RawIniLine[@]}");
-    return "$_Exit"
-}
-ini.get_section_list () 
-{ 
-    local _RawIniLine=();
-    local _Line _LineNo=1 _Exit=0;
-    readarray -t _RawIniLine;
-    while read -r _Line; do
-        ini.parse_line <<< "$_Line";
-        case "$TYPE" in 
-            "SECTION")
-                echo "$SECTION"
-            ;;
-            "ERROR")
-                echo "Line $_LineNo: Failed to parse Ini" 1>&2;
-                _Exit=1
-            ;;
-        esac;
-        _LineNo=$(( _LineNo + 1  ));
-    done < <(PrintArray "${_RawIniLine[@]}");
-    return "$_Exit"
-}
-ini.parse_line () 
-{ 
-    local _Line;
-    TYPE="" PARAM="" VALUE="" SECTION="";
-    _Line="$(RemoveBlank <<< "$(cat)")";
-    case "$_Line" in 
-        "["*"]")
-            TYPE="SECTION";
-            SECTION=$(sed "s|^\[||g; s|\]$||g" <<< "$_Line")
-        ;;
-        "" | "#"*)
-            TYPE="NOTHING"
-        ;;
-        *"="*)
-            TYPE="PARAM-VALUE";
-            PARAM="$(RemoveBlank <<< "$(cut -d "=" -f 1 <<< "$_Line")")";
-            VALUE="$(RemoveBlank <<< "$(cut -d "=" -f 2- <<< "$_Line")")"
-        ;;
-        *)
-            TYPE="ERROR"
-        ;;
-    esac;
-    return 0
+        url.host <<< "$i";
+        if url.has_port "$i"; then
+            echo ":";
+            url.port <<< "$i";
+        fi;
+    fi;
+    url.path <<< "$i";
+    if url.has_fragment "$i"; then
+        echo "#";
+        url.fragment <<< "$i";
+    fi;
+    if url.has_query "$i"; then
+        echo "?";
+        url.query <<< "$i";
+    fi
 }
 pm.check_pkg () 
 { 
@@ -942,329 +1265,6 @@ pm.parse_pkg_file_name ()
         return 1;
     fi;
     PrintArray "${_ParsedPkg[@]}"
-}
-readlinkf () 
-{ 
-    Readlinkf_Posix "$@"
-}
-readlinkf__posix () 
-{ 
-    [ "${1:-}" ] || return 1;
-    max_symlinks=40;
-    CDPATH='';
-    target=$1;
-    [ -e "${target%/}" ] || target=${1%"${1##*[!/]}"};
-    [ -d "${target:-/}" ] && target="$target/";
-    cd -P . 2> /dev/null || return 1;
-    while [ "$max_symlinks" -ge 0 ] && max_symlinks=$((max_symlinks - 1)); do
-        if [ ! "$target" = "${target%/*}" ]; then
-            case $target in 
-                /*)
-                    cd -P "${target%/*}/" 2> /dev/null || break
-                ;;
-                *)
-                    cd -P "./${target%/*}" 2> /dev/null || break
-                ;;
-            esac;
-            target=${target##*/};
-        fi;
-        if [ ! -L "$target" ]; then
-            target="${PWD%/}${target:+/}${target}";
-            printf '%s\n' "${target:-/}";
-            return 0;
-        fi;
-        link=$(ls -dl -- "$target" 2>/dev/null) || break;
-        target=${link#*" $target -> "};
-    done;
-    return 1
-}
-readlinkf__readlink () 
-{ 
-    [ "${1:-}" ] || return 1;
-    max_symlinks=40;
-    CDPATH='';
-    target=$1;
-    [ -e "${target%/}" ] || target=${1%"${1##*[!/]}"};
-    [ -d "${target:-/}" ] && target="$target/";
-    cd -P . 2> /dev/null || return 1;
-    while [ "$max_symlinks" -ge 0 ] && max_symlinks=$((max_symlinks - 1)); do
-        if [ ! "$target" = "${target%/*}" ]; then
-            case $target in 
-                /*)
-                    cd -P "${target%/*}/" 2> /dev/null || break
-                ;;
-                *)
-                    cd -P "./${target%/*}" 2> /dev/null || break
-                ;;
-            esac;
-            target=${target##*/};
-        fi;
-        if [ ! -L "$target" ]; then
-            target="${PWD%/}${target:+/}${target}";
-            printf '%s\n' "${target:-/}";
-            return 0;
-        fi;
-        target=$(readlink -- "$target" 2>/dev/null) || break;
-    done;
-    return 1
-}
-url.authority () 
-{ 
-    local i _NoScheme;
-    while read -r i; do
-        _NoScheme=$(url.no_scheme <<< "$i");
-        [[ "$_NoScheme" == "//"* ]] || return 1;
-        cut -d "/" -f 1 < <(sed "s|^//||g" <<< "$_NoScheme");
-    done
-}
-url.fragment () 
-{ 
-    url.path_and_query_and_fragment | cut -d "#" -f 2-
-}
-url.host () 
-{ 
-    url.authority | cut -d "@" -f 2- | cut -d ":" -f 1
-}
-url.no_scheme () 
-{ 
-    cut -d ":" -f 2-
-}
-url.path () 
-{ 
-    url.path_and_query_and_fragment | cut -d "#" -f 1 | cut -d "?" -f 1
-}
-url.path_and_query_and_fragment () 
-{ 
-    local i;
-    while read -r i; do
-        sed "s|^//$(url.authority <<< "$i")||g" <<< "$(url.no_scheme <<< "$i")";
-    done
-}
-url.port () 
-{ 
-    local i;
-    while read -r i; do
-        [[ "$i" == *":"* ]] || { 
-            echo "80";
-            continue
-        };
-        cut -d ":" -f 2 <<< "$i";
-    done < <(url.authority)
-}
-url.query () 
-{ 
-    url.path_and_query_and_fragment | cut -d "?" -f 2-
-}
-url.scheme () 
-{ 
-    cut -d ":" -f 1
-}
-url.user () 
-{ 
-    local i;
-    while read -r i; do
-        [[ "$i" == *"@"* ]] || { 
-            echo "";
-            continue
-        };
-        cut -d "@" -f 1 <<< "$i";
-    done < <(url.authority)
-}
-url.has_authority () 
-{ 
-    [[ "$(url.no_scheme <<< "$1")" = "//"* ]]
-}
-url.has_fragment () 
-{ 
-    [[ "$(url.path_and_query_and_fragment <<< "$1")" = *"#"* ]]
-}
-url.has_port () 
-{ 
-    [[ "$(url.authority <<< "$1")" = *":"* ]]
-}
-url.has_query () 
-{ 
-    [[ "$(url.path_and_query_and_fragment <<< "$1")" = *"?"* ]]
-}
-url.has_user () 
-{ 
-    [[ "$(url.authority <<< "$1")" = *"@"* ]]
-}
-url.parse () 
-{ 
-    local i="$1";
-    url.scheme <<< "$i";
-    echo ":";
-    if url.has_authority "$i"; then
-        if url.has_user "$i"; then
-            url.user <<< "$i";
-            echo "@";
-        fi;
-        url.host <<< "$i";
-        if url.has_port "$i"; then
-            echo ":";
-            url.port <<< "$i";
-        fi;
-    fi;
-    url.path <<< "$i";
-    if url.has_fragment "$i"; then
-        echo "#";
-        url.fragment <<< "$i";
-    fi;
-    if url.has_query "$i"; then
-        echo "?";
-        url.query <<< "$i";
-    fi
-}
-srcinfo.format () 
-{ 
-    RemoveBlank | sed "/^$/d" | grep -v "^#" | ForEach eval "srcinfo.parse Line <<< \"{}\""
-}
-srcinfo.get_key_list () 
-{ 
-    srcinfo.format | cut -d "=" -f 1
-}
-srcinfo.get_pkg_base () 
-{ 
-    local _Line _Key _InSection=false;
-    while read -r _Line; do
-        _Key="$(srcinfo.parse Key <<< "$_Line")";
-        case "$_Key" in 
-            "pkgbase")
-                _InSection=true
-            ;;
-            "pkgname")
-                _InSection=false
-            ;;
-            *)
-                if [[ "${_InSection}" = true ]]; then
-                    echo "$_Line";
-                fi
-            ;;
-        esac;
-    done < <(srcinfo.format)
-}
-srcinfo.get_pkg_name () 
-{ 
-    local _Line _Key _InSection=false _TargetPkgName="$1";
-    while read -r _Line; do
-        _Key="$(srcinfo.parse Key <<< "$_Line")";
-        case "$_Key" in 
-            "pkgname")
-                if [[ "$(srcinfo.parse Value <<< "$_Line")" = "$_TargetPkgName" ]]; then
-                    _InSection=true;
-                else
-                    _InSection=false;
-                fi
-            ;;
-            "pkgbase")
-                _InSection=false
-            ;;
-            *)
-                if [[ "${_InSection}" = true ]]; then
-                    echo "$_Line";
-                fi
-            ;;
-        esac;
-    done < <(srcinfo.format)
-}
-srcinfo.get_section_list () 
-{ 
-    srcinfo.format | grep -e "^pkgbase" -e "^pkgname"
-}
-srcinfo.get_value () 
-{ 
-    local _SrcInfo=();
-    local _Output=();
-    local _PkgBaseValues=("pkgver" "pkgrel" "epoch");
-    local _AllValues=("pkgdesc" "url" "install" "changelog");
-    local _AllArrays=("arch" "groups" "license" "noextract" "options" "backup" "validpgpkeys");
-    local _AllArraysWithArch=("source" "depends" "checkdepends" "makedepends" "optdepends" "provides" "conflicts" "replaces" "md5sums" "sha1sums" "sha224sums" "sha256sums" "sha384sums" "sha512sums");
-    ArrayAppend _SrcInfo;
-    ArrayIncludes _PkgBaseValues "$1" && { 
-        PrintEvalArray _SrcInfo | srcinfo.get_value_in_pkg_base "$1";
-        return 0
-    };
-    [[ -n "${2-""}" ]] || return 1;
-    if ArrayIncludes _AllValues "$1" || ArrayIncludes _AllArrays "$1"; then
-        ArrayAppend _Output < <(PrintEvalArray _SrcInfo | srcinfo.get_value_in_pkg_base "$1");
-        ArrayAppend _Output < <(PrintEvalArray _SrcInfo | srcinfo.get_value_in_pkg_name "$2" "$1");
-        PrintArray "${_Output[@]}" | tail -n 1;
-        return 0;
-    fi;
-    ArrayIncludes _AllArraysWithArch "$1" || return 1;
-    local _Arch _ArchList;
-    if [[ -z "${3-""}" ]]; then
-        ArrayAppend _ArchList < <(PrintEvalArray _SrcInfo | srcinfo.get_value arch "$2");
-    else
-        ArrayAppend _ArchList < <(tr "," "\n" <<< "$3" | RemoveBlank);
-    fi;
-    ArrayAppend _Output < <(PrintEvalArray _SrcInfo | srcinfo.get_value_in_pkg_base "$1");
-    ArrayAppend _Output < <(PrintEvalArray _SrcInfo | srcinfo.get_value_in_pkg_name "$2" "$1");
-    for _Arch in "${_ArchList[@]}";
-    do
-        ArrayAppend _Output < <(PrintEvalArray _SrcInfo | srcinfo.get_value_in_pkg_base "$1_${_Arch}");
-        ArrayAppend _Output < <(PrintEvalArray _SrcInfo | srcinfo.get_value_in_pkg_name "$2" "$1_${_Arch}");
-    done;
-    PrintEvalArray _Output;
-    return 0
-}
-srcinfo.get_value_in_pkg_base () 
-{ 
-    local _Line;
-    while read -r _Line; do
-        _Key="$(srcinfo.parse Key <<< "$_Line")";
-        case "$_Key" in 
-            "$1")
-                srcinfo.parse Value <<< "$_Line"
-            ;;
-        esac;
-    done < <(srcinfo.get_pkg_base)
-}
-srcinfo.get_value_in_pkg_name () 
-{ 
-    local _Line;
-    while read -r _Line; do
-        _Key="$(srcinfo.parse Key <<< "$_Line")";
-        case "$_Key" in 
-            "$2")
-                srcinfo.parse Value <<< "$_Line"
-            ;;
-        esac;
-    done < <(srcinfo.get_pkg_name "$1")
-}
-srcinfo.parse () 
-{ 
-    local _Output="${1-""}";
-    [[ -n "${_Output}" ]] || return 1;
-    shift 1;
-    local _String _Key _Value;
-    _String="$(cat)";
-    _Key="$(cut -d "=" -f 1 <<<  "$_String" | RemoveBlank)";
-    _Value="$(cut -d "=" -f 2- <<< "$_String" | RemoveBlank)";
-    case "$_Output" in 
-        "Line")
-            echo "$_Key=$_Value"
-        ;;
-        "Key")
-            echo "$_Key"
-        ;;
-        "Value")
-            echo "$_Value"
-        ;;
-    esac;
-    return 0
-}
-fsblib_env_check () 
-{ 
-    case "$FSBLIB_REQUIRE" in 
-        "Any")
-            return 0
-        ;;
-        "ModernShell")
-            [[ "$(cut -d "." -f 1 <<< "$BASH_VERSION")" = "5" ]] && return 0
-        ;;
-    esac
 }
 arch.get_kernel_file_list () 
 { 
