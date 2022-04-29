@@ -122,8 +122,8 @@ for Lib in "${LibToRunTest[@]}"; do
         RunTestAndWriteResult >> "${ResultFile}"
         while read -r TestName; do
             RunTestAndWriteResult >> "${ResultFile}"
-        done < <(find "${TestsDir}/${Lib}/${FuncToTest}/" -mindepth 1 -maxdepth 1 -type d -print0  2> /dev/null | xargs -0 -L 1 basename )
-    done < <(find "$TestsDir/$Lib/" -mindepth 1 -maxdepth 1 -type d -print0  2> /dev/null | GetBaseName)
+        done < <(find "${TestsDir}/${Lib}/${FuncToTest}/" -mindepth 1 -maxdepth 1 -type d 2> /dev/null | GetBaseName )
+    done < <(find "$TestsDir/$Lib/" -mindepth 1 -maxdepth 1 -type d  2> /dev/null  | GetBaseName )
 done
 
 # Print log
