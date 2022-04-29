@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.2.0.r170.gfb84a29-snake"
+FSBLIB_VERSION="v0.2.0.r175.g78f90e4-snake"
 FSBLIB_REQUIRE="ModernBash"
 
 awk.awk_print () 
