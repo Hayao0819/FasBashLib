@@ -11,6 +11,7 @@ fi
 
 MainLibFile="${TMPDIR-"/tmp"}/fasbashlib.sh"
 ResultFile="${TMPDIR-"/tmp"}/fasbashlib-result.txt"
+ExitCode=0
 
 
 # Build fasbashlib
@@ -85,22 +86,22 @@ RunTestAndWriteResult(){
     RunFuncTest "${Args[@]}" || ExitCode="$?"
     case "$ExitCode" in
         "0")
-            #echo "Function: $Lib.$FuncToTest=Passed"
+            #echo "0| Function: $Lib.$FuncToTest=Passed"
             ;;
         "1")
-            #echo "Function: $Lib.$FuncToTest=No File"
+            #echo "1| Function: $Lib.$FuncToTest=No File"
             ;;
         "2")
-            echo "Function: $Lib.$FuncToTest=Empty"
+            echo "2| Function: $Lib.$FuncToTest=Empty"
             ;;
         "3")
-            echo "Function: $Lib.$FuncToTest=Missing exit code (Expect: ${ExpectedExitStatus} Result: ${ExitTestStatus})"
+            echo "3| Function: $Lib.$FuncToTest=Missing exit code (Expect: ${ExpectedExitStatus} Result: ${ExitTestStatus})"
             ;;
         "4")
-            echo "Function: $Lib.$FuncToTest=No Match With Result"
+            echo "4| Function: $Lib.$FuncToTest=No Match With Result"
             ;;
         *)
-            echo "Function: $Lib.$FuncToTest=Unknown Error"
+            echo "*| Function: $Lib.$FuncToTest=Unknown Error"
             ;;
     esac
 }
@@ -113,7 +114,7 @@ for Lib in "${LibToRunTest[@]}"; do
         {
             type -P "$Cmd" 1> /dev/null 2>&1 || {
                 echo -e "$Cmd is not found in PATH. Cannot test ${Lib}" >&2
-                echo "Lib: $Lib=Missing depends($Cmd)" >> "${ResultFile}"
+                echo "5| Lib: $Lib=Missing depends($Cmd)" >> "${ResultFile}"
             }
         } &
     done < <("${LibDir}/GetDepends.sh" "$Lib")
@@ -125,10 +126,17 @@ for Lib in "${LibToRunTest[@]}"; do
     done < <(find "$TestsDir/$Lib/" -mindepth 1 -maxdepth 1 -type d -print0  2> /dev/null | GetBaseName)
 done
 
+# Print log
 sleep 0.5
 echo "テストの終了を待機中..." >&2
 wait
-
 echo "=====TEST LOG=====" >&2
 cat "$ResultFile"
+
+# Set exit code
+# shellcheck disable=SC2143
+[[ -n "$(cut -d "|" -f 1 < "$ResultFile" | grep -v "^5")" ]] && ExitCode="1"
+
+# Clean up
 rm -rf "$ResultFile"
+exit "$ExitCode"
