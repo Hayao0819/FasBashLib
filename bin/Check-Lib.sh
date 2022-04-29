@@ -53,6 +53,9 @@ while read -r Dir; do
         fi
     done < <(find "$Dir" -name "*.sh" -mindepth 1)
 
+    # テストを実行
+    "${BinDir}/Test-Run.sh" "$Name"
+
     unset File _FileList Name
 done < <(
     if (( "${#}" > 0 )); then
