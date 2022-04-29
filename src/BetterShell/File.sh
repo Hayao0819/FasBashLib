@@ -11,7 +11,8 @@
 #
 # @exitcode 0 return only 0
 GetBaseName(){
-    xargs -L 1 basename
+    #xargs -L 1 basename
+    ForEach basename "{}"
 }
 
 FileType(){
