@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.2.0.r167.gbda3a60-upper"
+FSBLIB_VERSION="v0.2.0.r170.gfb84a29-upper"
 FSBLIB_REQUIRE="ModernBash"
 
 Awk.AwkPrint () 
