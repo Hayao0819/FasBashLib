@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.2.0.r162.gdbf9f27-snake"
+FSBLIB_VERSION="v0.2.0.r167.gbda3a60-snake"
 FSBLIB_REQUIRE="ModernBash"
 
 awk.awk_print () 
@@ -377,7 +377,7 @@ file_type ()
 }
 get_base_name () 
 { 
-    xargs -L 1 basename
+    ForEach basename "{}"
 }
 get_file_ext () 
 { 
