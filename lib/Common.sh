@@ -76,6 +76,10 @@ ForEach(){
     done
 }
 
+GetBaseName(){
+    ForEach basename "{}"
+}
+
 # ToLower <文字列>
 ToLower(){
     local _Str="${1,,}"
