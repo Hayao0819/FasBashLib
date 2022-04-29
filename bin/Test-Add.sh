@@ -5,15 +5,16 @@ MainDir="$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)"
 LibDir="$MainDir/lib" BinDir="$MainDir/bin" TestsDir="$MainDir/tests"
 
 # Parse argument
-if (( $# < 3)) || [[ "${1}" = "-h" ]]  ; then
+if (( $# < 2)) || [[ "${1}" = "-h" ]]  ; then
     echo "Usage: $(basename "$0") -- [Lib] [Function] [Name]"
     [[ "$1" = "-h" ]] && exit 0
     exit 1
 fi
 
 # Set variavles
-LibName="$1" FuncName="$2" TestName="$3"
-FuncTestDir="$TestsDir/$LibName/${FuncName}/${TestName}"
+LibName="$1" FuncName="$2" TestName="${3-""}"
+FuncTestDir="$TestsDir/$LibName/${FuncName}/"
+[[ -n "${FuncTestDir-""}" ]] && FuncTestDir="$TestsDir/$LibName/${FuncName}/$TestName"
 
 # Check
 "$BinDir/List.sh" -q | grep -qx "${LibName}" || {
