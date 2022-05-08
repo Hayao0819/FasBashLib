@@ -82,3 +82,8 @@ GetArrayIndex(){
     PrintArray "${n[@]}"
     return 0
 }
+
+StrToCharList(){
+    declare -a -x "$1"
+    readarray -t "$1" < <(BreakChar)
+}

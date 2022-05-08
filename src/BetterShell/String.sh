@@ -83,3 +83,7 @@ TextBox(){
     done
     echo "${_Vertical}${_Line}$(yes "${_Line}" | head -n "$_Length" | tr -d "\n")${_Vertical}"
 }
+
+BreakChar(){
+    grep -o "."
+}
