@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.2.0.r175.g78f90e4-snake"
+FSBLIB_VERSION="v0.2.0.r180.g1e38365-snake"
 FSBLIB_REQUIRE="ModernBash"
 
 awk.awk_print () 
@@ -371,6 +371,11 @@ rev_array ()
 { 
     readarray -t "$1" < <(PrintEvalArray "$1" | tac)
 }
+str_to_char_list () 
+{ 
+    declare -a -x "$1";
+    readarray -t "$1" < <(BreakChar)
+}
 file_type () 
 { 
     file --mime-type -b "$1"
@@ -406,6 +411,10 @@ get_line ()
 is_available () 
 { 
     type "$1" 2> /dev/null 1>&2
+}
+break_char () 
+{ 
+    grep -o "."
 }
 cut_last_string () 
 { 

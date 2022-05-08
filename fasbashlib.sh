@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.2.0.r175.g78f90e4-upper"
+FSBLIB_VERSION="v0.2.0.r180.g1e38365-upper"
 FSBLIB_REQUIRE="ModernBash"
 
 Awk.AwkPrint () 
@@ -371,6 +371,11 @@ RevArray ()
 { 
     readarray -t "$1" < <(PrintEvalArray "$1" | tac)
 }
+StrToCharList () 
+{ 
+    declare -a -x "$1";
+    readarray -t "$1" < <(BreakChar)
+}
 FileType () 
 { 
     file --mime-type -b "$1"
@@ -406,6 +411,10 @@ GetLine ()
 IsAvailable () 
 { 
     type "$1" 2> /dev/null 1>&2
+}
+BreakChar () 
+{ 
+    grep -o "."
 }
 CutLastString () 
 { 
