@@ -58,3 +58,9 @@ IsAvailable(){
     type "$1" 2> /dev/null 1>&2
 }
 
+Loop(){
+    local _T="$1"
+    shift 1 || return 1
+    ForEach "$@" < <(yes "" | head -n "$_T")
+}
+

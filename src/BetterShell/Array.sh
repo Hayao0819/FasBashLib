@@ -87,3 +87,24 @@ StrToCharList(){
     declare -a -x "$1"
     readarray -t "$1" < <(BreakChar)
 }
+
+ShiftArray(){
+    readarray -t "$1" < <(PrintEvalArray "$1" | sed "1,${2-"1"}d")
+}
+
+RemoveMatchLine(){
+    local i unseted=false
+    while read -r i; do
+        if [[ "$i" != "${1}" ]] || [[ "${unseted}" = true ]]; then
+            echo "$i"
+        else
+            unseted=true
+        fi
+    done
+    unset unseted i
+}
+
+PopArray(){
+    readarray -t "$1" < <(PrintEvalArray "$1" | sed -e '$d')
+}
+
