@@ -12,8 +12,15 @@ if (( $# < 1 )); then
 fi
 
 Target="$1"
-LibList=("$1" "Core")
-LibFrom=("<EntryPoint>" "$1")
+LibList=("$1")
+LibFrom=("<EntryPoint>")
+
+# Add core
+if [[ "$Target" != "Core" ]]; then
+    LibList+=("Core")
+    LibFrom+=("$Target")
+fi
+
 
 GetMeta(){
     "$LibDir/GetMeta.sh" "$@"
