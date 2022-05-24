@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.2.1.r126.g1e8dca8-upper"
+FSBLIB_VERSION="v0.2.2.r123.g74452fa-upper"
 FSBLIB_REQUIRE="ModernBash"
 
 AddNewToArray () 

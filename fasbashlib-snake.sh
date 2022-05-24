@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.2.1.r126.g1e8dca8-snake"
+FSBLIB_VERSION="v0.2.2.r123.g74452fa-snake"
 FSBLIB_REQUIRE="ModernBash"
 
 add_new_to_array () 
