@@ -30,9 +30,15 @@ Replace `LIBNAME` and `FUNCNAME` to the library name and function which you want
 
 ### Write test script
 
-Write Run.sh (`/tests/LIBNAME/FUNCNAME/Run.sh`) for test
+Write Run.sh (`/tests/LIBNAME/FUNCNAME/Run.sh`) for test.
 
-Script should exit with `0`.
+You can use the functions of the library in the script.
+
+For example, when testing Pacman.Run, all functions in the Pacman library and all dependency functions are available.
+
+~~Script should exit with `0`.~~
+
+Now, test tool supports any exit code. The test will fail if the expected and actual ones are different.
 
 ### Run your test script
 
