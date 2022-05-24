@@ -27,73 +27,44 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.2.1.r119.g44e2b2a-snake"
+FSBLIB_VERSION="v0.2.1.r126.g1e8dca8-snake"
 FSBLIB_REQUIRE="ModernBash"
 
 add_new_to_array () 
 { 
-    eval "PrintArray \"\${$1[@]}\"" | grep -qx "$2" && return 0;
-    eval "$1+=(\"$2\")"
+    Array.Push "$@"
 }
 array_append () 
 { 
-    local _ArrName="$1";
-    shift 1 || return 1;
-    readarray -t -O "$(ArrayIndex "$_ArrName")" "$_ArrName" < <(cat)
+    Array.Append "$1"
 }
 array_includes () 
 { 
-    PrintEvalArray "$1" | grep -qx "$2"
+    Array.Includes "$@"
 }
 array_index () 
 { 
-    PrintEvalArray "$1" | wc -l
+    Array.Length "$1"
 }
 get_array_index () 
 { 
-    local n=();
-    readarray -t n < <(grep -x -n "$1" | cut -d ":" -f 1 | ForEach eval echo '$(( {} - 1 ))');
-    (( "${#n[@]}" >= 1 )) || return 1;
-    PrintArray "${n[@]}";
-    return 0
-}
-pop_array () 
-{ 
-    readarray -t "$1" < <(PrintEvalArray "$1" | sed -e '$d')
+    Array.IndexOf "$1"
 }
 print_array () 
 { 
-    (( $# >= 1 )) || return 0;
-    printf "%s\n" "${@}"
+    Array.Print "$@"
 }
 print_eval_array () 
 { 
-    eval "PrintArray \"\${$1[@]}\""
-}
-remove_match_line () 
-{ 
-    local i unseted=false;
-    while read -r i; do
-        if [[ "$i" != "${1}" ]] || [[ "${unseted}" = true ]]; then
-            echo "$i";
-        else
-            unseted=true;
-        fi;
-    done;
-    unset unseted i
+    Array.Eval "$1"
 }
 rev_array () 
 { 
-    readarray -t "$1" < <(PrintEvalArray "$1" | tac)
-}
-shift_array () 
-{ 
-    readarray -t "$1" < <(PrintEvalArray "$1" | sed "1,${2-"1"}d")
+    Array.Rev "$1"
 }
 str_to_char_list () 
 { 
-    declare -a -x "$1";
-    readarray -t "$1" < <(BreakChar)
+    Array.FromStr "$1"
 }
 file_type () 
 { 
@@ -231,6 +202,18 @@ unset_all_func ()
     while read -r Func; do
         unset "$Func";
     done < <(GetFuncList)
+}
+remove_match_line () 
+{ 
+    local i unseted=false;
+    while read -r i; do
+        if [[ "$i" != "${1}" ]] || [[ "${unseted}" = true ]]; then
+            echo "$i";
+        else
+            unseted=true;
+        fi;
+    done;
+    unset unseted i
 }
 msg.common () 
 { 
@@ -1214,6 +1197,63 @@ choice ()
         echo "${_returnstr}" && return 0
     };
     return 1
+}
+array.append () 
+{ 
+    local _ArrName="$1";
+    shift 1 || return 1;
+    readarray -t -O "$(ArrayIndex "$_ArrName")" "$_ArrName" < <(cat)
+}
+array.from_str () 
+{ 
+    declare -a -x "$1";
+    readarray -t "$1" < <(BreakChar)
+}
+array.pop () 
+{ 
+    readarray -t "$1" < <(PrintEvalArray "$1" | sed -e '$d')
+}
+array.push () 
+{ 
+    eval "PrintArray \"\${$1[@]}\"" | grep -qx "$2" && return 0;
+    eval "$1+=(\"$2\")"
+}
+array.remove () 
+{ 
+    readarray -t "$1" < <(PrintEvalArray "$1" | RemoveMatchLine "$2")
+}
+array.rev () 
+{ 
+    readarray -t "$1" < <(PrintEvalArray "$1" | tac)
+}
+array.shift () 
+{ 
+    readarray -t "$1" < <(PrintEvalArray "$1" | sed "1,${2-"1"}d")
+}
+array.eval () 
+{ 
+    eval "PrintArray \"\${$1[@]}\""
+}
+array.print () 
+{ 
+    (( $# >= 1 )) || return 0;
+    printf "%s\n" "${@}"
+}
+array.index_of () 
+{ 
+    local n=();
+    readarray -t n < <(grep -x -n "$1" | cut -d ":" -f 1 | ForEach eval echo '$(( {} - 1 ))');
+    (( "${#n[@]}" >= 1 )) || return 1;
+    PrintArray "${n[@]}";
+    return 0
+}
+array.length () 
+{ 
+    PrintEvalArray "$1" | wc -l
+}
+array.includes () 
+{ 
+    PrintEvalArray "$1" | grep -qx "$2"
 }
 parse_arg () 
 { 

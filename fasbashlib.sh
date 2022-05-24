@@ -27,73 +27,44 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.2.1.r119.g44e2b2a-upper"
+FSBLIB_VERSION="v0.2.1.r126.g1e8dca8-upper"
 FSBLIB_REQUIRE="ModernBash"
 
 AddNewToArray () 
 { 
-    eval "PrintArray \"\${$1[@]}\"" | grep -qx "$2" && return 0;
-    eval "$1+=(\"$2\")"
+    Array.Push "$@"
 }
 ArrayAppend () 
 { 
-    local _ArrName="$1";
-    shift 1 || return 1;
-    readarray -t -O "$(ArrayIndex "$_ArrName")" "$_ArrName" < <(cat)
+    Array.Append "$1"
 }
 ArrayIncludes () 
 { 
-    PrintEvalArray "$1" | grep -qx "$2"
+    Array.Includes "$@"
 }
 ArrayIndex () 
 { 
-    PrintEvalArray "$1" | wc -l
+    Array.Length "$1"
 }
 GetArrayIndex () 
 { 
-    local n=();
-    readarray -t n < <(grep -x -n "$1" | cut -d ":" -f 1 | ForEach eval echo '$(( {} - 1 ))');
-    (( "${#n[@]}" >= 1 )) || return 1;
-    PrintArray "${n[@]}";
-    return 0
-}
-PopArray () 
-{ 
-    readarray -t "$1" < <(PrintEvalArray "$1" | sed -e '$d')
+    Array.IndexOf "$1"
 }
 PrintArray () 
 { 
-    (( $# >= 1 )) || return 0;
-    printf "%s\n" "${@}"
+    Array.Print "$@"
 }
 PrintEvalArray () 
 { 
-    eval "PrintArray \"\${$1[@]}\""
-}
-RemoveMatchLine () 
-{ 
-    local i unseted=false;
-    while read -r i; do
-        if [[ "$i" != "${1}" ]] || [[ "${unseted}" = true ]]; then
-            echo "$i";
-        else
-            unseted=true;
-        fi;
-    done;
-    unset unseted i
+    Array.Eval "$1"
 }
 RevArray () 
 { 
-    readarray -t "$1" < <(PrintEvalArray "$1" | tac)
-}
-ShiftArray () 
-{ 
-    readarray -t "$1" < <(PrintEvalArray "$1" | sed "1,${2-"1"}d")
+    Array.Rev "$1"
 }
 StrToCharList () 
 { 
-    declare -a -x "$1";
-    readarray -t "$1" < <(BreakChar)
+    Array.FromStr "$1"
 }
 FileType () 
 { 
@@ -231,6 +202,18 @@ UnsetAllFunc ()
     while read -r Func; do
         unset "$Func";
     done < <(GetFuncList)
+}
+RemoveMatchLine () 
+{ 
+    local i unseted=false;
+    while read -r i; do
+        if [[ "$i" != "${1}" ]] || [[ "${unseted}" = true ]]; then
+            echo "$i";
+        else
+            unseted=true;
+        fi;
+    done;
+    unset unseted i
 }
 Msg.Common () 
 { 
@@ -1214,6 +1197,63 @@ Choice ()
         echo "${_returnstr}" && return 0
     };
     return 1
+}
+Array.Append () 
+{ 
+    local _ArrName="$1";
+    shift 1 || return 1;
+    readarray -t -O "$(ArrayIndex "$_ArrName")" "$_ArrName" < <(cat)
+}
+Array.FromStr () 
+{ 
+    declare -a -x "$1";
+    readarray -t "$1" < <(BreakChar)
+}
+Array.Pop () 
+{ 
+    readarray -t "$1" < <(PrintEvalArray "$1" | sed -e '$d')
+}
+Array.Push () 
+{ 
+    eval "PrintArray \"\${$1[@]}\"" | grep -qx "$2" && return 0;
+    eval "$1+=(\"$2\")"
+}
+Array.Remove () 
+{ 
+    readarray -t "$1" < <(PrintEvalArray "$1" | RemoveMatchLine "$2")
+}
+Array.Rev () 
+{ 
+    readarray -t "$1" < <(PrintEvalArray "$1" | tac)
+}
+Array.Shift () 
+{ 
+    readarray -t "$1" < <(PrintEvalArray "$1" | sed "1,${2-"1"}d")
+}
+Array.Eval () 
+{ 
+    eval "PrintArray \"\${$1[@]}\""
+}
+Array.Print () 
+{ 
+    (( $# >= 1 )) || return 0;
+    printf "%s\n" "${@}"
+}
+Array.IndexOf () 
+{ 
+    local n=();
+    readarray -t n < <(grep -x -n "$1" | cut -d ":" -f 1 | ForEach eval echo '$(( {} - 1 ))');
+    (( "${#n[@]}" >= 1 )) || return 1;
+    PrintArray "${n[@]}";
+    return 0
+}
+Array.Length () 
+{ 
+    PrintEvalArray "$1" | wc -l
+}
+Array.Includes () 
+{ 
+    PrintEvalArray "$1" | grep -qx "$2"
 }
 ParseArg () 
 { 
