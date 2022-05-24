@@ -42,6 +42,8 @@ SolveRequire(){
             [[ "$_Shell" = "Any" ]] && SolveRequire "$_Lib"
             case "$_LibShell" in
                 "$_Shell" | "Any")
+                    LibList+=("$_Lib")
+                    LibFrom+=("$1")
                     SolveRequire "$_Lib"
                     ;;
                 *)
@@ -49,8 +51,6 @@ SolveRequire(){
                     exit 1
                     ;;
             esac
-            LibList+=("$_Lib")
-            LibFrom+=("$1")
         fi
 
     done < <(GetMeta "$1" "Require" | tr "," "\n")
