@@ -443,6 +443,10 @@ while [[ -n "${1-""}" ]]; do
             CodeType="Lower"
             shift 1
             ;;
+        "-ignore")
+            readarray -O "${#IgnoreLib[@]}" IgnoreLib < <(tr "," "\n" <<< "$2")
+            shift 2
+            ;;
         "-verbose")
             set -xv
             shift 1
@@ -452,7 +456,7 @@ while [[ -n "${1-""}" ]]; do
             break
             ;;
         "-"*)
-            echo "Usage: $(basename "$0") [-out File] [-ver Version] [-noreq] [-debug] [-snake] [-list] [Lib1] [Lib2] ..." >&2
+            echo "Usage: $(basename "$0") [-out File] [-ver Version] [-noreq] [-debug] [-ignore Lib1,Lib2, ...] [-snake] [-list] [Lib1] [Lib2] ..." >&2
             [[ "${1}" = "-h" ]] && exit 0
             exit 1
             ;;
