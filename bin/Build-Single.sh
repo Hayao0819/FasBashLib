@@ -28,6 +28,7 @@ Version=""
 RequireShell="Any"
 
 # Global Array
+IgnoreLib=(Aur)
 LoadedFiles=()
 TargetLib=()
 RequireLib=()
@@ -144,10 +145,20 @@ _Make_Prepare(){
     fi
 }
 
+# ライブラリが引数によって明示的に指定された場合に依存関係を解決します
+# 引数が指定されていない場合は無視します
 _Make_Require(){
+    # 依存関係を解決する読み込むライブラリの一覧
+    local _LibToLoad=() Lib
+    for Lib in "$@"; do
+        if ! PrintArray "${IgnoreLib[@]}" | grep -qx "$(basename "$Lib")"; then
+            _LibToLoad+=("${Lib}")
+        fi
+    done
+
     # Solve require
     if [[ "$NoRequire" = false ]]; then
-        for Lib in "${@}"; do
+        for Lib in "${_LibToLoad[@]}"; do
             "${Debug}" && echo "Solving require of $Lib" >&2
             readarray -O "${#RequireLib[@]}" -t RequireLib < <("$LibDir/SolveRequire.sh" "$Lib" | grep -xv "$Lib")
         done
@@ -159,11 +170,20 @@ _Make_TargetLib(){
     # 読み込むライブラリの一覧
     # 配列にはライブラリのディレクトリへのフルパスが代入されています
     readarray -t TargetLib < <(
-        LoadLibDir=()
+        local LoadLibDir=()
         if (( "${#}" > 0 )); then
             readarray -t LoadLibDir < <(printf "${SrcDir}/%s\n" "${RequireLib[@]}" "${@}")
         else
-            readarray -t LoadLibDir < <(find "$SrcDir" -mindepth 1 -maxdepth 1 -type d )
+            local Lib _FullLibList=()
+            readarray -t _FullLibList < <(find "$SrcDir" -mindepth 1 -maxdepth 1 -type d )
+            # IgnoreListのものを除外
+            set -xv
+            for Lib in "${_FullLibList[@]}"; do
+                if ! PrintArray "${IgnoreLib[@]}" | grep -qx "$(basename "$Lib")"; then
+                    LoadLibDir+=("$Lib")
+                fi
+            done
+            set +xv
         fi
         echo "Load libs: $(printf "%s\n" "${LoadLibDir[@]}" | xargs -L 1 basename | tr "\n" " ")" >&2
         printf "%s\n" "${LoadLibDir[@]}"
