@@ -33,9 +33,9 @@ single-lower:
 	${Build-Single.sh} ${ALL_BUILD_ARGS} ${SINGLE_BUILD_ARGS} ${LOWER_BUILD_ARGS} -out ${CURRENT_DIR}/${LOWER_FILENAME}
 
 release:
-	${Build-Single.sh} ${ALL_BUILD_ARGS} ${BASIC_BUILD_ARGS} -out ${RELEASE_DIR}/${BASIC_FILENAME}
-	${Build-Single.sh} ${ALL_BUILD_ARGS} ${SNAKE_BUILD_ARGS} -out ${RELEASE_DIR}/${SNAKE_FILENAME}
-	${Build-Single.sh} ${ALL_BUILD_ARGS} ${LOWER_BUILD_ARGS} -out ${RELEASE_DIR}/fasbashlib-lower.sh
+	${Build-Single.sh} ${ALL_BUILD_ARGS} ${RELEASE_BUILD_ARGS} ${BASIC_BUILD_ARGS} -out ${RELEASE_DIR}/${BASIC_FILENAME}
+	${Build-Single.sh} ${ALL_BUILD_ARGS} ${RELEASE_BUILD_ARGS} ${SNAKE_BUILD_ARGS} -out ${RELEASE_DIR}/${SNAKE_FILENAME}
+	${Build-Single.sh} ${ALL_BUILD_ARGS} ${RELEASE_BUILD_ARGS} ${LOWER_BUILD_ARGS} -out ${RELEASE_DIR}/${LOWER_FILENAME}
 
 docs:
 	bash ${CURRENT_DIR}/bin/Build-Docs.sh
