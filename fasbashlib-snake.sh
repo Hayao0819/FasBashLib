@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.2.2.r127.g0f2622d-snake"
+FSBLIB_VERSION="v0.2.2.r135.g5ffbdf7-snake"
 FSBLIB_REQUIRE="ModernBash"
 
 ini.get_param () 
