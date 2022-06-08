@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.2.2.r135.g5ffbdf7-lower"
+FSBLIB_VERSION="v0.2.2.r140.gb6b8adc-lower"
 FSBLIB_REQUIRE="ModernBash"
 
 Ini.getParam () 
@@ -1181,27 +1181,43 @@ SrcInfo.parse ()
 }
 Msg.common () 
 { 
-    local i l="$1";
-    shift 1 || return 1;
-    for i in $(seq "$(echo -e "${*}" | wc -l)");
-    do
-        echo -n "$l ";
-        echo -e "${*}" | head -n "${i}" | tail -n 1;
-    done
+    local i l="$1" string="$2" out="${3-""}";
+    shift 2 || return 1;
+    { 
+        [[ -z "${out-""}" ]] && { 
+            [[ "${l^^}" = *"ERR"* ]] || [[ "${l^^}" = *"WARN"* ]] || [[ "${l^^}" = *"DEBUG"* ]]
+        }
+    } && out="stderr";
+    case "${FSBLIB_MSG-"${out:-"stdout"}"}" in 
+        "stdout")
+            for i in $(seq "$(echo -e "${string}" | wc -l)");
+            do
+                echo -n "$l ";
+                echo -e "${string}" | head -n "${i}" | tail -n 1;
+            done
+        ;;
+        "stderr")
+            for i in $(seq "$(echo -e "${string}" | wc -l)");
+            do
+                echo -n "$l " 1>&2;
+                echo -e "${string}" | head -n "${i}" | tail -n 1 1>&2;
+            done
+        ;;
+    esac
 }
 Msg.debug () 
 { 
-    Msg.common "Debug:" "${*}" 1>&2
+    Msg.common "Debug:" "${*}" stderr
 }
 Msg.err () 
 { 
-    Msg.common "Error:" "${*}" 1>&2
+    Msg.common "Error:" "${*}" stderr
 }
 Msg.info () 
 { 
-    Msg.common " Info:" "${*}" 1>&1
+    Msg.common " Info:" "${*}" stdout
 }
 Msg.warn () 
 { 
-    Msg.common " Warn:" "${*}" 1>&2
+    Msg.common " Warn:" "${*}" stderr
 }

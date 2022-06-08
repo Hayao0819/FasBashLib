@@ -9,6 +9,8 @@ A library to echo messages with simple label
 
 メッセージをラベルと共に適切な場所へ出力します。例えば、Error メッセージはstdoutへ出力されます。
 
+FSBLIB_MSG 環境変数を設定することで出力先を変更できます
+
 ## Index
 
 * [Info()](#info)
