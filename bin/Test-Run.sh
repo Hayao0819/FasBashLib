@@ -13,6 +13,8 @@ MainLibFile="${TMPDIR-"/tmp"}/fasbashlib.sh"
 ResultFile="${TMPDIR-"/tmp"}/fasbashlib-result.txt"
 ExitCode=0
 
+BashArgs=()
+
 
 # Build fasbashlib
 echo "ライブラリをビルドしています..." >&2
@@ -56,7 +58,7 @@ RunFuncTest(){
 
     # run
     sed "s|%LIBPATH%|${MainLibFile}|g" "$MainDir/static/test-head.sh" | \
-        cat "/dev/stdin" "$_TargetDir/Run.sh" | bash -o pipefail -o errtrace > "${ActualResultTmp}" || ExitTestStatus="$?"
+        cat "/dev/stdin" "$_TargetDir/Run.sh" | bash "${BashArgs[@]}" -o pipefail -o errtrace > "${ActualResultTmp}" || ExitTestStatus="$?"
 
     # Get result
     ExpectedExitStatus="$(grep -v "^$" "$_TargetDir/Exit.txt")"
