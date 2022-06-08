@@ -86,4 +86,5 @@ TextBox(){
 
 BreakChar(){
     grep -o "."
+    #fold -w 1
 }
