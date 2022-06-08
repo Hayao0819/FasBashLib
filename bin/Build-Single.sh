@@ -402,6 +402,8 @@ _Make_All_Replace(){
 _Make_OutFile(){
     # Minify
     #bash "$LibDir/minifier/Minify.sh" -f="$TmpOutFile" > "$OutFile"
+
+    mkdir -p "$(dirname "${OutFile}")"
     cat "$TmpOutFile" > "$OutFile"
     if [[ "$GenerateFuncList" = true ]]; then
         cat "$TmpFile_FuncList" > "${OutFile%.sh}-list"
