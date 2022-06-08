@@ -34,9 +34,28 @@ if [[ -z "${1-""}" ]]; then
     readarray -t LibList < <("$BinDir/List.sh" -q)
 fi
 
+# IsThisFuncATestTarget <Lib> <Func>
+# 対象なら正常終了
+IsThisFuncATestTarget(){
+    local l="$1" f="$2"
+    if "${LibDir}/GetMeta.sh" "$l" "DoFunc" "Test" | grep -qx "$f"; then
+        # 関数がDoFuncの一部
+        return 0
+    elif [[ "$("${LibDir}/GetMeta.sh" "$l" "SkipAll" "Test" )" = true ]]; then
+        return 1
+    elif "${LibDir}/GetMeta.sh" "$l" "DoFunc" "SkipTest" | grep -qx "$f"; then
+        return 1
+    else
+        return 0
+    fi
+}   
+
 for Lib in "${LibList[@]}"; do
     while read -r Func; do
         FuncTestDir="$TestsDir/$Lib/${Func}/"
+
+        # テスト対象かどうかを確認
+        IsThisFuncATestTarget "$Lib" "$Func" || continue
         { [[ -e "$FuncTestDir" ]] && [[ -n "$(ls "${FuncTestDir}")" ]]; }|| {
             echo "$Lib/$Func"
         }
