@@ -16,29 +16,6 @@ jobs:
           submodules: true
           fetch-depth: 0 
 
-      - name: Build
-        run: |
-          make -B
-          make -B docs
-
-      - name: Upload built files
-        uses: actions/upload-artifact@v2
-        with:
-          name: FasBashLib
-          path: ./fasbashlib.sh
-  
-      - name: Upload built files
-        uses: actions/upload-artifact@v2
-        with:
-          name: FasBashLib
-          path: ./fasbashlib-snake.sh
-
-      - name: Upload built documents
-        uses: actions/upload-artifact@v2
-        with:
-          name: FasBashLib Documents
-          path: ./docs/*
-
       - name: Install SSH key
         uses: shimataro/ssh-key-action@v2
         with:
@@ -46,7 +23,7 @@ jobs:
           name: id_rsa # optional
           known_hosts: unnecessary
 
-      - name: Git Push
+      - name: Build And Push
         env: 
           GH_PAGES_REPO_DEPLOY_KEY: ${{ secrets.GH_PAGES_REPO_DEPLOY_KEY }}
           PUSH_BRANCH: build-0.2.x
@@ -64,7 +41,7 @@ jobs:
           make -B
           make -B docs
           rm -rf .gitignore && echo "Removed .gitignore"
-          git add --force ./docs/ ./fasbashlib.sh ./fasbashlib-snake.sh
+          git add --force ./docs/ ./fasbashlib*.sh
           git commit -m "Update: Updated built docs and fasbashlib.sh (${GITHUB_SHA})" || true
           git push --force origin "${PUSH_BRANCH}"
     

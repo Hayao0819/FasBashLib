@@ -17,7 +17,7 @@ jobs:
 
       - name: Build and create archive
         run: |
-          make -B VERSION="${GITHUB_REF#refs/tags/}" all
+          make -B VERSION="${GITHUB_REF#refs/tags/}" release
           make -B docs
           zip docs.zip docs/*
 
@@ -37,8 +37,7 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            fasbashlib-snake.sh
-            fasbashlib.sh
+            release-out/*
             docs.zip
 
       - name: Create Release Note
