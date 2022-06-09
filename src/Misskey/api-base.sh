@@ -22,7 +22,7 @@ SendReq(){
     #_CurlArgs+=(--fail-with-body) # 失敗時の処理
     _CurlArgs+=(-X POST) # MisskeyのAPIは全てPOST
     _CurlArgs+=(-H "Content-Type: application/json") # JSONで送信
-    _CurlArgs+=(-d "$(MakeJson "$@")") # JSONを送信
+    _CurlArgs+=(-d "$(@MakeJson "$@")") # JSONを送信
     _CurlArgs+=("$_Url") # URL指定
 
     Msg.Debug "Run: ${_CurlArgs[*]//"${MISSKEY_TOKEN}"/"TOKEN"})"
