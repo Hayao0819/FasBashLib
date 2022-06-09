@@ -57,5 +57,5 @@ BindingBase(){
         fi
     done
 
-    SendReq "$MISSKEY_ENTRY/$_API" "${_Args[@]}" "$@"
+    @SendReq "$MISSKEY_ENTRY/$_API" "${_Args[@]}" "$@"
 }
