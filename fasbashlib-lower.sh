@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.2.3.r155.ge625ee5-lower"
+FSBLIB_VERSION="v0.2.3.r158.gd7a5005-lower"
 FSBLIB_REQUIRE="ModernBash"
 
 Ini.getParam () 
@@ -518,12 +518,12 @@ Misskey.makeJson ()
     do
         _Key=$(cut -d "=" -f 1 <<< "$i");
         _Value=$(cut -d "=" -f 2- <<< "$i");
-        if [[ "$_Value" =~ ^[0-9]+$ ]] || [[ "$_Value" = true ]] || [[ "$_Value" = false ]]; then
-            echo "{\"$_Key\": $_Value}";
+        if [[ "$_Value" =~ ^[0-9]+$ ]] || [[ "$_Value" = true ]] || [[ "$_Value" = false ]] || [[ "$_Value" = "{"*"}" ]]; then
+            echo -n "{\"$_Key\": $_Value}";
         else
-            echo "{\"$_Key\": \"$_Value\"}";
+            echo -n "{\"$_Key\": \"$_Value\"}";
         fi;
-    done | jq -cs add
+    done | sed "s|}{|,|g" | jq -c -M
 }
 Misskey.sendReq () 
 { 
