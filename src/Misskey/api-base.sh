@@ -16,7 +16,7 @@ MakeJson(){
 
 # SendReq URL KEY=VALUE KEY=VALUE ...
 SendReq(){
-    local _Url="$1" _CurlArgs=() _Json=""
+    local _Url="$1" _CurlArgs=()
     shift 1
     _CurlArgs+=(-s -L) # curlのよくある設定
     #_CurlArgs+=(--fail-with-body) # 失敗時の処理
