@@ -21,6 +21,10 @@
 - LegacyShellとModernBashで分割したい（ディレクトリ名で分けるのもあり？？→ `LibName:ModernBash`みたいな感じ）
 - LegacyShell（ashを想定）用に配列を実装したい
 - このライブラリを使ってAlterISOのAURヘルパーを書き直したい（このプロジェクトではない）
+- 最近できたMeta.shの仕様をいろんなスクリプトに実装する（SkipAllとかExcludeFromAllとか
+- 分割ファイルの自動ビルド
+  `source <(curl hoge); import Misskey`みたいな感じでimport文を実装できたら良いなって
+  関数の内容を文字列か何かで保持しといて、import文で有効化みたいなのできたら面白そう
 
 ## テスト本体
 

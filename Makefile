@@ -13,7 +13,7 @@ LOWER_FILENAME     := fasbashlib-lower.sh
 
 # Build arguments
 ALL_BUILD_ARGS     := -debug -verbose
-SINGLE_BUILD_ARGS  := -ignore Misskey 
+SINGLE_BUILD_ARGS  := #-ignore Misskey 
 INSTALL_BUILD_ARGS := -ver "${VERSION}"
 RELEASE_BUILD_ARGS := -ver "${VERSION}"
 BASIC_BUILD_ARGS   := 
