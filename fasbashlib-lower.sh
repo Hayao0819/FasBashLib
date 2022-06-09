@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.2.3.r149.g09c42ff-lower"
+FSBLIB_VERSION="v0.2.3.r152.g7c459f3-lower"
 FSBLIB_REQUIRE="ModernBash"
 
 Ini.getParam () 
@@ -532,7 +532,7 @@ Misskey.sendReq ()
     _CurlArgs+=(-s -L);
     _CurlArgs+=(-X POST);
     _CurlArgs+=(-H "Content-Type: application/json");
-    _CurlArgs+=(-d "$(MakeJson "$@")");
+    _CurlArgs+=(-d "$(Misskey.makeJson "$@")");
     _CurlArgs+=("$_Url");
     Msg.Debug "Run: ${_CurlArgs[*]//"${MISSKEY_TOKEN}"/"TOKEN"})";
     curl "${_CurlArgs[@]}"
