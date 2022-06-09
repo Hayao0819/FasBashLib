@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.2.3.r136.gaf89f05-upper"
+FSBLIB_VERSION="v0.2.3.r142.g57e072f-upper"
 FSBLIB_REQUIRE="ModernBash"
 
 Ini.GetParam () 
@@ -479,6 +479,79 @@ FsblibEnvCheck ()
             [[ "$(cut -d "." -f 1 <<< "$BASH_VERSION")" = "5" ]] && return 0
         ;;
     esac
+}
+Misskey.Setup () 
+{ 
+    export MISSKEY_DOMAIN="${MISSKEY_DOMAIN-"${1}"}";
+    export MISSKEY_TOKEN="${MISSKEY_TOKEN-"${2}"}";
+    export MISSKEY_ENTRY="https://${MISSKEY_DOMAIN}/api"
+}
+Misskey.BindingBase () 
+{ 
+    local _API="$1";
+    shift 1;
+    local i _APIArgs _Args;
+    for i in "$@";
+    do
+        shift 1;
+        if [[ "$i" = "--" ]]; then
+            break;
+        else
+            _APIArgs+=("$i");
+        fi;
+    done;
+    i=0;
+    while true; do
+        i="$(( i + 1 ))";
+        _Args+=("${_APIArgs[$((i-1))]}=$(eval echo "\$$i" )");
+        shift 1;
+        if (( "$#" <= "$i" )) || [[ -z "${_APIArgs[$i]-""}" ]]; then
+            break;
+        fi;
+    done;
+    Misskey.SendReq "$MISSKEY_ENTRY/$_API" "${_Args[@]}" "$@"
+}
+Misskey.MakeJson () 
+{ 
+    local i _Key _Value;
+    for i in "i=$MISSKEY_TOKEN" "$@";
+    do
+        _Key=$(cut -d "=" -f 1 <<< "$i");
+        _Value=$(cut -d "=" -f 2- <<< "$i");
+        if [[ "$_Value" =~ ^[0-9]+$ ]] || [[ "$_Value" = true ]] || [[ "$_Value" = false ]]; then
+            echo "{\"$_Key\": $_Value}";
+        else
+            echo "{\"$_Key\": \"$_Value\"}";
+        fi;
+    done | jq -cs add
+}
+Misskey.SendReq () 
+{ 
+    local _Url="$1" _CurlArgs=() _Json="";
+    shift 1;
+    _CurlArgs+=(-s -L);
+    _CurlArgs+=(-X POST);
+    _CurlArgs+=(-H "Content-Type: application/json");
+    _CurlArgs+=(-d "$(MakeJson "$@")");
+    _CurlArgs+=("$_Url");
+    Msg.Debug "Run: ${_CurlArgs[*]//"${MISSKEY_TOKEN}"/"TOKEN"})";
+    curl "${_CurlArgs[@]}"
+}
+Misskey.Notes.Create () 
+{ 
+    Misskey.BindingBase "notes/create" text -- "$@"
+}
+Misskey.Notes.Renotes () 
+{ 
+    Misskey.BindingBase "notes/renotes" noteId limit sinceId untilId -- "$@"
+}
+Misskey.Notes.Search () 
+{ 
+    Misskey.BindingBase "notes/search" query limit -- "$@"
+}
+Misskey.Users.Notes () 
+{ 
+    Misskey.BindingBase "users/notes" userId -- "$@"
 }
 Awk.AwkPrint () 
 { 
