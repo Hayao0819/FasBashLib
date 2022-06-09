@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.2.3.r152.g7c459f3-snake"
+FSBLIB_VERSION="v0.2.3.r155.ge625ee5-snake"
 FSBLIB_REQUIRE="ModernBash"
 
 ini.get_param () 
@@ -482,8 +482,8 @@ fsblib_env_check ()
 }
 misskey.setup () 
 { 
-    export MISSKEY_DOMAIN="${MISSKEY_DOMAIN-"${1}"}";
-    export MISSKEY_TOKEN="${MISSKEY_TOKEN-"${2}"}";
+    export MISSKEY_DOMAIN="${1-"${MISSKEY_DOMAIN-""}"}";
+    export MISSKEY_TOKEN="${2-"${MISSKEY_DOMAIN-""}"}";
     export MISSKEY_ENTRY="https://${MISSKEY_DOMAIN}/api"
 }
 misskey.binding_base () 
