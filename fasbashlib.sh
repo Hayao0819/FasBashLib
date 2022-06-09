@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.2.3.r146.g41ada79-upper"
+FSBLIB_VERSION="v0.2.3.r149.g09c42ff-upper"
 FSBLIB_REQUIRE="ModernBash"
 
 Ini.GetParam () 
@@ -527,7 +527,7 @@ Misskey.MakeJson ()
 }
 Misskey.SendReq () 
 { 
-    local _Url="$1" _CurlArgs=() _Json="";
+    local _Url="$1" _CurlArgs=();
     shift 1;
     _CurlArgs+=(-s -L);
     _CurlArgs+=(-X POST);

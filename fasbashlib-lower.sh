@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.2.3.r146.g41ada79-lower"
+FSBLIB_VERSION="v0.2.3.r149.g09c42ff-lower"
 FSBLIB_REQUIRE="ModernBash"
 
 Ini.getParam () 
@@ -527,7 +527,7 @@ Misskey.makeJson ()
 }
 Misskey.sendReq () 
 { 
-    local _Url="$1" _CurlArgs=() _Json="";
+    local _Url="$1" _CurlArgs=();
     shift 1;
     _CurlArgs+=(-s -L);
     _CurlArgs+=(-X POST);
