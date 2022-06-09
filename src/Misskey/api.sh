@@ -3,7 +3,7 @@
 
 # Setup <Domain> <TOKEN>
 Setup(){
-    export MISSKEY_DOMAIN="${MISSKEY_DOMAIN-"${1}"}"
-    export MISSKEY_TOKEN="${MISSKEY_TOKEN-"${2}"}"
+    export MISSKEY_DOMAIN="${1-"${MISSKEY_DOMAIN-""}"}"
+    export MISSKEY_TOKEN="${2-"${MISSKEY_DOMAIN-""}"}"
     export MISSKEY_ENTRY="https://${MISSKEY_DOMAIN}/api"
 }
