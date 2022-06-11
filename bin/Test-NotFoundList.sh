@@ -38,12 +38,12 @@ fi
 # 対象なら正常終了
 IsThisFuncATestTarget(){
     local l="$1" f="$2"
-    if "${LibDir}/GetMeta.sh" "$l" "DoFunc" "Test" | grep -qx "$f"; then
+    if "${LibDir}/GetMeta.sh" "$l" "DoFunc" "Test" | tr "," "\n"| RemoveBlank | grep -qx "$f"; then
         # 関数がDoFuncの一部
         return 0
     elif [[ "$("${LibDir}/GetMeta.sh" "$l" "SkipAll" "Test" )" = true ]]; then
         return 1
-    elif "${LibDir}/GetMeta.sh" "$l" "DoFunc" "SkipTest" | grep -qx "$f"; then
+    elif "${LibDir}/GetMeta.sh" "$l" "DoFunc" "SkipTest" | tr "," "\n"| RemoveBlank | grep -qx "$f"; then
         return 1
     else
         return 0

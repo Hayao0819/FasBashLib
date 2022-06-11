@@ -68,6 +68,10 @@ PrintArray(){
     printf "%s\n" "${@}"
 }
 
+RemoveBlank () { 
+    sed "s|^ *||g; s| *$||g; s|^	*||g; s|	*$||g; /^$/d"
+}
+
 
 ForEach(){
     local _Item
