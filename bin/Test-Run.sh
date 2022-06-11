@@ -85,7 +85,7 @@ RunFuncTest(){
 RunTestAndWriteResult(){
     local ExitCode=0 Args=("$Lib" "$FuncToTest")
     [[ -z "${TestName-""}" ]] || Args+=("${TestName}")
-    RunFuncTest "${Args[@]}" || ExitCode="$?"
+    RunFuncTest "${Args[@]}" || ExitCode="$?" 
     case "$ExitCode" in
         "0")
             #echo "0| Function: $Lib.$FuncToTest=Passed"
@@ -126,9 +126,9 @@ for Lib in "${LibToRunTest[@]}"; do
         } &
     done < <("${LibDir}/GetDepends.sh" "$Lib")
     while read -r FuncToTest; do
-        RunTestAndWriteResult >> "${ResultFile}"
+        RunTestAndWriteResult >> "${ResultFile}" &
         while read -r TestName; do
-            RunTestAndWriteResult >> "${ResultFile}"
+            RunTestAndWriteResult >> "${ResultFile}" &
         done < <(find "${TestsDir}/${Lib}/${FuncToTest}/" -mindepth 1 -maxdepth 1 -type d 2> /dev/null | GetBaseName )
     done < <(find "$TestsDir/$Lib/" -mindepth 1 -maxdepth 1 -type d  2> /dev/null  | GetBaseName )
 done
