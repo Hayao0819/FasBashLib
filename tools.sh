@@ -17,7 +17,7 @@ RunScript(){
     for s in "x" "v"; do
         echo "$-" | grep -o . | grep -qx "$s" && _ShellArgs+=("-$s")
     done
-    bash "${_ShellArgs[@]}" "$@"
+    bash "${_ShellArgs[@]}" "$@" || exit "$?"
     SCRIPT_RUN=true
 }
 
