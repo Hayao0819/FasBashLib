@@ -39,6 +39,13 @@ Or download document from [Release Page](https://github.com/Hayao0819/FasBashLib
 
 See [How to test](./docs/TEST.md)
 
+## Code examples
+
+You can add your script to this list. Please send a Pull request.
+
+- [10 Number Game](https://gist.github.com/Hayao0819/caad8ef3952bdfef7287ef8c5d71e03c) - A simple game about math
+- [Hayao0819/MisskeyBot](https://github.com/Hayao0819/MisskeyBot) - A Misskey Bot to renote automatically
+
 ## Special thanks
 
 - [readlinkf](https://github.com/ko1nksm/readlinkf) - The functions in `Readlink.sh` are taken from this repository.
