@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.2.3.r190.g6146791-snake"
+FSBLIB_VERSION="v0.2.3.r195.gb5dcefb-snake"
 FSBLIB_REQUIRE="ModernBash"
 
 ini.get_param () 
@@ -952,7 +952,10 @@ url.port ()
 }
 url.query () 
 { 
-    url.path_and_query_and_fragment | cut -d "?" -f 2-
+    local i;
+    while read -r i; do
+        url.path_and_query_and_fragment <<< "$i" | sed "s|#$(url.fragment <<< "$i")||g" | cut -d "?" -f 2-;
+    done
 }
 url.scheme () 
 { 
