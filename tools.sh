@@ -9,7 +9,8 @@ CATEGORY="${1-""}" COMMAND="${2-""}"
 
 shift 2 || :
 
-
+# スクリプトが実行されたかどうか
+SCRIPT_RUN=false
 
 RunScript(){
     local s _ShellArgs=()
@@ -17,6 +18,7 @@ RunScript(){
         echo "$-" | grep -o . | grep -qx "$s" && _ShellArgs+=("-$s")
     done
     bash "${_ShellArgs[@]}" "$@"
+    SCRIPT_RUN=true
 }
 
 HelpDoc(){
@@ -71,8 +73,9 @@ case "${CATEGORY,,}" in
             full | all)
                 RunScript "${BinDir}/List.sh" "$@"
                 ;;
-            test-todo | todo)
+            test-todo | todo | t*)
                 RunScript "${BinDir}/Test-NotFoundList.sh" "$@"
+                ;;
         esac
         ;;
     release | r*)
@@ -114,3 +117,9 @@ case "${CATEGORY,,}" in
         esac
         ;;
 esac
+
+if [[ "$SCRIPT_RUN" = false ]]; then
+    echo "There is nothing to do." >&2
+    exit 1
+fi
+exit 0
