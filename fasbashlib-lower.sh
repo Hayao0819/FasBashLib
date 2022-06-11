@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.2.3.r201.g1febe2d-lower"
+FSBLIB_VERSION="v0.2.3.r206.g1ad2b8e-lower"
 FSBLIB_REQUIRE="ModernBash"
 
 Ini.getParam () 
@@ -947,7 +947,6 @@ URL.port ()
     local i;
     while read -r i; do
         [[ "$i" == *":"* ]] || { 
-            echo "80";
             continue
         };
         cut -d ":" -f 2 <<< "$i";
