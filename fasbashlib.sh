@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.2.3.r186.ga20e52c-upper"
+FSBLIB_VERSION="v0.2.3.r190.g6146791-upper"
 FSBLIB_REQUIRE="ModernBash"
 
 Ini.GetParam () 
@@ -991,7 +991,10 @@ URL.HasUser ()
 }
 URL.Parse () 
 { 
-    local i="$1";
+    local i="${1-""}";
+    if [[ -z "${i}" ]]; then
+        read -r i;
+    fi;
     URL.Scheme <<< "$i";
     echo ":";
     if URL.HasAuthority "$i"; then

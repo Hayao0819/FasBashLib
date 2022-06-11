@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.2.3.r186.ga20e52c-lower"
+FSBLIB_VERSION="v0.2.3.r190.g6146791-lower"
 FSBLIB_REQUIRE="ModernBash"
 
 Ini.getParam () 
@@ -991,7 +991,10 @@ URL.hasUser ()
 }
 URL.parse () 
 { 
-    local i="$1";
+    local i="${1-""}";
+    if [[ -z "${i}" ]]; then
+        read -r i;
+    fi;
     URL.scheme <<< "$i";
     echo ":";
     if URL.hasAuthority "$i"; then
