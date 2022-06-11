@@ -2,7 +2,10 @@
 
 # Parse <URL>
 Parse(){
-    local i="$1"
+    local i="${1-""}"
+    if [[ -z "${i}" ]]; then
+        read -r i
+    fi
 
     @Scheme <<< "$i"
     echo ":"
