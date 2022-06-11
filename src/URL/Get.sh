@@ -58,7 +58,10 @@ Query(){
 }
 
 Fragment(){
-    @PathAndQueryAndFragment | cut -d "#" -f 2-
+    local i
+    i="$(@PathAndQueryAndFragment)"
+    [[ "$i" == *"#"* ]] || return 0
+    cut -d "#" -f 2- <<< "$i"
 }
 
 Path(){
