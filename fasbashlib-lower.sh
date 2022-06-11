@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.2.3.r198.gf4f385a-lower"
+FSBLIB_VERSION="v0.2.3.r201.g1febe2d-lower"
 FSBLIB_REQUIRE="ModernBash"
 
 Ini.getParam () 
@@ -918,7 +918,10 @@ URL.authority ()
 }
 URL.fragment () 
 { 
-    URL.pathAndQueryAndFragment | cut -d "#" -f 2-
+    local i;
+    i="$(URL.pathAndQueryAndFragment)";
+    [[ "$i" == *"#"* ]] || return 0;
+    cut -d "#" -f 2- <<< "$i"
 }
 URL.host () 
 { 

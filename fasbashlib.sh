@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.2.3.r198.gf4f385a-upper"
+FSBLIB_VERSION="v0.2.3.r201.g1febe2d-upper"
 FSBLIB_REQUIRE="ModernBash"
 
 Ini.GetParam () 
@@ -918,7 +918,10 @@ URL.Authority ()
 }
 URL.Fragment () 
 { 
-    URL.PathAndQueryAndFragment | cut -d "#" -f 2-
+    local i;
+    i="$(URL.PathAndQueryAndFragment)";
+    [[ "$i" == *"#"* ]] || return 0;
+    cut -d "#" -f 2- <<< "$i"
 }
 URL.Host () 
 { 
