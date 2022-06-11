@@ -56,10 +56,12 @@ for Lib in "${LibList[@]}"; do
 
         # テスト対象かどうかを確認
         IsThisFuncATestTarget "$Lib" "$Func" || continue
-        { [[ -e "$FuncTestDir" ]] && [[ -n "$(ls "${FuncTestDir}")" ]]; }|| {
+        if [[ ! -e "$FuncTestDir" ]] || [[ -z "$(ls "${FuncTestDir}")" ]]; then
             echo "$Lib/$Func"
-            [[ "${ShowOnlyLib}" = true ]] && break
-        }
+            if [[ "${ShowOnlyLib}" = true ]]; then
+                break
+            fi
+        fi
     done < <(
         if (( "${#FuncList[@]}" > 0 )); then
             printf "%s\n" "${FuncList[@]}"
