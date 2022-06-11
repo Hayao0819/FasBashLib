@@ -50,7 +50,11 @@ PathAndQueryAndFragment(){
 }
 
 Query(){
-    @PathAndQueryAndFragment | cut -d "?" -f 2-
+    local i
+    while read -r i; do
+        @PathAndQueryAndFragment <<< "$i" | sed "s|#$(@Fragment <<< "$i")||g" | cut -d "?" -f 2-
+    done
+    
 }
 
 Fragment(){
