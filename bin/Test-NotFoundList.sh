@@ -43,7 +43,7 @@ IsThisFuncATestTarget(){
         return 0
     elif [[ "$("${LibDir}/GetMeta.sh" "$l" "SkipAll" "Test" )" = true ]]; then
         return 1
-    elif "${LibDir}/GetMeta.sh" "$l" "DoFunc" "SkipTest" | tr "," "\n"| RemoveBlank | grep -qx "$f"; then
+    elif "${LibDir}/GetMeta.sh" "$l" "SkipFunc" "Test" | tr "," "\n"| RemoveBlank | grep -qx "$f"; then
         return 1
     else
         return 0
