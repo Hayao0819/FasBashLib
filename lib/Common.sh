@@ -3,7 +3,7 @@
 
 set -Eeu -o pipefail
 
-MainDir="$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)"
+MainDir="${MainDir="$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)"}"
 LibDir="$MainDir/lib"
 SrcDir="$MainDir/src"
 StaticDir="$MainDir/static"
