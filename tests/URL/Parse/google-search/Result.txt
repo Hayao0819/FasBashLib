@@ -1,0 +1,6 @@
+https
+:
+www.google.com
+/search
+?
+q=github.com&oq=github.com&sourceid=chrome&ie=UTF-8

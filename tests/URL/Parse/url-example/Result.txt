@@ -1,0 +1,12 @@
+scheme
+:
+username
+@
+sub.host.top.domain
+:
+8080
+/path/to/file
+#
+fragment
+?
+q1=string1&q2=string2
