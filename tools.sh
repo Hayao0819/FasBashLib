@@ -135,6 +135,10 @@ if (( $# < 2 )); then
                 clear
                 continue
                 ;;
+            "shell" | "sh")
+                "${Args[@]:1}"
+                continue
+                ;;
             "" | exit)
                 exit
                 ;;
