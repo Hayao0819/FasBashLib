@@ -13,85 +13,96 @@ RunScript(){
     bash "$@"
 }
 
+HelpDoc(){
+    echo "FasBashLib Management Tools"
+    echo
+    echo " Build Commands:"
+    echo "    docs       Build document"
+    echo "    multi      Build multi-files library"
+    echo "    run        Run funtion"
+    echo "    single     Build single-file library"
+    echo
+}
+
 case "${CATEGORY,,}" in
-    build)
+    build | b*)
         case "${COMMAND,,}" in
-            docs)
+            docs | d*)
                 RunScript "$BinDir/Build-Docs.sh" "$@"
                 ;;
-            multi)
+            multi | m*)
                 RunScript "$BinDir/Build-Multi.sh" "$@"
                 ;;
-            run)
+            run | r*)
                 RunScript "$BinDir/Build-Run.sh" "$@"
                 ;;
-            single)
+            single | s*)
                 RunScript "$BinDir/Build-Single.sh" "$@"
                 ;;
         esac
         ;;
-    check)
+    check | c*)
         case "${COMMAND,,}" in
-            bin)
+            bin | b*)
                 RunScript "$BinDir/Check-Bin.sh" "$@"
                 ;;
-            lib)
+            lib | l*)
                 RunScript "$BinDir/Check-Lib" "$@"
                 ;;
         esac
         ;;
-    list)
+    list | l*)
         case "${COMMAND,,}" in
-            lib)
+            lib | l*)
                 RunScript "${BinDir}/List.sh" -q "$@"
                 ;;
-            function | func)
+            function | func | fn)
                 RunScript "${LibDir}/GetFuncList.sh" "$@"
                 ;;
             file)
                 RunScript "${LibDir}/GetFileList.sh" "$@"
                 ;;
-            full)
+            full | all)
                 RunScript "${BinDir}/List.sh" "$@"
                 ;;
-            test-todo)
+            test-todo | todo)
                 RunScript "${BinDir}/Test-NotFoundList.sh" "$@"
         esac
         ;;
-    release)
+    release | r*)
         case "${COMMAND,,}" in
-            link)
+            link | l*)
                 RunScript "${BinDir}/Release-Link.sh" "$@"
                 ;;
-            note)
+            note | n*)
                 RunScript "$BinDir/Release-Note.sh" "$@"
                 ;;
         esac
         ;;
-    test)
+    test | t*)
         case "${COMMAND,,}" in
-            add)
+            add | a*)
                 RunScript "${BinDir}/Test-Add.sh" "$@"
                 ;;
-            make | create)
+            make | create | m*)
                 RunScript "$BinDir/Test-CreateResult.sh" "$@"
                 ;;
             try | test-run)
                 RunScript "$BinDir/Test-CreateResult.sh" -r "$@"
                 ;;
-            docker)
+            docker | d*)
                 RunScript "${BinDir}/Test-Docker.sh" "$@"
                 ;;
-            legacy)
+            legacy | l*)
                 RunScript "${BinDir}/Test-LegacyList.sh" "$@"
                 ;;
-            todo | notfound)
+            todo | notfound | n*)
                 RunScript "${BinDir}/Test-NotFoundList.sh" "$@"
                 ;;
-            clean | removeempty)
+            clean | removeempty | c* | rm)
                 RunScript "${BinDir}/Test-RemoveEmpty.sh" "$@"
                 ;;
-            run)
+            run | r*)
                 RunScript "${BinDir}/Test-Run.sh" "$@"
                 ;;
         esac
