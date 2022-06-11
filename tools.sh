@@ -9,8 +9,14 @@ CATEGORY="${1-""}" COMMAND="${2-""}"
 
 shift 2 || :
 
+
+
 RunScript(){
-    bash "$@"
+    local s _ShellArgs=()
+    for s in "x" "v"; do
+        echo "$-" | grep -o . | grep -qx "$s" && _ShellArgs+=("-$s")
+    done
+    bash "${_ShellArgs[@]}" "$@"
 }
 
 HelpDoc(){
