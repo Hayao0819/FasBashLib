@@ -23,7 +23,6 @@ Port(){
     local i
     while read -r i; do
         [[ "$i" == *":"* ]] || {
-            echo "80"
             continue
         }
         cut -d ":" -f 2 <<< "$i"
