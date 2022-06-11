@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.2.3.r206.g1ad2b8e-upper"
+FSBLIB_VERSION="v0.2.3.r210.ge100729-upper"
 FSBLIB_REQUIRE="ModernBash"
 
 Ini.GetParam () 
