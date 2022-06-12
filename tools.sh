@@ -46,6 +46,12 @@ Main(){
                 single | s*)
                     RunScript "$BinDir/Build-Single.sh" "$@"
                     ;;
+                all | a*)
+                    (
+                        cd "$MainDir"
+                        make
+                    )
+                    ;;
             esac
             ;;
         check | c*)
