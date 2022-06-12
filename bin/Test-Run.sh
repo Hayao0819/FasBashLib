@@ -100,12 +100,14 @@ RunTestAndWriteResult(){
             echo "3| Function: $Lib.$FuncToTest=Missing exit code (Expect: ${ExpectedExitStatus} Result: ${ExitTestStatus})"
             ;;
         "4")
-            echo "4| Function: $Lib.$FuncToTest=No Match With Result"
-            echo "   ---[Expected Result]---"
-            PrintArray "${ExpectedResult[@]}" | sed "s|^|   |g"
-            echo "   ---[ Actual  Result]---"
-            PrintArray "${ActualResult[@]}" | sed "s|^|   |g"
-            echo "   -----------------------"
+            #echo "4| Function: $Lib.$FuncToTest=No Match With Result"
+            #echo "   ---[Expected Result]---"
+            #PrintArray "${ExpectedResult[@]}" | sed "s|^|   |g"
+            #echo "   ---[ Actual  Result]---"
+            #PrintArray "${ActualResult[@]}" | sed "s|^|   |g"
+            #echo "   -----------------------"
+
+            { echo "4| Function: $Lib.$FuncToTest=No Match With Result" && PrintArray "---[Expected Result]---" "${ExpectedResult[@]}" "---[ Actual  Result]---" "${ActualResult[@]}" "-----------------------" | sed "s|^|   |g"; }
             ;;
         *)
             echo "*| Function: $Lib.$FuncToTest=Unknown Error"
