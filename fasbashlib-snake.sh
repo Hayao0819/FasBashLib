@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.2.3.r218.ge4bf1de-snake"
+FSBLIB_VERSION="v0.2.3.r226.gb074df0-snake"
 FSBLIB_REQUIRE="ModernBash"
 
 ini.get_param () 
@@ -976,23 +976,33 @@ url.user ()
 }
 url.has_authority () 
 { 
-    [[ "$(url.no_scheme <<< "$1")" = "//"* ]]
+    local i="${1-""}";
+    [[ -n "$i" ]] || read -r i;
+    [[ "$(url.no_scheme <<< "$i")" = "//"* ]]
 }
 url.has_fragment () 
 { 
-    [[ "$(url.path_and_query_and_fragment <<< "$1")" = *"#"* ]]
+    local i="${1-""}";
+    [[ -n "$i" ]] || read -r i;
+    [[ "$(url.path_and_query_and_fragment <<< "$i")" = *"#"* ]]
 }
 url.has_port () 
 { 
-    [[ "$(url.authority <<< "$1")" = *":"* ]]
+    local i="${1-""}";
+    [[ -n "$i" ]] || read -r i;
+    [[ "$(url.authority <<< "$i")" = *":"* ]]
 }
 url.has_query () 
 { 
-    [[ "$(url.path_and_query_and_fragment <<< "$1")" = *"?"* ]]
+    local i="${1-""}";
+    [[ -n "$i" ]] || read -r i;
+    [[ "$(url.path_and_query_and_fragment <<< "$i")" = *"?"* ]]
 }
 url.has_user () 
 { 
-    [[ "$(url.authority <<< "$1")" = *"@"* ]]
+    local i="${1-""}";
+    [[ -n "$i" ]] || read -r i;
+    [[ "$(url.authority <<< "$i")" = *"@"* ]]
 }
 url.parse () 
 { 

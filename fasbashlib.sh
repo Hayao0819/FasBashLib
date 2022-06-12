@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.2.3.r218.ge4bf1de-upper"
+FSBLIB_VERSION="v0.2.3.r226.gb074df0-upper"
 FSBLIB_REQUIRE="ModernBash"
 
 Ini.GetParam () 
@@ -976,23 +976,33 @@ URL.User ()
 }
 URL.HasAuthority () 
 { 
-    [[ "$(URL.NoScheme <<< "$1")" = "//"* ]]
+    local i="${1-""}";
+    [[ -n "$i" ]] || read -r i;
+    [[ "$(URL.NoScheme <<< "$i")" = "//"* ]]
 }
 URL.HasFragment () 
 { 
-    [[ "$(URL.PathAndQueryAndFragment <<< "$1")" = *"#"* ]]
+    local i="${1-""}";
+    [[ -n "$i" ]] || read -r i;
+    [[ "$(URL.PathAndQueryAndFragment <<< "$i")" = *"#"* ]]
 }
 URL.HasPort () 
 { 
-    [[ "$(URL.Authority <<< "$1")" = *":"* ]]
+    local i="${1-""}";
+    [[ -n "$i" ]] || read -r i;
+    [[ "$(URL.Authority <<< "$i")" = *":"* ]]
 }
 URL.HasQuery () 
 { 
-    [[ "$(URL.PathAndQueryAndFragment <<< "$1")" = *"?"* ]]
+    local i="${1-""}";
+    [[ -n "$i" ]] || read -r i;
+    [[ "$(URL.PathAndQueryAndFragment <<< "$i")" = *"?"* ]]
 }
 URL.HasUser () 
 { 
-    [[ "$(URL.Authority <<< "$1")" = *"@"* ]]
+    local i="${1-""}";
+    [[ -n "$i" ]] || read -r i;
+    [[ "$(URL.Authority <<< "$i")" = *"@"* ]]
 }
 URL.Parse () 
 { 
