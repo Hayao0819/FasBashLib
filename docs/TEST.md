@@ -15,17 +15,21 @@ FasBashLib has own test tool.
 Clone this repository and run it.
 
 ```bash
-make test
+./tools.sh test run
 ```
 
 ## Add test for new function
 
 Replace `LIBNAME` and `FUNCNAME` to the library name and function which you want to add test.
 
+You can make multiple tests for a function. 
+
 ### Create templetes
 
+TESTNAME is not required.
+
 ```bash
-./bin/GenTestFiles.sh LIBNAME
+./tools.sh test add LIBNAME FUNCNAME <TESTNAME>
 ```
 
 ### Write test script
@@ -43,17 +47,19 @@ Now, test tool supports any exit code. The test will fail if the expected and ac
 ### Run your test script
 
 ```bash
-./bin/GenTestResult.sh -r LIBNAME FUNCNAME
+./tools.sh test try LIBNAME FUNCNAME <TESTNAME>
 ```
 
-### Generate Result.txt
+### Generate Result.txt and Exit.txt
 
 ```bash
-./bin/GenTestResult.sh LIBNAME FUNCNAME
+./tools.sh test make LIBNAME FUNCNAME <TESTNAME>
 ```
 
 ### Run test
 
+Run your new test
+
 ```bash
-./bin/RunTests.sh
+./tools.sh test run LIBNAME
 ```

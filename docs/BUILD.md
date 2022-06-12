@@ -15,10 +15,13 @@ git clone --recursive "https://github.com/Hayao0819/FasBashLib.git"
 cd ./FasBashLib/
 
 # Build all library
-make
+./tools.sh build all
 
 # Build library you need
-bash ./bin/Build-Single.sh [Lib1] [Lib2] ...
+./tools.sh build single [Lib1] [Lib2] ...
+
+# Build documents
+./tools.sh build docs
 ```
 
 Now, you can find built shellscript in the root of repository.

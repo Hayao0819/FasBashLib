@@ -10,10 +10,10 @@ To update the library version, you should change URL manually.
 
 ### Get URL with script
 
-Clone this project and run `./bin/GetLink.sh`
+Clone this project and run script
 
 ```bash
-./bin/GetLink.sh "v0.1.1"
+./tools.sh release link "v0.1.1"
 ```
 
 ## Stable library Offline
