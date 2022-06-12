@@ -2,24 +2,34 @@
 
 # HasAuthority <URL>
 HasAuthority(){
-    [[ "$(@NoScheme <<< "$1")" = "//"* ]]
+    local i="${1-""}"
+    [[ -n "$i" ]] || read -r i
+    [[ "$(@NoScheme <<< "$i")" = "//"* ]]
 }
 
 #HasUser <URL>
 HasUser(){
-    [[ "$(@Authority <<< "$1")" = *"@"* ]]
+    local i="${1-""}"
+    [[ -n "$i" ]] || read -r i
+    [[ "$(@Authority <<< "$i")" = *"@"* ]]
 }
 
 #HasPort <URL>
 HasPort(){
-    [[ "$(@Authority <<< "$1")" = *":"* ]]
+    local i="${1-""}"
+    [[ -n "$i" ]] || read -r i
+    [[ "$(@Authority <<< "$i")" = *":"* ]]
 }
 
 #HasQuery <URL>
 HasQuery(){
-    [[ "$(@PathAndQueryAndFragment <<< "$1")" = *"?"* ]]
+    local i="${1-""}"
+    [[ -n "$i" ]] || read -r i
+    [[ "$(@PathAndQueryAndFragment <<< "$i")" = *"?"* ]]
 }
 
 HasFragment(){
-    [[ "$(@PathAndQueryAndFragment <<< "$1")" = *"#"* ]]
+    local i="${1-""}"
+    [[ -n "$i" ]] || read -r i
+    [[ "$(@PathAndQueryAndFragment <<< "$i")" = *"#"* ]]
 }
