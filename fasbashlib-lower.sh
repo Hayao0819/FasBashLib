@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.2.3.r242.ga929708-lower"
+FSBLIB_VERSION="v0.2.3.r247.g5797217-lower"
 FSBLIB_REQUIRE="ModernBash"
 
 Ini.getParam () 
@@ -1032,6 +1032,22 @@ URL.parse ()
         echo "?";
         URL.query <<< "$i";
     fi
+}
+URL.getQuery () 
+{ 
+    grep "^ *$1=" | cut -d "=" -f 2-
+}
+URL.parseQuery () 
+{ 
+    local i="${1-""}";
+    if [[ -z "${i}" ]]; then
+        read -r i;
+    fi;
+    if grep -q "[a-zA-Z]://" <<< "$i"; then
+        i="$(URL.query <<< "$i")";
+    fi;
+    i="$(sed "s|^\?||g" <<< "$i")";
+    tr "&" "\n" <<< "$i" | cut -d "#" -f 1
 }
 parseArg () 
 { 

@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.2.3.r242.ga929708-upper"
+FSBLIB_VERSION="v0.2.3.r247.g5797217-upper"
 FSBLIB_REQUIRE="ModernBash"
 
 Ini.GetParam () 
@@ -1032,6 +1032,22 @@ URL.Parse ()
         echo "?";
         URL.Query <<< "$i";
     fi
+}
+URL.GetQuery () 
+{ 
+    grep "^ *$1=" | cut -d "=" -f 2-
+}
+URL.ParseQuery () 
+{ 
+    local i="${1-""}";
+    if [[ -z "${i}" ]]; then
+        read -r i;
+    fi;
+    if grep -q "[a-zA-Z]://" <<< "$i"; then
+        i="$(URL.Query <<< "$i")";
+    fi;
+    i="$(sed "s|^\?||g" <<< "$i")";
+    tr "&" "\n" <<< "$i" | cut -d "#" -f 1
 }
 ParseArg () 
 { 

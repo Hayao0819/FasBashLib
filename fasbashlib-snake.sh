@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.2.3.r242.ga929708-snake"
+FSBLIB_VERSION="v0.2.3.r247.g5797217-snake"
 FSBLIB_REQUIRE="ModernBash"
 
 ini.get_param () 
@@ -1032,6 +1032,22 @@ url.parse ()
         echo "?";
         url.query <<< "$i";
     fi
+}
+url.get_query () 
+{ 
+    grep "^ *$1=" | cut -d "=" -f 2-
+}
+url.parse_query () 
+{ 
+    local i="${1-""}";
+    if [[ -z "${i}" ]]; then
+        read -r i;
+    fi;
+    if grep -q "[a-zA-Z]://" <<< "$i"; then
+        i="$(url.query <<< "$i")";
+    fi;
+    i="$(sed "s|^\?||g" <<< "$i")";
+    tr "&" "\n" <<< "$i" | cut -d "#" -f 1
 }
 parse_arg () 
 { 
