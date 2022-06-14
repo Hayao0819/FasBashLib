@@ -2,5 +2,5 @@
 
 Puella_Magi_Holy_Quintet=("Madoka" "Sayaka" "Homura" "Mami" "Kyouko")
 
-PrintArray "Iroha" "Kanagi" "Snaa" | ArrayAppend "Puella_Magi_Holy_Quintet" 
+ArrayAppend "Puella_Magi_Holy_Quintet"  < <(PrintArray "Iroha" "Kanagi" "Snaa")
 PrintEvalArray Puella_Magi_Holy_Quintet
