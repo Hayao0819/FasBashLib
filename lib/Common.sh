@@ -12,11 +12,20 @@ DocsDir="$MainDir/docs"
 TestsDir="$MainDir/tests"
 DockerDir="$MainDir/docker"
 
+FindCommand=""
+
 # sedコマンド
 if sed --help 2>&1 | grep -q "GNU"; then
     GNUSed=true
 else
     GNUSed=false
+fi
+
+# findコマンド
+if find --help 2> /dev/null| grep -q "GNU"; then
+    FindCommand="find"
+elif command gfind --help 2>&1 | grep -q "GNU"; then
+    FindCommand="gfind"
 fi
 
 # SedI
@@ -31,6 +40,11 @@ SedI(){
     fi
 
     sed "${SedArgs[@]}" "$@"
+}
+
+find(){
+    [[ -n "${FindCommand-""}" ]] || return
+    command "$FindCommand" "$@"
 }
 
 # _GetFuncListFromStdin
@@ -88,4 +102,21 @@ GetBaseName(){
 ToLower(){
     local _Str="${1,,}"
     [[ -z "${_Str-""}" ]] || echo "${_Str}"
+}
+
+
+GetMeta(){
+    "$LibDir/GetMeta.sh" "$@"
+}
+
+GetLibList(){
+    "$BinDir/List.sh" -q
+}
+
+GetLibFileList(){
+    "${LibDir}/GetFileList.sh" "$@"
+}
+
+GetLibFuncList(){
+    "${LibDir}/GetFuncList.sh" "$@"
 }
