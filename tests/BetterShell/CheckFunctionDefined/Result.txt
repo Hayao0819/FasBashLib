@@ -1,2 +1,0 @@
-my_func is defined.
-undefined_func is undefined.
