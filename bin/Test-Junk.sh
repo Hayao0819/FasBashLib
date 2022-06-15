@@ -10,6 +10,8 @@ TestFiles=(
     Exit.txt
 )
 
+FoundJunkFineCount=0
+
 while read -r Lib; do
     readarray -t LibFuncList < <(GetLibFuncList -noprefix "$Lib")
     [[ -e "$TestsDir/$Lib" ]] || continue
@@ -34,6 +36,7 @@ while read -r Lib; do
             readarray -t Result < <( PrintArray "${Result[@]}" | grep -xv "${File}")
         done
         PrintArray "${Result[@]}" | sed "s|^|$TestsDir/$Lib/$Func/|g"
+        FoundJunkFineCount=$(( FoundJunkFineCount + ${#Result[@]} ))
         Result=()
 
         # Lib/Func以下のサブディレクトリを調査
@@ -44,6 +47,7 @@ while read -r Lib; do
                 readarray -t Result < <( PrintArray "${Result[@]}" | grep -xv "${File}")
             done
             PrintArray "${Result[@]}" | sed "s|^|$TestsDir/$Lib/$Func/$Dir/|g"
+            FoundJunkFineCount=$(( FoundJunkFineCount + ${#Result[@]} ))
             Result=()
         done
         FileList=() DirList=()
@@ -51,4 +55,11 @@ while read -r Lib; do
 
     TestedFuncList=() LibFuncList=()
 done < <(GetLibList)
+
+
+if (( FoundJunkFineCount != 0 ));then
+    echo "Found ${FoundJunkFineCount} junk files" >&2
+    exit 1
+fi
+exit 0
 
