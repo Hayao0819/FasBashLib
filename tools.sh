@@ -113,11 +113,17 @@ Main(){
                 todo | notfound | n*)
                     RunScript "${BinDir}/Test-NotFoundList.sh" "$@"
                     ;;
-                clean | removeempty | c* | rm)
+                clean | removeempty | c*)
                     RunScript "${BinDir}/Test-RemoveEmpty.sh" "$@"
+                    ;;
+                rm)
+                    RunScript "$BinDir/Test-RemoveJunk.sh" "$@"
                     ;;
                 run | r*)
                     RunScript "${BinDir}/Test-Run.sh" "$@"
+                    ;;
+                junk | j*)
+                    RunScript "${BinDir}/Test-Junk.sh" "$@"
                     ;;
             esac
             ;;
