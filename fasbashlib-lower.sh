@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.2.3.r271.g4658371-lower"
+FSBLIB_VERSION="v0.2.3.r277.g78821ae-lower"
 FSBLIB_REQUIRE="ModernBash"
 
 Msg.common () 
@@ -129,34 +129,39 @@ Array.includes ()
 { 
     PrintEvalArray "$1" | grep -qx "$2"
 }
-Awk.awkPrint () 
-{ 
-    awk "BEGIN {print $*}"
-}
 Awk.cos () 
 { 
-    @Calc "cos($*)"
+    Awk.float "cos($*)"
+}
+Awk.float () 
+{ 
+    local AWKSCALE="${AWKSCALE-"5"}";
+    awk "BEGIN {printf (\"%4.${AWKSCALE}f\n\", $*)}"
 }
 Awk.log () 
 { 
     local _Base="$1" _Number="$2";
-    @Calc "log(${_Number}) / log($_Base)"
+    Awk.float "log(${_Number}) / log($_Base)"
 }
 Awk.pi () 
 { 
-    @Calc "atan2(0, -0)"
+    Awk.float "atan2(0, -0)"
+}
+Awk.print () 
+{ 
+    awk "BEGIN {print $*}"
 }
 Awk.rad () 
 { 
-    @Calc "$1 * $(Awk.pi) / 180 "
+    Awk.float "$1 * $(Awk.pi) / 180 "
 }
 Awk.sin () 
 { 
-    @Calc "sin($*)"
+    Awk.float "sin($*)"
 }
 Awk.tan () 
 { 
-    @Calc "sin($1)/tan($1)"
+    Awk.float "sin($1)/tan($1)"
 }
 Pm.checkPkg () 
 { 

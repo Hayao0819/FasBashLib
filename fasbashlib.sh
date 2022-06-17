@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.2.3.r271.g4658371-upper"
+FSBLIB_VERSION="v0.2.3.r277.g78821ae-upper"
 FSBLIB_REQUIRE="ModernBash"
 
 Msg.Common () 
@@ -129,34 +129,39 @@ Array.Includes ()
 { 
     PrintEvalArray "$1" | grep -qx "$2"
 }
-Awk.AwkPrint () 
-{ 
-    awk "BEGIN {print $*}"
-}
 Awk.Cos () 
 { 
-    @Calc "cos($*)"
+    Awk.Float "cos($*)"
+}
+Awk.Float () 
+{ 
+    local AWKSCALE="${AWKSCALE-"5"}";
+    awk "BEGIN {printf (\"%4.${AWKSCALE}f\n\", $*)}"
 }
 Awk.Log () 
 { 
     local _Base="$1" _Number="$2";
-    @Calc "log(${_Number}) / log($_Base)"
+    Awk.Float "log(${_Number}) / log($_Base)"
 }
 Awk.Pi () 
 { 
-    @Calc "atan2(0, -0)"
+    Awk.Float "atan2(0, -0)"
+}
+Awk.Print () 
+{ 
+    awk "BEGIN {print $*}"
 }
 Awk.Rad () 
 { 
-    @Calc "$1 * $(Awk.Pi) / 180 "
+    Awk.Float "$1 * $(Awk.Pi) / 180 "
 }
 Awk.Sin () 
 { 
-    @Calc "sin($*)"
+    Awk.Float "sin($*)"
 }
 Awk.Tan () 
 { 
-    @Calc "sin($1)/tan($1)"
+    Awk.Float "sin($1)/tan($1)"
 }
 Pm.CheckPkg () 
 { 
@@ -823,7 +828,7 @@ ParseArg ()
     OPTRET=("${_OutArg[@]}" -- "${_NoArg[@]}");
     return 0
 }
-Exist () 
+Cache.Exist () 
 { 
     local _File;
     _File="$(Cache.CreateDir)/$1";
@@ -831,15 +836,15 @@ Exist ()
     (( "$(Cache.GetTimeDiffFromLastUpdate "$_File")" > "${KEEPCACHESEC-"86400"}" )) && return 2;
     return 0
 }
-Get () 
+Cache.Get () 
 { 
     cat "$(Cache.GetDir)/$1" 2> /dev/null || return 1
 }
-GetDir () 
+Cache.GetDir () 
 { 
     echo "${TMPDIR-"/tmp"}/$(Cache.GetID)"
 }
-GetFileLastUpdate () 
+Cache.GetFileLastUpdate () 
 { 
     local _isGnu=false;
     date --help 2> /dev/null | grep -q "GNU" && _isGnu=true;
@@ -852,14 +857,14 @@ GetFileLastUpdate ()
         };
     fi
 }
-GetID () 
+Cache.GetID () 
 { 
     if [[ -z "${FSBLIB_CACHEID-""}" ]]; then
         Cache.CreateDir > /dev/null;
     fi;
     echo "$FSBLIB_CACHEID"
 }
-GetTimeDiffFromLastUpdate () 
+Cache.GetTimeDiffFromLastUpdate () 
 { 
     local _Now _Last;
     _Now="$(date "+%s")";
@@ -867,13 +872,13 @@ GetTimeDiffFromLastUpdate ()
     echo "$(( _Now - _Last ))";
     return 0
 }
-Create () 
+Cache.Create () 
 { 
     Cache.CreateDir > /dev/null;
     cat > "$(Cache.GetDir)/${1}";
     cat "$(Cache.GetDir)/$1"
 }
-CreateDir () 
+Cache.CreateDir () 
 { 
     FSBLIB_CACHEID="${FSBLIB_CACHEID-"$(RandomString "10")"}";
     export FSBLIB_CACHEID="$FSBLIB_CACHEID";
@@ -1008,15 +1013,15 @@ Readlinkf_Readlink ()
     done;
     return 1
 }
-Format () 
+SrcInfo.Format () 
 { 
     RemoveBlank | sed "/^$/d" | grep -v "^#" | ForEach eval "SrcInfo.Parse Line <<< \"{}\""
 }
-GetKeyList () 
+SrcInfo.GetKeyList () 
 { 
     SrcInfo.Format | cut -d "=" -f 1
 }
-GetPkgBase () 
+SrcInfo.GetPkgBase () 
 { 
     local _Line _Key _InSection=false;
     while read -r _Line; do
@@ -1036,7 +1041,7 @@ GetPkgBase ()
         esac;
     done < <(SrcInfo.Format)
 }
-GetPkgName () 
+SrcInfo.GetPkgName () 
 { 
     local _Line _Key _InSection=false _TargetPkgName="$1";
     while read -r _Line; do
@@ -1060,11 +1065,11 @@ GetPkgName ()
         esac;
     done < <(SrcInfo.Format)
 }
-GetSectionList () 
+SrcInfo.GetSectionList () 
 { 
     SrcInfo.Format | grep -e "^pkgbase" -e "^pkgname"
 }
-GetValue () 
+SrcInfo.GetValue () 
 { 
     local _SrcInfo=();
     local _Output=();
@@ -1101,7 +1106,7 @@ GetValue ()
     PrintEvalArray _Output;
     return 0
 }
-GetValueInPkgBase () 
+SrcInfo.GetValueInPkgBase () 
 { 
     local _Line;
     while read -r _Line; do
@@ -1113,7 +1118,7 @@ GetValueInPkgBase ()
         esac;
     done < <(SrcInfo.GetPkgBase)
 }
-GetValueInPkgName () 
+SrcInfo.GetValueInPkgName () 
 { 
     local _Line;
     while read -r _Line; do
@@ -1125,7 +1130,7 @@ GetValueInPkgName ()
         esac;
     done < <(SrcInfo.GetPkgName "$1")
 }
-Parse () 
+SrcInfo.Parse () 
 { 
     local _Output="${1-""}";
     [[ -n "${_Output}" ]] || return 1;
