@@ -85,8 +85,11 @@ Main(){
             ;;
         release | r*)
             case "${_CMD,,}" in
-                link | l*)
+                link | ln)
                     RunScript "${BinDir}/Release-Link.sh" "$@"
+                    ;;
+                list)
+                    RunScript "$BinDir/Release-List.sh" "$@"
                     ;;
                 note | n*)
                     RunScript "$BinDir/Release-Note.sh" "$@"
