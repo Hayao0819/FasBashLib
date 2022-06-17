@@ -42,13 +42,13 @@ mkdir -p "$TmpDir" "$OutDir"
 zip "$OutDir/fasbashlib-document.zip" "${TmpDocs}/"*
 
 # Upper
-"${BinDir}/Build-Multi.sh" -out "$TmpUpper"
+"${BinDir}/Build-Multi.sh" -out "$TmpUpper" -- "$@"
 zip "$OutDir/fasbashlib.zip" "${TmpUpper}/"*
 
 # Lower
-"${BinDir}/Build-Multi.sh" -out "$TmpLower" -- -lower
+"${BinDir}/Build-Multi.sh" -out "$TmpLower" -- "$@" -lower
 zip "$OutDir/fasbashlib-lower.zip" "${TmpLower}/"*
 
 # Snake
-"${BinDir}/Build-Multi.sh" -out "$TmpSnake" -- -snake
+"${BinDir}/Build-Multi.sh" -out "$TmpSnake" -- "$@" -snake
 zip "$OutDir/fasbashlib-snake.zip" "${TmpSnake}/"*
