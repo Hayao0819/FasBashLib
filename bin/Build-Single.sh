@@ -278,8 +278,9 @@ _CheckLoadedFile(){
 
 _Make_Lib(){
     local LibName LibPrefix TmpLibFile NewFuncName # 文字列変数
-    local _DefinedFuncInFile _DefinedFuncInLib # 配列
+    local _DefinedFuncInFile _DefinedFuncInLib _NoPrefixFunc # 配列
     local Func File Dir # ループ変数
+    local ReplacePrefix=true
 
     # ライブラリをサブシェル内で読み込んでファイルに追記
     echo -n > "$TmpFile_FuncList"
@@ -291,6 +292,13 @@ _Make_Lib(){
 
         # ファイルの初期化
         echo -n > "$TmpLibFile"
+
+        #Prefix置換えを行うかどうか
+        if [[ -z "${LibPrefix-""}" ]]; then
+            ReplacePrefix=false
+        fi
+
+        readarray -t _NoPrefixFunc < <(GetMeta -c "$LibName" "NoPrefixFunc")
 
         # ライブラリのファイルごとに関数を読み取ってTmpLibFileに関数を書き込み
         # この際に関数定義部分のプレフィックスとスネークケース置き換えを行う
@@ -304,25 +312,26 @@ _Make_Lib(){
             readarray -t _DefinedFuncInFile < <(_GetFuncListFromFile "${Dir}/${File}")
             _DefinedFuncInLib+=("${_DefinedFuncInFile[@]}")
 
-            # 関数の置き換えを一切行わない場合
-            if [[ -z "${LibPrefix}" ]] && [[ "$CodeType" = "$DefaultCodeType" ]]; then
-                for Func in "${_DefinedFuncInFile[@]}"; do
+            for Func in "${_DefinedFuncInFile[@]}"; do
+                if PrintArray "${_NoPrefixFunc[@]}" | grep -qx "$Func"; then
+                    ReplacePrefix=false
+                fi
+
+                if [[ "${ReplacePrefix}" = false ]] && [[ "$CodeType" = "$DefaultCodeType" ]]; then
+                    # 関数の置き換えを一切行わない場合
                     echo " = $Func" >> "$TmpFile_FuncList"
                     "$Debug" && echo "${Func}を${TmpLibFile}に書き込み" >&2
                     _GetFuncCodeFromFile "${Dir}/${File}" "$Func" >> "$TmpLibFile"
-                done
-            else
-                # 関数の定義部分を書き換え
-                for Func in "${_DefinedFuncInFile[@]}"; do
-                    # 置き換えあり
+                    continue
+                else
+                    # 関数の定義部分を書き換え
                     local NewFuncName=""
-
                     echo "${LibPrefix-""} = ${Func}" >> "$TmpFile_FuncList"
                     NewFuncName="$(MakeFuncName "${LibPrefix-""}" "$Func")"
                     "${Debug}" && echo "置き換え1: 関数定義の${Func}を${NewFuncName}に置き換えて${TmpLibFile}に書き込み" >&2
                     _GetFuncCodeFromFile "${Dir}/${File}" "$Func" | sed "1 s|${Func} ()|${NewFuncName} ()|g" >> "$TmpLibFile"
-                done
-            fi
+                fi
+            done
         done < <("$LibDir/GetMeta.sh" "${LibName}" "Files" | tr "," "\n")
 
         if [[ "${DontRunAtMarkReplacement}" = false ]]; then
@@ -346,6 +355,12 @@ _Make_Lib(){
                 # Func: ソースコードに記述されたそのままの関数名
                 # 例えば、SrcInfo.GetValueなら"GetValue"の部分
                 for Func in "${_DefinedFuncInLib[@]}"; do
+                    # NoPrefixに指定されている場合の処理
+                    if PrintArray "${_NoPrefixFunc[@]}" | grep -qx "$Func"; then
+                        "$Debug" && echo "NoPrefixに指定されているため${Func}の置き換えをスキップ" >&2
+                        continue
+                    fi
+    
                     # ドット以降の関数名を変換
                     NewFuncName=$(MakeFuncName "" "$Func")
                     "${Debug}" && echo "置き換え2: ${TmpLibFile}内の@${Func}を${NewLibPrefix}${Delimiter}${NewFuncName}に置き換え" >&2
