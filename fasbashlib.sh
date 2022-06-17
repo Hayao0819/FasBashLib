@@ -27,531 +27,107 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.2.3.r258.gc9ad173-upper"
+FSBLIB_VERSION="v0.2.3.r270.g21fd1b9-upper"
 FSBLIB_REQUIRE="ModernBash"
 
-Ini.GetParam () 
+Msg.Common () 
 { 
-    local _RawIniLine=();
-    local _Line _LineNo=1 _Exit=0 _InSection=false;
-    readarray -t _RawIniLine;
-    while read -r _Line; do
-        Ini.ParseLine <<< "$_Line";
-        case "$TYPE" in 
-            "SECTION")
-                if [[ "$SECTION" = "$1" ]]; then
-                    _InSection=true;
-                else
-                    _InSection=false;
-                fi
-            ;;
-            "PARAM-VALUE")
-                [[ "$_InSection" = false ]] || echo "${VALUE}"
-            ;;
-            "ERROR")
-                echo "Line $_LineNo: Failed to parse Ini" 1>&2;
-                _Exit=1
-            ;;
-        esac;
-        _LineNo=$(( _LineNo + 1  ));
-    done < <(PrintArray "${_RawIniLine[@]}");
-    return "$_Exit"
-}
-Ini.GetParamList () 
-{ 
-    local _RawIniLine=();
-    local _Line _LineNo=1 _Exit=0 _InSection=false;
-    readarray -t _RawIniLine;
-    while read -r _Line; do
-        Ini.ParseLine <<< "$_Line";
-        case "$TYPE" in 
-            "SECTION")
-                if [[ "$SECTION" = "$1" ]]; then
-                    _InSection=true;
-                else
-                    _InSection=false;
-                fi
-            ;;
-            "PARAM-VALUE")
-                [[ "$_InSection" = false ]] || echo "$PARAM"
-            ;;
-            "ERROR")
-                echo "Line $_LineNo: Failed to parse Ini" 1>&2;
-                _Exit=1
-            ;;
-        esac;
-        _LineNo=$(( _LineNo + 1  ));
-    done < <(PrintArray "${_RawIniLine[@]}");
-    return "$_Exit"
-}
-Ini.GetSectionList () 
-{ 
-    local _RawIniLine=();
-    local _Line _LineNo=1 _Exit=0;
-    readarray -t _RawIniLine;
-    while read -r _Line; do
-        Ini.ParseLine <<< "$_Line";
-        case "$TYPE" in 
-            "SECTION")
-                echo "$SECTION"
-            ;;
-            "ERROR")
-                echo "Line $_LineNo: Failed to parse Ini" 1>&2;
-                _Exit=1
-            ;;
-        esac;
-        _LineNo=$(( _LineNo + 1  ));
-    done < <(PrintArray "${_RawIniLine[@]}");
-    return "$_Exit"
-}
-Ini.ParseLine () 
-{ 
-    local _Line;
-    TYPE="" PARAM="" VALUE="" SECTION="";
-    _Line="$(RemoveBlank <<< "$(cat)")";
-    case "$_Line" in 
-        "["*"]")
-            TYPE="SECTION";
-            SECTION=$(sed "s|^\[||g; s|\]$||g" <<< "$_Line")
-        ;;
-        "" | "#"*)
-            TYPE="NOTHING"
-        ;;
-        *"="*)
-            TYPE="PARAM-VALUE";
-            PARAM="$(RemoveBlank <<< "$(cut -d "=" -f 1 <<< "$_Line")")";
-            VALUE="$(RemoveBlank <<< "$(cut -d "=" -f 2- <<< "$_Line")")"
-        ;;
-        *)
-            TYPE="ERROR"
-        ;;
-    esac;
-    return 0
-}
-Choice () 
-{ 
-    local arg OPTARG OPTIND;
-    local _count _choice;
-    local _default="" _question="" _returnstr="" _mark=" ";
-    local _count=0 _digit=0 _returnint=;
-    local _number=false;
-    local _choice_list=();
-    while getopts "ad:p:n" arg; do
-        case "${arg}" in 
-            d)
-                _default="${OPTARG}"
-            ;;
-            p)
-                _question="${OPTARG}"
-            ;;
-            n)
-                _number=true
-            ;;
-            *)
-                exit 1
-            ;;
-        esac;
-    done;
-    shift "$((OPTIND - 1))" || return 1;
-    _choice_list=("${@}") _digit="${##}";
-    (( ${#_choice_list[@]} <= 0 )) && echo "An exception error has occurred." 1>&2 && exit 1;
-    (( ${#_choice_list[@]} == 1 )) && _returnint="${_returnint:="1"}" _returnstr="${_returnstr:="${_choice_list[*]}"}";
-    [[ -n "${_question-""}" ]] && echo "   ${_question}" 1>&2;
-    for ((_count=1; _count<=${#_choice_list[@]}; _count++))
-    do
-        _choice="${_choice_list[$(( _count - 1 ))]}" _mark=" ";
-        { 
-            [[ ! "${_default}" = "" ]] && [[ "${_choice}" = "${_default}" ]]
-        } && _mark="*";
-        printf " ${_mark} %${_digit}d: ${_choice}\n" "${_count}" 1>&2;
-    done;
-    echo -n "   (1 ~ ${#_choice_list[@]}) > " 1>&2 && read -r _input;
+    local i l="$1" string="$2" out="${3-""}";
+    shift 2 || return 1;
     { 
-        [[ -z "${_input-""}" ]] && [[ -n "${_default-""}" ]]
-    } && _returnint="${_returnint:="0"}" _returnstr="${_returnstr:="${_default}"}";
-    { 
-        printf "%s" "${_input}" | grep -qE "^[0-9]+$" && (( 1 <= _input)) && (( _input <= ${#_choice_list[@]} ))
-    } && _returnint="${_returnint:="${_input}"}" _returnstr="${_returnstr:="${_choice_list[$(( _input - 1 ))]}"}";
-    for ((i=0; i <= ${#_choice_list[@]} - 1 ; i++ ))
-    do
-        [[ "${_choice_list["${i}"],,}" = "${_input,,}" ]] && _returnint="${_returnint:="$(( i + 1 ))"}" _returnstr="${_returnstr:="${_choice_list["${i}"]}"}";
-    done;
-    { 
-        [[ "${_number}" = true ]] && [[ -n "${_returnint+SET}" ]]
-    } && { 
-        echo "${_returnint}" && return 0
-    };
-    { 
-        [[ "${_number}" = false ]] && [[ -n "${_returnstr+SET}" ]]
-    } && { 
-        echo "${_returnstr}" && return 0
-    };
-    return 1
+        [[ -z "${out-""}" ]] && { 
+            [[ "${l^^}" = *"ERR"* ]] || [[ "${l^^}" = *"WARN"* ]] || [[ "${l^^}" = *"DEBUG"* ]]
+        }
+    } && out="stderr";
+    case "${FSBLIB_MSG-"${out:-"stdout"}"}" in 
+        "stdout")
+            for i in $(seq "$(echo -e "${string}" | wc -l)");
+            do
+                echo -n "$l ";
+                echo -e "${string}" | head -n "${i}" | tail -n 1;
+            done
+        ;;
+        "stderr")
+            for i in $(seq "$(echo -e "${string}" | wc -l)");
+            do
+                echo -n "$l " 1>&2;
+                echo -e "${string}" | head -n "${i}" | tail -n 1 1>&2;
+            done
+        ;;
+    esac
 }
-Cache.Exist () 
+Msg.Debug () 
 { 
-    local _File;
-    _File="$(Cache.CreateDir)/$1";
-    [[ -e "$_File" ]] || return 1;
-    (( "$(Cache.GetTimeDiffFromLastUpdate "$_File")" > "${KEEPCACHESEC-"86400"}" )) && return 2;
-    return 0
+    Msg.Common "Debug:" "${*}" stderr
 }
-Cache.Get () 
+Msg.Err () 
 { 
-    cat "$(Cache.GetDir)/$1" 2> /dev/null || return 1
+    Msg.Common "Error:" "${*}" stderr
 }
-Cache.GetDir () 
+Msg.Info () 
 { 
-    echo "${TMPDIR-"/tmp"}/$(Cache.GetID)"
+    Msg.Common " Info:" "${*}" stdout
 }
-Cache.GetFileLastUpdate () 
+Msg.Warn () 
 { 
-    local _isGnu=false;
-    date --help 2> /dev/null | grep -q "GNU" && _isGnu=true;
-    if [[ "$_isGnu" = true ]]; then
-        date +%s -r "$1";
-    else
-        { 
-            eval "$(stat -s "$1")";
-            echo "$st_mtime"
-        };
-    fi
+    Msg.Common " Warn:" "${*}" stderr
 }
-Cache.GetID () 
+Array.Append () 
 { 
-    if [[ -z "${FSBLIB_CACHEID-""}" ]]; then
-        Cache.CreateDir > /dev/null;
-    fi;
-    echo "$FSBLIB_CACHEID"
-}
-Cache.GetTimeDiffFromLastUpdate () 
-{ 
-    local _Now _Last;
-    _Now="$(date "+%s")";
-    _Last="$(Cache.GetFileLastUpdate "$1")";
-    echo "$(( _Now - _Last ))";
-    return 0
-}
-Cache.Create () 
-{ 
-    Cache.CreateDir > /dev/null;
-    cat > "$(Cache.GetDir)/${1}";
-    cat "$(Cache.GetDir)/$1"
-}
-Cache.CreateDir () 
-{ 
-    FSBLIB_CACHEID="${FSBLIB_CACHEID-"$(RandomString "10")"}";
-    export FSBLIB_CACHEID="$FSBLIB_CACHEID";
-    local TMPDIR="${TMPDIR-"/tmp"}";
-    local _Dir="$TMPDIR/${FSBLIB_CACHEID}";
-    mkdir -p "$_Dir";
-    echo "$_Dir";
-    return 0
-}
-AddNewToArray () 
-{ 
-    Array.Push "$@"
-}
-ArrayAppend () 
-{ 
-    Array.Append "$1"
-}
-ArrayIncludes () 
-{ 
-    Array.Includes "$@"
-}
-ArrayIndex () 
-{ 
-    Array.Length "$1"
-}
-GetArrayIndex () 
-{ 
-    Array.IndexOf "$1"
-}
-PrintArray () 
-{ 
-    Array.Print "$@"
-}
-PrintEvalArray () 
-{ 
-    Array.Eval "$1"
-}
-RevArray () 
-{ 
-    Array.Rev "$1"
-}
-StrToCharList () 
-{ 
-    Array.FromStr "$1"
-}
-FileType () 
-{ 
-    file --mime-type -b "$1"
-}
-GetBaseName () 
-{ 
-    ForEach basename "{}"
-}
-GetFileExt () 
-{ 
-    GetBaseName | rev | cut -d "." -f 1 | rev
-}
-RemoveFileExt () 
-{ 
-    local Ext;
-    ForEach eval 'Ext=$(GetFileExt <<< {}); sed "s|.$Ext$||g" <<< {}; unset Ext'
-}
-CheckFuncDefined () 
-{ 
-    typeset -f "${1}" > /dev/null || return 1
-}
-ForEach () 
-{ 
-    local _Item;
-    while read -r _Item; do
-        "${@//"{}"/"${_Item}"}" || return "${?}";
-    done
-}
-GetLine () 
-{ 
-    head -n "$1" | tail -n 1
-}
-IsAvailable () 
-{ 
-    type "$1" 2> /dev/null 1>&2
-}
-Loop () 
-{ 
-    local _T="$1";
+    local _ArrName="$1";
     shift 1 || return 1;
-    ForEach "$@" < <(yes "" | head -n "$_T")
+    readarray -t -O "$(ArrayIndex "$_ArrName")" "$_ArrName" < <(cat)
 }
-BreakChar () 
+Array.FromStr () 
 { 
-    grep -o "."
+    declare -a -x "$1";
+    readarray -t "$1" < <(BreakChar)
 }
-CutLastString () 
+Array.Pop () 
 { 
-    echo "${1%%"${2}"}";
+    readarray -t "$1" < <(PrintEvalArray "$1" | sed -e '$d')
+}
+Array.Push () 
+{ 
+    eval "PrintArray \"\${$1[@]}\"" | grep -qx "$2" && return 0;
+    eval "$1+=(\"$2\")"
+}
+Array.Remove () 
+{ 
+    readarray -t "$1" < <(PrintEvalArray "$1" | RemoveMatchLine "$2")
+}
+Array.Rev () 
+{ 
+    readarray -t "$1" < <(PrintEvalArray "$1" | tac)
+}
+Array.Shift () 
+{ 
+    readarray -t "$1" < <(PrintEvalArray "$1" | sed "1,${2-"1"}d")
+}
+Array.Eval () 
+{ 
+    eval "PrintArray \"\${$1[@]}\""
+}
+Array.Print () 
+{ 
+    (( $# >= 1 )) || return 0;
+    printf "%s\n" "${@}"
+}
+Array.IndexOf () 
+{ 
+    local n=();
+    readarray -t n < <(grep -x -n "$1" | cut -d ":" -f 1 | ForEach eval echo '$(( {} - 1 ))');
+    (( "${#n[@]}" >= 1 )) || return 1;
+    PrintArray "${n[@]}";
     return 0
 }
-GetLastSplitString () 
+Array.Length () 
 { 
-    rev <<< "$2" | cut -d "$1" -f 1 | rev
+    PrintEvalArray "$1" | wc -l
 }
-IsUUID () 
+Array.Includes () 
 { 
-    local _UUID="${1-""}";
-    [[ "${_UUID//-/}" =~ ^[[:xdigit:]]{32}$ ]] && return 0;
-    return 1
-}
-PrintEval () 
-{ 
-    eval echo "\${$1}"
-}
-RandomString () 
-{ 
-    base64 < "/dev/random" | fold -w "$1" | head -n 1;
-    return 0
-}
-RemoveBlank () 
-{ 
-    sed "s|^ *||g; s| *$||g; s|^	*||g; s|	*$||g; /^$/d"
-}
-TextBox () 
-{ 
-    local _Content=() _Length _Vertical="|" _Line="=";
-    readarray -t _Content;
-    _Length="$(PrintArray "${_Content[@]}" | awk '{ if ( length > x ) { x = length } }END{ print x }')";
-    echo "${_Vertical}${_Line}$(yes "${_Line}" | head -n "$_Length" | tr -d "\n")${_Vertical}";
-    for _Str in "${_Content[@]}";
-    do
-        echo "${_Vertical}${_Str}$(yes " " | head -n "$(( _Length + 1 - "${#_Str}"))" | tr -d "\n")${_Vertical}";
-    done;
-    echo "${_Vertical}${_Line}$(yes "${_Line}" | head -n "$_Length" | tr -d "\n")${_Vertical}"
-}
-ToLower () 
-{ 
-    local _Str="${1,,}";
-    [[ -z "${_Str-""}" ]] || echo "${_Str}"
-}
-ToLowerStdin () 
-{ 
-    local _Str;
-    ForEach eval "_Str=\"{}\"; echo \"\${_Str,,}\"";
-    unset _Str
-}
-CalcInt () 
-{ 
-    echo "$(( "$@" ))"
-}
-Ntest () 
-{ 
-    (( "$@" )) || return 1
-}
-Sum () 
-{ 
-    local _Arg=();
-    ForEach eval '_Arg+=("{}" "+")' < <(PrintArray "$@");
-    readarray -t _Arg < <(PrintArray "${_Arg[@]}" | sed "${#_Arg[@]}d");
-    CalcInt "${_Arg[@]}"
-}
-Bool () 
-{ 
-    case "$(ToLower "$(PrintEval "${1}")")" in 
-        "true")
-            return 0
-        ;;
-        "" | "false")
-            return 1
-        ;;
-        *)
-            return 2
-        ;;
-    esac
-}
-GetFuncList () 
-{ 
-    declare -F | cut -d " " -f 3
-}
-UnsetAllFunc () 
-{ 
-    local Func;
-    while read -r Func; do
-        unset "$Func";
-    done < <(GetFuncList)
-}
-RemoveMatchLine () 
-{ 
-    local i unseted=false;
-    while read -r i; do
-        if [[ "$i" != "${1}" ]] || [[ "${unseted}" = true ]]; then
-            echo "$i";
-        else
-            unseted=true;
-        fi;
-    done;
-    unset unseted i
-}
-Csv.GetClm () 
-{ 
-    grep -v "^#" | sed "/^$/d" | cut -d "${CSVDELIM-","}" -f "$1"
-}
-Csv.GetClmCnt () 
-{ 
-    local _RawCsvLine=();
-    local _Line _ClmCnt=0;
-    readarray -t _RawCsvLine;
-    while read -r _Line; do
-        grep -qE "^#" <<< "$_Line" && continue;
-        _CurrentClmCnt=$(tr "${CSVDELIM-","}" "\n" | wc -l);
-        (( _CurrentClmCnt > _ClmCnt )) && _ClmCnt="$_CurrentClmCnt";
-    done < <(PrintArray "${_RawCsvLine[@]}");
-    RemoveBlank <<< "$_ClmCnt";
-    return 0
-}
-Csv.ToBashArray () 
-{ 
-    local _RawCsvLine=() _Line _ClmCnt=0;
-    local ArrayPrefix="${ArrayPrefix-"{}"}";
-    readarray -t _RawCsvLine < <(
-        # 標準入力からCSVのみを抽出
-        while read -r _Line; do
-            # shellcheck disable=SC2031
-            (( $(tr "${CSVDELIM-","}" "\n" <<< "$_Line" | wc -l) >= ${#} )) && echo "$_Line"
-        done < <(grep -v "^#")
-    );
-    _ClmCnt=$(PrintArray "${_RawCsvLine[@]}" | Csv.GetClmCnt);
-    while read -r _Cnt; do
-        readarray -t "$(sed "s|{}|$(eval "echo \"\${${_Cnt}}\"")|g" <<< "$ArrayPrefix")" < <(
-            # shellcheck disable=SC2031
-            PrintArray "${_RawCsvLine[@]}" | cut -d "${CSVDELIM-","}" -f "$_Cnt"
-        );
-    done < <(seq 1 "$#")
-}
-FsblibEnvCheck () 
-{ 
-    case "$FSBLIB_REQUIRE" in 
-        "Any")
-            return 0
-        ;;
-        "ModernShell")
-            [[ "$(cut -d "." -f 1 <<< "$BASH_VERSION")" = "5" ]] && return 0
-        ;;
-    esac
-}
-Misskey.Setup () 
-{ 
-    export MISSKEY_DOMAIN="${1-"${MISSKEY_DOMAIN-""}"}";
-    export MISSKEY_TOKEN="${2-"${MISSKEY_DOMAIN-""}"}";
-    export MISSKEY_ENTRY="https://${MISSKEY_DOMAIN}/api"
-}
-Misskey.BindingBase () 
-{ 
-    local _API="$1";
-    shift 1;
-    local i _APIArgs _Args;
-    for i in "$@";
-    do
-        shift 1;
-        if [[ "$i" = "--" ]]; then
-            break;
-        else
-            _APIArgs+=("$i");
-        fi;
-    done;
-    i=0;
-    while true; do
-        i="$(( i + 1 ))";
-        _Args+=("${_APIArgs[$((i-1))]}=$(eval echo "\$$i" )");
-        shift 1;
-        if (( "$#" <= "$i" )) || [[ -z "${_APIArgs[$i]-""}" ]]; then
-            break;
-        fi;
-    done;
-    Misskey.SendReq "$MISSKEY_ENTRY/$_API" "${_Args[@]}" "$@"
-}
-Misskey.MakeJson () 
-{ 
-    local i _Key _Value;
-    for i in "i=$MISSKEY_TOKEN" "$@";
-    do
-        _Key=$(cut -d "=" -f 1 <<< "$i");
-        _Value=$(cut -d "=" -f 2- <<< "$i");
-        if [[ "$_Value" =~ ^[0-9]+$ ]] || [[ "$_Value" = true ]] || [[ "$_Value" = false ]] || [[ "$_Value" = "{"*"}" ]]; then
-            echo -n "{\"$_Key\": $_Value}";
-        else
-            echo -n "{\"$_Key\": \"$_Value\"}";
-        fi;
-    done | sed "s|}{|,|g" | jq -c -M
-}
-Misskey.SendReq () 
-{ 
-    local _Url="$1" _CurlArgs=();
-    shift 1;
-    _CurlArgs+=(-s -L);
-    _CurlArgs+=(-X POST);
-    _CurlArgs+=(-H "Content-Type: application/json");
-    _CurlArgs+=(-d "$(Misskey.MakeJson "$@")");
-    _CurlArgs+=("$_Url");
-    Msg.Debug "Run: ${_CurlArgs[*]//"${MISSKEY_TOKEN}"/"TOKEN"})";
-    curl "${_CurlArgs[@]}"
-}
-Misskey.Notes.Create () 
-{ 
-    Misskey.BindingBase "notes/create" text -- "$@"
-}
-Misskey.Notes.Renotes () 
-{ 
-    Misskey.BindingBase "notes/renotes" noteId limit sinceId untilId -- "$@"
-}
-Misskey.Notes.Search () 
-{ 
-    Misskey.BindingBase "notes/search" query limit -- "$@"
-}
-Misskey.Users.Notes () 
-{ 
-    Misskey.BindingBase "users/notes" userId -- "$@"
+    PrintEvalArray "$1" | grep -qx "$2"
 }
 Awk.AwkPrint () 
 { 
@@ -581,18 +157,6 @@ Awk.Sin ()
 Awk.Tan () 
 { 
     @Calc "sin($1)/tan($1)"
-}
-Arch.GetKernelFileList () 
-{ 
-    find "/boot" -maxdepth 1 -mindepth 1 -name "vmlinuz-*"
-}
-Arch.GetKernelSrcList () 
-{ 
-    find "/usr/src" -mindepth 1 -maxdepth 1 -type l -name "linux*"
-}
-Arch.GetMkinitcpioPresetList () 
-{ 
-    find "/etc/mkinitcpio.d/" -name "*.preset" -type f | GetBaseName | RemoveFileExt
 }
 Pm.CheckPkg () 
 { 
@@ -785,127 +349,212 @@ Pm.ParsePkgFileName ()
     fi;
     PrintArray "${_ParsedPkg[@]}"
 }
-Readlinkf () 
+Misskey.Setup () 
 { 
-    Readlinkf_Posix "$@"
+    export MISSKEY_DOMAIN="${1-"${MISSKEY_DOMAIN-""}"}";
+    export MISSKEY_TOKEN="${2-"${MISSKEY_DOMAIN-""}"}";
+    export MISSKEY_ENTRY="https://${MISSKEY_DOMAIN}/api"
 }
-Readlinkf_Posix () 
+Misskey.BindingBase () 
 { 
-    [ "${1:-}" ] || return 1;
-    max_symlinks=40;
-    CDPATH='';
-    target=$1;
-    [ -e "${target%/}" ] || target=${1%"${1##*[!/]}"};
-    [ -d "${target:-/}" ] && target="$target/";
-    cd -P . 2> /dev/null || return 1;
-    while [ "$max_symlinks" -ge 0 ] && max_symlinks=$((max_symlinks - 1)); do
-        if [ ! "$target" = "${target%/*}" ]; then
-            case $target in 
-                /*)
-                    cd -P "${target%/*}/" 2> /dev/null || break
-                ;;
-                *)
-                    cd -P "./${target%/*}" 2> /dev/null || break
-                ;;
-            esac;
-            target=${target##*/};
+    local _API="$1";
+    shift 1;
+    local i _APIArgs _Args;
+    for i in "$@";
+    do
+        shift 1;
+        if [[ "$i" = "--" ]]; then
+            break;
+        else
+            _APIArgs+=("$i");
         fi;
-        if [ ! -L "$target" ]; then
-            target="${PWD%/}${target:+/}${target}";
-            printf '%s\n' "${target:-/}";
-            return 0;
-        fi;
-        link=$(ls -dl -- "$target" 2>/dev/null) || break;
-        target=${link#*" $target -> "};
     done;
-    return 1
-}
-Readlinkf_Readlink () 
-{ 
-    [ "${1:-}" ] || return 1;
-    max_symlinks=40;
-    CDPATH='';
-    target=$1;
-    [ -e "${target%/}" ] || target=${1%"${1##*[!/]}"};
-    [ -d "${target:-/}" ] && target="$target/";
-    cd -P . 2> /dev/null || return 1;
-    while [ "$max_symlinks" -ge 0 ] && max_symlinks=$((max_symlinks - 1)); do
-        if [ ! "$target" = "${target%/*}" ]; then
-            case $target in 
-                /*)
-                    cd -P "${target%/*}/" 2> /dev/null || break
-                ;;
-                *)
-                    cd -P "./${target%/*}" 2> /dev/null || break
-                ;;
-            esac;
-            target=${target##*/};
+    i=0;
+    while true; do
+        i="$(( i + 1 ))";
+        _Args+=("${_APIArgs[$((i-1))]}=$(eval echo "\$$i" )");
+        shift 1;
+        if (( "$#" <= "$i" )) || [[ -z "${_APIArgs[$i]-""}" ]]; then
+            break;
         fi;
-        if [ ! -L "$target" ]; then
-            target="${PWD%/}${target:+/}${target}";
-            printf '%s\n' "${target:-/}";
-            return 0;
-        fi;
-        target=$(readlink -- "$target" 2>/dev/null) || break;
     done;
-    return 1
+    Misskey.SendReq "$MISSKEY_ENTRY/$_API" "${_Args[@]}" "$@"
 }
-Array.Append () 
+Misskey.MakeJson () 
 { 
-    local _ArrName="$1";
-    shift 1 || return 1;
-    readarray -t -O "$(ArrayIndex "$_ArrName")" "$_ArrName" < <(cat)
+    local i _Key _Value;
+    for i in "i=$MISSKEY_TOKEN" "$@";
+    do
+        _Key=$(cut -d "=" -f 1 <<< "$i");
+        _Value=$(cut -d "=" -f 2- <<< "$i");
+        if [[ "$_Value" =~ ^[0-9]+$ ]] || [[ "$_Value" = true ]] || [[ "$_Value" = false ]] || [[ "$_Value" = "{"*"}" ]]; then
+            echo -n "{\"$_Key\": $_Value}";
+        else
+            echo -n "{\"$_Key\": \"$_Value\"}";
+        fi;
+    done | sed "s|}{|,|g" | jq -c -M
 }
-Array.FromStr () 
+Misskey.SendReq () 
 { 
-    declare -a -x "$1";
-    readarray -t "$1" < <(BreakChar)
+    local _Url="$1" _CurlArgs=();
+    shift 1;
+    _CurlArgs+=(-s -L);
+    _CurlArgs+=(-X POST);
+    _CurlArgs+=(-H "Content-Type: application/json");
+    _CurlArgs+=(-d "$(Misskey.MakeJson "$@")");
+    _CurlArgs+=("$_Url");
+    Msg.Debug "Run: ${_CurlArgs[*]//"${MISSKEY_TOKEN}"/"TOKEN"})";
+    curl "${_CurlArgs[@]}"
 }
-Array.Pop () 
+Misskey.Notes.Create () 
 { 
-    readarray -t "$1" < <(PrintEvalArray "$1" | sed -e '$d')
+    Misskey.BindingBase "notes/create" text -- "$@"
 }
-Array.Push () 
+Misskey.Notes.Renotes () 
 { 
-    eval "PrintArray \"\${$1[@]}\"" | grep -qx "$2" && return 0;
-    eval "$1+=(\"$2\")"
+    Misskey.BindingBase "notes/renotes" noteId limit sinceId untilId -- "$@"
 }
-Array.Remove () 
+Misskey.Notes.Search () 
 { 
-    readarray -t "$1" < <(PrintEvalArray "$1" | RemoveMatchLine "$2")
+    Misskey.BindingBase "notes/search" query limit -- "$@"
 }
-Array.Rev () 
+Misskey.Users.Notes () 
 { 
-    readarray -t "$1" < <(PrintEvalArray "$1" | tac)
+    Misskey.BindingBase "users/notes" userId -- "$@"
 }
-Array.Shift () 
+Csv.GetClm () 
 { 
-    readarray -t "$1" < <(PrintEvalArray "$1" | sed "1,${2-"1"}d")
+    grep -v "^#" | sed "/^$/d" | cut -d "${CSVDELIM-","}" -f "$1"
 }
-Array.Eval () 
+Csv.GetClmCnt () 
 { 
-    eval "PrintArray \"\${$1[@]}\""
-}
-Array.Print () 
-{ 
-    (( $# >= 1 )) || return 0;
-    printf "%s\n" "${@}"
-}
-Array.IndexOf () 
-{ 
-    local n=();
-    readarray -t n < <(grep -x -n "$1" | cut -d ":" -f 1 | ForEach eval echo '$(( {} - 1 ))');
-    (( "${#n[@]}" >= 1 )) || return 1;
-    PrintArray "${n[@]}";
+    local _RawCsvLine=();
+    local _Line _ClmCnt=0;
+    readarray -t _RawCsvLine;
+    while read -r _Line; do
+        grep -qE "^#" <<< "$_Line" && continue;
+        _CurrentClmCnt=$(tr "${CSVDELIM-","}" "\n" | wc -l);
+        (( _CurrentClmCnt > _ClmCnt )) && _ClmCnt="$_CurrentClmCnt";
+    done < <(PrintArray "${_RawCsvLine[@]}");
+    RemoveBlank <<< "$_ClmCnt";
     return 0
 }
-Array.Length () 
+Csv.ToBashArray () 
 { 
-    PrintEvalArray "$1" | wc -l
+    local _RawCsvLine=() _Line _ClmCnt=0;
+    local ArrayPrefix="${ArrayPrefix-"{}"}";
+    readarray -t _RawCsvLine < <(
+        # 標準入力からCSVのみを抽出
+        while read -r _Line; do
+            # shellcheck disable=SC2031
+            (( $(tr "${CSVDELIM-","}" "\n" <<< "$_Line" | wc -l) >= ${#} )) && echo "$_Line"
+        done < <(grep -v "^#")
+    );
+    _ClmCnt=$(PrintArray "${_RawCsvLine[@]}" | Csv.GetClmCnt);
+    while read -r _Cnt; do
+        readarray -t "$(sed "s|{}|$(eval "echo \"\${${_Cnt}}\"")|g" <<< "$ArrayPrefix")" < <(
+            # shellcheck disable=SC2031
+            PrintArray "${_RawCsvLine[@]}" | cut -d "${CSVDELIM-","}" -f "$_Cnt"
+        );
+    done < <(seq 1 "$#")
 }
-Array.Includes () 
+Ini.GetParam () 
 { 
-    PrintEvalArray "$1" | grep -qx "$2"
+    local _RawIniLine=();
+    local _Line _LineNo=1 _Exit=0 _InSection=false;
+    readarray -t _RawIniLine;
+    while read -r _Line; do
+        Ini.ParseLine <<< "$_Line";
+        case "$TYPE" in 
+            "SECTION")
+                if [[ "$SECTION" = "$1" ]]; then
+                    _InSection=true;
+                else
+                    _InSection=false;
+                fi
+            ;;
+            "PARAM-VALUE")
+                [[ "$_InSection" = false ]] || echo "${VALUE}"
+            ;;
+            "ERROR")
+                echo "Line $_LineNo: Failed to parse Ini" 1>&2;
+                _Exit=1
+            ;;
+        esac;
+        _LineNo=$(( _LineNo + 1  ));
+    done < <(PrintArray "${_RawIniLine[@]}");
+    return "$_Exit"
+}
+Ini.GetParamList () 
+{ 
+    local _RawIniLine=();
+    local _Line _LineNo=1 _Exit=0 _InSection=false;
+    readarray -t _RawIniLine;
+    while read -r _Line; do
+        Ini.ParseLine <<< "$_Line";
+        case "$TYPE" in 
+            "SECTION")
+                if [[ "$SECTION" = "$1" ]]; then
+                    _InSection=true;
+                else
+                    _InSection=false;
+                fi
+            ;;
+            "PARAM-VALUE")
+                [[ "$_InSection" = false ]] || echo "$PARAM"
+            ;;
+            "ERROR")
+                echo "Line $_LineNo: Failed to parse Ini" 1>&2;
+                _Exit=1
+            ;;
+        esac;
+        _LineNo=$(( _LineNo + 1  ));
+    done < <(PrintArray "${_RawIniLine[@]}");
+    return "$_Exit"
+}
+Ini.GetSectionList () 
+{ 
+    local _RawIniLine=();
+    local _Line _LineNo=1 _Exit=0;
+    readarray -t _RawIniLine;
+    while read -r _Line; do
+        Ini.ParseLine <<< "$_Line";
+        case "$TYPE" in 
+            "SECTION")
+                echo "$SECTION"
+            ;;
+            "ERROR")
+                echo "Line $_LineNo: Failed to parse Ini" 1>&2;
+                _Exit=1
+            ;;
+        esac;
+        _LineNo=$(( _LineNo + 1  ));
+    done < <(PrintArray "${_RawIniLine[@]}");
+    return "$_Exit"
+}
+Ini.ParseLine () 
+{ 
+    local _Line;
+    TYPE="" PARAM="" VALUE="" SECTION="";
+    _Line="$(RemoveBlank <<< "$(cat)")";
+    case "$_Line" in 
+        "["*"]")
+            TYPE="SECTION";
+            SECTION=$(sed "s|^\[||g; s|\]$||g" <<< "$_Line")
+        ;;
+        "" | "#"*)
+            TYPE="NOTHING"
+        ;;
+        *"="*)
+            TYPE="PARAM-VALUE";
+            PARAM="$(RemoveBlank <<< "$(cut -d "=" -f 1 <<< "$_Line")")";
+            VALUE="$(RemoveBlank <<< "$(cut -d "=" -f 2- <<< "$_Line")")"
+        ;;
+        *)
+            TYPE="ERROR"
+        ;;
+    esac;
+    return 0
 }
 URL.Authority () 
 { 
@@ -1049,6 +698,33 @@ URL.ParseQuery ()
     i="$(sed "s|^\?||g" <<< "$i")";
     tr "&" "\n" <<< "$i" | cut -d "#" -f 1
 }
+Arch.GetKernelFileList () 
+{ 
+    find "/boot" -maxdepth 1 -mindepth 1 -name "vmlinuz-*"
+}
+Arch.GetKernelSrcList () 
+{ 
+    find "/usr/src" -mindepth 1 -maxdepth 1 -type l -name "linux*"
+}
+Arch.GetMkinitcpioPresetList () 
+{ 
+    find "/etc/mkinitcpio.d/" -name "*.preset" -type f | GetBaseName | RemoveFileExt
+}
+Fsblib.EnvCheck () 
+{ 
+    case "$FSBLIB_REQUIRE" in 
+        "Any")
+            return 0
+        ;;
+        "ModernShell")
+            [[ "$(cut -d "." -f 1 <<< "$BASH_VERSION")" = "5" ]] && return 0
+        ;;
+    esac
+}
+FsblibEnvCheck () 
+{ 
+    Fsblib.EnvCheck
+}
 ParseArg () 
 { 
     local _Arg _Chr _Cnt;
@@ -1147,15 +823,200 @@ ParseArg ()
     OPTRET=("${_OutArg[@]}" -- "${_NoArg[@]}");
     return 0
 }
-SrcInfo.Format () 
+Exist () 
+{ 
+    local _File;
+    _File="$(Cache.CreateDir)/$1";
+    [[ -e "$_File" ]] || return 1;
+    (( "$(Cache.GetTimeDiffFromLastUpdate "$_File")" > "${KEEPCACHESEC-"86400"}" )) && return 2;
+    return 0
+}
+Get () 
+{ 
+    cat "$(Cache.GetDir)/$1" 2> /dev/null || return 1
+}
+GetDir () 
+{ 
+    echo "${TMPDIR-"/tmp"}/$(Cache.GetID)"
+}
+GetFileLastUpdate () 
+{ 
+    local _isGnu=false;
+    date --help 2> /dev/null | grep -q "GNU" && _isGnu=true;
+    if [[ "$_isGnu" = true ]]; then
+        date +%s -r "$1";
+    else
+        { 
+            eval "$(stat -s "$1")";
+            echo "$st_mtime"
+        };
+    fi
+}
+GetID () 
+{ 
+    if [[ -z "${FSBLIB_CACHEID-""}" ]]; then
+        Cache.CreateDir > /dev/null;
+    fi;
+    echo "$FSBLIB_CACHEID"
+}
+GetTimeDiffFromLastUpdate () 
+{ 
+    local _Now _Last;
+    _Now="$(date "+%s")";
+    _Last="$(Cache.GetFileLastUpdate "$1")";
+    echo "$(( _Now - _Last ))";
+    return 0
+}
+Create () 
+{ 
+    Cache.CreateDir > /dev/null;
+    cat > "$(Cache.GetDir)/${1}";
+    cat "$(Cache.GetDir)/$1"
+}
+CreateDir () 
+{ 
+    FSBLIB_CACHEID="${FSBLIB_CACHEID-"$(RandomString "10")"}";
+    export FSBLIB_CACHEID="$FSBLIB_CACHEID";
+    local TMPDIR="${TMPDIR-"/tmp"}";
+    local _Dir="$TMPDIR/${FSBLIB_CACHEID}";
+    mkdir -p "$_Dir";
+    echo "$_Dir";
+    return 0
+}
+Choice () 
+{ 
+    local arg OPTARG OPTIND;
+    local _count _choice;
+    local _default="" _question="" _returnstr="" _mark=" ";
+    local _count=0 _digit=0 _returnint=;
+    local _number=false;
+    local _choice_list=();
+    while getopts "ad:p:n" arg; do
+        case "${arg}" in 
+            d)
+                _default="${OPTARG}"
+            ;;
+            p)
+                _question="${OPTARG}"
+            ;;
+            n)
+                _number=true
+            ;;
+            *)
+                exit 1
+            ;;
+        esac;
+    done;
+    shift "$((OPTIND - 1))" || return 1;
+    _choice_list=("${@}") _digit="${##}";
+    (( ${#_choice_list[@]} <= 0 )) && echo "An exception error has occurred." 1>&2 && exit 1;
+    (( ${#_choice_list[@]} == 1 )) && _returnint="${_returnint:="1"}" _returnstr="${_returnstr:="${_choice_list[*]}"}";
+    [[ -n "${_question-""}" ]] && echo "   ${_question}" 1>&2;
+    for ((_count=1; _count<=${#_choice_list[@]}; _count++))
+    do
+        _choice="${_choice_list[$(( _count - 1 ))]}" _mark=" ";
+        { 
+            [[ ! "${_default}" = "" ]] && [[ "${_choice}" = "${_default}" ]]
+        } && _mark="*";
+        printf " ${_mark} %${_digit}d: ${_choice}\n" "${_count}" 1>&2;
+    done;
+    echo -n "   (1 ~ ${#_choice_list[@]}) > " 1>&2 && read -r _input;
+    { 
+        [[ -z "${_input-""}" ]] && [[ -n "${_default-""}" ]]
+    } && _returnint="${_returnint:="0"}" _returnstr="${_returnstr:="${_default}"}";
+    { 
+        printf "%s" "${_input}" | grep -qE "^[0-9]+$" && (( 1 <= _input)) && (( _input <= ${#_choice_list[@]} ))
+    } && _returnint="${_returnint:="${_input}"}" _returnstr="${_returnstr:="${_choice_list[$(( _input - 1 ))]}"}";
+    for ((i=0; i <= ${#_choice_list[@]} - 1 ; i++ ))
+    do
+        [[ "${_choice_list["${i}"],,}" = "${_input,,}" ]] && _returnint="${_returnint:="$(( i + 1 ))"}" _returnstr="${_returnstr:="${_choice_list["${i}"]}"}";
+    done;
+    { 
+        [[ "${_number}" = true ]] && [[ -n "${_returnint+SET}" ]]
+    } && { 
+        echo "${_returnint}" && return 0
+    };
+    { 
+        [[ "${_number}" = false ]] && [[ -n "${_returnstr+SET}" ]]
+    } && { 
+        echo "${_returnstr}" && return 0
+    };
+    return 1
+}
+Readlinkf () 
+{ 
+    Readlinkf_Posix "$@"
+}
+Readlinkf_Posix () 
+{ 
+    [ "${1:-}" ] || return 1;
+    max_symlinks=40;
+    CDPATH='';
+    target=$1;
+    [ -e "${target%/}" ] || target=${1%"${1##*[!/]}"};
+    [ -d "${target:-/}" ] && target="$target/";
+    cd -P . 2> /dev/null || return 1;
+    while [ "$max_symlinks" -ge 0 ] && max_symlinks=$((max_symlinks - 1)); do
+        if [ ! "$target" = "${target%/*}" ]; then
+            case $target in 
+                /*)
+                    cd -P "${target%/*}/" 2> /dev/null || break
+                ;;
+                *)
+                    cd -P "./${target%/*}" 2> /dev/null || break
+                ;;
+            esac;
+            target=${target##*/};
+        fi;
+        if [ ! -L "$target" ]; then
+            target="${PWD%/}${target:+/}${target}";
+            printf '%s\n' "${target:-/}";
+            return 0;
+        fi;
+        link=$(ls -dl -- "$target" 2>/dev/null) || break;
+        target=${link#*" $target -> "};
+    done;
+    return 1
+}
+Readlinkf_Readlink () 
+{ 
+    [ "${1:-}" ] || return 1;
+    max_symlinks=40;
+    CDPATH='';
+    target=$1;
+    [ -e "${target%/}" ] || target=${1%"${1##*[!/]}"};
+    [ -d "${target:-/}" ] && target="$target/";
+    cd -P . 2> /dev/null || return 1;
+    while [ "$max_symlinks" -ge 0 ] && max_symlinks=$((max_symlinks - 1)); do
+        if [ ! "$target" = "${target%/*}" ]; then
+            case $target in 
+                /*)
+                    cd -P "${target%/*}/" 2> /dev/null || break
+                ;;
+                *)
+                    cd -P "./${target%/*}" 2> /dev/null || break
+                ;;
+            esac;
+            target=${target##*/};
+        fi;
+        if [ ! -L "$target" ]; then
+            target="${PWD%/}${target:+/}${target}";
+            printf '%s\n' "${target:-/}";
+            return 0;
+        fi;
+        target=$(readlink -- "$target" 2>/dev/null) || break;
+    done;
+    return 1
+}
+Format () 
 { 
     RemoveBlank | sed "/^$/d" | grep -v "^#" | ForEach eval "SrcInfo.Parse Line <<< \"{}\""
 }
-SrcInfo.GetKeyList () 
+GetKeyList () 
 { 
     SrcInfo.Format | cut -d "=" -f 1
 }
-SrcInfo.GetPkgBase () 
+GetPkgBase () 
 { 
     local _Line _Key _InSection=false;
     while read -r _Line; do
@@ -1175,7 +1036,7 @@ SrcInfo.GetPkgBase ()
         esac;
     done < <(SrcInfo.Format)
 }
-SrcInfo.GetPkgName () 
+GetPkgName () 
 { 
     local _Line _Key _InSection=false _TargetPkgName="$1";
     while read -r _Line; do
@@ -1199,11 +1060,11 @@ SrcInfo.GetPkgName ()
         esac;
     done < <(SrcInfo.Format)
 }
-SrcInfo.GetSectionList () 
+GetSectionList () 
 { 
     SrcInfo.Format | grep -e "^pkgbase" -e "^pkgname"
 }
-SrcInfo.GetValue () 
+GetValue () 
 { 
     local _SrcInfo=();
     local _Output=();
@@ -1240,7 +1101,7 @@ SrcInfo.GetValue ()
     PrintEvalArray _Output;
     return 0
 }
-SrcInfo.GetValueInPkgBase () 
+GetValueInPkgBase () 
 { 
     local _Line;
     while read -r _Line; do
@@ -1252,7 +1113,7 @@ SrcInfo.GetValueInPkgBase ()
         esac;
     done < <(SrcInfo.GetPkgBase)
 }
-SrcInfo.GetValueInPkgName () 
+GetValueInPkgName () 
 { 
     local _Line;
     while read -r _Line; do
@@ -1264,7 +1125,7 @@ SrcInfo.GetValueInPkgName ()
         esac;
     done < <(SrcInfo.GetPkgName "$1")
 }
-SrcInfo.Parse () 
+Parse () 
 { 
     local _Output="${1-""}";
     [[ -n "${_Output}" ]] || return 1;
@@ -1286,45 +1147,188 @@ SrcInfo.Parse ()
     esac;
     return 0
 }
-Msg.Common () 
+AddNewToArray () 
 { 
-    local i l="$1" string="$2" out="${3-""}";
-    shift 2 || return 1;
-    { 
-        [[ -z "${out-""}" ]] && { 
-            [[ "${l^^}" = *"ERR"* ]] || [[ "${l^^}" = *"WARN"* ]] || [[ "${l^^}" = *"DEBUG"* ]]
-        }
-    } && out="stderr";
-    case "${FSBLIB_MSG-"${out:-"stdout"}"}" in 
-        "stdout")
-            for i in $(seq "$(echo -e "${string}" | wc -l)");
-            do
-                echo -n "$l ";
-                echo -e "${string}" | head -n "${i}" | tail -n 1;
-            done
+    Array.Push "$@"
+}
+ArrayAppend () 
+{ 
+    Array.Append "$1"
+}
+ArrayIncludes () 
+{ 
+    Array.Includes "$@"
+}
+ArrayIndex () 
+{ 
+    Array.Length "$1"
+}
+GetArrayIndex () 
+{ 
+    Array.IndexOf "$1"
+}
+PrintArray () 
+{ 
+    Array.Print "$@"
+}
+PrintEvalArray () 
+{ 
+    Array.Eval "$1"
+}
+RevArray () 
+{ 
+    Array.Rev "$1"
+}
+StrToCharList () 
+{ 
+    Array.FromStr "$1"
+}
+FileType () 
+{ 
+    file --mime-type -b "$1"
+}
+GetBaseName () 
+{ 
+    ForEach basename "{}"
+}
+GetFileExt () 
+{ 
+    GetBaseName | rev | cut -d "." -f 1 | rev
+}
+RemoveFileExt () 
+{ 
+    local Ext;
+    ForEach eval 'Ext=$(GetFileExt <<< {}); sed "s|.$Ext$||g" <<< {}; unset Ext'
+}
+CheckFuncDefined () 
+{ 
+    typeset -f "${1}" > /dev/null || return 1
+}
+ForEach () 
+{ 
+    local _Item;
+    while read -r _Item; do
+        "${@//"{}"/"${_Item}"}" || return "${?}";
+    done
+}
+GetLine () 
+{ 
+    head -n "$1" | tail -n 1
+}
+IsAvailable () 
+{ 
+    type "$1" 2> /dev/null 1>&2
+}
+Loop () 
+{ 
+    local _T="$1";
+    shift 1 || return 1;
+    ForEach "$@" < <(yes "" | head -n "$_T")
+}
+BreakChar () 
+{ 
+    grep -o "."
+}
+CutLastString () 
+{ 
+    echo "${1%%"${2}"}";
+    return 0
+}
+GetLastSplitString () 
+{ 
+    rev <<< "$2" | cut -d "$1" -f 1 | rev
+}
+IsUUID () 
+{ 
+    local _UUID="${1-""}";
+    [[ "${_UUID//-/}" =~ ^[[:xdigit:]]{32}$ ]] && return 0;
+    return 1
+}
+PrintEval () 
+{ 
+    eval echo "\${$1}"
+}
+RandomString () 
+{ 
+    base64 < "/dev/random" | fold -w "$1" | head -n 1;
+    return 0
+}
+RemoveBlank () 
+{ 
+    sed "s|^ *||g; s| *$||g; s|^	*||g; s|	*$||g; /^$/d"
+}
+TextBox () 
+{ 
+    local _Content=() _Length _Vertical="|" _Line="=";
+    readarray -t _Content;
+    _Length="$(PrintArray "${_Content[@]}" | awk '{ if ( length > x ) { x = length } }END{ print x }')";
+    echo "${_Vertical}${_Line}$(yes "${_Line}" | head -n "$_Length" | tr -d "\n")${_Vertical}";
+    for _Str in "${_Content[@]}";
+    do
+        echo "${_Vertical}${_Str}$(yes " " | head -n "$(( _Length + 1 - "${#_Str}"))" | tr -d "\n")${_Vertical}";
+    done;
+    echo "${_Vertical}${_Line}$(yes "${_Line}" | head -n "$_Length" | tr -d "\n")${_Vertical}"
+}
+ToLower () 
+{ 
+    local _Str="${1,,}";
+    [[ -z "${_Str-""}" ]] || echo "${_Str}"
+}
+ToLowerStdin () 
+{ 
+    local _Str;
+    ForEach eval "_Str=\"{}\"; echo \"\${_Str,,}\"";
+    unset _Str
+}
+CalcInt () 
+{ 
+    echo "$(( "$@" ))"
+}
+Ntest () 
+{ 
+    (( "$@" )) || return 1
+}
+Sum () 
+{ 
+    local _Arg=();
+    ForEach eval '_Arg+=("{}" "+")' < <(PrintArray "$@");
+    readarray -t _Arg < <(PrintArray "${_Arg[@]}" | sed "${#_Arg[@]}d");
+    CalcInt "${_Arg[@]}"
+}
+Bool () 
+{ 
+    case "$(ToLower "$(PrintEval "${1}")")" in 
+        "true")
+            return 0
         ;;
-        "stderr")
-            for i in $(seq "$(echo -e "${string}" | wc -l)");
-            do
-                echo -n "$l " 1>&2;
-                echo -e "${string}" | head -n "${i}" | tail -n 1 1>&2;
-            done
+        "" | "false")
+            return 1
+        ;;
+        *)
+            return 2
         ;;
     esac
 }
-Msg.Debug () 
+GetFuncList () 
 { 
-    Msg.Common "Debug:" "${*}" stderr
+    declare -F | cut -d " " -f 3
 }
-Msg.Err () 
+UnsetAllFunc () 
 { 
-    Msg.Common "Error:" "${*}" stderr
+    local Func;
+    while read -r Func; do
+        unset "$Func";
+    done < <(GetFuncList)
 }
-Msg.Info () 
+RemoveMatchLine () 
 { 
-    Msg.Common " Info:" "${*}" stdout
-}
-Msg.Warn () 
-{ 
-    Msg.Common " Warn:" "${*}" stderr
+    local i unseted=false;
+    while read -r i; do
+        if [[ "$i" != "${1}" ]] || [[ "${unseted}" = true ]]; then
+            echo "$i";
+        else
+            unseted=true;
+        fi;
+    done;
+    unset unseted i
 }
