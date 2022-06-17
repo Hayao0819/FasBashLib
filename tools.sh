@@ -47,10 +47,14 @@ Main(){
                     RunScript "$BinDir/Build-Single.sh" "$@"
                     ;;
                 all | a*)
+                    SCRIPT_RUN=true
                     (
                         cd "$MainDir"
                         make
                     )
+                    ;;
+                zip | z*)
+                    RunScript "$BinDir/Build-Zip.sh" "$@"
                     ;;
             esac
             ;;
