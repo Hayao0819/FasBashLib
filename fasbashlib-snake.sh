@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.2.3.r277.g78821ae-snake"
+FSBLIB_VERSION="v0.2.3.r280.gc74bb25-snake"
 FSBLIB_REQUIRE="ModernBash"
 
 msg.common () 
