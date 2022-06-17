@@ -170,6 +170,7 @@ Main(){
             ;;
         "help")
             HelpDoc
+            SCRIPT_RUN=true
             ;;
     esac || return 1
 
@@ -181,7 +182,7 @@ Main(){
     return 0
 }
 
-if (( $# < 2 )); then
+if (( $# < 1 )); then
     Prompt="$(echo -e "\e[1mFsbLib > \e[m")"
     echo "インタラクティブモード(Beta)"
     while true; do
