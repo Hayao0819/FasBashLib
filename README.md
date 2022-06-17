@@ -1,4 +1,4 @@
-## FasBashLib - A collection of small functions for Bash
+## FasBashLib - A collection of many personal functions for modern Bash
 
 <p>
     <a href="/LICENSE.md">
@@ -21,9 +21,21 @@
     </a>
 </p>
 
-A collection of small functions designed to quickly write secure code in Bash 5.x. 
+A collection of many personal functions for modern Bash to write safe and readable code quickly
 
-Some functions are also for Arch Linux.
+They are grouped by function type, and some functions are specific to a particular system.
+
+I like Arch Linux, so there may be many for it.
+
+## Why?
+
+Modern Bash is feature-rich, making it possible to write secure code compared to pure shells.
+
+If you are coding utilizing these features, you will find yourself writing the same code over and over again.
+
+Also, Bash has no type restrictions, so even something as simple as evaluating boolean values can become redundant if you consider safety.
+
+This library has many functions, especially for arrays, that make it easy to write safe code that takes special characters such as whitespace into account.
 
 ## Use it
 
