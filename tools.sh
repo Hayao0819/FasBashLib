@@ -186,7 +186,7 @@ if (( $# < 2 )); then
     echo "インタラクティブモード(Beta)"
     while true; do
         IFS=" " read -p "$Prompt" -r -e -a  Args
-        case "${Args[0]}" in
+        case "${Args[0]-""}" in
             "clear")
                 clear
                 continue
