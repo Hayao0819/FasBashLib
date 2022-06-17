@@ -289,6 +289,7 @@ _Make_Lib(){
         LibName="$(basename "$Dir")"
         LibPrefix="$("$LibDir/GetMeta.sh" "$LibName" "Prefix")"
         TmpLibFile="$TmpDir/$LibName.sh"
+        ReplacePrefix=true
 
         # ファイルの初期化
         echo -n > "$TmpLibFile"
