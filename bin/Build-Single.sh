@@ -177,13 +177,11 @@ _Make_TargetLib(){
             local Lib _FullLibList=()
             readarray -t _FullLibList < <(find "$SrcDir" -mindepth 1 -maxdepth 1 -type d )
             # IgnoreListのものを除外
-            set -xv
             for Lib in "${_FullLibList[@]}"; do
                 if ! PrintArray "${IgnoreLib[@]}" | grep -qx "$(basename "$Lib")"; then
                     LoadLibDir+=("$Lib")
                 fi
             done
-            set +xv
         fi
         echo "Load libs: $(printf "%s\n" "${LoadLibDir[@]}" | xargs -L 1 basename | tr "\n" " ")" >&2
         printf "%s\n" "${LoadLibDir[@]}"
