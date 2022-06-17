@@ -5,6 +5,10 @@
 # shellcheck source=/dev/null
 source "$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)/lib/Common.sh"
 
+# Ccnfigure dir
+OutDir="$MainDir/out"
+
+
 # Parse args
 while [[ -n "${1-""}" ]]; do
     [[ "$1" == "-"* ]] || break
@@ -25,9 +29,6 @@ while [[ -n "${1-""}" ]]; do
             ;;
     esac
 done
-
-# Ccnfigure dir
-OutDir="$MainDir/out"
 
 # Check dir
 mkdir -p "$OutDir"
