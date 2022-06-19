@@ -38,7 +38,7 @@ jobs:
           git clean  -d  -f .
           git pull --allow-unrelated-histories origin "${PUSH_BRANCH}"
           git checkout -b "${PUSH_BRANCH}"
-          make -B
+          make -B RELEASE_DIR="./" release
           make -B docs
           rm -rf .gitignore && echo "Removed .gitignore"
           git add --force ./docs/ ./fasbashlib*.sh
