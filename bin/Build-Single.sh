@@ -383,7 +383,8 @@ _Make_All_Replace(){
     # 全ての呼び出しのスネークケース置き換え
     # TmpFile_FuncListを元に生成されたスクリプト全体を置き換えます
     #if [[ "$SnakeCase" = true ]]; then
-    if ! [[ ! "$CodeType" = "Upper" ]]; then
+    if [[ ! "$CodeType" = "Upper" ]]; then
+    #if ! [[ ! "$CodeType" = "Upper" ]]; then
         # 関数一覧をプレフィックスを含んだ
         while read -r Line; do
             LibPrefix="$(cut -d "=" -f 1 <<< "$Line" | sed "s|^ *||g; s| *$||g")"
