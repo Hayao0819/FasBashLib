@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.2.3.r300.gac11343-snake"
+FSBLIB_VERSION="v0.2.3.r303.gd31647b-snake"
 FSBLIB_REQUIRE="ModernBash"
 
 msg.common () 
@@ -76,37 +76,37 @@ array.append ()
 { 
     local _ArrName="$1";
     shift 1 || return 1;
-    readarray -t -O "$(ArrayIndex "$_ArrName")" "$_ArrName" < <(cat)
+    readarray -t -O "$(array_index "$_ArrName")" "$_ArrName" < <(cat)
 }
 array.from_str () 
 { 
     declare -a -x "$1";
-    readarray -t "$1" < <(BreakChar)
+    readarray -t "$1" < <(break_char)
 }
 array.pop () 
 { 
-    readarray -t "$1" < <(PrintEvalArray "$1" | sed -e '$d')
+    readarray -t "$1" < <(print_eval_array "$1" | sed -e '$d')
 }
 array.push () 
 { 
-    eval "PrintArray \"\${$1[@]}\"" | grep -qx "$2" && return 0;
+    eval "print_array \"\${$1[@]}\"" | grep -qx "$2" && return 0;
     eval "$1+=(\"$2\")"
 }
 array.remove () 
 { 
-    readarray -t "$1" < <(PrintEvalArray "$1" | RemoveMatchLine "$2")
+    readarray -t "$1" < <(print_eval_array "$1" | remove_match_line "$2")
 }
 array.rev () 
 { 
-    readarray -t "$1" < <(PrintEvalArray "$1" | tac)
+    readarray -t "$1" < <(print_eval_array "$1" | tac)
 }
 array.shift () 
 { 
-    readarray -t "$1" < <(PrintEvalArray "$1" | sed "1,${2-"1"}d")
+    readarray -t "$1" < <(print_eval_array "$1" | sed "1,${2-"1"}d")
 }
 array.eval () 
 { 
-    eval "PrintArray \"\${$1[@]}\""
+    eval "print_array \"\${$1[@]}\""
 }
 array.print () 
 { 
@@ -116,18 +116,18 @@ array.print ()
 array.index_of () 
 { 
     local n=();
-    readarray -t n < <(grep -x -n "$1" | cut -d ":" -f 1 | ForEach eval echo '$(( {} - 1 ))');
+    readarray -t n < <(grep -x -n "$1" | cut -d ":" -f 1 | for_each eval echo '$(( {} - 1 ))');
     (( "${#n[@]}" >= 1 )) || return 1;
-    PrintArray "${n[@]}";
+    print_array "${n[@]}";
     return 0
 }
 array.length () 
 { 
-    PrintEvalArray "$1" | wc -l
+    print_eval_array "$1" | wc -l
 }
 array.includes () 
 { 
-    PrintEvalArray "$1" | grep -qx "$2"
+    print_eval_array "$1" | grep -qx "$2"
 }
 awk.cos () 
 { 
@@ -178,19 +178,19 @@ pm.get_config ()
 }
 pm.get_installed_pkg_ver () 
 { 
-    ForEach pacman -Qq "{}" | cut -d " " -f 2;
-    PrintArray "${PIPESTATUS[@]}" | grep -qx "1" && return 1;
+    for_each pacman -Qq "{}" | cut -d " " -f 2;
+    print_array "${PIPESTATUS[@]}" | grep -qx "1" && return 1;
     return 0
 }
 pm.get_keyring_list () 
 { 
-    find "$(@GetKeyringDir)" -name "*.gpg" | GetBaseName | RemoveFileExt
+    find "$(@GetKeyringDir)" -name "*.gpg" | get_base_name | remove_file_ext
 }
 pm.get_latest_pkg_ver () 
 { 
     local _LANG="${LANG-""}";
     export LANG=C;
-    ForEach pm.run -Si "{}" | grep "^Version" | cut -d ":" -f 2 | RemoveBlank;
+    for_each pm.run -Si "{}" | grep "^Version" | cut -d ":" -f 2 | remove_blank;
     [[ -n "$_LANG" ]] && export LANG="$_LANG";
     return 0
 }
@@ -205,19 +205,19 @@ pm.get_pacman_kernel_pkg ()
 pm.get_pacman_keyring_dir () 
 { 
     local _KeyringDir="";
-    _KeyringDir="$(LANG=C pacman-key -h | RemoveBlank | grep -A 1 -- "^--populate" | tail -n 1 | cut -d "/" -f 2- | sed "s|'$||g")";
+    _KeyringDir="$(LANG=C pacman-key -h | remove_blank | grep -A 1 -- "^--populate" | tail -n 1 | cut -d "/" -f 2- | sed "s|'$||g")";
     : "${_KeyringDir="usr/share/pacman/keyrings"}";
     _KeyringDir="$(pm.get_root)/$_KeyringDir";
     _KeyringDir="$(sed -E "s|/+|/|g" <<< "$_KeyringDir")";
     if [[ -e "$_KeyringDir" ]]; then
-        Readlinkf "$_KeyringDir";
+        readlinkf "$_KeyringDir";
     else
         echo "$_KeyringDir";
     fi
 }
 pm.get_repo_conf () 
 { 
-    ForEach eval 'echo [{}] && pm.get_config -r {}'
+    for_each eval 'echo [{}] && pm.get_config -r {}'
 }
 pm.get_repo_list_from_conf () 
 { 
@@ -229,7 +229,7 @@ pm.get_repo_pkg_list ()
 }
 pm.get_repo_server () 
 { 
-    ForEach eval 'pm.get_config -r {}' | grep "^Server" | ForEach eval "Ini.ParseLine <<< '{}' ; printf '%s\n' \${VALUE}"
+    for_each eval 'pm.get_config -r {}' | grep "^Server" | for_each eval "ini.parse_line <<< '{}' ; printf '%s\n' \${VALUE}"
 }
 pm.get_repo_ver () 
 { 
@@ -257,12 +257,12 @@ pm.run_key ()
 }
 pm.get_db_next_section () 
 { 
-    pm.get_db_section_list | grep -x -A 1 "^%$1%$" | GetLine 2 | sed "s|^%||g; s|%$||g"
+    pm.get_db_section_list | grep -x -A 1 "^%$1%$" | get_line 2 | sed "s|^%||g; s|%$||g"
 }
 pm.get_db_section () 
 { 
     readarray -t _Stdin;
-    PrintArray "${_Stdin[@]}" | sed -ne "/^%$1%$/,/^%$(PrintEvalArray _Stdin | pm.get_db_next_section "$1")%$/p" | sed "1d; \$d"
+    print_array "${_Stdin[@]}" | sed -ne "/^%$1%$/,/^%$(print_eval_array _Stdin | pm.get_db_next_section "$1")%$/p" | sed "1d; \$d"
 }
 pm.get_db_section_list () 
 { 
@@ -282,11 +282,11 @@ pm.get_db_tmp_dir ()
 }
 pm.get_pkg_arch () 
 { 
-    pm.get_sync_db_desc "$1" | pm.get_db_section ARCH | RemoveBlank
+    pm.get_sync_db_desc "$1" | pm.get_db_section ARCH | remove_blank
 }
 pm.get_repo_list_from_local_db () 
 { 
-    find "$(pm.get_config DBPath)/sync" -mindepth 1 -maxdepth 1 -type f | GetBaseName | sed "s|.db$||g";
+    find "$(pm.get_config DBPath)/sync" -mindepth 1 -maxdepth 1 -type f | get_base_name | sed "s|.db$||g";
     return 0
 }
 pm.get_sync_all_desc () 
@@ -311,8 +311,8 @@ pm.get_sync_db_desc_path ()
 }
 pm.get_virtual_pkg_list () 
 { 
-    pm.get_repo_list_from_local_db | ForEach pm.open_sync_db {};
-    pm.get_sync_all_desc | ForEach eval "pm.get_db_section PROVIDES < {}" | RemoveBlank
+    pm.get_repo_list_from_local_db | for_each pm.open_sync_db {};
+    pm.get_sync_all_desc | for_each eval "pm.get_db_section PROVIDES < {}" | remove_blank
 }
 pm.is_opend_sync_db () 
 { 
@@ -342,17 +342,17 @@ pm.parse_pkg_file_name ()
     if grep "/" <<< "$_Pkg"; then
         _Pkg="$(basename "$_Pkg")";
     fi;
-    _FileExt="$(GetLastSplitString "-" "$_Pkg" | cut -d "." -f 2-)";
+    _FileExt="$(get_last_split_string "-" "$_Pkg" | cut -d "." -f 2-)";
     _PkgWithOutExt="${_Pkg%%".${_FileExt}"}";
-    _Arch=$(GetLastSplitString "-" "${_PkgWithOutExt}");
-    _PkgRel=$(GetLastSplitString "-" "${_PkgWithOutExt%%"-${_Arch}"}");
-    _PkgVer=$(GetLastSplitString "-" "${_PkgWithOutExt%%"-${_PkgRel}-${_Arch}"}");
+    _Arch=$(get_last_split_string "-" "${_PkgWithOutExt}");
+    _PkgRel=$(get_last_split_string "-" "${_PkgWithOutExt%%"-${_Arch}"}");
+    _PkgVer=$(get_last_split_string "-" "${_PkgWithOutExt%%"-${_PkgRel}-${_Arch}"}");
     _PkgName="${_PkgWithOutExt%%"-${_PkgVer}-${_PkgRel}-${_Arch}"}";
     _ParsedPkg=("${_PkgName}" "-" "$_PkgVer" "-" "$_PkgRel" "-" "$_Arch" ".$_FileExt");
-    if [[ ! "$(PrintArray "${_ParsedPkg[@]}" | tr -d "\n")" = "${_Pkg}" ]]; then
+    if [[ ! "$(print_array "${_ParsedPkg[@]}" | tr -d "\n")" = "${_Pkg}" ]]; then
         return 1;
     fi;
-    PrintArray "${_ParsedPkg[@]}"
+    print_array "${_ParsedPkg[@]}"
 }
 misskey.setup () 
 { 
@@ -408,7 +408,7 @@ misskey.send_req ()
     _CurlArgs+=(-H "Content-Type: application/json");
     _CurlArgs+=(-d "$(misskey.make_json "$@")");
     _CurlArgs+=("$_Url");
-    Msg.Debug "Run: ${_CurlArgs[*]//"${MISSKEY_TOKEN}"/"TOKEN"})";
+    msg.debug "Run: ${_CurlArgs[*]//"${MISSKEY_TOKEN}"/"TOKEN"})";
     curl "${_CurlArgs[@]}"
 }
 misskey.notes._create () 
@@ -440,8 +440,8 @@ csv.get_clm_cnt ()
         grep -qE "^#" <<< "$_Line" && continue;
         _CurrentClmCnt=$(tr "${CSVDELIM-","}" "\n" | wc -l);
         (( _CurrentClmCnt > _ClmCnt )) && _ClmCnt="$_CurrentClmCnt";
-    done < <(PrintArray "${_RawCsvLine[@]}");
-    RemoveBlank <<< "$_ClmCnt";
+    done < <(print_array "${_RawCsvLine[@]}");
+    remove_blank <<< "$_ClmCnt";
     return 0
 }
 csv.to_bash_array () 
@@ -455,11 +455,11 @@ csv.to_bash_array ()
             (( $(tr "${CSVDELIM-","}" "\n" <<< "$_Line" | wc -l) >= ${#} )) && echo "$_Line"
         done < <(grep -v "^#")
     );
-    _ClmCnt=$(PrintArray "${_RawCsvLine[@]}" | csv.get_clm_cnt);
+    _ClmCnt=$(print_array "${_RawCsvLine[@]}" | csv.get_clm_cnt);
     while read -r _Cnt; do
         readarray -t "$(sed "s|{}|$(eval "echo \"\${${_Cnt}}\"")|g" <<< "$ArrayPrefix")" < <(
             # shellcheck disable=SC2031
-            PrintArray "${_RawCsvLine[@]}" | cut -d "${CSVDELIM-","}" -f "$_Cnt"
+            print_array "${_RawCsvLine[@]}" | cut -d "${CSVDELIM-","}" -f "$_Cnt"
         );
     done < <(seq 1 "$#")
 }
@@ -487,7 +487,7 @@ ini.get_param ()
             ;;
         esac;
         _LineNo=$(( _LineNo + 1  ));
-    done < <(PrintArray "${_RawIniLine[@]}");
+    done < <(print_array "${_RawIniLine[@]}");
     return "$_Exit"
 }
 ini.get_param_list () 
@@ -514,7 +514,7 @@ ini.get_param_list ()
             ;;
         esac;
         _LineNo=$(( _LineNo + 1  ));
-    done < <(PrintArray "${_RawIniLine[@]}");
+    done < <(print_array "${_RawIniLine[@]}");
     return "$_Exit"
 }
 ini.get_section_list () 
@@ -534,14 +534,14 @@ ini.get_section_list ()
             ;;
         esac;
         _LineNo=$(( _LineNo + 1  ));
-    done < <(PrintArray "${_RawIniLine[@]}");
+    done < <(print_array "${_RawIniLine[@]}");
     return "$_Exit"
 }
 ini.parse_line () 
 { 
     local _Line;
     TYPE="" PARAM="" VALUE="" SECTION="";
-    _Line="$(RemoveBlank <<< "$(cat)")";
+    _Line="$(remove_blank <<< "$(cat)")";
     case "$_Line" in 
         "["*"]")
             TYPE="SECTION";
@@ -552,8 +552,8 @@ ini.parse_line ()
         ;;
         *"="*)
             TYPE="PARAM-VALUE";
-            PARAM="$(RemoveBlank <<< "$(cut -d "=" -f 1 <<< "$_Line")")";
-            VALUE="$(RemoveBlank <<< "$(cut -d "=" -f 2- <<< "$_Line")")"
+            PARAM="$(remove_blank <<< "$(cut -d "=" -f 1 <<< "$_Line")")";
+            VALUE="$(remove_blank <<< "$(cut -d "=" -f 2- <<< "$_Line")")"
         ;;
         *)
             TYPE="ERROR"
@@ -713,7 +713,7 @@ arch.get_kernel_src_list ()
 }
 arch.get_mkinitcpio_preset_list () 
 { 
-    find "/etc/mkinitcpio.d/" -name "*.preset" -type f | GetBaseName | RemoveFileExt
+    find "/etc/mkinitcpio.d/" -name "*.preset" -type f | get_base_name | remove_file_ext
 }
 fsblib.env_check () 
 { 
@@ -780,7 +780,7 @@ parse_arg ()
             if [[ "${1}" = "--"* ]]; then
                 if printf "%s\n" "${_LongWithArg[@]}" | grep -qx "${1#--}"; then
                     if [[ "${2}" = "-"* ]]; then
-                        Msg.Err "${1} の引数が指定されていません";
+                        msg.err "${1} の引数が指定されていません";
                         return 2;
                     else
                         _OutArg+=("${1}" "${2}");
@@ -791,7 +791,7 @@ parse_arg ()
                         _OutArg+=("${1}");
                         shift 1;
                     else
-                        Msg.Err "${1} は不正なオプションです。-hで使い方を確認してください。";
+                        msg.err "${1} は不正なオプションです。-hで使い方を確認してください。";
                         return 1;
                     fi;
                 fi;
@@ -804,7 +804,7 @@ parse_arg ()
                                 _OutArg+=("-${_Chr}" "${2}");
                                 _Shift=2;
                             else
-                                Msg.Err "-${_Chr} の引数が指定されていません";
+                                msg.err "-${_Chr} の引数が指定されていません";
                                 return 2;
                             fi;
                         else
@@ -812,7 +812,7 @@ parse_arg ()
                                 _OutArg+=("-${_Chr}");
                                 _Shift=1;
                             else
-                                Msg.Err "-${_Chr} は不正なオプションです。-hで使い方を確認してください。";
+                                msg.err "-${_Chr} は不正なオプションです。-hで使い方を確認してください。";
                                 return 1;
                             fi;
                         fi;
@@ -880,7 +880,7 @@ cache.create ()
 }
 cache.create_dir () 
 { 
-    FSBLIB_CACHEID="${FSBLIB_CACHEID-"$(RandomString "10")"}";
+    FSBLIB_CACHEID="${FSBLIB_CACHEID-"$(random_string "10")"}";
     export FSBLIB_CACHEID="$FSBLIB_CACHEID";
     local TMPDIR="${TMPDIR-"/tmp"}";
     local _Dir="$TMPDIR/${FSBLIB_CACHEID}";
@@ -950,7 +950,7 @@ choice ()
 }
 readlinkf () 
 { 
-    Readlinkf_Posix "$@"
+    readlinkf_Posix "$@"
 }
 readlinkf__posix () 
 { 
@@ -1015,7 +1015,7 @@ readlinkf__readlink ()
 }
 srcinfo.format () 
 { 
-    RemoveBlank | sed "/^$/d" | grep -v "^#" | ForEach eval "srcinfo.parse Line <<< \"{}\""
+    remove_blank | sed "/^$/d" | grep -v "^#" | for_each eval "srcinfo.parse Line <<< \"{}\""
 }
 srcinfo.get_key_list () 
 { 
@@ -1077,33 +1077,33 @@ srcinfo.get_value ()
     local _AllValues=("pkgdesc" "url" "install" "changelog");
     local _AllArrays=("arch" "groups" "license" "noextract" "options" "backup" "validpgpkeys");
     local _AllArraysWithArch=("source" "depends" "checkdepends" "makedepends" "optdepends" "provides" "conflicts" "replaces" "md5sums" "sha1sums" "sha224sums" "sha256sums" "sha384sums" "sha512sums");
-    ArrayAppend _SrcInfo;
-    ArrayIncludes _PkgBaseValues "$1" && { 
-        PrintEvalArray _SrcInfo | srcinfo.get_value_in_pkg_base "$1";
+    array_append _SrcInfo;
+    array_includes _PkgBaseValues "$1" && { 
+        print_eval_array _SrcInfo | srcinfo.get_value_in_pkg_base "$1";
         return 0
     };
     [[ -n "${2-""}" ]] || return 1;
-    if ArrayIncludes _AllValues "$1" || ArrayIncludes _AllArrays "$1"; then
-        ArrayAppend _Output < <(PrintEvalArray _SrcInfo | srcinfo.get_value_in_pkg_base "$1");
-        ArrayAppend _Output < <(PrintEvalArray _SrcInfo | srcinfo.get_value_in_pkg_name "$2" "$1");
-        PrintArray "${_Output[@]}" | tail -n 1;
+    if array_includes _AllValues "$1" || array_includes _AllArrays "$1"; then
+        array_append _Output < <(print_eval_array _SrcInfo | srcinfo.get_value_in_pkg_base "$1");
+        array_append _Output < <(print_eval_array _SrcInfo | srcinfo.get_value_in_pkg_name "$2" "$1");
+        print_array "${_Output[@]}" | tail -n 1;
         return 0;
     fi;
-    ArrayIncludes _AllArraysWithArch "$1" || return 1;
+    array_includes _AllArraysWithArch "$1" || return 1;
     local _Arch _ArchList;
     if [[ -z "${3-""}" ]]; then
-        ArrayAppend _ArchList < <(PrintEvalArray _SrcInfo | srcinfo.get_value arch "$2");
+        array_append _ArchList < <(print_eval_array _SrcInfo | srcinfo.get_value arch "$2");
     else
-        ArrayAppend _ArchList < <(tr "," "\n" <<< "$3" | RemoveBlank);
+        array_append _ArchList < <(tr "," "\n" <<< "$3" | remove_blank);
     fi;
-    ArrayAppend _Output < <(PrintEvalArray _SrcInfo | srcinfo.get_value_in_pkg_base "$1");
-    ArrayAppend _Output < <(PrintEvalArray _SrcInfo | srcinfo.get_value_in_pkg_name "$2" "$1");
+    array_append _Output < <(print_eval_array _SrcInfo | srcinfo.get_value_in_pkg_base "$1");
+    array_append _Output < <(print_eval_array _SrcInfo | srcinfo.get_value_in_pkg_name "$2" "$1");
     for _Arch in "${_ArchList[@]}";
     do
-        ArrayAppend _Output < <(PrintEvalArray _SrcInfo | srcinfo.get_value_in_pkg_base "$1_${_Arch}");
-        ArrayAppend _Output < <(PrintEvalArray _SrcInfo | srcinfo.get_value_in_pkg_name "$2" "$1_${_Arch}");
+        array_append _Output < <(print_eval_array _SrcInfo | srcinfo.get_value_in_pkg_base "$1_${_Arch}");
+        array_append _Output < <(print_eval_array _SrcInfo | srcinfo.get_value_in_pkg_name "$2" "$1_${_Arch}");
     done;
-    PrintEvalArray _Output;
+    print_eval_array _Output;
     return 0
 }
 srcinfo.get_value_in_pkg_base () 
@@ -1137,8 +1137,8 @@ srcinfo.parse ()
     shift 1;
     local _String _Key _Value;
     _String="$(cat)";
-    _Key="$(cut -d "=" -f 1 <<<  "$_String" | RemoveBlank)";
-    _Value="$(cut -d "=" -f 2- <<< "$_String" | RemoveBlank)";
+    _Key="$(cut -d "=" -f 1 <<<  "$_String" | remove_blank)";
+    _Value="$(cut -d "=" -f 2- <<< "$_String" | remove_blank)";
     case "$_Output" in 
         "Line")
             echo "$_Key=$_Value"
@@ -1154,39 +1154,39 @@ srcinfo.parse ()
 }
 add_new_to_array () 
 { 
-    Array.Push "$@"
+    array.push "$@"
 }
 array_append () 
 { 
-    Array.Append "$1"
+    array.append "$1"
 }
 array_includes () 
 { 
-    Array.Includes "$@"
+    array.includes "$@"
 }
 array_index () 
 { 
-    Array.Length "$1"
+    array.length "$1"
 }
 get_array_index () 
 { 
-    Array.IndexOf "$1"
+    array.index_of "$1"
 }
 print_array () 
 { 
-    Array.Print "$@"
+    array.print "$@"
 }
 print_eval_array () 
 { 
-    Array.Eval "$1"
+    array.eval "$1"
 }
 rev_array () 
 { 
-    Array.Rev "$1"
+    array.rev "$1"
 }
 str_to_char_list () 
 { 
-    Array.FromStr "$1"
+    array.from_str "$1"
 }
 file_type () 
 { 
@@ -1194,16 +1194,16 @@ file_type ()
 }
 get_base_name () 
 { 
-    ForEach basename "{}"
+    for_each basename "{}"
 }
 get_file_ext () 
 { 
-    GetBaseName | rev | cut -d "." -f 1 | rev
+    get_base_name | rev | cut -d "." -f 1 | rev
 }
 remove_file_ext () 
 { 
     local Ext;
-    ForEach eval 'Ext=$(GetFileExt <<< {}); sed "s|.$Ext$||g" <<< {}; unset Ext'
+    for_each eval 'Ext=$(get_file_ext <<< {}); sed "s|.$Ext$||g" <<< {}; unset Ext'
 }
 check_func_defined () 
 { 
@@ -1228,7 +1228,7 @@ loop ()
 { 
     local _T="$1";
     shift 1 || return 1;
-    ForEach "$@" < <(yes "" | head -n "$_T")
+    for_each "$@" < <(yes "" | head -n "$_T")
 }
 break_char () 
 { 
@@ -1266,7 +1266,7 @@ text_box ()
 { 
     local _Content=() _Length _Vertical="|" _Line="=";
     readarray -t _Content;
-    _Length="$(PrintArray "${_Content[@]}" | awk '{ if ( length > x ) { x = length } }END{ print x }')";
+    _Length="$(print_array "${_Content[@]}" | awk '{ if ( length > x ) { x = length } }END{ print x }')";
     echo "${_Vertical}${_Line}$(yes "${_Line}" | head -n "$_Length" | tr -d "\n")${_Vertical}";
     for _Str in "${_Content[@]}";
     do
@@ -1282,7 +1282,7 @@ to_lower ()
 to_lower_stdin () 
 { 
     local _Str;
-    ForEach eval "_Str=\"{}\"; echo \"\${_Str,,}\"";
+    for_each eval "_Str=\"{}\"; echo \"\${_Str,,}\"";
     unset _Str
 }
 calc_int () 
@@ -1296,13 +1296,13 @@ ntest ()
 sum () 
 { 
     local _Arg=();
-    ForEach eval '_Arg+=("{}" "+")' < <(PrintArray "$@");
-    readarray -t _Arg < <(PrintArray "${_Arg[@]}" | sed "${#_Arg[@]}d");
-    CalcInt "${_Arg[@]}"
+    for_each eval '_Arg+=("{}" "+")' < <(print_array "$@");
+    readarray -t _Arg < <(print_array "${_Arg[@]}" | sed "${#_Arg[@]}d");
+    calc_int "${_Arg[@]}"
 }
 bool () 
 { 
-    case "$(ToLower "$(PrintEval "${1}")")" in 
+    case "$(to_lower "$(print_eval "${1}")")" in 
         "true")
             return 0
         ;;
@@ -1323,7 +1323,7 @@ unset_all_func ()
     local Func;
     while read -r Func; do
         unset "$Func";
-    done < <(GetFuncList)
+    done < <(get_func_list)
 }
 remove_match_line () 
 { 

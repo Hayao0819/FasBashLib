@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.2.3.r300.gac11343-upper"
+FSBLIB_VERSION="v0.2.3.r303.gd31647b-upper"
 FSBLIB_REQUIRE="ModernBash"
 
 Msg.Common () 
