@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.2.3.r306.g563d186-upper"
+FSBLIB_VERSION="v0.2.3.r309.g7a388e7-upper"
 FSBLIB_REQUIRE="ModernBash"
 
 SrcInfo.Format () 
@@ -796,7 +796,7 @@ Ini.ParseLine ()
 Misskey.Setup () 
 { 
     export MISSKEY_DOMAIN="${1-"${MISSKEY_DOMAIN-""}"}";
-    export MISSKEY_TOKEN="${2-"${MISSKEY_DOMAIN-""}"}";
+    export MISSKEY_TOKEN="${2-"${MISSKEY_TOKEN-""}"}";
     export MISSKEY_ENTRY="https://${MISSKEY_DOMAIN}/api"
 }
 Misskey.BindingBase () 
