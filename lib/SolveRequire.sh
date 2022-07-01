@@ -5,6 +5,12 @@ set -Eeu
 MainDir="$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)"
 SrcDir="$MainDir/src"
 LibDir="$MainDir/lib"
+NoMyself=false
+
+if [[ "$1" = "-nomyself" ]]; then
+    NoMyself=true
+    shift 1
+fi
 
 if (( $# < 1 )); then
     echo "Usage: $(basename "$0") LibName"
@@ -62,4 +68,8 @@ SolveRequire "$Target"
 #echo "LibList: ${LibList[*]}" >&2
 #echo "LibFrom: ${LibFrom[*]}" >&2
 
-printf "%s\n" "${LibList[@]}"
+if [[ "${NoMyself}" = true ]]; then
+    printf "%s\n" "${LibList[@]}" | grep -xv "$Target" || true
+else
+    printf "%s\n" "${LibList[@]}"
+fi
