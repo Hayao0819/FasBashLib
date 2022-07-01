@@ -120,3 +120,20 @@ GetLibFileList(){
 GetLibFuncList(){
     "${LibDir}/GetFuncList.sh" "$@"
 }
+
+# JSONを作成する
+# ビルドされたMisskey.MakeJsonからコピー
+MakeJson () 
+{ 
+    local i _Key _Value;
+    for i in "$@";
+    do
+        _Key=$(cut -d "=" -f 1 <<< "$i");
+        _Value=$(cut -d "=" -f 2- <<< "$i");
+        if [[ "$_Value" =~ ^[0-9]+$ ]] || [[ "$_Value" = true ]] || [[ "$_Value" = false ]] || [[ "$_Value" = "{"*"}" ]] || [[ "$_Value" = "["*"]" ]]; then
+            echo -n "{\"$_Key\": $_Value}";
+        else
+            echo -n "{\"$_Key\": \"$_Value\"}";
+        fi;
+    done | sed "s|}{|,|g" | jq -c -M
+}
