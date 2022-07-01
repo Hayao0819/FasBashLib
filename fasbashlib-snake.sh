@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.2.3.r309.g7a388e7-snake"
+FSBLIB_VERSION="0.2.4.r223.g699b47d-snake"
 FSBLIB_REQUIRE="ModernBash"
 
 srcinfo.format () 
@@ -831,7 +831,7 @@ misskey.make_json ()
     do
         _Key=$(cut -d "=" -f 1 <<< "$i");
         _Value=$(cut -d "=" -f 2- <<< "$i");
-        if [[ "$_Value" =~ ^[0-9]+$ ]] || [[ "$_Value" = true ]] || [[ "$_Value" = false ]] || [[ "$_Value" = "{"*"}" ]]; then
+        if [[ "$_Value" =~ ^[0-9]+$ ]] || [[ "$_Value" = true ]] || [[ "$_Value" = false ]] || [[ "$_Value" = "{"*"}" ]] || [[ "$_Value" = "["*"]" ]]; then
             echo -n "{\"$_Key\": $_Value}";
         else
             echo -n "{\"$_Key\": \"$_Value\"}";
