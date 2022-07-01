@@ -6,7 +6,7 @@ MakeJson(){
     for i in "i=$MISSKEY_TOKEN" "$@"; do
         _Key=$(cut -d "=" -f 1 <<< "$i")
         _Value=$(cut -d "=" -f 2- <<< "$i")
-        if [[ "$_Value" =~ ^[0-9]+$ ]] || [[ "$_Value" = true ]] || [[ "$_Value" = false ]] || [[ "$_Value" = "{"*"}" ]]; then
+        if [[ "$_Value" =~ ^[0-9]+$ ]] || [[ "$_Value" = true ]] || [[ "$_Value" = false ]] || [[ "$_Value" = "{"*"}" ]] || [[ "$_Value" = "["*"]" ]]; then
             echo -n "{\"$_Key\": $_Value}"
         else
             echo -n "{\"$_Key\": \"$_Value\"}"
