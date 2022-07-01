@@ -328,6 +328,12 @@ _Make_Lib(){
                     echo "${LibPrefix-""} = ${Func}" >> "$TmpFile_FuncList"
                     NewFuncName="$(MakeFuncName "${LibPrefix-""}" "$Func")"
                     "${Debug}" && echo "置き換え1: 関数定義の${Func}を${NewFuncName}に置き換えて${TmpLibFile}に書き込み" >&2
+
+                    # 関数を1行にまとめられないかなって...
+                    #_GetFuncCodeFromFile "${Dir}/${File}" "$Func" | sed "1 s|${Func} ()|${NewFuncName} ()|g" | \
+                    #    sed "s|^}$|;}|g" | RemoveBlank | sed "s|^| |g; s|$| |g" | tr -d "\n" | RemoveBlank >> "$TmpLibFile"
+                    #echo >> "$TmpLibFile"
+
                     _GetFuncCodeFromFile "${Dir}/${File}" "$Func" | sed "1 s|${Func} ()|${NewFuncName} ()|g" >> "$TmpLibFile"
                 fi
             done
