@@ -80,6 +80,9 @@ Main(){
                 single | s*)
                     RunScript "$BinDir/Build-Single.sh" "$@"
                     ;;
+                info | json | j* | i*)
+                    RunScript "${BinDir}/Build-Info.sh" "$@"
+                    ;;
                 all | a*)
                     SCRIPT_RUN=true
                     (
