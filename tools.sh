@@ -32,6 +32,7 @@ HelpDoc(){
     echo "    single          Build single-file library"
     echo "    all             Build all files"
     echo "    zip             Build multi file and compress"
+    echo "    info | json     Build a JSON that has information about library"
     echo
     echo " check Commands:"
     echo "    bin             Run shellcheck for management scripts"
