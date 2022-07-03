@@ -37,7 +37,7 @@ BindingBase(){
     shift 1
 
     # Parse args
-    local i _APIArgs _Args
+    local i _APIArgs=("") _Args
     for i in "$@"; do
         shift 1 2> /dev/null || true
         if [[ "$i" = "--" ]]; then
@@ -47,22 +47,39 @@ BindingBase(){
         fi
     done
 
-    #Msg.Debug "$_API has ${#_APIArgs[@]} args (${_APIArgs[*]})"
-    sleep 1
+    # Msg.Debug "$_API has ${#_APIArgs[@]} args (${_APIArgs[*]})"
 
-    local i=0 _JsonKey _JsonValue
-    while true; do
-        i="$(( i + 1 ))"
-        _JsonKey="${_APIArgs[$((i-1))]-""}"
-        _JsonValue=$(eval echo "\${${i}-""}" )
-        if [[ -n "${_JsonKey-""}" ]]; then
-            _Args+=("${_JsonKey}=$_JsonValue")
-        fi
-        shift 1 2> /dev/null || true
-        if (( "$#" <= "$i" )) || [[ -z "${_APIArgs[$i]-""}" ]]; then
+    #local i=0 _JsonKey _JsonValue
+    #while true; do
+    #    i="$(( i + 1 ))"
+    #    _JsonKey="${_APIArgs[$((i-1))]-""}"
+    #    _JsonValue=$(eval echo "\${${i}-""}" )
+    #    if [[ -n "${_JsonKey-""}" ]]; then
+    #        _Args+=("${_JsonKey}=$_JsonValue")
+    #    fi
+    #    shift 1 2> /dev/null || true
+    #    if (( "$#" <= "$i" )) || [[ -z "${_APIArgs[$i]-""}" ]]; then
+    #        break
+    #    fi
+    #done
+
+    #echo "Run Args: $*"
+    #echo "API Args: ${_APIArgs[*]}"
+
+    local _Cnt _Shifted=false
+    for ((_Cnt=1;_Cnt<="${#_APIArgs[@]} - 1" ;_Cnt++)); do
+        _Args+=("${_APIArgs[$_Cnt]}=$(eval echo "\${${_Cnt}:-""}")")
+        
+        if [[ -z "$(eval echo "\${$((_Cnt+1)):-""}")" ]]; then
+            shift "$_Cnt"
+            _Shifted=true
             break
         fi
     done
+    if ! Bool _Shifted; then
+        _Shifted=true
+        shift "$(( ${#_APIArgs[@]} - 1 ))"
+    fi
 
     # MISSKEY_ENTRYが設定されていない場合
     if [[ -z "${MISSKEY_ENTRY-""}" ]]; then
