@@ -39,7 +39,11 @@ DefaultCodeType="Upper"
 
 #-- Funcions --#
 ToSnakeCase(){
-    sed -E 's/(.)([A-Z])/\1_\2/g' | ForEach ToLower "{}"
+    sed -E 's/(.)([A-Z])/\1_\2/g' | ForEach ToLower "{}" | sed "s|^_||g; s|\._|.|g"
+
+    # ToLower実行した後のsedは、「Misskey.Notes.Create」を変換した際に「misskey.notes._create」となってしまうバグを防ぐための回避策です
+    # 最初のsedで一気に処理させる方法がわからんかったのでこれで暫定対処
+    # sedの複数回呼び出しで速度に影響が出てるのでいずれ改善したいところではある
 }
 
 ToLowerCase(){
