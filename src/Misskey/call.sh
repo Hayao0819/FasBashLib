@@ -57,6 +57,11 @@ BindingBase(){
         fi
     done
 
+    # MISSKEY_ENTRYが設定されていない場合
+    if [[ -z "${MISSKEY_ENTRY-""}" ]]; then
+        @Setup "${MISSKEY_DOMAIN}" "$MISSKEY_TOKEN"
+    fi
+
     # ${_API#/} "#/"は前方最短一致で/を削除
     # ${MISSKEY_ENTRY%/} "%/"は後方最短一致で/を削除
     @SendReq "${MISSKEY_ENTRY%/}/${_API#/}" "${_Args[@]}" "$@"
