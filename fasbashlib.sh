@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.2.3.r343.gcc29d6b-upper"
+FSBLIB_VERSION="v0.2.3.r348.g165e61f-upper"
 FSBLIB_REQUIRE="ModernBash"
 
 SrcInfo.Format () 
@@ -807,11 +807,11 @@ Misskey.Notes.Search ()
 }
 Misskey.Users.Notes () 
 { 
-    Misskey.BindingBase "users/notes" userId -- "${1-"$(Misskey.MyId)"}" "${@:2}"
+    Misskey.BindingBase "users/notes" userId -- "${1:-"$(Misskey.MyId)"}" "${@:2}"
 }
 Misskey.Users.SearchByUsernameAndHost () 
 { 
-    Misskey.BindingBase "users/search-by-username-and-host" username host limit detail -- "${1-"$(MyId)"}" "${2-"$MISSKEY_DOMAIN"}" "${@:3}"
+    Misskey.BindingBase "users/search-by-username-and-host" username -- "${1:-"$(Misskey.MyUserName)"}" "${@:2}"
 }
 Misskey.Admin.ServerInfo () 
 { 
@@ -839,7 +839,7 @@ Misskey.BindingBase ()
 { 
     local _API="$1";
     shift 1;
-    local i _APIArgs _Args;
+    local i _APIArgs=("") _Args;
     for i in "$@";
     do
         shift 1 2> /dev/null || true;
@@ -849,15 +849,20 @@ Misskey.BindingBase ()
             _APIArgs+=("$i");
         fi;
     done;
-    i=0;
-    while true; do
-        i="$(( i + 1 ))";
-        _Args+=("${_APIArgs[$((i-1))]}=$(eval echo "\$$i" )");
-        shift 1 2> /dev/null || true;
-        if (( "$#" <= "$i" )) || [[ -z "${_APIArgs[$i]-""}" ]]; then
+    local _Cnt _Shifted=false;
+    for ((_Cnt=1; _Cnt<="${#_APIArgs[@]} - 1" ; _Cnt++))
+    do
+        _Args+=("${_APIArgs[$_Cnt]}=$(eval echo "\${${_Cnt}:-""}")");
+        if [[ -z "$(eval echo "\${$((_Cnt+1)):-""}")" ]]; then
+            shift "$_Cnt";
+            _Shifted=true;
             break;
         fi;
     done;
+    if ! Bool _Shifted; then
+        _Shifted=true;
+        shift "$(( ${#_APIArgs[@]} - 1 ))";
+    fi;
     if [[ -z "${MISSKEY_ENTRY-""}" ]]; then
         Misskey.Setup "${MISSKEY_DOMAIN}" "$MISSKEY_TOKEN";
     fi;
@@ -886,7 +891,7 @@ Misskey.SendReq ()
     _CurlArgs+=(-H "Content-Type: application/json");
     _CurlArgs+=(-d "$(Misskey.MakeJson "$@")");
     _CurlArgs+=("$_Url");
-    Msg.Debug "Run: ${_CurlArgs[*]//"${MISSKEY_TOKEN}"/"TOKEN"})";
+    Msg.Debug "Run: ${_CurlArgs[*]//"${MISSKEY_TOKEN}"/"TOKEN"}";
     curl "${_CurlArgs[@]}"
 }
 Misskey.IsAdmin () 
