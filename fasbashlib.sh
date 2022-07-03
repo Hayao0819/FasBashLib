@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="0.2.4.r237.g58565df-upper"
+FSBLIB_VERSION="v0.2.3.r340.gcff704e-upper"
 FSBLIB_REQUIRE="ModernBash"
 
 SrcInfo.Format () 
@@ -793,11 +793,47 @@ Ini.ParseLine ()
     esac;
     return 0
 }
+Misskey.Notes.Create () 
+{ 
+    Misskey.BindingBase "notes/create" text -- "$@"
+}
+Misskey.Notes.Renotes () 
+{ 
+    Misskey.BindingBase "notes/renotes" noteId limit sinceId untilId -- "$@"
+}
+Misskey.Notes.Search () 
+{ 
+    Misskey.BindingBase "notes/search" query limit -- "$@"
+}
+Misskey.Users.Notes () 
+{ 
+    Misskey.BindingBase "users/notes" userId -- "$@"
+}
+Misskey.Users.SearchByUsernameAndHost () 
+{ 
+    Misskey.BindingBase "users/search-by-username-and-host" username host limit detail -- "${1}" "${2-"$MISSKEY_DOMAIN"}" "${@:3}"
+}
+Misskey.Admin.ServerInfo () 
+{ 
+    Misskey.BindingBase "/admin/server-info" -- "$@"
+}
 Misskey.Setup () 
 { 
     export MISSKEY_DOMAIN="${1-"${MISSKEY_DOMAIN-""}"}";
     export MISSKEY_TOKEN="${2-"${MISSKEY_TOKEN-""}"}";
     export MISSKEY_ENTRY="https://${MISSKEY_DOMAIN}/api"
+}
+Misskey.I () 
+{ 
+    Misskey.BindingBase "/i" -- "$@"
+}
+Misskey.Meta () 
+{ 
+    Misskey.BindingBase "/meta" -- "$@"
+}
+Misskey.ServerInfo () 
+{ 
+    Misskey.BindingBase "/server-info" -- "$@"
 }
 Misskey.BindingBase () 
 { 
@@ -817,11 +853,14 @@ Misskey.BindingBase ()
     while true; do
         i="$(( i + 1 ))";
         _Args+=("${_APIArgs[$((i-1))]}=$(eval echo "\$$i" )");
-        shift 1;
+        shift 1 2> /dev/null || true;
         if (( "$#" <= "$i" )) || [[ -z "${_APIArgs[$i]-""}" ]]; then
             break;
         fi;
     done;
+    if [[ -z "${MISSKEY_ENTRY-""}" ]]; then
+        Misskey.Setup "${MISSKEY_DOMAIN}" "$MISSKEY_TOKEN";
+    fi;
     Misskey.SendReq "${MISSKEY_ENTRY%/}/${_API#/}" "${_Args[@]}" "$@"
 }
 Misskey.MakeJson () 
@@ -850,29 +889,21 @@ Misskey.SendReq ()
     Msg.Debug "Run: ${_CurlArgs[*]//"${MISSKEY_TOKEN}"/"TOKEN"})";
     curl "${_CurlArgs[@]}"
 }
-Misskey.Notes.Create () 
+Misskey.IsAdmin () 
 { 
-    Misskey.BindingBase "notes/create" text -- "$@"
+    Bool "$(Misskey.I | jq -r ".isAdmin")"
 }
-Misskey.Notes.Renotes () 
+Misskey.MyId () 
 { 
-    Misskey.BindingBase "notes/renotes" noteId limit sinceId untilId -- "$@"
+    Misskey.I | jq -r ".id"
 }
-Misskey.Notes.Search () 
+Misskey.MyName () 
 { 
-    Misskey.BindingBase "notes/search" query limit -- "$@"
+    Misskey.I | jq -r ".name"
 }
-Misskey.Users.Notes () 
+Misskey.MyUserName () 
 { 
-    Misskey.BindingBase "users/notes" userId -- "$@"
-}
-Misskey.Admin.ServerInfo () 
-{ 
-    Misskey.BindingBase "/admin/server-info" -- "$@"
-}
-Misskey.ServerInfo () 
-{ 
-    Misskey.BindingBase "/server-info" -- "$@"
+    Misskey.I | jq -r ".username"
 }
 ParseArg () 
 { 

@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="0.2.4.r237.g58565df-lower"
+FSBLIB_VERSION="v0.2.3.r340.gcff704e-lower"
 FSBLIB_REQUIRE="ModernBash"
 
 SrcInfo.format () 
@@ -793,11 +793,47 @@ Ini.parseLine ()
     esac;
     return 0
 }
+Misskey.notes.Create () 
+{ 
+    Misskey.bindingBase "notes/create" text -- "$@"
+}
+Misskey.notes.Renotes () 
+{ 
+    Misskey.bindingBase "notes/renotes" noteId limit sinceId untilId -- "$@"
+}
+Misskey.notes.Search () 
+{ 
+    Misskey.bindingBase "notes/search" query limit -- "$@"
+}
+Misskey.users.Notes () 
+{ 
+    Misskey.bindingBase "users/notes" userId -- "$@"
+}
+Misskey.users.SearchByUsernameAndHost () 
+{ 
+    Misskey.bindingBase "users/search-by-username-and-host" username host limit detail -- "${1}" "${2-"$MISSKEY_DOMAIN"}" "${@:3}"
+}
+Misskey.admin.ServerInfo () 
+{ 
+    Misskey.bindingBase "/admin/server-info" -- "$@"
+}
 Misskey.setup () 
 { 
     export MISSKEY_DOMAIN="${1-"${MISSKEY_DOMAIN-""}"}";
     export MISSKEY_TOKEN="${2-"${MISSKEY_TOKEN-""}"}";
     export MISSKEY_ENTRY="https://${MISSKEY_DOMAIN}/api"
+}
+Misskey.i () 
+{ 
+    Misskey.bindingBase "/i" -- "$@"
+}
+Misskey.meta () 
+{ 
+    Misskey.bindingBase "/meta" -- "$@"
+}
+Misskey.serverInfo () 
+{ 
+    Misskey.bindingBase "/server-info" -- "$@"
 }
 Misskey.bindingBase () 
 { 
@@ -817,11 +853,14 @@ Misskey.bindingBase ()
     while true; do
         i="$(( i + 1 ))";
         _Args+=("${_APIArgs[$((i-1))]}=$(eval echo "\$$i" )");
-        shift 1;
+        shift 1 2> /dev/null || true;
         if (( "$#" <= "$i" )) || [[ -z "${_APIArgs[$i]-""}" ]]; then
             break;
         fi;
     done;
+    if [[ -z "${MISSKEY_ENTRY-""}" ]]; then
+        Misskey.setup "${MISSKEY_DOMAIN}" "$MISSKEY_TOKEN";
+    fi;
     Misskey.sendReq "${MISSKEY_ENTRY%/}/${_API#/}" "${_Args[@]}" "$@"
 }
 Misskey.makeJson () 
@@ -850,29 +889,21 @@ Misskey.sendReq ()
     Msg.debug "Run: ${_CurlArgs[*]//"${MISSKEY_TOKEN}"/"TOKEN"})";
     curl "${_CurlArgs[@]}"
 }
-Misskey.notes.Create () 
+Misskey.isAdmin () 
 { 
-    Misskey.bindingBase "notes/create" text -- "$@"
+    bool "$(Misskey.i | jq -r ".isAdmin")"
 }
-Misskey.notes.Renotes () 
+Misskey.myId () 
 { 
-    Misskey.bindingBase "notes/renotes" noteId limit sinceId untilId -- "$@"
+    Misskey.i | jq -r ".id"
 }
-Misskey.notes.Search () 
+Misskey.myName () 
 { 
-    Misskey.bindingBase "notes/search" query limit -- "$@"
+    Misskey.i | jq -r ".name"
 }
-Misskey.users.Notes () 
+Misskey.myUserName () 
 { 
-    Misskey.bindingBase "users/notes" userId -- "$@"
-}
-Misskey.admin.ServerInfo () 
-{ 
-    Misskey.bindingBase "/admin/server-info" -- "$@"
-}
-Misskey.serverInfo () 
-{ 
-    Misskey.bindingBase "/server-info" -- "$@"
+    Misskey.i | jq -r ".username"
 }
 parseArg () 
 { 

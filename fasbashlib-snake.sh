@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="0.2.4.r237.g58565df-snake"
+FSBLIB_VERSION="v0.2.3.r340.gcff704e-snake"
 FSBLIB_REQUIRE="ModernBash"
 
 srcinfo.format () 
@@ -793,11 +793,47 @@ ini.parse_line ()
     esac;
     return 0
 }
+misskey.notes.create () 
+{ 
+    misskey.binding_base "notes/create" text -- "$@"
+}
+misskey.notes.renotes () 
+{ 
+    misskey.binding_base "notes/renotes" noteId limit sinceId untilId -- "$@"
+}
+misskey.notes.search () 
+{ 
+    misskey.binding_base "notes/search" query limit -- "$@"
+}
+misskey.users.notes () 
+{ 
+    misskey.binding_base "users/notes" userId -- "$@"
+}
+misskey.users.search_by_username_and_host () 
+{ 
+    misskey.binding_base "users/search-by-username-and-host" username host limit detail -- "${1}" "${2-"$MISSKEY_DOMAIN"}" "${@:3}"
+}
+misskey.admin.server_info () 
+{ 
+    misskey.binding_base "/admin/server-info" -- "$@"
+}
 misskey.setup () 
 { 
     export MISSKEY_DOMAIN="${1-"${MISSKEY_DOMAIN-""}"}";
     export MISSKEY_TOKEN="${2-"${MISSKEY_TOKEN-""}"}";
     export MISSKEY_ENTRY="https://${MISSKEY_DOMAIN}/api"
+}
+misskey.i () 
+{ 
+    misskey.binding_base "/i" -- "$@"
+}
+misskey.meta () 
+{ 
+    misskey.binding_base "/meta" -- "$@"
+}
+misskey.server_info () 
+{ 
+    misskey.binding_base "/server-info" -- "$@"
 }
 misskey.binding_base () 
 { 
@@ -817,11 +853,14 @@ misskey.binding_base ()
     while true; do
         i="$(( i + 1 ))";
         _Args+=("${_APIArgs[$((i-1))]}=$(eval echo "\$$i" )");
-        shift 1;
+        shift 1 2> /dev/null || true;
         if (( "$#" <= "$i" )) || [[ -z "${_APIArgs[$i]-""}" ]]; then
             break;
         fi;
     done;
+    if [[ -z "${MISSKEY_ENTRY-""}" ]]; then
+        misskey.setup "${MISSKEY_DOMAIN}" "$MISSKEY_TOKEN";
+    fi;
     misskey.send_req "${MISSKEY_ENTRY%/}/${_API#/}" "${_Args[@]}" "$@"
 }
 misskey.make_json () 
@@ -850,29 +889,21 @@ misskey.send_req ()
     msg.debug "Run: ${_CurlArgs[*]//"${MISSKEY_TOKEN}"/"TOKEN"})";
     curl "${_CurlArgs[@]}"
 }
-misskey.notes.create () 
+misskey.is_admin () 
 { 
-    misskey.binding_base "notes/create" text -- "$@"
+    bool "$(misskey.i | jq -r ".isAdmin")"
 }
-misskey.notes.renotes () 
+misskey.my_id () 
 { 
-    misskey.binding_base "notes/renotes" noteId limit sinceId untilId -- "$@"
+    misskey.i | jq -r ".id"
 }
-misskey.notes.search () 
+misskey.my_name () 
 { 
-    misskey.binding_base "notes/search" query limit -- "$@"
+    misskey.i | jq -r ".name"
 }
-misskey.users.notes () 
+misskey.my_user_name () 
 { 
-    misskey.binding_base "users/notes" userId -- "$@"
-}
-misskey.admin.server_info () 
-{ 
-    misskey.binding_base "/admin/server-info" -- "$@"
-}
-misskey.server_info () 
-{ 
-    misskey.binding_base "/server-info" -- "$@"
+    misskey.i | jq -r ".username"
 }
 parse_arg () 
 { 
