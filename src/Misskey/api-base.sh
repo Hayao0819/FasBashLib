@@ -51,7 +51,7 @@ BindingBase(){
     while true; do
         i="$(( i + 1 ))"
         _Args+=("${_APIArgs[$((i-1))]}=$(eval echo "\$$i" )")
-        shift 1
+        shift 1 2> /dev/null || true
         if (( "$#" <= "$i" )) || [[ -z "${_APIArgs[$i]-""}" ]]; then
             break
         fi
