@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="0.2.4.r227.gffe22ea-snake"
+FSBLIB_VERSION="0.2.4.r231.g0d01d22-snake"
 FSBLIB_REQUIRE="ModernBash"
 
 srcinfo.format () 
@@ -806,7 +806,7 @@ misskey.binding_base ()
     local i _APIArgs _Args;
     for i in "$@";
     do
-        shift 1;
+        shift 1 2> /dev/null || true;
         if [[ "$i" = "--" ]]; then
             break;
         else
@@ -865,6 +865,14 @@ misskey.notes._search ()
 misskey.users._notes () 
 { 
     misskey.binding_base "users/notes" userId -- "$@"
+}
+misskey.admin._server_info () 
+{ 
+    misskey.binding_base "/admin/server-info" -- "$@"
+}
+misskey.server_info () 
+{ 
+    misskey.binding_base "/server-info" -- "$@"
 }
 parse_arg () 
 { 

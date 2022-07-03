@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="0.2.4.r227.gffe22ea-upper"
+FSBLIB_VERSION="0.2.4.r231.g0d01d22-upper"
 FSBLIB_REQUIRE="ModernBash"
 
 SrcInfo.Format () 
@@ -806,7 +806,7 @@ Misskey.BindingBase ()
     local i _APIArgs _Args;
     for i in "$@";
     do
-        shift 1;
+        shift 1 2> /dev/null || true;
         if [[ "$i" = "--" ]]; then
             break;
         else
@@ -865,6 +865,14 @@ Misskey.Notes.Search ()
 Misskey.Users.Notes () 
 { 
     Misskey.BindingBase "users/notes" userId -- "$@"
+}
+Misskey.Admin.ServerInfo () 
+{ 
+    Misskey.BindingBase "/admin/server-info" -- "$@"
+}
+Misskey.ServerInfo () 
+{ 
+    Misskey.BindingBase "/server-info" -- "$@"
 }
 ParseArg () 
 { 
