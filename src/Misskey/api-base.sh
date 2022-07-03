@@ -57,5 +57,7 @@ BindingBase(){
         fi
     done
 
-    @SendReq "$MISSKEY_ENTRY/$_API" "${_Args[@]}" "$@"
+    # ${_API#/} "#/"は前方最短一致で/を削除
+    # ${MISSKEY_ENTRY%/} "%/"は後方最短一致で/を削除
+    @SendReq "${MISSKEY_ENTRY%/}/${_API#/}" "${_Args[@]}" "$@"
 }
