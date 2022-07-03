@@ -12,7 +12,7 @@ SNAKE_FILENAME     := fasbashlib-snake.sh
 LOWER_FILENAME     := fasbashlib-lower.sh
 
 # Build arguments
-ALL_BUILD_ARGS     := -debug -verbose
+ALL_BUILD_ARGS     :=
 SINGLE_BUILD_ARGS  := #-ignore Misskey 
 INSTALL_BUILD_ARGS := -ver "${VERSION}"
 RELEASE_BUILD_ARGS := -ver "${VERSION}"
@@ -21,6 +21,11 @@ SNAKE_BUILD_ARGS   := -snake
 LOWER_BUILD_ARGS   := -lower
 
 TARGET_LIB         :=
+DEBUG              := false
+
+ifeq (${DEBUG},true)
+	ALL_BUILD_ARGS+= -debug -verbose
+endif
 
 
 all: single single-snake single-lower
