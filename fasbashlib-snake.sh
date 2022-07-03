@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="0.2.4.r231.g0d01d22-snake"
+FSBLIB_VERSION="0.2.4.r234.g5c62fb4-snake"
 FSBLIB_REQUIRE="ModernBash"
 
 srcinfo.format () 
@@ -822,7 +822,7 @@ misskey.binding_base ()
             break;
         fi;
     done;
-    misskey.send_req "$MISSKEY_ENTRY/$_API" "${_Args[@]}" "$@"
+    misskey.send_req "${MISSKEY_ENTRY%/}/${_API#/}" "${_Args[@]}" "$@"
 }
 misskey.make_json () 
 { 

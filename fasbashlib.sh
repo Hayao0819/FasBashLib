@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="0.2.4.r231.g0d01d22-upper"
+FSBLIB_VERSION="0.2.4.r234.g5c62fb4-upper"
 FSBLIB_REQUIRE="ModernBash"
 
 SrcInfo.Format () 
@@ -822,7 +822,7 @@ Misskey.BindingBase ()
             break;
         fi;
     done;
-    Misskey.SendReq "$MISSKEY_ENTRY/$_API" "${_Args[@]}" "$@"
+    Misskey.SendReq "${MISSKEY_ENTRY%/}/${_API#/}" "${_Args[@]}" "$@"
 }
 Misskey.MakeJson () 
 { 
