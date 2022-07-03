@@ -39,7 +39,7 @@ BindingBase(){
     # Parse args
     local i _APIArgs _Args
     for i in "$@"; do
-        shift 1
+        shift 1 2> /dev/null || true
         if [[ "$i" = "--" ]]; then
             break
         else
