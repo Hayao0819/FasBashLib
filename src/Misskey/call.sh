@@ -25,7 +25,7 @@ SendReq(){
     _CurlArgs+=(-d "$(@MakeJson "$@")") # JSONを送信
     _CurlArgs+=("$_Url") # URL指定
 
-    Msg.Debug "Run: ${_CurlArgs[*]//"${MISSKEY_TOKEN}"/"TOKEN"})"
+    Msg.Debug "Run: ${_CurlArgs[*]//"${MISSKEY_TOKEN}"/"TOKEN"}"
     curl "${_CurlArgs[@]}"
 }
 
@@ -47,10 +47,17 @@ BindingBase(){
         fi
     done
 
-    i=0
+    #Msg.Debug "$_API has ${#_APIArgs[@]} args (${_APIArgs[*]})"
+    sleep 1
+
+    local i=0 _JsonKey _JsonValue
     while true; do
         i="$(( i + 1 ))"
-        _Args+=("${_APIArgs[$((i-1))]}=$(eval echo "\$$i" )")
+        _JsonKey="${_APIArgs[$((i-1))]-""}"
+        _JsonValue=$(eval echo "\${${i}-""}" )
+        if [[ -n "${_JsonKey-""}" ]]; then
+            _Args+=("${_JsonKey}=$_JsonValue")
+        fi
         shift 1 2> /dev/null || true
         if (( "$#" <= "$i" )) || [[ -z "${_APIArgs[$i]-""}" ]]; then
             break
