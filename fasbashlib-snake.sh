@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.2.3.r340.gcff704e-snake"
+FSBLIB_VERSION="v0.2.3.r343.gcc29d6b-snake"
 FSBLIB_REQUIRE="ModernBash"
 
 srcinfo.format () 
@@ -807,11 +807,11 @@ misskey.notes.search ()
 }
 misskey.users.notes () 
 { 
-    misskey.binding_base "users/notes" userId -- "$@"
+    misskey.binding_base "users/notes" userId -- "${1-"$(misskey.my_id)"}" "${@:2}"
 }
 misskey.users.search_by_username_and_host () 
 { 
-    misskey.binding_base "users/search-by-username-and-host" username host limit detail -- "${1}" "${2-"$MISSKEY_DOMAIN"}" "${@:3}"
+    misskey.binding_base "users/search-by-username-and-host" username host limit detail -- "${1-"$(MyId)"}" "${2-"$MISSKEY_DOMAIN"}" "${@:3}"
 }
 misskey.admin.server_info () 
 { 

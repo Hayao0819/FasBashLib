@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.2.3.r340.gcff704e-upper"
+FSBLIB_VERSION="v0.2.3.r343.gcc29d6b-upper"
 FSBLIB_REQUIRE="ModernBash"
 
 SrcInfo.Format () 
@@ -807,11 +807,11 @@ Misskey.Notes.Search ()
 }
 Misskey.Users.Notes () 
 { 
-    Misskey.BindingBase "users/notes" userId -- "$@"
+    Misskey.BindingBase "users/notes" userId -- "${1-"$(Misskey.MyId)"}" "${@:2}"
 }
 Misskey.Users.SearchByUsernameAndHost () 
 { 
-    Misskey.BindingBase "users/search-by-username-and-host" username host limit detail -- "${1}" "${2-"$MISSKEY_DOMAIN"}" "${@:3}"
+    Misskey.BindingBase "users/search-by-username-and-host" username host limit detail -- "${1-"$(MyId)"}" "${2-"$MISSKEY_DOMAIN"}" "${@:3}"
 }
 Misskey.Admin.ServerInfo () 
 { 
