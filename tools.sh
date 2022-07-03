@@ -102,7 +102,7 @@ Main(){
                     RunScript "$BinDir/Check-Bin.sh" "$@"
                     ;;
                 lib | l*)
-                    RunScript "$BinDir/Check-Lib" "$@"
+                    RunScript "$BinDir/Check-Lib.sh" "$@"
                     ;;
             esac
             ;;
