@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="0.2.4.r234.g5c62fb4-snake"
+FSBLIB_VERSION="0.2.4.r237.g58565df-snake"
 FSBLIB_REQUIRE="ModernBash"
 
 srcinfo.format () 
@@ -850,23 +850,23 @@ misskey.send_req ()
     msg.debug "Run: ${_CurlArgs[*]//"${MISSKEY_TOKEN}"/"TOKEN"})";
     curl "${_CurlArgs[@]}"
 }
-misskey.notes._create () 
+misskey.notes.create () 
 { 
     misskey.binding_base "notes/create" text -- "$@"
 }
-misskey.notes._renotes () 
+misskey.notes.renotes () 
 { 
     misskey.binding_base "notes/renotes" noteId limit sinceId untilId -- "$@"
 }
-misskey.notes._search () 
+misskey.notes.search () 
 { 
     misskey.binding_base "notes/search" query limit -- "$@"
 }
-misskey.users._notes () 
+misskey.users.notes () 
 { 
     misskey.binding_base "users/notes" userId -- "$@"
 }
-misskey.admin._server_info () 
+misskey.admin.server_info () 
 { 
     misskey.binding_base "/admin/server-info" -- "$@"
 }
