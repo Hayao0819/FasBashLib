@@ -11,3 +11,17 @@ RemoveMatchLine(){
     done
     unset unseted i
 }
+
+
+# 文字列がどれか完全一致
+# Match ""
+Match(){
+    local stdin str
+    read -r stdin
+    for str in "$@"; do
+        if [[ "$str" = "$stdin" ]]; then
+            return 0
+        fi
+    done
+    return 1
+}
