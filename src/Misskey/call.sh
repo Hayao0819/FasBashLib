@@ -1,4 +1,12 @@
 #!/usr/bin/env bash
+# @file Misskey
+# @brief MisskeyのAPIをシェルスクリプトで扱うためのバインディング
+# @description
+#    curlとjqを利用してMisskeyのAPIを操作するための関数です。
+#
+#    Stream APIは現在非対応です。
+#
+#    実装済みのAPIは非常に少ないですがBindingBase関数で簡単に実装可能です。
 
 # MakeJson KEY=VALUE KEY=VALUE ...
 MakeJson(){
