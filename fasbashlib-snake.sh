@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.2.3.r348.g165e61f-snake"
+FSBLIB_VERSION="v0.2.3.r354.g2960ef2-snake"
 FSBLIB_REQUIRE="ModernBash"
 
 srcinfo.format () 
@@ -383,6 +383,18 @@ unset_all_func ()
     while read -r Func; do
         unset "$Func";
     done < <(get_func_list)
+}
+match () 
+{ 
+    local stdin str;
+    read -r stdin;
+    for str in "$@";
+    do
+        if [[ "$str" = "$stdin" ]]; then
+            return 0;
+        fi;
+    done;
+    return 1
 }
 remove_match_line () 
 { 
@@ -1346,7 +1358,7 @@ array.push ()
 }
 array.remove () 
 { 
-    readarray -t "$1" < <(print_eval_array "$1" | remove_match_line "$2")
+    readarray -t "$1" < <(print_eval_array "$1" | RemovematchLine "$2")
 }
 array.rev () 
 { 
@@ -1376,6 +1388,10 @@ array.index_of ()
 array.length () 
 { 
     print_eval_array "$1" | wc -l
+}
+array.for_each () 
+{ 
+    print_eval_array "$1" | for_each "${@:2}"
 }
 array.includes () 
 { 

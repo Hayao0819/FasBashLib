@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.2.3.r348.g165e61f-upper"
+FSBLIB_VERSION="v0.2.3.r354.g2960ef2-upper"
 FSBLIB_REQUIRE="ModernBash"
 
 SrcInfo.Format () 
@@ -383,6 +383,18 @@ UnsetAllFunc ()
     while read -r Func; do
         unset "$Func";
     done < <(GetFuncList)
+}
+Match () 
+{ 
+    local stdin str;
+    read -r stdin;
+    for str in "$@";
+    do
+        if [[ "$str" = "$stdin" ]]; then
+            return 0;
+        fi;
+    done;
+    return 1
 }
 RemoveMatchLine () 
 { 
@@ -1376,6 +1388,10 @@ Array.IndexOf ()
 Array.Length () 
 { 
     PrintEvalArray "$1" | wc -l
+}
+Array.ForEach () 
+{ 
+    PrintEvalArray "$1" | ForEach "${@:2}"
 }
 Array.Includes () 
 { 

@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.2.3.r348.g165e61f-lower"
+FSBLIB_VERSION="v0.2.3.r354.g2960ef2-lower"
 FSBLIB_REQUIRE="ModernBash"
 
 SrcInfo.format () 
@@ -384,7 +384,19 @@ unsetAllFunc ()
         unset "$Func";
     done < <(getFuncList)
 }
-removeMatchLine () 
+match () 
+{ 
+    local stdin str;
+    read -r stdin;
+    for str in "$@";
+    do
+        if [[ "$str" = "$stdin" ]]; then
+            return 0;
+        fi;
+    done;
+    return 1
+}
+removematchLine () 
 { 
     local i unseted=false;
     while read -r i; do
@@ -1346,7 +1358,7 @@ Array.push ()
 }
 Array.remove () 
 { 
-    readarray -t "$1" < <(printEvalArray "$1" | removeMatchLine "$2")
+    readarray -t "$1" < <(printEvalArray "$1" | RemovematchLine "$2")
 }
 Array.rev () 
 { 
@@ -1376,6 +1388,10 @@ Array.indexOf ()
 Array.length () 
 { 
     printEvalArray "$1" | wc -l
+}
+Array.forEach () 
+{ 
+    printEvalArray "$1" | forEach "${@:2}"
 }
 Array.includes () 
 { 
