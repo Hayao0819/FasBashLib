@@ -45,18 +45,18 @@ SolveRequire(){
         _LibShell="$(GetMeta "$_Lib" "Shell")"
         if ! printf "%s\n" "${LibList[@]}" | grep -qx "$_Lib"; then
             # Check Shell
-            [[ "$_Shell" = "Any" ]] && SolveRequire "$_Lib"
-            case "$_LibShell" in
-                "$_Shell" | "Any")
+            #[[ "$_Shell" = "Any" ]] && SolveRequire "$_Lib"
+            #case "$_LibShell" in
+            #    "$_Shell" | "Any")
                     LibList+=("$_Lib")
                     LibFrom+=("$1")
                     SolveRequire "$_Lib"
-                    ;;
+            #        ;;
                 #*)
                     #echo "${1}($_Shell)と${_Lib}($_LibShell)は別のシェル用のライブラリです。" >&2
                     #exit 1
                     #;;
-            esac
+            #esac
         fi
 
     done < <(GetMeta "$1" "Require" | tr "," "\n")
