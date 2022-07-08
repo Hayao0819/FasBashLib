@@ -47,6 +47,8 @@ while read -r Dir; do
 
     # Filesに設定されていないファイル
     while read -r File; do
+        #if ! printf "%s\n" "${_FileList[@]}" | sed "s|^|${Dir}/|g" | ForEach realpath "{}" | grep -qx "$File"; then
+
         if ! printf "%s\n" "${_FileList[@]}" | grep -qx "$(basename "$File")"; then
             echo "${Name}: $File はライブラリとして認識されていません"
             Errors=$(( Errors + 1 ))
