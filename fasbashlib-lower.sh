@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 
-FSBLIB_VERSION="v0.2.3.r354.g2960ef2-lower"
+FSBLIB_VERSION="v0.2.3.r359.g00a71b0-lower"
 FSBLIB_REQUIRE="ModernBash"
 
 SrcInfo.format () 
@@ -670,6 +670,99 @@ choice ()
         echo "${_returnstr}" && return 0
     };
     return 1
+}
+Sqlite3.call () 
+{ 
+    Msg.debug sqlite3 "$SQLITE3_DBPATH" "$@" 1>&2;
+    sqlite3 "${SQLITE3_OPTIONS[@]}" "$SQLITE3_DBPATH" "$@"
+}
+Sqlite3.connect () 
+{ 
+    export SQLITE3_DBPATH="$1";
+    echo ".open \"$SQLITE3_DBPATH\"" | sqlite3;
+    return 0
+}
+Sqlite3.create () 
+{ 
+    local _table="$1" _args=() _columns=();
+    shift 1 || return 1;
+    _columns=("$@");
+    _args+=(create table "$_table" "(");
+    forEach eval "_args+=(\"\\\"{}\\\"\" ,)" < <(printEvalArray _columns);
+    Array.pop _args;
+    _args+=(")");
+    Sqlite3.call "${_args[*]}"
+}
+Sqlite3.currentDb () 
+{ 
+    if [[ -z "${SQLITE3_DBPATH-""}" ]]; then
+        Msg.err "No datebase is connected.";
+        return 1;
+    fi;
+    echo "${SQLITE3_DBPATH}";
+    return 0
+}
+Sqlite3.delete () 
+{ 
+    local _table="$1" _args=();
+    shift 1 || return 1;
+    if (( $# < 1 )) && (( ${SQLITE3_ALLOWDELETEALL-"0"} != 1 )); then
+        Msg.err "Cannot delete all data.\nIf you really want that, Please set environment-variable \"SQLITE3_ALLOWDELETEALL=1\"";
+        return 1;
+    fi;
+    _args+=(delete from "$_table");
+    if (( $# > 0)); then
+        _args+=(where "${@}");
+    fi;
+    Sqlite3.call "${_args[*]}"
+}
+Sqlite3.existField () 
+{ 
+    _result="$(Sqlite3.call "SELECT * FROM '$1' WHERE $2 = '$3' LIMIT 1;")";
+    if [[ -n "${_result-""}" ]]; then
+        return 0;
+    fi;
+    return 1
+}
+Sqlite3.existTable () 
+{ 
+    local _result;
+    _result="$(Sqlite3.call                             "SELECT COUNT(*) 
+                            FROM sqlite_master 
+                            WHERE TYPE='table' AND name='$1';
+            ")";
+    if (( _result > 0 )); then
+        return 0;
+    fi;
+    return 1
+}
+Sqlite3.insert () 
+{ 
+    local _table="$1" _args=();
+    shift 1 || return 1;
+    local _values=("$@");
+    _args+=(insert into "$_table" values '(');
+    forEach eval "_args+=(\"\\\"{}\\\"\" ,)" < <(printEvalArray _values);
+    Array.pop _args;
+    _args+=(");");
+    Sqlite3.call "${_args[*]}"
+}
+Sqlite3.select () 
+{ 
+    local _table="$1" _args=();
+    shift 1 || return 1;
+    local _values=("$@");
+    _args+=(select);
+    forEach eval "_args+=(\"\\\"{}\\\"\" ,)" < <(printEvalArray _values);
+    Array.pop _args;
+    _args+=("from" "$_table" ";");
+    Sqlite3.call "${_args[*]}"
+}
+Sqlite3.selectAll () 
+{ 
+    local _table="$1" _args=();
+    shift 1 || return 1;
+    Sqlite3.call "select * from $_table"
 }
 Csv.getClm () 
 { 
