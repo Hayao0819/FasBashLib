@@ -385,6 +385,14 @@ _Make_Lib(){
             fi
         fi
 
+        # ファイル埋め込みを実行
+        while read -r Embedded; do
+            SedI "/^%$Embedded%$/r $Dir/$(GetMeta "$LibName" "$Embedded" "Embedded")" "$TmpLibFile"
+            SedI "/^%$Embedded%$/d" "$TmpLibFile"
+            
+        done < <(GetMetaParam "$LibName" "Embedded")
+        
+
         # 完成したライブラリを全体に追加
         cat "$TmpLibFile" >> "$TmpOutFile"
     done

@@ -13,6 +13,7 @@ TestsDir="$MainDir/tests"
 DockerDir="$MainDir/docker"
 
 FindCommand=""
+SedCommand=""
 
 # sedコマンド
 if sed --help 2>&1 | grep -q "GNU"; then
@@ -26,6 +27,13 @@ if find --help 2> /dev/null| grep -q "GNU"; then
     FindCommand="find"
 elif command gfind --help 2>&1 | grep -q "GNU"; then
     FindCommand="gfind"
+fi
+
+# sedコマンド
+if sed --help 2> /dev/null | grep -q "GNU"; then
+    SedCommand="sed"
+elif command gsed --help 2>&1 | grep -q "GNU"; then
+    SedCommand="gsed"
 fi
 
 # SedI
@@ -46,6 +54,11 @@ find(){
     [[ -n "${FindCommand-""}" ]] || return
     command "$FindCommand" "$@"
 }
+
+#sed(){
+#    [[ -n "${SedCommand-""}" ]] || return
+#    command "$SedCommand" "$@"
+#}
 
 # _GetFuncListFromStdin
 _GetFuncListFromStdin(){
