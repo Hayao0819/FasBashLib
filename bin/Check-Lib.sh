@@ -37,9 +37,9 @@ while read -r Dir; do
     fi
 
     # ファイルの存在を確認
-    readarray -t _FileList < <("$LibDir/GetMeta.sh" "${Name}" "Files" | tr "," "\n" | sed "s|^ *||g; s| *$||g; s|^	*||g; s|	*$||g; /^$/d")
+    readarray -t _FileList < <("$LibDir/GetMeta.sh" "${Name}" "Files" | tr "," "\n" | sed "s|^ *||g; s| *$||g; s|^	*||g; s|	*$||g; /^$/d" | sed "s|^|${Dir}/|g")
     for File in "${_FileList[@]}"; do
-        if ! [[ -e "$Dir/$File" ]]; then
+        if ! [[ -e "$File" ]]; then
             echo "${Name}: $File が存在しません"
             Errors=$(( Errors + 1 ))
         fi
@@ -47,9 +47,8 @@ while read -r Dir; do
 
     # Filesに設定されていないファイル
     while read -r File; do
-        if ! printf "%s\n" "${_FileList[@]}" | sed "s|^|${Dir}/|g" | ForEach realpath "{}" | grep -qx "$File"; then
-
-        #if ! printf "%s\n" "${_FileList[@]}" | grep -qx "$(basename "$File")"; then
+        readarray -t _FileList < <(PrintArray "${_FileList[@]}" | ForEach realpath "{}")
+        if ! printf "%s\n" "${_FileList[@]}"| grep -qx "$(realpath "$File")"; then
             echo "${Name}: $File はライブラリとして認識されていません"
             Errors=$(( Errors + 1 ))
         fi
