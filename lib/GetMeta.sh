@@ -37,7 +37,7 @@ MetaFile="$SrcDir/$1/Meta.ini"
 
     sed -ne "/^ *\[${SectionName}\] *$/,/^ *\[${NextSection}\] *$/p" "$MetaFile" | sed "1d; s|^ *\[${NextSection}\] *$||g" | grep -v "^ *#" | grep -Ex -- "^ *${2} *=.*" | cut -d "=" -f 2- | sed "s|^ *||g; s| *$||g"  | sed "s|^\"||g; s|\"$||g"| grep -v "^$" || true
 } | if [[ "$CsvMode" = true ]]; then
-    tr "," "\n" | RemoveBlank | grep -v "^$"
+    tr "," "\n" | RemoveBlank | grep -v "^$" || true
 else
     cat
 fi
