@@ -31,7 +31,7 @@ Args=()
 while read -r Lib; do
     echo "${Lib}の情報を収集中..." >&2
     Require="$("$LibDir/SolveRequire.sh" -nomyself "$Lib" | LineToJsonArray)"
-    Depends=$(GetMeta "$Lib" Depends | LineToJsonArray)
+    Depends=$(GetMeta -c "$Lib" Depends | LineToJsonArray)
 
     Json="$(
         MakeJson \
