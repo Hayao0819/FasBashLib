@@ -27,10 +27,9 @@
 #
 # shellcheck disable=all
 
-declare -r FSBLIB_VERSION="v0.2.3.r364.g43763a4-snake"
+declare -r FSBLIB_VERSION="v0.2.3.r368.g43eacfc-snake"
 declare -r FSBLIB_REQUIRE="ModernBash"
 
-declare -r FSBLIB_Test='hoge fugo'
 
 srcinfo.format () 
 { 
