@@ -424,6 +424,28 @@ _Make_All_Replace(){
     fi
 }
 
+_Make_Const(){
+    local Lib  VarNameStart="" Prefix AddLine=()
+    while read -r Lib; do
+        Prefix="$(GetMeta "$Lib" Prefix)"
+        VarNameStart="FSBLIB_"
+        if [[ -n "$Prefix" ]]; then
+            VarNameStart="FSBLIB_${Prefix}_"
+        fi
+        while read -r Var; do
+            if [[ "$Var" = "$VarNameStart"* ]]; then
+                echo "Found Constant " >&2
+                AddLine+=("declare -r ${Var}='$(GetMeta "$Lib" "$Var" "Const" | RemoveBlank | sed "s|^\"||g; s|\"$||g")'")
+            else
+                echo "Constant '$Var' in $Lib is missing name. Its name should be started with '$VarNameStart'" >&2
+                return 1
+            fi
+        done < <(GetMetaParam "$Lib" Const)
+    done < <(PrintArray "${TargetLib[@]}" | GetBaseName)
+    
+    PrintArray "${AddLine[@]}" "" >> "$TmpOutFile"
+}
+
 _Make_OutFile(){
     # Minify
     #bash "$LibDir/minifier/Minify.sh" -f="$TmpOutFile" > "$OutFile"
@@ -503,6 +525,8 @@ _Make_Require "$@"
 _Make_TargetLib "$@"
 _Make_Shell
 _Make_Header
+_Make_Const
 _Make_Lib
 _Make_All_Replace
+
 _Make_OutFile
