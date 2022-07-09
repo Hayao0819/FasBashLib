@@ -38,7 +38,7 @@ Insert(){
 
 
 # Select <table name> <Column1> 
-# shellcheck disable=SC1081
+# shellcheck disable=SC1081,SC1073
 Select(){
     local _table="$1" _args=()
     shift 1 || return 1
