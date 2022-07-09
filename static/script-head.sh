@@ -29,4 +29,4 @@
 
 declare -r FSBLIB_VERSION="%VERSION%"
 declare -r FSBLIB_REQUIRE="%REQUIRE%"
-
+declare -r FSBLIB_LIBLIST=(%LIBLIST%)

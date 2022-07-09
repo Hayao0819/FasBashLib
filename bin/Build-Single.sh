@@ -221,6 +221,7 @@ _Make_Header(){
     sed \
         -e "s|%VERSION%|${Version-""}|g" \
         -e "s|%REQUIRE%|${RequireShell}|g" \
+        -e "s|%LIBLIST%|$(PrintArray "${TargetLib[@]}" | GetBaseName | sed 's|^|"|g; s|$|"|g' | tr "\n" " ")|g" \
         "${StaticDir}/script-head.sh" > "$TmpOutFile"
 
     # 作成に失敗した場合に終了
