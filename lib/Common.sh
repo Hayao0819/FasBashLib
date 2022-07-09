@@ -121,6 +121,10 @@ GetLibFuncList(){
     "${LibDir}/GetFuncList.sh" "$@"
 }
 
+GetMetaParam(){
+    "${LibDir}/GetMetaParam.sh" "$@"
+}
+
 # JSONを作成する
 # ビルドされたMisskey.MakeJsonからコピー
 MakeJson () 
