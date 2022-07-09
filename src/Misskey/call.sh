@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2034
 # @file Misskey
 # @brief MisskeyのAPIをシェルスクリプトで扱うためのバインディング
 # @description
