@@ -23,6 +23,7 @@ IndexOf(){
 #
 # @exitcode 0 正常終了
 Length(){
-    PrintEvalArray "$1" | wc -l
+    #PrintEvalArray "$1" | wc -l
+    PrintEval "#${1}[@]"
 }
 
