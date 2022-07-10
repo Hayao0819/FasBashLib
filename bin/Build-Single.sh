@@ -259,7 +259,7 @@ _GetFuncCodeFromFile(){
         UnsetAllFunc
 
         # ファイルをsource
-        source "${Dir}/${File}" || {
+        source "${_File}" || {
             echo "Failed to load shell file" >&2
             exit 1
         }
@@ -267,6 +267,12 @@ _GetFuncCodeFromFile(){
         # 関数を出力
         typeset -f "$_Func"
     )
+}
+
+_MakeOneLineFunc(){
+    sed "$ s|^}$|;}|g" | grep -v "^ *\#" | RemoveBlank | sed "s|^| |g; s|$| |g" | tr -d "\n"| RemoveBlank | sed -E "s| +| |g"
+    #sed ":a s/[\]$//; N; s/[\]$//; s/\n/ /; t a ;"
+    echo
 }
 
 # _CheckLoadedFile <Path>
@@ -330,7 +336,7 @@ _Make_Lib(){
                     # 関数の置き換えを一切行わない場合
                     echo " = $Func" >> "$TmpFile_FuncList"
                     "$Debug" && echo "${Func}を${TmpLibFile}に書き込み" >&2
-                    _GetFuncCodeFromFile "${Dir}/${File}" "$Func" >> "$TmpLibFile"
+                    _GetFuncCodeFromFile "${Dir}/${File}" "$Func" | _MakeOneLineFunc >> "$TmpLibFile"
                     continue
                 else
                     # 関数の定義部分を書き換え
@@ -340,11 +346,14 @@ _Make_Lib(){
                     "${Debug}" && echo "置き換え1: 関数定義の${Func}を${NewFuncName}に置き換えて${TmpLibFile}に書き込み" >&2
 
                     # 関数を1行にまとめられないかなって...
-                    #_GetFuncCodeFromFile "${Dir}/${File}" "$Func" | sed "1 s|${Func} ()|${NewFuncName} ()|g" | \
-                    #    sed "s|^}$|;}|g" | RemoveBlank | sed "s|^| |g; s|$| |g" | tr -d "\n" | RemoveBlank >> "$TmpLibFile"
-                    #echo >> "$TmpLibFile"
-
-                    _GetFuncCodeFromFile "${Dir}/${File}" "$Func" | sed "1 s|${Func} ()|${NewFuncName} ()|g" >> "$TmpLibFile"
+                    OneLine=false
+                    if "${OneLine-"false"}"; then
+                        _GetFuncCodeFromFile "${Dir}/${File}" "$Func" | sed "1 s|${Func} ()|${NewFuncName} ()|g" | \
+                            grep -v "^ *\#" | _MakeOneLineFunc >> "$TmpLibFile"
+                        echo >> "$TmpLibFile"
+                    else
+                        _GetFuncCodeFromFile "${Dir}/${File}" "$Func" | sed "1 s|${Func} ()|${NewFuncName} ()|g" | grep -v "^ *\#" >> "$TmpLibFile"
+                    fi
                 fi
             done
         done < <("$LibDir/GetMeta.sh" "${LibName}" "Files" | tr "," "\n")
@@ -494,7 +503,8 @@ _Make_OutFile(){
     #bash "$LibDir/minifier/Minify.sh" -f="$TmpOutFile" > "$OutFile"
 
     mkdir -p "$(dirname "${OutFile}")"
-    cat "$TmpOutFile" > "$OutFile"
+    #cat "$TmpOutFile" > "$OutFile"
+    grep -v "^$" "${TmpOutFile}" > "$OutFile"
     if [[ "$GenerateFuncList" = true ]]; then
         cat "$TmpFile_FuncList" > "${OutFile%.sh}-list"
     fi
