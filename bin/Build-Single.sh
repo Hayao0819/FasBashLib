@@ -218,9 +218,14 @@ _Make_Shell(){
 _Make_Header(){
     # Create temp file with header
     #cat "$StaticDir/script-head.sh" > "$TmpOutFile"
+    #
+    #sed \
+    #    -e "s|%VERSION%|${Version-""}|g" \
+    #    -e "s|%REQUIRE%|${RequireShell}|g" \
+    #    -e "s|%LIBLIST%|$(PrintArray "${TargetLib[@]}" | GetBaseName | sed 's|^|"|g; s|$|"|g' | tr "\n" " ")|g" \
+    #    "${StaticDir}/script-head.sh" > "$TmpOutFile"
+
     sed \
-        -e "s|%VERSION%|${Version-""}|g" \
-        -e "s|%REQUIRE%|${RequireShell}|g" \
         -e "s|%LIBLIST%|$(PrintArray "${TargetLib[@]}" | GetBaseName | sed 's|^|"|g; s|$|"|g' | tr "\n" " ")|g" \
         "${StaticDir}/script-head.sh" > "$TmpOutFile"
 
@@ -432,14 +437,27 @@ _Make_All_Replace(){
 }
 
 _Make_Const(){
-    local Lib  VarNameStart='' Prefix AddLine=() ConstList=() DuplicateTest="" Error=()
+    local Lib Var VarNameStart='' Prefix AddLine=() ConstList=() DuplicateTest="" Error=()
+
+    # ハードコーディングされた定数
+    ConstList+=("Core:FSBLIB_VERSION" "Core:FSBLIB_REQUIRE")
+    AddLine+=(
+        "declare -r FSBLIB_VERSION='${Version-""}'"
+        "declare -r FSBLIB_REQUIRE='${RequireShell-""}'"
+    )
+
+    # ライブラリの定数
     while read -r Lib; do
+        # ライブラリごとの設定
         Prefix="$(GetMeta "$Lib" Prefix)"
         VarNameStart="FSBLIB_"
         if [[ -n "$Prefix" ]]; then
             VarNameStart="FSBLIB_${Prefix}_"
         fi
+
+        # 個々の定数
         while read -r Var; do
+            # 変数名が適切かどうか確認
             if [[ "${Var^^}" = "${VarNameStart^^}"* ]]; then
                 echo "Found Constant $Var in $Lib" >&2
 
@@ -451,9 +469,10 @@ _Make_Const(){
                 fi
 
                 # 定数を追加
-                ConstList+=("${Lib}:${Var}")
+                ConstList+=("${Lib}:${Var}") # 重複の確認に使う配列
                 AddLine+=("declare -r ${Var}='$(GetMeta "$Lib" "$Var" "Const" | RemoveBlank | sed "s|^\"||g; s|\"$||g")'")
             else
+                # 定数名エラー
                 Error+=("Constant '$Var' in $Lib is missing name. Its name should be started with '$VarNameStart'")
                 continue
             fi
@@ -461,6 +480,7 @@ _Make_Const(){
     done < <(PrintArray "${TargetLib[@]}" | GetBaseName)
     
     if [[ -n "${Error[*]}" ]]; then
+        # エラーはError配列に保持して最後にまとめて出力
         PrintArray "${Error[@]}"
         return 1
     else
@@ -551,5 +571,4 @@ _Make_Header
 _Make_Const
 _Make_Lib
 _Make_All_Replace
-
 _Make_OutFile
