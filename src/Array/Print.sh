@@ -21,3 +21,7 @@ Print(){
 Eval(){
     eval "PrintArray \"\${$1[@]}\""
 }
+
+Last(){
+    PrintEval "$1[$(@LastIndex "$1")]"
+}

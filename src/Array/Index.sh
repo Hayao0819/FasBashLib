@@ -27,3 +27,6 @@ Length(){
     PrintEval "#${1}[@]"
 }
 
+LastIndex(){
+    CalcInt "$(@Length "$1")" - 1
+}

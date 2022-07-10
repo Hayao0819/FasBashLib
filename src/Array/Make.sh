@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-
+# 標準入力から受け取った文字列から、1文字づつに分割された配列を返します
 FromStr(){
     declare -a -x "$1"
     readarray -t "$1" < <(BreakChar)
@@ -46,20 +46,23 @@ Push(){
     eval "$1+=(\"$2\")"
 }
 
-
+# 指定された配列を裏返します
 Rev(){
     readarray -t "$1" < <(PrintEvalArray "$1" | tac)
 }
 
+# 指定された配列から最後の要素を削除します
 Pop(){
     readarray -t "$1" < <(PrintEvalArray "$1" | sed -e '$d')
 }
 
+# 指定された配列から最初の要素を削除します
 Shift(){
     readarray -t "$1" < <(PrintEvalArray "$1" | sed "1,${2-"1"}d")
 }
 
 #Array.Remove <Array Name> <String>
+# 指定された配列から文字列と一致する要素を削除します
 Remove(){
     readarray -t "$1" < <(PrintEvalArray "$1" | RemoveMatchLine "$2")
 }
