@@ -27,9 +27,9 @@
 #
 # shellcheck disable=all
 
-declare -r FSBLIB_VERSION="v0.2.3.r389.g78932ce-snake"
-declare -r FSBLIB_REQUIRE="ModernBash"
 declare -r FSBLIB_LIBLIST=("SrcInfo" "Message" "BetterShell" "ArchLinux" "Pacman" "Prompt" "Sqlite3" "Csv" "Ini" "Misskey" "parse_arg" "URL" "Readlink" "Core" "AwkForCalc" "Cache" "Array" )
+declare -r FSBLIB_VERSION='v0.2.3.r395.g80ee7e8-snake'
+declare -r FSBLIB_REQUIRE='ModernBash'
 
 srcinfo.format () 
 { 
@@ -1466,6 +1466,10 @@ array.eval ()
 { 
     eval "print_array \"\${$1[@]}\""
 }
+array.last () 
+{ 
+    print_eval "$1[$(array.last_index "$1")]"
+}
 array.print () 
 { 
     (( $# >= 1 )) || return 0;
@@ -1479,9 +1483,13 @@ array.index_of ()
     print_array "${n[@]}";
     return 0
 }
+array.last_index () 
+{ 
+    calc_int "$(array.length "$1")" - 1
+}
 array.length () 
 { 
-    print_eval_array "$1" | wc -l
+    print_eval "#${1}[@]"
 }
 array.for_each () 
 { 

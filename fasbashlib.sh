@@ -27,9 +27,9 @@
 #
 # shellcheck disable=all
 
-declare -r FSBLIB_VERSION="v0.2.3.r389.g78932ce-upper"
-declare -r FSBLIB_REQUIRE="ModernBash"
 declare -r FSBLIB_LIBLIST=("SrcInfo" "Message" "BetterShell" "ArchLinux" "Pacman" "Prompt" "Sqlite3" "Csv" "Ini" "Misskey" "ParseArg" "URL" "Readlink" "Core" "AwkForCalc" "Cache" "Array" )
+declare -r FSBLIB_VERSION='v0.2.3.r395.g80ee7e8-upper'
+declare -r FSBLIB_REQUIRE='ModernBash'
 
 SrcInfo.Format () 
 { 
@@ -1466,6 +1466,10 @@ Array.Eval ()
 { 
     eval "PrintArray \"\${$1[@]}\""
 }
+Array.Last () 
+{ 
+    PrintEval "$1[$(Array.LastIndex "$1")]"
+}
 Array.Print () 
 { 
     (( $# >= 1 )) || return 0;
@@ -1479,9 +1483,13 @@ Array.IndexOf ()
     PrintArray "${n[@]}";
     return 0
 }
+Array.LastIndex () 
+{ 
+    CalcInt "$(Array.Length "$1")" - 1
+}
 Array.Length () 
 { 
-    PrintEvalArray "$1" | wc -l
+    PrintEval "#${1}[@]"
 }
 Array.ForEach () 
 { 
