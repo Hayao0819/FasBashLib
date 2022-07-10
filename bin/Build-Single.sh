@@ -401,9 +401,7 @@ _Make_Lib(){
 _Make_All_Replace(){
     # 全ての呼び出しのスネークケース置き換え
     # TmpFile_FuncListを元に生成されたスクリプト全体を置き換えます
-    #if [[ "$SnakeCase" = true ]]; then
     if [[ ! "$CodeType" = "Upper" ]]; then
-    #if ! [[ ! "$CodeType" = "Upper" ]]; then
         # 関数一覧をプレフィックスを含んだ
         while read -r Line; do
             LibPrefix="$(cut -d "=" -f 1 <<< "$Line" | sed "s|^ *||g; s| *$||g")"
@@ -434,7 +432,7 @@ _Make_All_Replace(){
 }
 
 _Make_Const(){
-    local Lib  VarNameStart="" Prefix AddLine=()
+    local Lib  VarNameStart='' Prefix AddLine=() ConstList=() DuplicateTest="" Error=()
     while read -r Lib; do
         Prefix="$(GetMeta "$Lib" Prefix)"
         VarNameStart="FSBLIB_"
@@ -442,17 +440,33 @@ _Make_Const(){
             VarNameStart="FSBLIB_${Prefix}_"
         fi
         while read -r Var; do
-            if [[ "$Var" = "$VarNameStart"* ]]; then
-                echo "Found Constant " >&2
+            if [[ "${Var^^}" = "${VarNameStart^^}"* ]]; then
+                echo "Found Constant $Var in $Lib" >&2
+
+                # 重複テスト
+                DuplicateTest="$(PrintArray "${ConstList[@]}" | grep -Ex "[^:]*:$Var" | cut -d ":" -f 1 || true)"
+                if [[ -n "${DuplicateTest}" ]] ; then
+                    Error+=("Duplicate constants $Var in $Lib and $DuplicateTest")
+                    continue
+                fi
+
+                # 定数を追加
+                ConstList+=("${Lib}:${Var}")
                 AddLine+=("declare -r ${Var}='$(GetMeta "$Lib" "$Var" "Const" | RemoveBlank | sed "s|^\"||g; s|\"$||g")'")
             else
-                echo "Constant '$Var' in $Lib is missing name. Its name should be started with '$VarNameStart'" >&2
-                return 1
+                Error+=("Constant '$Var' in $Lib is missing name. Its name should be started with '$VarNameStart'")
+                continue
             fi
         done < <(GetMetaParam "$Lib" Const)
     done < <(PrintArray "${TargetLib[@]}" | GetBaseName)
     
-    PrintArray "${AddLine[@]}" "" >> "$TmpOutFile"
+    if [[ -n "${Error[*]}" ]]; then
+        PrintArray "${Error[@]}"
+        return 1
+    else
+        PrintArray "${AddLine[@]}" "" >> "$TmpOutFile"
+        return 0
+    fi
 }
 
 _Make_OutFile(){
