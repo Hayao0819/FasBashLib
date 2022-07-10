@@ -26,11 +26,9 @@
 # - The right to buy the author (copyright holder) of the software a bowl of sushi🍣.
 #
 # shellcheck disable=all
-
 declare -r FSBLIB_LIBLIST=("SrcInfo" "Message" "BetterShell" "ArchLinux" "Pacman" "Prompt" "Sqlite3" "Csv" "Ini" "Misskey" "parseArg" "URL" "Readlink" "Core" "AwkForCalc" "Cache" "Array" )
-declare -r FSBLIB_VERSION='v0.2.3.r395.g80ee7e8-lower'
+declare -r FSBLIB_VERSION='v0.2.3.r398.gaac1940-lower'
 declare -r FSBLIB_REQUIRE='ModernBash'
-
 SrcInfo.format () 
 { 
     removeBlank | sed "/^$/d" | grep -v "^#" | forEach eval "SrcInfo.parse Line <<< \"{}\""
@@ -787,16 +785,13 @@ Csv.toBashArray ()
     local _RawCsvLine=() _Line _ClmCnt=0;
     local ArrayPrefix="${ArrayPrefix-"{}"}";
     readarray -t _RawCsvLine < <(
-        # 標準入力からCSVのみを抽出
         while read -r _Line; do
-            # shellcheck disable=SC2031
             (( $(tr "${CSVDELIM-","}" "\n" <<< "$_Line" | wc -l) >= ${#} )) && echo "$_Line"
         done < <(grep -v "^#")
     );
     _ClmCnt=$(printArray "${_RawCsvLine[@]}" | Csv.getClmCnt);
     while read -r _Cnt; do
         readarray -t "$(sed "s|{}|$(eval "echo \"\${${_Cnt}}\"")|g" <<< "$ArrayPrefix")" < <(
-            # shellcheck disable=SC2031
             printArray "${_RawCsvLine[@]}" | cut -d "${CSVDELIM-","}" -f "$_Cnt"
         );
     done < <(seq 1 "$#")
