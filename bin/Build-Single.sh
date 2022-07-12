@@ -106,7 +106,7 @@ _Make_Version(){
     # Versionが未設定の場合
     if [[ -e "$MainDir/.git" ]]; then
         echo "Found git. Use git tag and id as version." >&2
-        Version="$(git describe --long --tags | sed 's/\([^-]*-g\)/r\1/;s/-/./g')"
+        Version="$(git -C "$MainDir" describe --long --tags | sed 's/\([^-]*-g\)/r\1/;s/-/./g')"
     else
         Version="0.2.x-dev"
     fi
