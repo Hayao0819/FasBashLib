@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 declare -r FSBLIB_LIBLIST=("Message" "AwkForCalc" "Cache" "URL" "Misskey" "Readlink" "Prompt" "Csv" "Pacman" "SrcInfo" "Ini" "ArchLinux" "Core" "Sqlite3" "BetterShell" "Array" "ParseArg" )
-declare -r FSBLIB_VERSION='v0.2.3.r402.g17d8569-upper'
+declare -r FSBLIB_VERSION='v0.2.3.r405.g8733e6d-upper'
 declare -r FSBLIB_REQUIRE='ModernBash'
 Msg.Common () 
 { 
@@ -424,10 +424,131 @@ Misskey.MyUserName ()
 { 
     Misskey.I | jq -r ".username"
 }
-Readlinkf () { Readlinkf_Posix "$@" ;}
-Readlinkf_Posix () { [ "${1:-}" ] || return 1; max_symlinks=40; CDPATH=''; target=$1; [ -e "${target%/}" ] || target=${1%"${1##*[!/]}"}; [ -d "${target:-/}" ] && target="$target/"; cd -P . 2> /dev/null || return 1; while [ "$max_symlinks" -ge 0 ] && max_symlinks=$((max_symlinks - 1)); do if [ ! "$target" = "${target%/*}" ]; then case $target in /*) cd -P "${target%/*}/" 2> /dev/null || break ;; *) cd -P "./${target%/*}" 2> /dev/null || break ;; esac; target=${target##*/}; fi; if [ ! -L "$target" ]; then target="${PWD%/}${target:+/}${target}"; printf '%s\n' "${target:-/}"; return 0; fi; link=$(ls -dl -- "$target" 2>/dev/null) || break; target=${link#*" $target -> "}; done; return 1 ;}
-Readlinkf_Readlink () { [ "${1:-}" ] || return 1; max_symlinks=40; CDPATH=''; target=$1; [ -e "${target%/}" ] || target=${1%"${1##*[!/]}"}; [ -d "${target:-/}" ] && target="$target/"; cd -P . 2> /dev/null || return 1; while [ "$max_symlinks" -ge 0 ] && max_symlinks=$((max_symlinks - 1)); do if [ ! "$target" = "${target%/*}" ]; then case $target in /*) cd -P "${target%/*}/" 2> /dev/null || break ;; *) cd -P "./${target%/*}" 2> /dev/null || break ;; esac; target=${target##*/}; fi; if [ ! -L "$target" ]; then target="${PWD%/}${target:+/}${target}"; printf '%s\n' "${target:-/}"; return 0; fi; target=$(readlink -- "$target" 2>/dev/null) || break; done; return 1 ;}
-Choice () { local arg OPTARG OPTIND; local _count _choice; local _default="" _question="" _returnstr="" _mark=" "; local _count=0 _digit=0 _returnint=; local _number=false; local _choice_list=(); while getopts "ad:p:n" arg; do case "${arg}" in d) _default="${OPTARG}" ;; p) _question="${OPTARG}" ;; n) _number=true ;; *) exit 1 ;; esac; done; shift "$((OPTIND - 1))" || return 1; _choice_list=("${@}") _digit="${##}"; (( ${#_choice_list[@]} <= 0 )) && echo "An exception error has occurred." 1>&2 && exit 1; (( ${#_choice_list[@]} == 1 )) && _returnint="${_returnint:="1"}" _returnstr="${_returnstr:="${_choice_list[*]}"}"; [[ -n "${_question-""}" ]] && echo " ${_question}" 1>&2; for ((_count=1; _count<=${#_choice_list[@]}; _count++)) do _choice="${_choice_list[$(( _count - 1 ))]}" _mark=" "; { [[ ! "${_default}" = "" ]] && [[ "${_choice}" = "${_default}" ]] } && _mark="*"; printf " ${_mark} %${_digit}d: ${_choice}\n" "${_count}" 1>&2; done; echo -n " (1 ~ ${#_choice_list[@]}) > " 1>&2 && read -r _input; { [[ -z "${_input-""}" ]] && [[ -n "${_default-""}" ]] } && _returnint="${_returnint:="0"}" _returnstr="${_returnstr:="${_default}"}"; { printf "%s" "${_input}" | grep -qE "^[0-9]+$" && (( 1 <= _input)) && (( _input <= ${#_choice_list[@]} )) } && _returnint="${_returnint:="${_input}"}" _returnstr="${_returnstr:="${_choice_list[$(( _input - 1 ))]}"}"; for ((i=0; i <= ${#_choice_list[@]} - 1 ; i++ )) do [[ "${_choice_list["${i}"],,}" = "${_input,,}" ]] && _returnint="${_returnint:="$(( i + 1 ))"}" _returnstr="${_returnstr:="${_choice_list["${i}"]}"}"; done; { [[ "${_number}" = true ]] && [[ -n "${_returnint+SET}" ]] } && { echo "${_returnint}" && return 0 }; { [[ "${_number}" = false ]] && [[ -n "${_returnstr+SET}" ]] } && { echo "${_returnstr}" && return 0 }; return 1 ;}
+Readlinkf () 
+{ 
+    Readlinkf_Posix "$@"
+}
+Readlinkf_Posix () 
+{ 
+    [ "${1:-}" ] || return 1;
+    max_symlinks=40;
+    CDPATH='';
+    target=$1;
+    [ -e "${target%/}" ] || target=${1%"${1##*[!/]}"};
+    [ -d "${target:-/}" ] && target="$target/";
+    cd -P . 2> /dev/null || return 1;
+    while [ "$max_symlinks" -ge 0 ] && max_symlinks=$((max_symlinks - 1)); do
+        if [ ! "$target" = "${target%/*}" ]; then
+            case $target in 
+                /*)
+                    cd -P "${target%/*}/" 2> /dev/null || break
+                ;;
+                *)
+                    cd -P "./${target%/*}" 2> /dev/null || break
+                ;;
+            esac;
+            target=${target##*/};
+        fi;
+        if [ ! -L "$target" ]; then
+            target="${PWD%/}${target:+/}${target}";
+            printf '%s\n' "${target:-/}";
+            return 0;
+        fi;
+        link=$(ls -dl -- "$target" 2>/dev/null) || break;
+        target=${link#*" $target -> "};
+    done;
+    return 1
+}
+Readlinkf_Readlink () 
+{ 
+    [ "${1:-}" ] || return 1;
+    max_symlinks=40;
+    CDPATH='';
+    target=$1;
+    [ -e "${target%/}" ] || target=${1%"${1##*[!/]}"};
+    [ -d "${target:-/}" ] && target="$target/";
+    cd -P . 2> /dev/null || return 1;
+    while [ "$max_symlinks" -ge 0 ] && max_symlinks=$((max_symlinks - 1)); do
+        if [ ! "$target" = "${target%/*}" ]; then
+            case $target in 
+                /*)
+                    cd -P "${target%/*}/" 2> /dev/null || break
+                ;;
+                *)
+                    cd -P "./${target%/*}" 2> /dev/null || break
+                ;;
+            esac;
+            target=${target##*/};
+        fi;
+        if [ ! -L "$target" ]; then
+            target="${PWD%/}${target:+/}${target}";
+            printf '%s\n' "${target:-/}";
+            return 0;
+        fi;
+        target=$(readlink -- "$target" 2>/dev/null) || break;
+    done;
+    return 1
+}
+Choice () 
+{ 
+    local arg OPTARG OPTIND;
+    local _count _choice;
+    local _default="" _question="" _returnstr="" _mark=" ";
+    local _count=0 _digit=0 _returnint=;
+    local _number=false;
+    local _choice_list=();
+    while getopts "ad:p:n" arg; do
+        case "${arg}" in 
+            d)
+                _default="${OPTARG}"
+            ;;
+            p)
+                _question="${OPTARG}"
+            ;;
+            n)
+                _number=true
+            ;;
+            *)
+                exit 1
+            ;;
+        esac;
+    done;
+    shift "$((OPTIND - 1))" || return 1;
+    _choice_list=("${@}") _digit="${##}";
+    (( ${#_choice_list[@]} <= 0 )) && echo "An exception error has occurred." 1>&2 && exit 1;
+    (( ${#_choice_list[@]} == 1 )) && _returnint="${_returnint:="1"}" _returnstr="${_returnstr:="${_choice_list[*]}"}";
+    [[ -n "${_question-""}" ]] && echo "   ${_question}" 1>&2;
+    for ((_count=1; _count<=${#_choice_list[@]}; _count++))
+    do
+        _choice="${_choice_list[$(( _count - 1 ))]}" _mark=" ";
+        { 
+            [[ ! "${_default}" = "" ]] && [[ "${_choice}" = "${_default}" ]]
+        } && _mark="*";
+        printf " ${_mark} %${_digit}d: ${_choice}\n" "${_count}" 1>&2;
+    done;
+    echo -n "   (1 ~ ${#_choice_list[@]}) > " 1>&2 && read -r _input;
+    { 
+        [[ -z "${_input-""}" ]] && [[ -n "${_default-""}" ]]
+    } && _returnint="${_returnint:="0"}" _returnstr="${_returnstr:="${_default}"}";
+    { 
+        printf "%s" "${_input}" | grep -qE "^[0-9]+$" && (( 1 <= _input)) && (( _input <= ${#_choice_list[@]} ))
+    } && _returnint="${_returnint:="${_input}"}" _returnstr="${_returnstr:="${_choice_list[$(( _input - 1 ))]}"}";
+    for ((i=0; i <= ${#_choice_list[@]} - 1 ; i++ ))
+    do
+        [[ "${_choice_list["${i}"],,}" = "${_input,,}" ]] && _returnint="${_returnint:="$(( i + 1 ))"}" _returnstr="${_returnstr:="${_choice_list["${i}"]}"}";
+    done;
+    { 
+        [[ "${_number}" = true ]] && [[ -n "${_returnint+SET}" ]]
+    } && { 
+        echo "${_returnint}" && return 0
+    };
+    { 
+        [[ "${_number}" = false ]] && [[ -n "${_returnstr+SET}" ]]
+    } && { 
+        echo "${_returnstr}" && return 0
+    };
+    return 1
+}
 Csv.GetClm () 
 { 
     grep -v "^#" | sed "/^$/d" | cut -d "${CSVDELIM-","}" -f "$1"
@@ -912,7 +1033,10 @@ Fsblib.EnvCheck ()
         ;;
     esac
 }
-FsblibEnvCheck () { Fsblib.EnvCheck ;}
+FsblibEnvCheck () 
+{ 
+    Fsblib.EnvCheck
+}
 Sqlite3.Call () 
 { 
     Msg.Debug sqlite3 "$SQLITE3_DBPATH" "$@" 1>&2;
@@ -1006,42 +1130,203 @@ Sqlite3.SelectAll ()
     shift 1 || return 1;
     Sqlite3.Call "select * from $_table"
 }
-AddNewToArray () { Array.Push "$@" ;}
-ArrayAppend () { Array.Append "$1" ;}
-ArrayIncludes () { Array.Includes "$@" ;}
-ArrayIndex () { Array.Length "$1" ;}
-GetArrayIndex () { Array.IndexOf "$1" ;}
-PrintArray () { Array.Print "$@" ;}
-PrintEvalArray () { Array.Eval "$1" ;}
-RevArray () { Array.Rev "$1" ;}
-StrToCharList () { Array.FromStr "$1" ;}
-FileType () { file --mime-type -b "$1" ;}
-GetBaseName () { ForEach basename "{}" ;}
-GetFileExt () { GetBaseName | rev | cut -d "." -f 1 | rev ;}
-RemoveFileExt () { local Ext; ForEach eval 'Ext=$(GetFileExt <<< {}); sed "s|.$Ext$||g" <<< {}; unset Ext' ;}
-CheckFuncDefined () { typeset -f "${1}" > /dev/null || return 1 ;}
-ForEach () { local _Item; while read -r _Item; do "${@//"{}"/"${_Item}"}" || return "${?}"; done ;}
-GetLine () { head -n "$1" | tail -n 1 ;}
-IsAvailable () { type "$1" 2> /dev/null 1>&2 ;}
-Loop () { local _T="$1"; shift 1 || return 1; ForEach "$@" < <(yes "" | head -n "$_T") ;}
-BreakChar () { grep -o "." ;}
-CutLastString () { echo "${1%%"${2}"}"; return 0 ;}
-GetLastSplitString () { rev <<< "$2" | cut -d "$1" -f 1 | rev ;}
-IsUUID () { local _UUID="${1-""}"; [[ "${_UUID//-/}" =~ ^[[:xdigit:]]{32}$ ]] && return 0; return 1 ;}
-PrintEval () { eval echo "\${$1}" ;}
-RandomString () { base64 < "/dev/random" | fold -w "$1" | head -n 1; return 0 ;}
-RemoveBlank () { sed "s|^ *||g; s| *$||g; s|^	*||g; s|	*$||g; /^$/d" ;}
-TextBox () { local _Content=() _Length _Vertical="|" _Line="="; readarray -t _Content; _Length="$(PrintArray "${_Content[@]}" | awk '{ if ( length > x ) { x = length } }END{ print x }')"; echo "${_Vertical}${_Line}$(yes "${_Line}" | head -n "$_Length" | tr -d "\n")${_Vertical}"; for _Str in "${_Content[@]}"; do echo "${_Vertical}${_Str}$(yes " " | head -n "$(( _Length + 1 - "${#_Str}"))" | tr -d "\n")${_Vertical}"; done; echo "${_Vertical}${_Line}$(yes "${_Line}" | head -n "$_Length" | tr -d "\n")${_Vertical}" ;}
-ToLower () { local _Str="${1,,}"; [[ -z "${_Str-""}" ]] || echo "${_Str}" ;}
-ToLowerStdin () { local _Str; ForEach eval "_Str=\"{}\"; echo \"\${_Str,,}\""; unset _Str ;}
-CalcInt () { echo "$(( "$@" ))" ;}
-Ntest () { (( "$@" )) || return 1 ;}
-Sum () { local _Arg=(); ForEach eval '_Arg+=("{}" "+")' < <(PrintArray "$@"); readarray -t _Arg < <(PrintArray "${_Arg[@]}" | sed "${#_Arg[@]}d"); CalcInt "${_Arg[@]}" ;}
-Bool () { case "$(ToLower "$(PrintEval "${1}")")" in "true") return 0 ;; "" | "false") return 1 ;; *) return 2 ;; esac ;}
-GetFuncList () { declare -F | cut -d " " -f 3 ;}
-UnsetAllFunc () { local Func; while read -r Func; do unset "$Func"; done < <(GetFuncList) ;}
-Match () { local stdin str; read -r stdin; for str in "$@"; do if [[ "$str" = "$stdin" ]]; then return 0; fi; done; return 1 ;}
-RemoveMatchLine () { local i unseted=false; while read -r i; do if [[ "$i" != "${1}" ]] || [[ "${unseted}" = true ]]; then echo "$i"; else unseted=true; fi; done; unset unseted i ;}
+AddNewToArray () 
+{ 
+    Array.Push "$@"
+}
+ArrayAppend () 
+{ 
+    Array.Append "$1"
+}
+ArrayIncludes () 
+{ 
+    Array.Includes "$@"
+}
+ArrayIndex () 
+{ 
+    Array.Length "$1"
+}
+GetArrayIndex () 
+{ 
+    Array.IndexOf "$1"
+}
+PrintArray () 
+{ 
+    Array.Print "$@"
+}
+PrintEvalArray () 
+{ 
+    Array.Eval "$1"
+}
+RevArray () 
+{ 
+    Array.Rev "$1"
+}
+StrToCharList () 
+{ 
+    Array.FromStr "$1"
+}
+FileType () 
+{ 
+    file --mime-type -b "$1"
+}
+GetBaseName () 
+{ 
+    ForEach basename "{}"
+}
+GetFileExt () 
+{ 
+    GetBaseName | rev | cut -d "." -f 1 | rev
+}
+RemoveFileExt () 
+{ 
+    local Ext;
+    ForEach eval 'Ext=$(GetFileExt <<< {}); sed "s|.$Ext$||g" <<< {}; unset Ext'
+}
+CheckFuncDefined () 
+{ 
+    typeset -f "${1}" > /dev/null || return 1
+}
+ForEach () 
+{ 
+    local _Item;
+    while read -r _Item; do
+        "${@//"{}"/"${_Item}"}" || return "${?}";
+    done
+}
+GetLine () 
+{ 
+    head -n "$1" | tail -n 1
+}
+IsAvailable () 
+{ 
+    type "$1" 2> /dev/null 1>&2
+}
+Loop () 
+{ 
+    local _T="$1";
+    shift 1 || return 1;
+    ForEach "$@" < <(yes "" | head -n "$_T")
+}
+BreakChar () 
+{ 
+    grep -o "."
+}
+CutLastString () 
+{ 
+    echo "${1%%"${2}"}";
+    return 0
+}
+GetLastSplitString () 
+{ 
+    rev <<< "$2" | cut -d "$1" -f 1 | rev
+}
+IsUUID () 
+{ 
+    local _UUID="${1-""}";
+    [[ "${_UUID//-/}" =~ ^[[:xdigit:]]{32}$ ]] && return 0;
+    return 1
+}
+PrintEval () 
+{ 
+    eval echo "\${$1}"
+}
+RandomString () 
+{ 
+    base64 < "/dev/random" | fold -w "$1" | head -n 1;
+    return 0
+}
+RemoveBlank () 
+{ 
+    sed "s|^ *||g; s| *$||g; s|^	*||g; s|	*$||g; /^$/d"
+}
+TextBox () 
+{ 
+    local _Content=() _Length _Vertical="|" _Line="=";
+    readarray -t _Content;
+    _Length="$(PrintArray "${_Content[@]}" | awk '{ if ( length > x ) { x = length } }END{ print x }')";
+    echo "${_Vertical}${_Line}$(yes "${_Line}" | head -n "$_Length" | tr -d "\n")${_Vertical}";
+    for _Str in "${_Content[@]}";
+    do
+        echo "${_Vertical}${_Str}$(yes " " | head -n "$(( _Length + 1 - "${#_Str}"))" | tr -d "\n")${_Vertical}";
+    done;
+    echo "${_Vertical}${_Line}$(yes "${_Line}" | head -n "$_Length" | tr -d "\n")${_Vertical}"
+}
+ToLower () 
+{ 
+    local _Str="${1,,}";
+    [[ -z "${_Str-""}" ]] || echo "${_Str}"
+}
+ToLowerStdin () 
+{ 
+    local _Str;
+    ForEach eval "_Str=\"{}\"; echo \"\${_Str,,}\"";
+    unset _Str
+}
+CalcInt () 
+{ 
+    echo "$(( "$@" ))"
+}
+Ntest () 
+{ 
+    (( "$@" )) || return 1
+}
+Sum () 
+{ 
+    local _Arg=();
+    ForEach eval '_Arg+=("{}" "+")' < <(PrintArray "$@");
+    readarray -t _Arg < <(PrintArray "${_Arg[@]}" | sed "${#_Arg[@]}d");
+    CalcInt "${_Arg[@]}"
+}
+Bool () 
+{ 
+    case "$(ToLower "$(PrintEval "${1}")")" in 
+        "true")
+            return 0
+        ;;
+        "" | "false")
+            return 1
+        ;;
+        *)
+            return 2
+        ;;
+    esac
+}
+GetFuncList () 
+{ 
+    declare -F | cut -d " " -f 3
+}
+UnsetAllFunc () 
+{ 
+    local Func;
+    while read -r Func; do
+        unset "$Func";
+    done < <(GetFuncList)
+}
+Match () 
+{ 
+    local stdin str;
+    read -r stdin;
+    for str in "$@";
+    do
+        if [[ "$str" = "$stdin" ]]; then
+            return 0;
+        fi;
+    done;
+    return 1
+}
+RemoveMatchLine () 
+{ 
+    local i unseted=false;
+    while read -r i; do
+        if [[ "$i" != "${1}" ]] || [[ "${unseted}" = true ]]; then
+            echo "$i";
+        else
+            unseted=true;
+        fi;
+    done;
+    unset unseted i
+}
 Array.Append () 
 { 
     local _ArrName="$1";
@@ -1111,4 +1396,101 @@ Array.Includes ()
 { 
     PrintEvalArray "$1" | grep -qx "$2"
 }
-ParseArg () { local _Arg _Chr _Cnt; local _Long=() _LongWithArg=() _Short=() _ShortWithArg=(); local _OutArg=() _NoArg=(); for _Arg in "${@}"; do local _TempArray=(); case "${_Arg}" in "LONG="*) readarray -t _TempArray < <(tr -d "\"" <<< "${_Arg#LONG=}" | tr "," "\n"); for _Chr in "${_TempArray[@]}"; do if [[ "${_Chr}" = *":" ]]; then _LongWithArg+=("${_Chr%":"}"); else _Long+=("${_Chr}"); fi; done; shift 1 ;; "SHORT="*) readarray -t _TempArray < <(tr -d "\"" <<< "${_Arg#SHORT=}" | grep -o .); for ((_Cnt=0; _Cnt<= "${#_TempArray[@]}" - 1; _Cnt++ )) do if [[ "${_TempArray["$(( _Cnt + 1))"]-""}" = ":" ]]; then _ShortWithArg+=("${_TempArray["${_Cnt}"]}"); _Cnt=$(( _Cnt + 1 )); else _Short+=("${_TempArray["${_Cnt}"]}"); fi; done; shift 1 ;; "--") shift 1; break ;; esac; done; while (( "$#" > 0 )); do if [[ "${1}" = "--" ]]; then shift 1; _NoArg+=("${@}"); shift "$#"; break; else if [[ "${1}" = "--"* ]]; then if printf "%s\n" "${_LongWithArg[@]}" | grep -qx "${1#--}"; then if [[ "${2}" = "-"* ]]; then Msg.Err "${1} の引数が指定されていません"; return 2; else _OutArg+=("${1}" "${2}"); shift 2; fi; else if printf "%s\n" "${_Long[@]}" | grep -qx "${1#--}"; then _OutArg+=("${1}"); shift 1; else Msg.Err "${1} は不正なオプションです。-hで使い方を確認してください。"; return 1; fi; fi; else if [[ "${1}" = "-"* ]]; then local _Shift=0; while read -r _Chr; do if printf "%s\n" "${_ShortWithArg[@]}" | grep -qx "${_Chr}"; then if [[ "${1}" = *"${_Chr}" ]] && [[ ! "${2}" = "-"* ]]; then _OutArg+=("-${_Chr}" "${2}"); _Shift=2; else Msg.Err "-${_Chr} の引数が指定されていません"; return 2; fi; else if printf "%s\n" "${_Short[@]}" | grep -qx "${_Chr}"; then _OutArg+=("-${_Chr}"); _Shift=1; else Msg.Err "-${_Chr} は不正なオプションです。-hで使い方を確認してください。"; return 1; fi; fi; done < <(grep -o . <<< "${1#-}"); shift "${_Shift}"; else _NoArg+=("${1}"); shift 1; fi; fi; fi; done; OPTRET=("${_OutArg[@]}" -- "${_NoArg[@]}"); return 0 ;}
+ParseArg () 
+{ 
+    local _Arg _Chr _Cnt;
+    local _Long=() _LongWithArg=() _Short=() _ShortWithArg=();
+    local _OutArg=() _NoArg=();
+    for _Arg in "${@}";
+    do
+        local _TempArray=();
+        case "${_Arg}" in 
+            "LONG="*)
+                readarray -t _TempArray < <(tr -d "\"" <<< "${_Arg#LONG=}" | tr "," "\n");
+                for _Chr in "${_TempArray[@]}";
+                do
+                    if [[ "${_Chr}" = *":" ]]; then
+                        _LongWithArg+=("${_Chr%":"}");
+                    else
+                        _Long+=("${_Chr}");
+                    fi;
+                done;
+                shift 1
+            ;;
+            "SHORT="*)
+                readarray -t _TempArray < <(tr -d "\"" <<< "${_Arg#SHORT=}" | grep -o .);
+                for ((_Cnt=0; _Cnt<= "${#_TempArray[@]}" - 1; _Cnt++ ))
+                do
+                    if [[ "${_TempArray["$(( _Cnt + 1))"]-""}" = ":" ]]; then
+                        _ShortWithArg+=("${_TempArray["${_Cnt}"]}");
+                        _Cnt=$(( _Cnt + 1 ));
+                    else
+                        _Short+=("${_TempArray["${_Cnt}"]}");
+                    fi;
+                done;
+                shift 1
+            ;;
+            "--")
+                shift 1;
+                break
+            ;;
+        esac;
+    done;
+    while (( "$#" > 0 )); do
+        if [[ "${1}" = "--" ]]; then
+            shift 1;
+            _NoArg+=("${@}");
+            shift "$#";
+            break;
+        else
+            if [[ "${1}" = "--"* ]]; then
+                if printf "%s\n" "${_LongWithArg[@]}" | grep -qx "${1#--}"; then
+                    if [[ "${2}" = "-"* ]]; then
+                        Msg.Err "${1} の引数が指定されていません";
+                        return 2;
+                    else
+                        _OutArg+=("${1}" "${2}");
+                        shift 2;
+                    fi;
+                else
+                    if printf "%s\n" "${_Long[@]}" | grep -qx "${1#--}"; then
+                        _OutArg+=("${1}");
+                        shift 1;
+                    else
+                        Msg.Err "${1} は不正なオプションです。-hで使い方を確認してください。";
+                        return 1;
+                    fi;
+                fi;
+            else
+                if [[ "${1}" = "-"* ]]; then
+                    local _Shift=0;
+                    while read -r _Chr; do
+                        if printf "%s\n" "${_ShortWithArg[@]}" | grep -qx "${_Chr}"; then
+                            if [[ "${1}" = *"${_Chr}" ]] && [[ ! "${2}" = "-"* ]]; then
+                                _OutArg+=("-${_Chr}" "${2}");
+                                _Shift=2;
+                            else
+                                Msg.Err "-${_Chr} の引数が指定されていません";
+                                return 2;
+                            fi;
+                        else
+                            if printf "%s\n" "${_Short[@]}" | grep -qx "${_Chr}"; then
+                                _OutArg+=("-${_Chr}");
+                                _Shift=1;
+                            else
+                                Msg.Err "-${_Chr} は不正なオプションです。-hで使い方を確認してください。";
+                                return 1;
+                            fi;
+                        fi;
+                    done < <(grep -o . <<< "${1#-}");
+                    shift "${_Shift}";
+                else
+                    _NoArg+=("${1}");
+                    shift 1;
+                fi;
+            fi;
+        fi;
+    done;
+    OPTRET=("${_OutArg[@]}" -- "${_NoArg[@]}");
+    return 0
+}
