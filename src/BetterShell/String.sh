@@ -47,6 +47,18 @@ CutLastString(){
     return 0
 }
 
+# @description 行頭行末の空行を除去します
+#
+# 標準入力から受け取ったテキストの、行頭と行末にある任意の数の空白文字やTab文字を削除します。
+#
+# @example
+#    echo "   Hello World ! I Love ArchLinux      " | RemoveBlank
+#
+# @noargs
+#
+# @stdout stdinから行頭と末尾の空白を除去したもの
+#
+# @exitcode 0 return only 0
 RemoveBlank(){
     sed "s|^ *||g; s| *$||g; s|^	*||g; s|	*$||g; /^$/d"
 }
@@ -56,7 +68,23 @@ GetLastSplitString(){
     rev <<< "$2" | cut -d "$1" -f 1 | rev
 }
 
-# PrintEval <変数名>
+# @description 指定された文字列の変数を参照します
+#
+# 指定された文字列の名前の変数を参照し、その値を返します。
+#
+# 引数として#と@を指定しても正常に動作しないことに気をつけてください。
+#
+# 引数の変数を展開しないでください
+#
+# @example
+#    MyVariable="Hello World"
+#    PrintEval MyVariable
+#
+# @arg $1 変数名
+#
+# @stdout 指定された変数に代入されている値
+#
+# @exitcode 0 return only 0
 PrintEval(){
     eval echo "\${$1}"
 }
