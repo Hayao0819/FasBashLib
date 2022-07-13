@@ -61,6 +61,7 @@ IsAvailable(){
 Loop(){
     local _T="$1"
     shift 1 || return 1
+    (( _T == 0 )) && return 0
     ForEach "$@" < <(yes "" | head -n "$_T")
 }
 
