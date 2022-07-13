@@ -14,7 +14,7 @@ fi
 # Set variavles
 LibName="$1" FuncName="$2" TestName="${3-""}"
 FuncTestDir="$TestsDir/$LibName/${FuncName}/"
-[[ -n "${FuncTestDir-""}" ]] && FuncTestDir="$TestsDir/$LibName/${FuncName}/$TestName"
+[[ -n "${TestName-""}" ]] && FuncTestDir="$TestsDir/$LibName/${FuncName}/$TestName"
 
 # Check
 "$BinDir/List.sh" -q | grep -qx "${LibName}" || {
