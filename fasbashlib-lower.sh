@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 declare -r FSBLIB_LIBLIST=("Message" "AwkForCalc" "Cache" "URL" "Misskey" "Readlink" "Prompt" "Csv" "Pacman" "SrcInfo" "Ini" "ArchLinux" "Core" "Sqlite3" "BetterShell" "Array" "parseArg" )
-declare -r FSBLIB_VERSION='v0.2.3.r405.g8733e6d-lower'
+declare -r FSBLIB_VERSION='v0.2.3.r409.g5f7688c-lower'
 declare -r FSBLIB_REQUIRE='ModernBash'
 Msg.common () 
 { 
@@ -1206,6 +1206,7 @@ loop ()
 { 
     local _T="$1";
     shift 1 || return 1;
+    (( _T == 0 )) && return 0;
     forEach "$@" < <(yes "" | head -n "$_T")
 }
 breakChar () 
@@ -1242,15 +1243,21 @@ removeBlank ()
 }
 textBox () 
 { 
-    local _Content=() _Length _Vertical="|" _Line="=";
+    local _Content=() _Length _Vertical="|" _Line="=" _Header="${1-""}";
     readarray -t _Content;
-    _Length="$(printArray "${_Content[@]}" | awk '{ if ( length > x ) { x = length } }END{ print x }')";
-    echo "${_Vertical}${_Line}$(yes "${_Line}" | head -n "$_Length" | tr -d "\n")${_Vertical}";
+    _Length="$(printArray "${_Content[@]}" "$_Header"  | awk '{ if ( length > x && length > 0 ) { x = length } }END{ print x }')";
+    if [[ -z "${_Header:-""}" ]]; then
+        echo "${_Vertical}$(loop "$((_Length+1))" echo -n "${_Line}")${_Vertical}";
+    else
+        (( _Length % 2 == 0 )) || (( _Length++ ));
+        (( ${#_Header} % 2 == 0 )) && (( _Length++ ));
+        echo "${_Vertical}$(loop "$(( (_Length - ${#_Header}) /2 ))" echo -n "${_Line}")${_Header+" ${_Header} "}$(loop "$(( (_Length - ${#_Header}) /2 ))" echo -n "${_Line}")${_Vertical}";
+    fi;
     for _Str in "${_Content[@]}";
     do
-        echo "${_Vertical}${_Str}$(yes " " | head -n "$(( _Length + 1 - "${#_Str}"))" | tr -d "\n")${_Vertical}";
+        echo "${_Vertical}${_Str}$(loop "$(( _Length + 1 - "${#_Str}"))" echo -n " ")${_Vertical}";
     done;
-    echo "${_Vertical}${_Line}$(yes "${_Line}" | head -n "$_Length" | tr -d "\n")${_Vertical}"
+    echo "${_Vertical}$(loop "$((_Length+1))" echo -n "${_Line}")${_Vertical}"
 }
 toLower () 
 { 
