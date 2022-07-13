@@ -74,14 +74,32 @@ ToLowerStdin(){
 }
 
 TextBox(){
-    local _Content=() _Length _Vertical="|" _Line="="
+    local _Content=() _Length _Vertical="|" _Line="=" _Header="${1-""}"
+
+    # 標準入力からテキストを取得
     readarray -t _Content
-    _Length="$(PrintArray "${_Content[@]}" | awk '{ if ( length > x ) { x = length } }END{ print x }')"
-    echo "${_Vertical}${_Line}$(yes "${_Line}" | head -n "$_Length" | tr -d "\n")${_Vertical}"
+    #set -xv
+
+    # 最大幅を取得
+    _Length="$(PrintArray "${_Content[@]}" "$_Header"  | awk '{ if ( length > x && length > 0 ) { x = length } }END{ print x }')"
+    
+    # 行頭
+    if [[ -z "${_Header:-""}" ]]; then
+        echo "${_Vertical}$(Loop "$((_Length+1))" echo -n "${_Line}")${_Vertical}"
+    else
+        # ヘッダー設定時に幅を必ず偶数にする
+        (( _Length % 2 == 0 )) || (( _Length++ ))
+        (( ${#_Header} % 2 == 0 )) && (( _Length++ )) # ヘッダーが偶数のときに全体の幅を
+        echo "${_Vertical}$(Loop "$(( (_Length - ${#_Header}) /2 ))" echo -n "${_Line}")${_Header+" ${_Header} "}$(Loop "$(( (_Length - ${#_Header}) /2 ))" echo -n "${_Line}")${_Vertical}"
+    fi
+
+    # 本文
     for _Str in "${_Content[@]}"; do
-        echo "${_Vertical}${_Str}$(yes " " | head -n "$(( _Length + 1 - "${#_Str}"))" | tr -d "\n")${_Vertical}"
+        echo "${_Vertical}${_Str}$(Loop "$(( _Length + 1 - "${#_Str}"))" echo -n " ")${_Vertical}"
     done
-    echo "${_Vertical}${_Line}$(yes "${_Line}" | head -n "$_Length" | tr -d "\n")${_Vertical}"
+
+    # 行末
+    echo "${_Vertical}$(Loop "$((_Length+1))" echo -n "${_Line}")${_Vertical}"
 }
 
 BreakChar(){
