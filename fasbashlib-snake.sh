@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 declare -r FSBLIB_LIBLIST=("Message" "AwkForCalc" "Cache" "URL" "Misskey" "Readlink" "Prompt" "Csv" "Pacman" "SrcInfo" "Ini" "ArchLinux" "Core" "Sqlite3" "BetterShell" "Array" "parse_arg" )
-declare -r FSBLIB_VERSION='v0.2.3.r413.g016cfd1-snake'
+declare -r FSBLIB_VERSION='v0.2.3.r416.g0587683-snake'
 declare -r FSBLIB_REQUIRE='ModernBash'
 msg.common () 
 { 
