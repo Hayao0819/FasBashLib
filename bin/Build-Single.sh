@@ -13,6 +13,7 @@ TmpFile_FuncList="${TmpDir}/fasbashlib-list.sh" # スネークケース置き換
 OutFile="${MainDir}/fasbashlib.sh"
 Delimiter="."
 NoRequire=false
+OneLine=false # うまく動かないよ
 
 CodeType="Upper"
 #CodeType="Lower"
@@ -336,7 +337,11 @@ _Make_Lib(){
                     # 関数の置き換えを一切行わない場合
                     echo " = $Func" >> "$TmpFile_FuncList"
                     "$Debug" && echo "${Func}を${TmpLibFile}に書き込み" >&2
-                    _GetFuncCodeFromFile "${Dir}/${File}" "$Func" | _MakeOneLineFunc >> "$TmpLibFile"
+                    if "${OneLine-"false"}"; then
+                        _GetFuncCodeFromFile "${Dir}/${File}" "$Func" | _MakeOneLineFunc >> "$TmpLibFile"
+                    else
+                        _GetFuncCodeFromFile "${Dir}/${File}" "$Func" >> "$TmpLibFile"
+                    fi
                     continue
                 else
                     # 関数の定義部分を書き換え
@@ -346,7 +351,6 @@ _Make_Lib(){
                     "${Debug}" && echo "置き換え1: 関数定義の${Func}を${NewFuncName}に置き換えて${TmpLibFile}に書き込み" >&2
 
                     # 関数を1行にまとめられないかなって...
-                    OneLine=false
                     if "${OneLine-"false"}"; then
                         _GetFuncCodeFromFile "${Dir}/${File}" "$Func" | sed "1 s|${Func} ()|${NewFuncName} ()|g" | \
                             grep -v "^ *\#" | _MakeOneLineFunc >> "$TmpLibFile"
