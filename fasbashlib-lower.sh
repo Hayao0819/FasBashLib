@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 declare -r FSBLIB_LIBLIST=("Message" "AwkForCalc" "Cache" "URL" "Misskey" "Readlink" "Prompt" "Csv" "Pacman" "SrcInfo" "Ini" "ArchLinux" "Core" "Sqlite3" "BetterShell" "Array" "parseArg" )
-declare -r FSBLIB_VERSION='v0.2.3.r416.g0587683-lower'
+declare -r FSBLIB_VERSION='v0.2.4.r270.g1116a1e-lower'
 declare -r FSBLIB_REQUIRE='ModernBash'
 Msg.common () 
 { 
@@ -1039,7 +1039,7 @@ Fsblib.fsblibEnvCheck ()
 }
 Sqlite3.call () 
 { 
-    Msg.debug sqlite3 "$SQLITE3_DBPATH" "$@" 1>&2;
+    Msg.debug sqlite3 "${SQLITE3_OPTIONS[@]}" "$SQLITE3_DBPATH" "$@" 1>&2;
     sqlite3 "${SQLITE3_OPTIONS[@]}" "$SQLITE3_DBPATH" "$@"
 }
 Sqlite3.connect () 
