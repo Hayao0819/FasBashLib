@@ -4,3 +4,6 @@
 [submodule "lib/minifier"]
 	path = lib/minifier
 	url = https://github.com/Zuzzuc/Bash-minifier
+[submodule "src/Parsrs/parsrs"]
+	path = src/Parsrs/parsrs
+	url = https://github.com/ShellShoccar-jpn/Parsrs.git
