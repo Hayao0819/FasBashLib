@@ -413,6 +413,7 @@ _Make_Lib(){
 
         # ファイル埋め込みを実行
         while read -r Embedded; do
+            echo "Load file: $Dir/$(GetMeta "$LibName" "$Embedded" "Embedded")" >&2
             SedI "/^%$Embedded%$/r $Dir/$(GetMeta "$LibName" "$Embedded" "Embedded")" "$TmpLibFile"
             SedI "/^%$Embedded%$/d" "$TmpLibFile"
             
