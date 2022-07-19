@@ -18,14 +18,6 @@ while read -r Dir; do
         Errors=$(( Errors + 1 ))
     fi
 
-    # ShellCheckを実行
-    while read -r File; do
-        if [[ "$(file --mime-type "$File" | cut -d " " -f 2)" = "text/x-shellscript" ]]; then
-            echo "Run shell check $File" >&2
-            shellcheck -s bash -x "$File" || Errors=$(( Errors + 1 ))
-        fi
-    done < <(find "$Dir" -type f)
-
     # 依存関係をテスト
     "$LibDir/SolveRequire.sh" "${Name}" 1> /dev/null || Errors=$(( Errors + 1 ))
 
@@ -70,6 +62,14 @@ while read -r Dir; do
 
     # テストを実行
     #"${BinDir}/Test-Run.sh" "$Name"
+
+    # ShellCheckを実行
+    while read -r File; do
+        if [[ "$(file --mime-type "$File" | cut -d " " -f 2)" = "text/x-shellscript" ]]; then
+            echo "Run shell check $File" >&2
+            shellcheck -s bash -x "$File" || Errors=$(( Errors + 1 ))
+        fi
+    done < <("${LibDir}/GetFileList.sh" "$Name")
 
     unset File _FileList Name
 done < <(
