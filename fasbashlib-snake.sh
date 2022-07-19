@@ -26,144 +26,23 @@
 # - The right to buy the author (copyright holder) of the software a bowl of sushi🍣.
 #
 # shellcheck disable=all
-declare -r FSBLIB_LIBLIST=("Message" "AwkForCalc" "Cache" "URL" "Misskey" "Readlink" "Prompt" "Csv" "Pacman" "SrcInfo" "Ini" "ArchLinux" "Core" "Sqlite3" "BetterShell" "Array" "parse_arg" )
-declare -r FSBLIB_VERSION='v0.2.4.r273.ge179975-snake'
+declare -r FSBLIB_LIBLIST=("Core" "URL" "parse_arg" "Array" "Sqlite3" "Readlink" "Message" "Ini" "ArchLinux" "Prompt" "AwkForCalc" "Pacman" "Csv" "SrcInfo" "BetterShell" "Cache" "Misskey" )
+declare -r FSBLIB_VERSION='v0.2.4.r283.g95467dc-snake'
 declare -r FSBLIB_REQUIRE='ModernBash'
-msg.common () 
+fsblib.env_check () 
 { 
-    local i l="$1" string="$2" out="${3-""}";
-    shift 2 || return 1;
-    { 
-        [[ -z "${out-""}" ]] && { 
-            [[ "${l^^}" = *"ERR"* ]] || [[ "${l^^}" = *"WARN"* ]] || [[ "${l^^}" = *"DEBUG"* ]]
-        }
-    } && out="stderr";
-    case "${FSBLIB_MSG-"${out:-"stdout"}"}" in 
-        "stdout")
-            for i in $(seq "$(echo -e "${string}" | wc -l)");
-            do
-                echo -n "$l ";
-                echo -e "${string}" | head -n "${i}" | tail -n 1;
-            done
+    case "$FSBLIB_REQUIRE" in 
+        "Any")
+            return 0
         ;;
-        "stderr")
-            for i in $(seq "$(echo -e "${string}" | wc -l)");
-            do
-                echo -n "$l " 1>&2;
-                echo -e "${string}" | head -n "${i}" | tail -n 1 1>&2;
-            done
+        "ModernShell")
+            [[ "$(cut -d "." -f 1 <<< "$BASH_VERSION")" = "5" ]] && return 0
         ;;
     esac
 }
-msg.debug () 
+fsblib.fsblib_env_check () 
 { 
-    msg.common "Debug:" "${*}" stderr
-}
-msg.err () 
-{ 
-    msg.common "Error:" "${*}" stderr
-}
-msg.info () 
-{ 
-    msg.common " Info:" "${*}" stdout
-}
-msg.warn () 
-{ 
-    msg.common " Warn:" "${*}" stderr
-}
-awk.cos () 
-{ 
-    awk.float "cos($*)"
-}
-awk.float () 
-{ 
-    local AWKSCALE="${AWKSCALE-"5"}";
-    awk "BEGIN {printf (\"%4.${AWKSCALE}f\n\", $*)}"
-}
-awk.log () 
-{ 
-    local _Base="$1" _Number="$2";
-    awk.float "log(${_Number}) / log($_Base)"
-}
-awk.pi () 
-{ 
-    awk.float "atan2(0, -0)"
-}
-awk.print () 
-{ 
-    awk "BEGIN {print $*}"
-}
-awk.rad () 
-{ 
-    awk.float "$1 * $(awk.pi) / 180 "
-}
-awk.sin () 
-{ 
-    awk.float "sin($*)"
-}
-awk.tan () 
-{ 
-    awk.float "sin($1)/tan($1)"
-}
-cache.exist () 
-{ 
-    local _File;
-    _File="$(cache.create_dir)/$1";
-    [[ -e "$_File" ]] || return 1;
-    (( "$(cache.get_time_diff_from_last_update "$_File")" > "${KEEPCACHESEC-"86400"}" )) && return 2;
-    return 0
-}
-cache.get () 
-{ 
-    cat "$(cache.get_dir)/$1" 2> /dev/null || return 1
-}
-cache.get_dir () 
-{ 
-    echo "${TMPDIR-"/tmp"}/$(cache.get_id)"
-}
-cache.get_file_last_update () 
-{ 
-    local _isGnu=false;
-    date --help 2> /dev/null | grep -q "GNU" && _isGnu=true;
-    if [[ "$_isGnu" = true ]]; then
-        date +%s -r "$1";
-    else
-        { 
-            eval "$(stat -s "$1")";
-            echo "$st_mtime"
-        };
-    fi
-}
-cache.get_id () 
-{ 
-    if [[ -z "${FSBLIB_CACHEID-""}" ]]; then
-        cache.create_dir > /dev/null;
-    fi;
-    echo "$FSBLIB_CACHEID"
-}
-cache.get_time_diff_from_last_update () 
-{ 
-    local _Now _Last;
-    _Now="$(date "+%s")";
-    _Last="$(cache.get_file_last_update "$1")";
-    echo "$(( _Now - _Last ))";
-    return 0
-}
-cache.create () 
-{ 
-    cache.create_dir > /dev/null;
-    cat > "$(cache.get_dir)/${1}";
-    cat "$(cache.get_dir)/$1"
-}
-cache.create_dir () 
-{ 
-    FSBLIB_CACHEID="${FSBLIB_CACHEID-"$(random_string "10")"}";
-    export FSBLIB_CACHEID="$FSBLIB_CACHEID";
-    local TMPDIR="${TMPDIR-"/tmp"}";
-    local _Dir="$TMPDIR/${FSBLIB_CACHEID}";
-    mkdir -p "$_Dir";
-    echo "$_Dir";
-    return 0
+    fsblib.env_check
 }
 url.authority () 
 { 
@@ -307,122 +186,265 @@ url.parse_query ()
     i="$(sed "s|^\?||g" <<< "$i")";
     tr "&" "\n" <<< "$i" | cut -d "#" -f 1
 }
-misskey.notes.create () 
+parse_arg () 
 { 
-    misskey.binding_base "notes/create" text -- "$@"
-}
-misskey.notes.renotes () 
-{ 
-    misskey.binding_base "notes/renotes" noteId limit sinceId untilId -- "$@"
-}
-misskey.notes.search () 
-{ 
-    misskey.binding_base "notes/search" query limit -- "$@"
-}
-misskey.users.notes () 
-{ 
-    misskey.binding_base "users/notes" userId -- "${1:-"$(misskey.my_id)"}" "${@:2}"
-}
-misskey.users.search_by_username_and_host () 
-{ 
-    misskey.binding_base "users/search-by-username-and-host" username -- "${1:-"$(misskey.my_user_name)"}" "${@:2}"
-}
-misskey.admin.server_info () 
-{ 
-    misskey.binding_base "/admin/server-info" -- "$@"
-}
-misskey.setup () 
-{ 
-    export MISSKEY_DOMAIN="${1-"${MISSKEY_DOMAIN-""}"}";
-    export MISSKEY_TOKEN="${2-"${MISSKEY_TOKEN-""}"}";
-    export MISSKEY_ENTRY="https://${MISSKEY_DOMAIN}/api"
-}
-misskey.i () 
-{ 
-    misskey.binding_base "/i" -- "$@"
-}
-misskey.meta () 
-{ 
-    misskey.binding_base "/meta" -- "$@"
-}
-misskey.server_info () 
-{ 
-    misskey.binding_base "/server-info" -- "$@"
-}
-misskey.binding_base () 
-{ 
-    local _API="$1";
-    shift 1;
-    local i _APIArgs=("") _Args;
-    for i in "$@";
+    local _Arg _Chr _Cnt;
+    local _Long=() _LongWithArg=() _Short=() _ShortWithArg=();
+    local _OutArg=() _NoArg=();
+    for _Arg in "${@}";
     do
-        shift 1 2> /dev/null || true;
-        if [[ "$i" = "--" ]]; then
+        local _TempArray=();
+        case "${_Arg}" in 
+            "LONG="*)
+                readarray -t _TempArray < <(tr -d "\"" <<< "${_Arg#LONG=}" | tr "," "\n");
+                for _Chr in "${_TempArray[@]}";
+                do
+                    if [[ "${_Chr}" = *":" ]]; then
+                        _LongWithArg+=("${_Chr%":"}");
+                    else
+                        _Long+=("${_Chr}");
+                    fi;
+                done;
+                shift 1
+            ;;
+            "SHORT="*)
+                readarray -t _TempArray < <(tr -d "\"" <<< "${_Arg#SHORT=}" | grep -o .);
+                for ((_Cnt=0; _Cnt<= "${#_TempArray[@]}" - 1; _Cnt++ ))
+                do
+                    if [[ "${_TempArray["$(( _Cnt + 1))"]-""}" = ":" ]]; then
+                        _ShortWithArg+=("${_TempArray["${_Cnt}"]}");
+                        _Cnt=$(( _Cnt + 1 ));
+                    else
+                        _Short+=("${_TempArray["${_Cnt}"]}");
+                    fi;
+                done;
+                shift 1
+            ;;
+            "--")
+                shift 1;
+                break
+            ;;
+        esac;
+    done;
+    while (( "$#" > 0 )); do
+        if [[ "${1}" = "--" ]]; then
+            shift 1;
+            _NoArg+=("${@}");
+            shift "$#";
             break;
         else
-            _APIArgs+=("$i");
+            if [[ "${1}" = "--"* ]]; then
+                if printf "%s\n" "${_LongWithArg[@]}" | grep -qx "${1#--}"; then
+                    if [[ "${2}" = "-"* ]]; then
+                        msg.err "${1} の引数が指定されていません";
+                        return 2;
+                    else
+                        _OutArg+=("${1}" "${2}");
+                        shift 2;
+                    fi;
+                else
+                    if printf "%s\n" "${_Long[@]}" | grep -qx "${1#--}"; then
+                        _OutArg+=("${1}");
+                        shift 1;
+                    else
+                        msg.err "${1} は不正なオプションです。-hで使い方を確認してください。";
+                        return 1;
+                    fi;
+                fi;
+            else
+                if [[ "${1}" = "-"* ]]; then
+                    local _Shift=0;
+                    while read -r _Chr; do
+                        if printf "%s\n" "${_ShortWithArg[@]}" | grep -qx "${_Chr}"; then
+                            if [[ "${1}" = *"${_Chr}" ]] && [[ ! "${2}" = "-"* ]]; then
+                                _OutArg+=("-${_Chr}" "${2}");
+                                _Shift=2;
+                            else
+                                msg.err "-${_Chr} の引数が指定されていません";
+                                return 2;
+                            fi;
+                        else
+                            if printf "%s\n" "${_Short[@]}" | grep -qx "${_Chr}"; then
+                                _OutArg+=("-${_Chr}");
+                                _Shift=1;
+                            else
+                                msg.err "-${_Chr} は不正なオプションです。-hで使い方を確認してください。";
+                                return 1;
+                            fi;
+                        fi;
+                    done < <(grep -o . <<< "${1#-}");
+                    shift "${_Shift}";
+                else
+                    _NoArg+=("${1}");
+                    shift 1;
+                fi;
+            fi;
         fi;
     done;
-    local _Cnt _Shifted=false;
-    for ((_Cnt=1; _Cnt<="${#_APIArgs[@]} - 1" ; _Cnt++))
-    do
-        _Args+=("${_APIArgs[$_Cnt]}=$(eval echo "\${${_Cnt}:-""}")");
-        if [[ -z "$(eval echo "\${$((_Cnt+1)):-""}")" ]]; then
-            shift "$_Cnt";
-            _Shifted=true;
-            break;
-        fi;
-    done;
-    if ! bool _Shifted; then
-        _Shifted=true;
-        shift "$(( ${#_APIArgs[@]} - 1 ))";
+    OPTRET=("${_OutArg[@]}" -- "${_NoArg[@]}");
+    return 0
+}
+array.append () 
+{ 
+    local _ArrName="$1";
+    shift 1 || return 1;
+    readarray -t -O "$(array_index "$_ArrName")" "$_ArrName" < <(cat)
+}
+array.from_str () 
+{ 
+    declare -a -x "$1";
+    readarray -t "$1" < <(break_char)
+}
+array.pop () 
+{ 
+    readarray -t "$1" < <(print_eval_array "$1" | sed -e '$d')
+}
+array.push () 
+{ 
+    eval "print_array \"\${$1[@]}\"" | grep -qx "$2" && return 0;
+    eval "$1+=(\"$2\")"
+}
+array.remove () 
+{ 
+    readarray -t "$1" < <(print_eval_array "$1" | RemovematchLine "$2")
+}
+array.rev () 
+{ 
+    readarray -t "$1" < <(print_eval_array "$1" | tac)
+}
+array.shift () 
+{ 
+    readarray -t "$1" < <(print_eval_array "$1" | sed "1,${2-"1"}d")
+}
+array.eval () 
+{ 
+    eval "print_array \"\${$1[@]}\""
+}
+array.last () 
+{ 
+    print_eval "$1[$(array.last_index "$1")]"
+}
+array.print () 
+{ 
+    (( $# >= 1 )) || return 0;
+    printf "%s\n" "${@}"
+}
+array.index_of () 
+{ 
+    local n=();
+    readarray -t n < <(grep -x -n "$1" | cut -d ":" -f 1 | for_each eval echo '$(( {} - 1 ))');
+    (( "${#n[@]}" >= 1 )) || return 1;
+    print_array "${n[@]}";
+    return 0
+}
+array.last_index () 
+{ 
+    calc_int "$(array.length "$1")" - 1
+}
+array.length () 
+{ 
+    print_eval "#${1}[@]"
+}
+array.for_each () 
+{ 
+    print_eval_array "$1" | for_each "${@:2}"
+}
+array.includes () 
+{ 
+    print_eval_array "$1" | grep -qx "$2"
+}
+sqlite3.call () 
+{ 
+    msg.debug sqlite3 "${SQLITE3_OPTIONS[@]}" "$SQLITE3_DBPATH" "$@" 1>&2;
+    sqlite3 "${SQLITE3_OPTIONS[@]}" "$SQLITE3_DBPATH" "$@"
+}
+sqlite3.connect () 
+{ 
+    export SQLITE3_DBPATH="$1";
+    echo ".open \"$SQLITE3_DBPATH\"" | sqlite3;
+    return 0
+}
+sqlite3.create () 
+{ 
+    local _table="$1" _args=() _columns=();
+    shift 1 || return 1;
+    _columns=("$@");
+    _args+=(create table "$_table" "(");
+    for_each eval "_args+=(\"\\\"{}\\\"\" ,)" < <(print_eval_array _columns);
+    array.pop _args;
+    _args+=(")");
+    sqlite3.call "${_args[*]}"
+}
+sqlite3.current_db () 
+{ 
+    if [[ -z "${SQLITE3_DBPATH-""}" ]]; then
+        msg.err "No datebase is connected.";
+        return 1;
     fi;
-    if [[ -z "${MISSKEY_ENTRY-""}" ]]; then
-        misskey.setup "${MISSKEY_DOMAIN}" "$MISSKEY_TOKEN";
+    echo "${SQLITE3_DBPATH}";
+    return 0
+}
+sqlite3.delete () 
+{ 
+    local _table="$1" _args=();
+    shift 1 || return 1;
+    if (( $# < 1 )) && (( ${SQLITE3_ALLOWDELETEALL-"0"} != 1 )); then
+        msg.err "Cannot delete all data.\nIf you really want that, Please set environment-variable \"SQLITE3_ALLOWDELETEALL=1\"";
+        return 1;
     fi;
-    misskey.send_req "${MISSKEY_ENTRY%/}/${_API#/}" "${_Args[@]}" "$@"
+    _args+=(delete from "$_table");
+    if (( $# > 0)); then
+        _args+=(where "${@}");
+    fi;
+    sqlite3.call "${_args[*]}"
 }
-misskey.make_json () 
+sqlite3.exist_field () 
 { 
-    local i _Key _Value;
-    for i in "i=$MISSKEY_TOKEN" "$@";
-    do
-        _Key=$(cut -d "=" -f 1 <<< "$i");
-        _Value=$(cut -d "=" -f 2- <<< "$i");
-        if [[ "$_Value" =~ ^[0-9]+$ ]] || [[ "$_Value" = true ]] || [[ "$_Value" = false ]] || [[ "$_Value" = "{"*"}" ]] || [[ "$_Value" = "["*"]" ]]; then
-            echo -n "{\"$_Key\": $_Value}";
-        else
-            echo -n "{\"$_Key\": \"$_Value\"}";
-        fi;
-    done | sed "s|}{|,|g" | jq -c -M
+    _result="$(sqlite3.call "SELECT * FROM '$1' WHERE $2 = '$3' LIMIT 1;")";
+    if [[ -n "${_result-""}" ]]; then
+        return 0;
+    fi;
+    return 1
 }
-misskey.send_req () 
+sqlite3.exist_table () 
 { 
-    local _Url="$1" _CurlArgs=();
-    shift 1;
-    _CurlArgs+=(-s -L);
-    _CurlArgs+=(-X POST);
-    _CurlArgs+=(-H "Content-Type: application/json");
-    _CurlArgs+=(-d "$(misskey.make_json "$@")");
-    _CurlArgs+=("$_Url");
-    msg.debug "Run: ${_CurlArgs[*]//"${MISSKEY_TOKEN}"/"TOKEN"}";
-    curl "${_CurlArgs[@]}"
+    local _result;
+    _result="$(sqlite3.call                             "SELECT COUNT(*) 
+                            FROM sqlite_master 
+                            WHERE TYPE='table' AND name='$1';
+            ")";
+    if (( _result > 0 )); then
+        return 0;
+    fi;
+    return 1
 }
-misskey.is_admin () 
+sqlite3.insert () 
 { 
-    bool "$(misskey.i | jq -r ".isAdmin")"
+    local _table="$1" _args=();
+    shift 1 || return 1;
+    local _values=("$@");
+    _args+=(insert into "$_table" values '(');
+    for_each eval "_args+=(\"\\\"{}\\\"\" ,)" < <(print_eval_array _values);
+    array.pop _args;
+    _args+=(");");
+    sqlite3.call "${_args[*]}"
 }
-misskey.my_id () 
+sqlite3.select () 
 { 
-    misskey.i | jq -r ".id"
+    local _table="$1" _args=();
+    shift 1 || return 1;
+    local _values=("$@");
+    _args+=(select);
+    for_each eval "_args+=(\"\\\"{}\\\"\" ,)" < <(print_eval_array _values);
+    array.pop _args;
+    _args+=("from" "$_table" ";");
+    sqlite3.call "${_args[*]}"
 }
-misskey.my_name () 
+sqlite3.select_all () 
 { 
-    misskey.i | jq -r ".name"
-}
-misskey.my_user_name () 
-{ 
-    misskey.i | jq -r ".username"
+    local _table="$1" _args=();
+    shift 1 || return 1;
+    sqlite3.call "select * from $_table"
 }
 readlinkf () 
 { 
@@ -489,6 +511,158 @@ readlinkf__readlink ()
     done;
     return 1
 }
+msg.common () 
+{ 
+    local i l="$1" string="$2" out="${3-""}";
+    shift 2 || return 1;
+    { 
+        [[ -z "${out-""}" ]] && { 
+            [[ "${l^^}" = *"ERR"* ]] || [[ "${l^^}" = *"WARN"* ]] || [[ "${l^^}" = *"DEBUG"* ]]
+        }
+    } && out="stderr";
+    case "${FSBLIB_MSG-"${out:-"stdout"}"}" in 
+        "stdout")
+            for i in $(seq "$(echo -e "${string}" | wc -l)");
+            do
+                echo -n "$l ";
+                echo -e "${string}" | head -n "${i}" | tail -n 1;
+            done
+        ;;
+        "stderr")
+            for i in $(seq "$(echo -e "${string}" | wc -l)");
+            do
+                echo -n "$l " 1>&2;
+                echo -e "${string}" | head -n "${i}" | tail -n 1 1>&2;
+            done
+        ;;
+    esac
+}
+msg.debug () 
+{ 
+    msg.common "Debug:" "${*}" stderr
+}
+msg.err () 
+{ 
+    msg.common "Error:" "${*}" stderr
+}
+msg.info () 
+{ 
+    msg.common " Info:" "${*}" stdout
+}
+msg.warn () 
+{ 
+    msg.common " Warn:" "${*}" stderr
+}
+ini.get_param () 
+{ 
+    local _RawIniLine=();
+    local _Line _LineNo=1 _Exit=0 _InSection=false;
+    readarray -t _RawIniLine;
+    while read -r _Line; do
+        ini.parse_line <<< "$_Line";
+        case "$TYPE" in 
+            "SECTION")
+                if [[ "$SECTION" = "$1" ]]; then
+                    _InSection=true;
+                else
+                    _InSection=false;
+                fi
+            ;;
+            "PARAM-VALUE")
+                [[ "$_InSection" = false ]] || echo "${VALUE}"
+            ;;
+            "ERROR")
+                echo "Line $_LineNo: Failed to parse Ini" 1>&2;
+                _Exit=1
+            ;;
+        esac;
+        _LineNo=$(( _LineNo + 1  ));
+    done < <(print_array "${_RawIniLine[@]}");
+    return "$_Exit"
+}
+ini.get_param_list () 
+{ 
+    local _RawIniLine=();
+    local _Line _LineNo=1 _Exit=0 _InSection=false;
+    readarray -t _RawIniLine;
+    while read -r _Line; do
+        ini.parse_line <<< "$_Line";
+        case "$TYPE" in 
+            "SECTION")
+                if [[ "$SECTION" = "$1" ]]; then
+                    _InSection=true;
+                else
+                    _InSection=false;
+                fi
+            ;;
+            "PARAM-VALUE")
+                [[ "$_InSection" = false ]] || echo "$PARAM"
+            ;;
+            "ERROR")
+                echo "Line $_LineNo: Failed to parse Ini" 1>&2;
+                _Exit=1
+            ;;
+        esac;
+        _LineNo=$(( _LineNo + 1  ));
+    done < <(print_array "${_RawIniLine[@]}");
+    return "$_Exit"
+}
+ini.get_section_list () 
+{ 
+    local _RawIniLine=();
+    local _Line _LineNo=1 _Exit=0;
+    readarray -t _RawIniLine;
+    while read -r _Line; do
+        ini.parse_line <<< "$_Line";
+        case "$TYPE" in 
+            "SECTION")
+                echo "$SECTION"
+            ;;
+            "ERROR")
+                echo "Line $_LineNo: Failed to parse Ini" 1>&2;
+                _Exit=1
+            ;;
+        esac;
+        _LineNo=$(( _LineNo + 1  ));
+    done < <(print_array "${_RawIniLine[@]}");
+    return "$_Exit"
+}
+ini.parse_line () 
+{ 
+    local _Line;
+    TYPE="" PARAM="" VALUE="" SECTION="";
+    _Line="$(remove_blank <<< "$(cat)")";
+    case "$_Line" in 
+        "["*"]")
+            TYPE="SECTION";
+            SECTION=$(sed "s|^\[||g; s|\]$||g" <<< "$_Line")
+        ;;
+        "" | "#"*)
+            TYPE="NOTHING"
+        ;;
+        *"="*)
+            TYPE="PARAM-VALUE";
+            PARAM="$(remove_blank <<< "$(cut -d "=" -f 1 <<< "$_Line")")";
+            VALUE="$(remove_blank <<< "$(cut -d "=" -f 2- <<< "$_Line")")"
+        ;;
+        *)
+            TYPE="ERROR"
+        ;;
+    esac;
+    return 0
+}
+arch.get_kernel_file_list () 
+{ 
+    find "/boot" -maxdepth 1 -mindepth 1 -name "vmlinuz-*"
+}
+arch.get_kernel_src_list () 
+{ 
+    find "/usr/src" -mindepth 1 -maxdepth 1 -type l -name "linux*"
+}
+arch.get_mkinitcpio_preset_list () 
+{ 
+    find "/etc/mkinitcpio.d/" -name "*.preset" -type f | get_base_name | remove_file_ext
+}
 choice () 
 { 
     local arg OPTARG OPTIND;
@@ -549,38 +723,39 @@ choice ()
     };
     return 1
 }
-csv.get_clm () 
+awk.cos () 
 { 
-    grep -v "^#" | sed "/^$/d" | cut -d "${CSVDELIM-","}" -f "$1"
+    awk.float "cos($*)"
 }
-csv.get_clm_cnt () 
+awk.float () 
 { 
-    local _RawCsvLine=();
-    local _Line _ClmCnt=0;
-    readarray -t _RawCsvLine;
-    while read -r _Line; do
-        grep -qE "^#" <<< "$_Line" && continue;
-        _CurrentClmCnt=$(tr "${CSVDELIM-","}" "\n" | wc -l);
-        (( _CurrentClmCnt > _ClmCnt )) && _ClmCnt="$_CurrentClmCnt";
-    done < <(print_array "${_RawCsvLine[@]}");
-    remove_blank <<< "$_ClmCnt";
-    return 0
+    local AWKSCALE="${AWKSCALE-"5"}";
+    awk "BEGIN {printf (\"%4.${AWKSCALE}f\n\", $*)}"
 }
-csv.to_bash_array () 
+awk.log () 
 { 
-    local _RawCsvLine=() _Line _ClmCnt=0;
-    local ArrayPrefix="${ArrayPrefix-"{}"}";
-    readarray -t _RawCsvLine < <(
-        while read -r _Line; do
-            (( $(tr "${CSVDELIM-","}" "\n" <<< "$_Line" | wc -l) >= ${#} )) && echo "$_Line"
-        done < <(grep -v "^#")
-    );
-    _ClmCnt=$(print_array "${_RawCsvLine[@]}" | csv.get_clm_cnt);
-    while read -r _Cnt; do
-        readarray -t "$(sed "s|{}|$(eval "echo \"\${${_Cnt}}\"")|g" <<< "$ArrayPrefix")" < <(
-            print_array "${_RawCsvLine[@]}" | cut -d "${CSVDELIM-","}" -f "$_Cnt"
-        );
-    done < <(seq 1 "$#")
+    local _Base="$1" _Number="$2";
+    awk.float "log(${_Number}) / log($_Base)"
+}
+awk.pi () 
+{ 
+    awk.float "atan2(0, -0)"
+}
+awk.print () 
+{ 
+    awk "BEGIN {print $*}"
+}
+awk.rad () 
+{ 
+    awk.float "$1 * $(awk.pi) / 180 "
+}
+awk.sin () 
+{ 
+    awk.float "sin($*)"
+}
+awk.tan () 
+{ 
+    awk.float "sin($1)/tan($1)"
 }
 pm.check_pkg () 
 { 
@@ -773,6 +948,39 @@ pm.parse_pkg_file_name ()
     fi;
     print_array "${_ParsedPkg[@]}"
 }
+csv.get_clm () 
+{ 
+    grep -v "^#" | sed "/^$/d" | cut -d "${CSVDELIM-","}" -f "$1"
+}
+csv.get_clm_cnt () 
+{ 
+    local _RawCsvLine=();
+    local _Line _ClmCnt=0;
+    readarray -t _RawCsvLine;
+    while read -r _Line; do
+        grep -qE "^#" <<< "$_Line" && continue;
+        _CurrentClmCnt=$(tr "${CSVDELIM-","}" "\n" | wc -l);
+        (( _CurrentClmCnt > _ClmCnt )) && _ClmCnt="$_CurrentClmCnt";
+    done < <(print_array "${_RawCsvLine[@]}");
+    remove_blank <<< "$_ClmCnt";
+    return 0
+}
+csv.to_bash_array () 
+{ 
+    local _RawCsvLine=() _Line _ClmCnt=0;
+    local ArrayPrefix="${ArrayPrefix-"{}"}";
+    readarray -t _RawCsvLine < <(
+        while read -r _Line; do
+            (( $(tr "${CSVDELIM-","}" "\n" <<< "$_Line" | wc -l) >= ${#} )) && echo "$_Line"
+        done < <(grep -v "^#")
+    );
+    _ClmCnt=$(print_array "${_RawCsvLine[@]}" | csv.get_clm_cnt);
+    while read -r _Cnt; do
+        readarray -t "$(sed "s|{}|$(eval "echo \"\${${_Cnt}}\"")|g" <<< "$ArrayPrefix")" < <(
+            print_array "${_RawCsvLine[@]}" | cut -d "${CSVDELIM-","}" -f "$_Cnt"
+        );
+    done < <(seq 1 "$#")
+}
 srcinfo.format () 
 { 
     remove_blank | sed "/^$/d" | grep -v "^#" | for_each eval "srcinfo.parse Line <<< \"{}\""
@@ -911,224 +1119,6 @@ srcinfo.parse ()
         ;;
     esac;
     return 0
-}
-ini.get_param () 
-{ 
-    local _RawIniLine=();
-    local _Line _LineNo=1 _Exit=0 _InSection=false;
-    readarray -t _RawIniLine;
-    while read -r _Line; do
-        ini.parse_line <<< "$_Line";
-        case "$TYPE" in 
-            "SECTION")
-                if [[ "$SECTION" = "$1" ]]; then
-                    _InSection=true;
-                else
-                    _InSection=false;
-                fi
-            ;;
-            "PARAM-VALUE")
-                [[ "$_InSection" = false ]] || echo "${VALUE}"
-            ;;
-            "ERROR")
-                echo "Line $_LineNo: Failed to parse Ini" 1>&2;
-                _Exit=1
-            ;;
-        esac;
-        _LineNo=$(( _LineNo + 1  ));
-    done < <(print_array "${_RawIniLine[@]}");
-    return "$_Exit"
-}
-ini.get_param_list () 
-{ 
-    local _RawIniLine=();
-    local _Line _LineNo=1 _Exit=0 _InSection=false;
-    readarray -t _RawIniLine;
-    while read -r _Line; do
-        ini.parse_line <<< "$_Line";
-        case "$TYPE" in 
-            "SECTION")
-                if [[ "$SECTION" = "$1" ]]; then
-                    _InSection=true;
-                else
-                    _InSection=false;
-                fi
-            ;;
-            "PARAM-VALUE")
-                [[ "$_InSection" = false ]] || echo "$PARAM"
-            ;;
-            "ERROR")
-                echo "Line $_LineNo: Failed to parse Ini" 1>&2;
-                _Exit=1
-            ;;
-        esac;
-        _LineNo=$(( _LineNo + 1  ));
-    done < <(print_array "${_RawIniLine[@]}");
-    return "$_Exit"
-}
-ini.get_section_list () 
-{ 
-    local _RawIniLine=();
-    local _Line _LineNo=1 _Exit=0;
-    readarray -t _RawIniLine;
-    while read -r _Line; do
-        ini.parse_line <<< "$_Line";
-        case "$TYPE" in 
-            "SECTION")
-                echo "$SECTION"
-            ;;
-            "ERROR")
-                echo "Line $_LineNo: Failed to parse Ini" 1>&2;
-                _Exit=1
-            ;;
-        esac;
-        _LineNo=$(( _LineNo + 1  ));
-    done < <(print_array "${_RawIniLine[@]}");
-    return "$_Exit"
-}
-ini.parse_line () 
-{ 
-    local _Line;
-    TYPE="" PARAM="" VALUE="" SECTION="";
-    _Line="$(remove_blank <<< "$(cat)")";
-    case "$_Line" in 
-        "["*"]")
-            TYPE="SECTION";
-            SECTION=$(sed "s|^\[||g; s|\]$||g" <<< "$_Line")
-        ;;
-        "" | "#"*)
-            TYPE="NOTHING"
-        ;;
-        *"="*)
-            TYPE="PARAM-VALUE";
-            PARAM="$(remove_blank <<< "$(cut -d "=" -f 1 <<< "$_Line")")";
-            VALUE="$(remove_blank <<< "$(cut -d "=" -f 2- <<< "$_Line")")"
-        ;;
-        *)
-            TYPE="ERROR"
-        ;;
-    esac;
-    return 0
-}
-arch.get_kernel_file_list () 
-{ 
-    find "/boot" -maxdepth 1 -mindepth 1 -name "vmlinuz-*"
-}
-arch.get_kernel_src_list () 
-{ 
-    find "/usr/src" -mindepth 1 -maxdepth 1 -type l -name "linux*"
-}
-arch.get_mkinitcpio_preset_list () 
-{ 
-    find "/etc/mkinitcpio.d/" -name "*.preset" -type f | get_base_name | remove_file_ext
-}
-fsblib.env_check () 
-{ 
-    case "$FSBLIB_REQUIRE" in 
-        "Any")
-            return 0
-        ;;
-        "ModernShell")
-            [[ "$(cut -d "." -f 1 <<< "$BASH_VERSION")" = "5" ]] && return 0
-        ;;
-    esac
-}
-fsblib.fsblib_env_check () 
-{ 
-    fsblib.env_check
-}
-sqlite3.call () 
-{ 
-    msg.debug sqlite3 "${SQLITE3_OPTIONS[@]}" "$SQLITE3_DBPATH" "$@" 1>&2;
-    sqlite3 "${SQLITE3_OPTIONS[@]}" "$SQLITE3_DBPATH" "$@"
-}
-sqlite3.connect () 
-{ 
-    export SQLITE3_DBPATH="$1";
-    echo ".open \"$SQLITE3_DBPATH\"" | sqlite3;
-    return 0
-}
-sqlite3.create () 
-{ 
-    local _table="$1" _args=() _columns=();
-    shift 1 || return 1;
-    _columns=("$@");
-    _args+=(create table "$_table" "(");
-    for_each eval "_args+=(\"\\\"{}\\\"\" ,)" < <(print_eval_array _columns);
-    array.pop _args;
-    _args+=(")");
-    sqlite3.call "${_args[*]}"
-}
-sqlite3.current_db () 
-{ 
-    if [[ -z "${SQLITE3_DBPATH-""}" ]]; then
-        msg.err "No datebase is connected.";
-        return 1;
-    fi;
-    echo "${SQLITE3_DBPATH}";
-    return 0
-}
-sqlite3.delete () 
-{ 
-    local _table="$1" _args=();
-    shift 1 || return 1;
-    if (( $# < 1 )) && (( ${SQLITE3_ALLOWDELETEALL-"0"} != 1 )); then
-        msg.err "Cannot delete all data.\nIf you really want that, Please set environment-variable \"SQLITE3_ALLOWDELETEALL=1\"";
-        return 1;
-    fi;
-    _args+=(delete from "$_table");
-    if (( $# > 0)); then
-        _args+=(where "${@}");
-    fi;
-    sqlite3.call "${_args[*]}"
-}
-sqlite3.exist_field () 
-{ 
-    _result="$(sqlite3.call "SELECT * FROM '$1' WHERE $2 = '$3' LIMIT 1;")";
-    if [[ -n "${_result-""}" ]]; then
-        return 0;
-    fi;
-    return 1
-}
-sqlite3.exist_table () 
-{ 
-    local _result;
-    _result="$(sqlite3.call                             "SELECT COUNT(*) 
-                            FROM sqlite_master 
-                            WHERE TYPE='table' AND name='$1';
-            ")";
-    if (( _result > 0 )); then
-        return 0;
-    fi;
-    return 1
-}
-sqlite3.insert () 
-{ 
-    local _table="$1" _args=();
-    shift 1 || return 1;
-    local _values=("$@");
-    _args+=(insert into "$_table" values '(');
-    for_each eval "_args+=(\"\\\"{}\\\"\" ,)" < <(print_eval_array _values);
-    array.pop _args;
-    _args+=(");");
-    sqlite3.call "${_args[*]}"
-}
-sqlite3.select () 
-{ 
-    local _table="$1" _args=();
-    shift 1 || return 1;
-    local _values=("$@");
-    _args+=(select);
-    for_each eval "_args+=(\"\\\"{}\\\"\" ,)" < <(print_eval_array _values);
-    array.pop _args;
-    _args+=("from" "$_table" ";");
-    sqlite3.call "${_args[*]}"
-}
-sqlite3.select_all () 
-{ 
-    local _table="$1" _args=();
-    shift 1 || return 1;
-    sqlite3.call "select * from $_table"
 }
 add_new_to_array () 
 { 
@@ -1334,170 +1324,180 @@ remove_match_line ()
     done;
     unset unseted i
 }
-array.append () 
+cache.exist () 
 { 
-    local _ArrName="$1";
-    shift 1 || return 1;
-    readarray -t -O "$(array_index "$_ArrName")" "$_ArrName" < <(cat)
-}
-array.from_str () 
-{ 
-    declare -a -x "$1";
-    readarray -t "$1" < <(break_char)
-}
-array.pop () 
-{ 
-    readarray -t "$1" < <(print_eval_array "$1" | sed -e '$d')
-}
-array.push () 
-{ 
-    eval "print_array \"\${$1[@]}\"" | grep -qx "$2" && return 0;
-    eval "$1+=(\"$2\")"
-}
-array.remove () 
-{ 
-    readarray -t "$1" < <(print_eval_array "$1" | RemovematchLine "$2")
-}
-array.rev () 
-{ 
-    readarray -t "$1" < <(print_eval_array "$1" | tac)
-}
-array.shift () 
-{ 
-    readarray -t "$1" < <(print_eval_array "$1" | sed "1,${2-"1"}d")
-}
-array.eval () 
-{ 
-    eval "print_array \"\${$1[@]}\""
-}
-array.last () 
-{ 
-    print_eval "$1[$(array.last_index "$1")]"
-}
-array.print () 
-{ 
-    (( $# >= 1 )) || return 0;
-    printf "%s\n" "${@}"
-}
-array.index_of () 
-{ 
-    local n=();
-    readarray -t n < <(grep -x -n "$1" | cut -d ":" -f 1 | for_each eval echo '$(( {} - 1 ))');
-    (( "${#n[@]}" >= 1 )) || return 1;
-    print_array "${n[@]}";
+    local _File;
+    _File="$(cache.create_dir)/$1";
+    [[ -e "$_File" ]] || return 1;
+    (( "$(cache.get_time_diff_from_last_update "$_File")" > "${KEEPCACHESEC-"86400"}" )) && return 2;
     return 0
 }
-array.last_index () 
+cache.get () 
 { 
-    calc_int "$(array.length "$1")" - 1
+    cat "$(cache.get_dir)/$1" 2> /dev/null || return 1
 }
-array.length () 
+cache.get_dir () 
 { 
-    print_eval "#${1}[@]"
+    echo "${TMPDIR-"/tmp"}/$(cache.get_id)"
 }
-array.for_each () 
+cache.get_file_last_update () 
 { 
-    print_eval_array "$1" | for_each "${@:2}"
+    local _isGnu=false;
+    date --help 2> /dev/null | grep -q "GNU" && _isGnu=true;
+    if [[ "$_isGnu" = true ]]; then
+        date +%s -r "$1";
+    else
+        { 
+            eval "$(stat -s "$1")";
+            echo "$st_mtime"
+        };
+    fi
 }
-array.includes () 
+cache.get_id () 
 { 
-    print_eval_array "$1" | grep -qx "$2"
+    if [[ -z "${FSBLIB_CACHEID-""}" ]]; then
+        cache.create_dir > /dev/null;
+    fi;
+    echo "$FSBLIB_CACHEID"
 }
-parse_arg () 
+cache.get_time_diff_from_last_update () 
 { 
-    local _Arg _Chr _Cnt;
-    local _Long=() _LongWithArg=() _Short=() _ShortWithArg=();
-    local _OutArg=() _NoArg=();
-    for _Arg in "${@}";
+    local _Now _Last;
+    _Now="$(date "+%s")";
+    _Last="$(cache.get_file_last_update "$1")";
+    echo "$(( _Now - _Last ))";
+    return 0
+}
+cache.create () 
+{ 
+    cache.create_dir > /dev/null;
+    cat > "$(cache.get_dir)/${1}";
+    cat "$(cache.get_dir)/$1"
+}
+cache.create_dir () 
+{ 
+    FSBLIB_CACHEID="${FSBLIB_CACHEID-"$(random_string "10")"}";
+    export FSBLIB_CACHEID="$FSBLIB_CACHEID";
+    local TMPDIR="${TMPDIR-"/tmp"}";
+    local _Dir="$TMPDIR/${FSBLIB_CACHEID}";
+    mkdir -p "$_Dir";
+    echo "$_Dir";
+    return 0
+}
+misskey.notes.create () 
+{ 
+    misskey.binding_base "notes/create" text -- "$@"
+}
+misskey.notes.renotes () 
+{ 
+    misskey.binding_base "notes/renotes" noteId limit sinceId untilId -- "$@"
+}
+misskey.notes.search () 
+{ 
+    misskey.binding_base "notes/search" query limit -- "$@"
+}
+misskey.users.notes () 
+{ 
+    misskey.binding_base "users/notes" userId -- "${1:-"$(misskey.my_id)"}" "${@:2}"
+}
+misskey.users.search_by_username_and_host () 
+{ 
+    misskey.binding_base "users/search-by-username-and-host" username -- "${1:-"$(misskey.my_user_name)"}" "${@:2}"
+}
+misskey.admin.server_info () 
+{ 
+    misskey.binding_base "/admin/server-info" -- "$@"
+}
+misskey.setup () 
+{ 
+    export MISSKEY_DOMAIN="${1-"${MISSKEY_DOMAIN-""}"}";
+    export MISSKEY_TOKEN="${2-"${MISSKEY_TOKEN-""}"}";
+    export MISSKEY_ENTRY="https://${MISSKEY_DOMAIN}/api"
+}
+misskey.i () 
+{ 
+    misskey.binding_base "/i" -- "$@"
+}
+misskey.meta () 
+{ 
+    misskey.binding_base "/meta" -- "$@"
+}
+misskey.server_info () 
+{ 
+    misskey.binding_base "/server-info" -- "$@"
+}
+misskey.binding_base () 
+{ 
+    local _API="$1";
+    shift 1;
+    local i _APIArgs=("") _Args;
+    for i in "$@";
     do
-        local _TempArray=();
-        case "${_Arg}" in 
-            "LONG="*)
-                readarray -t _TempArray < <(tr -d "\"" <<< "${_Arg#LONG=}" | tr "," "\n");
-                for _Chr in "${_TempArray[@]}";
-                do
-                    if [[ "${_Chr}" = *":" ]]; then
-                        _LongWithArg+=("${_Chr%":"}");
-                    else
-                        _Long+=("${_Chr}");
-                    fi;
-                done;
-                shift 1
-            ;;
-            "SHORT="*)
-                readarray -t _TempArray < <(tr -d "\"" <<< "${_Arg#SHORT=}" | grep -o .);
-                for ((_Cnt=0; _Cnt<= "${#_TempArray[@]}" - 1; _Cnt++ ))
-                do
-                    if [[ "${_TempArray["$(( _Cnt + 1))"]-""}" = ":" ]]; then
-                        _ShortWithArg+=("${_TempArray["${_Cnt}"]}");
-                        _Cnt=$(( _Cnt + 1 ));
-                    else
-                        _Short+=("${_TempArray["${_Cnt}"]}");
-                    fi;
-                done;
-                shift 1
-            ;;
-            "--")
-                shift 1;
-                break
-            ;;
-        esac;
-    done;
-    while (( "$#" > 0 )); do
-        if [[ "${1}" = "--" ]]; then
-            shift 1;
-            _NoArg+=("${@}");
-            shift "$#";
+        shift 1 2> /dev/null || true;
+        if [[ "$i" = "--" ]]; then
             break;
         else
-            if [[ "${1}" = "--"* ]]; then
-                if printf "%s\n" "${_LongWithArg[@]}" | grep -qx "${1#--}"; then
-                    if [[ "${2}" = "-"* ]]; then
-                        msg.err "${1} の引数が指定されていません";
-                        return 2;
-                    else
-                        _OutArg+=("${1}" "${2}");
-                        shift 2;
-                    fi;
-                else
-                    if printf "%s\n" "${_Long[@]}" | grep -qx "${1#--}"; then
-                        _OutArg+=("${1}");
-                        shift 1;
-                    else
-                        msg.err "${1} は不正なオプションです。-hで使い方を確認してください。";
-                        return 1;
-                    fi;
-                fi;
-            else
-                if [[ "${1}" = "-"* ]]; then
-                    local _Shift=0;
-                    while read -r _Chr; do
-                        if printf "%s\n" "${_ShortWithArg[@]}" | grep -qx "${_Chr}"; then
-                            if [[ "${1}" = *"${_Chr}" ]] && [[ ! "${2}" = "-"* ]]; then
-                                _OutArg+=("-${_Chr}" "${2}");
-                                _Shift=2;
-                            else
-                                msg.err "-${_Chr} の引数が指定されていません";
-                                return 2;
-                            fi;
-                        else
-                            if printf "%s\n" "${_Short[@]}" | grep -qx "${_Chr}"; then
-                                _OutArg+=("-${_Chr}");
-                                _Shift=1;
-                            else
-                                msg.err "-${_Chr} は不正なオプションです。-hで使い方を確認してください。";
-                                return 1;
-                            fi;
-                        fi;
-                    done < <(grep -o . <<< "${1#-}");
-                    shift "${_Shift}";
-                else
-                    _NoArg+=("${1}");
-                    shift 1;
-                fi;
-            fi;
+            _APIArgs+=("$i");
         fi;
     done;
-    OPTRET=("${_OutArg[@]}" -- "${_NoArg[@]}");
-    return 0
+    local _Cnt _Shifted=false;
+    for ((_Cnt=1; _Cnt<="${#_APIArgs[@]} - 1" ; _Cnt++))
+    do
+        _Args+=("${_APIArgs[$_Cnt]}=$(eval echo "\${${_Cnt}:-""}")");
+        if [[ -z "$(eval echo "\${$((_Cnt+1)):-""}")" ]]; then
+            shift "$_Cnt";
+            _Shifted=true;
+            break;
+        fi;
+    done;
+    if ! bool _Shifted; then
+        _Shifted=true;
+        shift "$(( ${#_APIArgs[@]} - 1 ))";
+    fi;
+    if [[ -z "${MISSKEY_ENTRY-""}" ]]; then
+        misskey.setup "${MISSKEY_DOMAIN}" "$MISSKEY_TOKEN";
+    fi;
+    misskey.send_req "${MISSKEY_ENTRY%/}/${_API#/}" "${_Args[@]}" "$@"
+}
+misskey.make_json () 
+{ 
+    local i _Key _Value;
+    for i in "i=$MISSKEY_TOKEN" "$@";
+    do
+        _Key=$(cut -d "=" -f 1 <<< "$i");
+        _Value=$(cut -d "=" -f 2- <<< "$i");
+        if [[ "$_Value" =~ ^[0-9]+$ ]] || [[ "$_Value" = true ]] || [[ "$_Value" = false ]] || [[ "$_Value" = "{"*"}" ]] || [[ "$_Value" = "["*"]" ]]; then
+            echo -n "{\"$_Key\": $_Value}";
+        else
+            echo -n "{\"$_Key\": \"$_Value\"}";
+        fi;
+    done | sed "s|}{|,|g" | jq -c -M
+}
+misskey.send_req () 
+{ 
+    local _Url="$1" _CurlArgs=();
+    shift 1;
+    _CurlArgs+=(-s -L);
+    _CurlArgs+=(-X POST);
+    _CurlArgs+=(-H "Content-Type: application/json");
+    _CurlArgs+=(-d "$(misskey.make_json "$@")");
+    _CurlArgs+=("$_Url");
+    msg.debug "Run: ${_CurlArgs[*]//"${MISSKEY_TOKEN}"/"TOKEN"}";
+    curl "${_CurlArgs[@]}"
+}
+misskey.is_admin () 
+{ 
+    bool "$(misskey.i | jq -r ".isAdmin")"
+}
+misskey.my_id () 
+{ 
+    misskey.i | jq -r ".id"
+}
+misskey.my_name () 
+{ 
+    misskey.i | jq -r ".name"
+}
+misskey.my_user_name () 
+{ 
+    misskey.i | jq -r ".username"
 }
