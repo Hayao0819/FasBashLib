@@ -18,14 +18,6 @@ while read -r Dir; do
         Errors=$(( Errors + 1 ))
     fi
 
-    # ShellCheckを実行
-    while read -r File; do
-        if [[ "$(file --mime-type "$File" | cut -d " " -f 2)" = "text/x-shellscript" ]]; then
-            echo "Run shell check $File" >&2
-            shellcheck -s bash -x "$File" || Errors=$(( Errors + 1 ))
-        fi
-    done < <(find "$Dir" -type f)
-
     # 依存関係をテスト
     "$LibDir/SolveRequire.sh" "${Name}" 1> /dev/null || Errors=$(( Errors + 1 ))
 
@@ -48,14 +40,36 @@ while read -r Dir; do
     # Filesに設定されていないファイル
     while read -r File; do
         readarray -t _FileList < <(PrintArray "${_FileList[@]}" | ForEach realpath "{}")
+
+        # IgnoreFileListに追加されているファイルのフルパスを取得
+        readarray -t _IgnoreFileList < <(
+            "$LibDir/GetMeta.sh" -c "${Name}" "IgnoreFiles" | sed "s|^|$SrcDir/${Name}/|g" | while read -r f; do
+                if [[ -e "$f" ]]; then
+                    realpath "$f"
+                    continue
+                fi
+                echo "$f"
+            done
+        )
+
         if ! printf "%s\n" "${_FileList[@]}"| grep -qx "$(realpath "$File")"; then
-            echo "${Name}: $File はライブラリとして認識されていません"
-            Errors=$(( Errors + 1 ))
+            if ! printf "%s\n" "${_IgnoreFileList[@]}"| grep -qx "$(realpath "$File")"; then
+                echo "${Name}: $File はライブラリとして認識されていません"
+                Errors=$(( Errors + 1 ))
+            fi
         fi
     done < <(find "$Dir" -name "*.sh" -mindepth 1)
 
     # テストを実行
     #"${BinDir}/Test-Run.sh" "$Name"
+
+    # ShellCheckを実行
+    while read -r File; do
+        if [[ "$(file --mime-type "$File" | cut -d " " -f 2)" = "text/x-shellscript" ]]; then
+            echo "Run shell check $File" >&2
+            shellcheck -s bash -x "$File" || Errors=$(( Errors + 1 ))
+        fi
+    done < <("${LibDir}/GetFileList.sh" "$Name")
 
     unset File _FileList Name
 done < <(

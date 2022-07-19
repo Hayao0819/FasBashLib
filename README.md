@@ -60,7 +60,8 @@ You can add your script to this list. Please send a Pull request.
 
 ## Special thanks
 
-- [readlinkf](https://github.com/ko1nksm/readlinkf) - The functions in `Readlink.sh` are taken from this repository.
-- [shdoc](https://github.com/reconquest/shdoc) - Script to generate documentation from source code
-- [Bash-minifier](https://github.com/Zuzzuc/Bash-minifier) - Script used to minify bash scripts
-- [MIT-SUSHI-WARE](https://github.com/watasuke102/mit-sushi-ware) - MIT-derived license that only wants copyright notice and sushi
+- [ko1nksm/readlinkf](https://github.com/ko1nksm/readlinkf) - The functions in `Readlink.sh` are taken from this repository.
+- [reconquest/shdoc](https://github.com/reconquest/shdoc) - Script to generate documentation from source code
+- [Zuzzuc/Bash-minifier](https://github.com/Zuzzuc/Bash-minifier) - Script used to minify bash scripts
+- [ShellShoccar-jpn/Parsrs](https://github.com/ShellShoccar-jpn/Parsrs) - Simple parsers written in POSIX shell (for `Parsrs`)
+- [watasuke102/MIT-SUSHI-WARE](https://github.com/watasuke102/mit-sushi-ware) - MIT-derived license that only wants copyright notice and sushi

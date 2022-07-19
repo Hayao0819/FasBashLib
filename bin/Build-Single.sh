@@ -30,10 +30,12 @@ Version=""
 RequireShell="Any"
 
 # Global Array
-IgnoreLib=()
-LoadedFiles=()
-TargetLib=()
-RequireLib=()
+TargetLib=() # 最終的なビルド対象のライブラリ
+LoadedFiles=() # ロード済みのファイル
+
+IgnoreLib=() # 引数なしの際に無視する
+RequireLib=() # 引数ありの際に依存関係になっているライブラリ
+ForceLoadLib=() # 引数なしの際に強制ロードするライブラリ
 
 # Set default
 DefaultCodeType="Upper"
@@ -157,9 +159,9 @@ _Make_Require(){
     # 依存関係を解決する読み込むライブラリの一覧
     local _LibToLoad=() Lib
     for Lib in "$@"; do
-        if ! PrintArray "${IgnoreLib[@]}" | grep -qx "$(basename "$Lib")"; then
+        #if ! PrintArray "${IgnoreLib[@]}" | grep -qx "$(basename "$Lib")"; then
             _LibToLoad+=("${Lib}")
-        fi
+        #fi
     done
 
     # Solve require
@@ -187,6 +189,8 @@ _Make_TargetLib(){
             # IgnoreListのものを除外
             for Lib in "${_FullLibList[@]}"; do
                 if [[ "${NoIgnore}" = true ]] || { ! PrintArray "${IgnoreLib[@]}" | grep -qx "$(basename "$Lib")" && ! [[ "$(GetMeta "$(basename "$Lib")" ExcludeFromAll | RemoveBlank | tr "[:upper:]" "[:lower:]" )" = "true" ]]; }; then # IgnoreLibに含まれていないことを確認
+                    LoadLibDir+=("$Lib")
+                elif PrintArray "${ForceLoadLib[@]}" | grep -qx "$(basename "$Lib")"; then
                     LoadLibDir+=("$Lib")
                 else
                     echo "Skip $Lib" >&2
@@ -367,7 +371,8 @@ _Make_Lib(){
                     fi
                 fi
             done
-        done < <("$LibDir/GetMeta.sh" "${LibName}" "Files" | tr "," "\n")
+        #done < <("$LibDir/GetMeta.sh" "${LibName}" "Files" | tr "," "\n")
+        done < <("$LibDir/GetFileList.sh" "${LibName}" | GetBaseName)
 
         if [[ "${DontRunAtMarkReplacement}" = false ]]; then
             local NewLibPrefix="$LibPrefix" #LibPrefixの置換え用変数
@@ -412,6 +417,7 @@ _Make_Lib(){
 
         # ファイル埋め込みを実行
         while read -r Embedded; do
+            echo "Load file: $Dir/$(GetMeta "$LibName" "$Embedded" "Embedded")" >&2
             SedI "/^%$Embedded%$/r $Dir/$(GetMeta "$LibName" "$Embedded" "Embedded")" "$TmpLibFile"
             SedI "/^%$Embedded%$/d" "$TmpLibFile"
             
@@ -567,6 +573,10 @@ while [[ -n "${1-""}" ]]; do
         "-noignore")
             NoIgnore=true
             shift 1
+            ;;
+        "-forceadd")
+            ForceLoadLib+=("$2")
+            shift 2
             ;;
         "--")
             shift 1
