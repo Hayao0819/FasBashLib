@@ -8,7 +8,14 @@ if (( $# < 1 )); then
     exit 1
 fi
 LibName="$1"
+IgnoreFiles=()
+FullPath=""
 
 while read -r File; do
-    echo "${SrcDir}/$LibName/$File"
-done < <("$LibDir/GetMeta.sh" "${LibName}" "Files" | tr "," "\n")
+    IgnoreFiles+=("$SrcDir/$LibName/$File")
+done < <("$LibDir/GetMeta.sh" -c "${LibName}" "IgnoreFiles")
+
+while read -r File; do
+    FullPath="${SrcDir}/$LibName/$File"
+    printf "%s\n" "${IgnoreFiles[@]}" |  grep -qx "$FullPath" || echo "$FullPath"
+done < <("$LibDir/GetMeta.sh" -c "${LibName}" "Files")

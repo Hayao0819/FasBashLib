@@ -367,7 +367,8 @@ _Make_Lib(){
                     fi
                 fi
             done
-        done < <("$LibDir/GetMeta.sh" "${LibName}" "Files" | tr "," "\n")
+        #done < <("$LibDir/GetMeta.sh" "${LibName}" "Files" | tr "," "\n")
+        done < <("$LibDir/GetFileList.sh" "${LibName}" | GetBaseName)
 
         if [[ "${DontRunAtMarkReplacement}" = false ]]; then
             local NewLibPrefix="$LibPrefix" #LibPrefixの置換え用変数

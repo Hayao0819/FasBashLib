@@ -48,9 +48,23 @@ while read -r Dir; do
     # Filesに設定されていないファイル
     while read -r File; do
         readarray -t _FileList < <(PrintArray "${_FileList[@]}" | ForEach realpath "{}")
+
+        # IgnoreFileListに追加されているファイルのフルパスを取得
+        readarray -t _IgnoreFileList < <(
+            "$LibDir/GetMeta.sh" -c "${Name}" "IgnoreFiles" | sed "s|^|$SrcDir/${Name}/|g" | while read -r f; do
+                if [[ -e "$f" ]]; then
+                    realpath "$f"
+                    continue
+                fi
+                echo "$f"
+            done
+        )
+
         if ! printf "%s\n" "${_FileList[@]}"| grep -qx "$(realpath "$File")"; then
-            echo "${Name}: $File はライブラリとして認識されていません"
-            Errors=$(( Errors + 1 ))
+            if ! printf "%s\n" "${_IgnoreFileList[@]}"| grep -qx "$(realpath "$File")"; then
+                echo "${Name}: $File はライブラリとして認識されていません"
+                Errors=$(( Errors + 1 ))
+            fi
         fi
     done < <(find "$Dir" -name "*.sh" -mindepth 1)
 
