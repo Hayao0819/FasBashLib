@@ -14,6 +14,7 @@ OutFile="${MainDir}/fasbashlib.sh"
 Delimiter="."
 NoRequire=false
 OneLine=false # うまく動かないよ
+NoIgnore=false # すべてのIgnore設定を無視
 
 CodeType="Upper"
 #CodeType="Lower"
@@ -29,7 +30,7 @@ Version=""
 RequireShell="Any"
 
 # Global Array
-IgnoreLib=(Aur)
+IgnoreLib=()
 LoadedFiles=()
 TargetLib=()
 RequireLib=()
@@ -171,25 +172,31 @@ _Make_Require(){
     fi
 }
 
+# 汚いので書き直す！！！！！！！！
 _Make_TargetLib(){
     # 読み込むライブラリの一覧
-    # 配列にはライブラリのディレクトリへのフルパスが代入されています
+    # TargetLib配列にはライブラリのディレクトリへのフルパスが代入されています
     readarray -t TargetLib < <(
         local LoadLibDir=()
         if (( "${#}" > 0 )); then
+            # 引数が指定されている場合
             readarray -t LoadLibDir < <(printf "${SrcDir}/%s\n" "${RequireLib[@]}" "${@}")
         else
             local Lib _FullLibList=()
             readarray -t _FullLibList < <(find "$SrcDir" -mindepth 1 -maxdepth 1 -type d )
             # IgnoreListのものを除外
             for Lib in "${_FullLibList[@]}"; do
-                if ! PrintArray "${IgnoreLib[@]}" | grep -qx "$(basename "$Lib")"; then
+                if [[ "${NoIgnore}" = true ]] || { ! PrintArray "${IgnoreLib[@]}" | grep -qx "$(basename "$Lib")" && ! [[ "$(GetMeta "$(basename "$Lib")" ExcludeFromAll | RemoveBlank | tr "[:upper:]" "[:lower:]" )" = "true" ]]; }; then # IgnoreLibに含まれていないことを確認
                     LoadLibDir+=("$Lib")
+                else
+                    echo "Skip $Lib" >&2
                 fi
+
             done
         fi
         echo "Load libs: $(printf "%s\n" "${LoadLibDir[@]}" | xargs -L 1 basename | tr "\n" " ")" >&2
         printf "%s\n" "${LoadLibDir[@]}"
+        unset LoadLibDir
     )
 }
 
@@ -557,12 +564,16 @@ while [[ -n "${1-""}" ]]; do
             set -xv
             shift 1
             ;;
+        "-noignore")
+            NoIgnore=true
+            shift 1
+            ;;
         "--")
             shift 1
             break
             ;;
         "-"*)
-            echo "Usage: $(basename "$0") [-out File] [-ver Version] [-noreq] [-debug] [-ignore Lib1,Lib2, ...] [-snake] [-list] [Lib1] [Lib2] ..." >&2
+            echo "Usage: $(basename "$0") [-out File] [-ver Version] [-noreq] [-debug] [-noignore] [-ignore Lib1,Lib2, ...] [-snake] [-list] [Lib1] [Lib2] ..." >&2
             [[ "${1}" = "-h" ]] && exit 0
             exit 1
             ;;
