@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 declare -r FSBLIB_LIBLIST=("Core" "URL" "parse_arg" "Array" "Sqlite3" "Readlink" "Message" "Ini" "ArchLinux" "Prompt" "AwkForCalc" "Pacman" "Csv" "SrcInfo" "BetterShell" "Cache" "Misskey" )
-declare -r FSBLIB_VERSION='v0.2.4.r286.g1d68217-snake'
+declare -r FSBLIB_VERSION='v0.2.4.r289.g53215d0-snake'
 declare -r FSBLIB_REQUIRE='ModernBash'
 fsblib.env_check () 
 { 
