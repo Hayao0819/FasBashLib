@@ -416,9 +416,15 @@ _Make_Lib(){
         fi
 
         # ファイル埋め込みを実行
+        local EmbeddedFile=""
         while read -r Embedded; do
-            echo "Load file: $Dir/$(GetMeta "$LibName" "$Embedded" "Embedded")" >&2
-            SedI "/^%$Embedded%$/r $Dir/$(GetMeta "$LibName" "$Embedded" "Embedded")" "$TmpLibFile"
+            EmbeddedFile="$Dir/$(GetMeta "$LibName" "$Embedded" "Embedded")"
+            if [[ ! -e "$EmbeddedFile"  ]]; then
+                echo -e "Failed to load ${EmbeddedFile}\nNo such file." >&2
+                return 1
+            fi
+            echo "Load file: $EmbeddedFile" >&2
+            SedI "/^%$Embedded%$/r ${EmbeddedFile}" "$TmpLibFile"
             SedI "/^%$Embedded%$/d" "$TmpLibFile"
             
         done < <(GetMetaParam "$LibName" "Embedded")
