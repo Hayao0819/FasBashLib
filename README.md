@@ -27,6 +27,17 @@ They are grouped by function type, and some functions are specific to a particul
 
 I like Arch Linux, so there may be many for it.
 
+## Features
+These are only part of FasBashLib's main libraries.
+
+- Supports 3 coding styles, `Upper camel case` , `Lower camel case`, and `Snake case`
+- Select and build only the functions you need
+- Automatically generate documents from source code comments
+- Unique test tool specially designed
+- Safe and easy array operation (`Array`)
+- Batch analysis of URLs from standard input (`URL`)
+- Arch Linux-specific functions (`Aur`, `ArchLinux`, `Pacman`, `SrcInfo`)
+
 ## Why?
 
 Modern Bash is feature-rich, making it possible to write secure code compared to pure shells.
