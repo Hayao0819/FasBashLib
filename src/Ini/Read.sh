@@ -85,9 +85,9 @@ GetSectionList(){
 # Iniファイルは標準入力から受け取ります。
 #
 # @example
-#    cat chromium.desktop | GetIniParamList desktop
+#    cat chromium.desktop | GetParamList desktop
 #
-# @noargs
+# @arg $1 セクション名
 #
 # @stdout パラメータのリストを返します
 #
