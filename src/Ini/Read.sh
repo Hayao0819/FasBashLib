@@ -9,10 +9,10 @@
 #      - 指定されたパラメータの値
 
 #@internal
-#@set TYPE    SECTION/PARAM-VALUE/NOTHING/ERROR
-#@set PARAM   変数名
-#@set VALUE   値
-#@set SECTION セクション名
+#@set TYPE,    FSBLIB_INI_PARSED_TYPE    SECTION/PARAM-VALUE/NOTHING/ERROR
+#@set PARAM,   FSBLIB_INI_PARSED_PARAM   変数名
+#@set VALUE,   FSBLIB_INI_PARSED_VALUE   値
+#@set SECTION, FSBLIB_INI_PARSED_SECTION セクション名
 ParseLine(){
     local _Line #="$1"
     TYPE="" PARAM="" VALUE="" SECTION=""
@@ -21,17 +21,26 @@ ParseLine(){
         "["*"]")
             TYPE="SECTION"
             SECTION=$(sed "s|^\[||g; s|\]$||g" <<< "$_Line")
+
+            FSBLIB_INI_PARSED_TYPE="$TYPE"
+            FSBLIB_INI_PARSED_SECTION="$SECTION"
             ;;
         "" | "#"*)
             TYPE="NOTHING"
+            FSBLIB_INI_PARSED_TYPE="$TYPE"
             ;;
         *"="*)
             TYPE="PARAM-VALUE"
             PARAM="$(RemoveBlank <<< "$(cut -d "=" -f 1 <<< "$_Line")")"
             VALUE="$(RemoveBlank <<< "$(cut -d "=" -f 2- <<< "$_Line")")"
+
+            FSBLIB_INI_PARSED_TYPE="$TYPE"
+            FSBLIB_INI_PARSED_PARAM="$PARAM"
+            FSBLIB_INI_PARSED_VALUE="$VALUE"
             ;;
         *)
             TYPE="ERROR"
+            FSBLIB_INI_PARSED_TYPE="$TYPE"
             ;;
     esac
     return 0
