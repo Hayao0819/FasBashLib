@@ -163,3 +163,8 @@ GetParam(){
     done < <(PrintArray "${_RawIniLine[@]}")
     return "$_Exit"
 }
+
+
+GetLastParam(){
+    @GetParamList "$1" | tail -n 1
+}
