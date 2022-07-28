@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 declare -r FSBLIB_LIBLIST=("Core" "URL" "parse_arg" "Array" "Sqlite3" "Readlink" "Message" "Ini" "ArchLinux" "Prompt" "AwkForCalc" "Pacman" "Csv" "SrcInfo" "BetterShell" "Cache" "Misskey" )
-declare -r FSBLIB_VERSION='v0.2.4.r292.g8581506-snake'
+declare -r FSBLIB_VERSION='v0.2.4.r299.gfdca1f8-snake'
 declare -r FSBLIB_REQUIRE='ModernBash'
 fsblib.env_check () 
 { 
@@ -553,6 +553,10 @@ msg.warn ()
 { 
     msg.common " Warn:" "${*}" stderr
 }
+ini.get_last_param () 
+{ 
+    ini.get_param_list "$1" | tail -n 1
+}
 ini.get_param () 
 { 
     local _RawIniLine=();
@@ -635,21 +639,98 @@ ini.parse_line ()
     case "$_Line" in 
         "["*"]")
             TYPE="SECTION";
-            SECTION=$(sed "s|^\[||g; s|\]$||g" <<< "$_Line")
+            SECTION=$(sed "s|^\[||g; s|\]$||g" <<< "$_Line");
+            FSBLIB_INI_PARSED_TYPE="$TYPE";
+            FSBLIB_INI_PARSED_SECTION="$SECTION"
         ;;
         "" | "#"*)
-            TYPE="NOTHING"
+            TYPE="NOTHING";
+            FSBLIB_INI_PARSED_TYPE="$TYPE"
         ;;
         *"="*)
             TYPE="PARAM-VALUE";
             PARAM="$(remove_blank <<< "$(cut -d "=" -f 1 <<< "$_Line")")";
-            VALUE="$(remove_blank <<< "$(cut -d "=" -f 2- <<< "$_Line")")"
+            VALUE="$(remove_blank <<< "$(cut -d "=" -f 2- <<< "$_Line")")";
+            FSBLIB_INI_PARSED_TYPE="$TYPE";
+            FSBLIB_INI_PARSED_PARAM="$PARAM";
+            FSBLIB_INI_PARSED_VALUE="$VALUE"
         ;;
         *)
-            TYPE="ERROR"
+            TYPE="ERROR";
+            FSBLIB_INI_PARSED_TYPE="$TYPE"
         ;;
     esac;
     return 0
+}
+ini.new_param () 
+{ 
+    local IniContents=() Line;
+    local Section="$1" Param="$2";
+    local InSection=false LineNo=0;
+    local NewIniContents=();
+    readarray -t IniContents;
+    local BeforeParam;
+    local SectionLastParam;
+    local ParamAdded=false;
+    if ! print_array "${IniContents[@]}" | ini.get_param_list "$Section" | grep -qx "$Param"; then
+        SectionLastParam="$(print_eval_array IniContents | ini.get_last_param "$Section" )";
+        for Line in "${IniContents[@]}";
+        do
+            LineNo=$(( LineNo + 1  ));
+            ini.parse_line <<< "$Line";
+            case "$FSBLIB_INI_PARSED_TYPE" in 
+                "SECTION")
+                    if [[ "$FSBLIB_INI_PARSED_SECTION" = "$Section" ]]; then
+                        InSection=true;
+                    else
+                        InSection=false;
+                    fi
+                ;;
+                "PARAM-VALUE")
+                    if [[ "$InSection" = true ]]; then
+                        BeforeParam="$FSBLIB_INI_PARSED_PARAM";
+                    fi
+                ;;
+                "ERROR")
+                    echo "Line $LineNo: Failed to parse Ini" 1>&2;
+                    return 1
+                ;;
+            esac;
+            NewIniContents+=("$Line");
+            if { 
+                ! bool "$ParamAdded"
+            } && bool "$InSection" && [[ "$SectionLastParam" = "${BeforeParam-""}" ]]; then
+                NewIniContents+=("$Param=");
+                ParamAdded=true;
+            fi;
+        done;
+    fi;
+    print_eval_array NewIniContents;
+    return 0
+}
+ini.new_section () 
+{ 
+    local IniContents=();
+    local Section="$1";
+    readarray -t IniContents;
+    if print_array "${IniContents[@]}" | ini.get_section_list | grep -x "$Section" > /dev/null; then
+        print_eval_array IniContents;
+        return 0;
+    fi;
+    if [[ -z "$(array.last IniContents )" ]]; then
+        array.pop IniContents;
+    fi;
+    IniContents+=("" "[$Section]");
+    print_eval_array IniContents;
+    return 0
+}
+ini.set_value () 
+{ 
+    local IniContents=();
+    local Section="$1" Param="$2";
+    readarray -t IniContents;
+    readarray -t IniContents < <(print_array "${IniContents[@]}" | ini.new_section "$Section" | ini.new_param "$Section" "$Param");
+    print_eval_array IniContents
 }
 arch.get_kernel_file_list () 
 { 
@@ -1277,6 +1358,14 @@ sum ()
 }
 bool () 
 { 
+    case "$(remove_blank <<< "$(to_lower "$1")")" in 
+        "true")
+            return 0
+        ;;
+        "false")
+            return 1
+        ;;
+    esac;
     case "$(to_lower "$(print_eval "${1}")")" in 
         "true")
             return 0

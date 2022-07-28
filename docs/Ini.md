@@ -46,10 +46,12 @@ Iniファイルは標準入力から受け取ります。
 #### Example
 
 ```bash
-cat chromium.desktop | GetIniParamList desktop
+cat chromium.desktop | GetParamList desktop
 ```
 
-_Function has no arguments._
+#### Arguments
+
+* **$1** (セクション名):
 
 #### Exit codes
 

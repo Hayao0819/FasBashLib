@@ -27,7 +27,7 @@
 #
 # shellcheck disable=all
 declare -r FSBLIB_LIBLIST=("Core" "URL" "parseArg" "Array" "Sqlite3" "Readlink" "Message" "Ini" "ArchLinux" "Prompt" "AwkForCalc" "Pacman" "Csv" "SrcInfo" "BetterShell" "Cache" "Misskey" )
-declare -r FSBLIB_VERSION='v0.2.4.r292.g8581506-lower'
+declare -r FSBLIB_VERSION='v0.2.4.r299.gfdca1f8-lower'
 declare -r FSBLIB_REQUIRE='ModernBash'
 Fsblib.envCheck () 
 { 
@@ -553,6 +553,10 @@ Msg.warn ()
 { 
     Msg.common " Warn:" "${*}" stderr
 }
+Ini.getLastParam () 
+{ 
+    Ini.getParamList "$1" | tail -n 1
+}
 Ini.getParam () 
 { 
     local _RawIniLine=();
@@ -635,21 +639,98 @@ Ini.parseLine ()
     case "$_Line" in 
         "["*"]")
             TYPE="SECTION";
-            SECTION=$(sed "s|^\[||g; s|\]$||g" <<< "$_Line")
+            SECTION=$(sed "s|^\[||g; s|\]$||g" <<< "$_Line");
+            FSBLIB_INI_PARSED_TYPE="$TYPE";
+            FSBLIB_INI_PARSED_SECTION="$SECTION"
         ;;
         "" | "#"*)
-            TYPE="NOTHING"
+            TYPE="NOTHING";
+            FSBLIB_INI_PARSED_TYPE="$TYPE"
         ;;
         *"="*)
             TYPE="PARAM-VALUE";
             PARAM="$(removeBlank <<< "$(cut -d "=" -f 1 <<< "$_Line")")";
-            VALUE="$(removeBlank <<< "$(cut -d "=" -f 2- <<< "$_Line")")"
+            VALUE="$(removeBlank <<< "$(cut -d "=" -f 2- <<< "$_Line")")";
+            FSBLIB_INI_PARSED_TYPE="$TYPE";
+            FSBLIB_INI_PARSED_PARAM="$PARAM";
+            FSBLIB_INI_PARSED_VALUE="$VALUE"
         ;;
         *)
-            TYPE="ERROR"
+            TYPE="ERROR";
+            FSBLIB_INI_PARSED_TYPE="$TYPE"
         ;;
     esac;
     return 0
+}
+Ini.newParam () 
+{ 
+    local IniContents=() Line;
+    local Section="$1" Param="$2";
+    local InSection=false LineNo=0;
+    local NewIniContents=();
+    readarray -t IniContents;
+    local BeforeParam;
+    local SectionLastParam;
+    local ParamAdded=false;
+    if ! printArray "${IniContents[@]}" | Ini.getParamList "$Section" | grep -qx "$Param"; then
+        SectionLastParam="$(printEvalArray IniContents | Ini.getLastParam "$Section" )";
+        for Line in "${IniContents[@]}";
+        do
+            LineNo=$(( LineNo + 1  ));
+            Ini.parseLine <<< "$Line";
+            case "$FSBLIB_INI_PARSED_TYPE" in 
+                "SECTION")
+                    if [[ "$FSBLIB_INI_PARSED_SECTION" = "$Section" ]]; then
+                        InSection=true;
+                    else
+                        InSection=false;
+                    fi
+                ;;
+                "PARAM-VALUE")
+                    if [[ "$InSection" = true ]]; then
+                        BeforeParam="$FSBLIB_INI_PARSED_PARAM";
+                    fi
+                ;;
+                "ERROR")
+                    echo "Line $LineNo: Failed to parse Ini" 1>&2;
+                    return 1
+                ;;
+            esac;
+            NewIniContents+=("$Line");
+            if { 
+                ! bool "$ParamAdded"
+            } && bool "$InSection" && [[ "$SectionLastParam" = "${BeforeParam-""}" ]]; then
+                NewIniContents+=("$Param=");
+                ParamAdded=true;
+            fi;
+        done;
+    fi;
+    printEvalArray NewIniContents;
+    return 0
+}
+Ini.newSection () 
+{ 
+    local IniContents=();
+    local Section="$1";
+    readarray -t IniContents;
+    if printArray "${IniContents[@]}" | Ini.getSectionList | grep -x "$Section" > /dev/null; then
+        printEvalArray IniContents;
+        return 0;
+    fi;
+    if [[ -z "$(Array.last IniContents )" ]]; then
+        Array.pop IniContents;
+    fi;
+    IniContents+=("" "[$Section]");
+    printEvalArray IniContents;
+    return 0
+}
+Ini.setValue () 
+{ 
+    local IniContents=();
+    local Section="$1" Param="$2";
+    readarray -t IniContents;
+    readarray -t IniContents < <(printArray "${IniContents[@]}" | Ini.newSection "$Section" | Ini.newParam "$Section" "$Param");
+    printEvalArray IniContents
 }
 Arch.getKernelFileList () 
 { 
@@ -1277,6 +1358,14 @@ sum ()
 }
 bool () 
 { 
+    case "$(removeBlank <<< "$(toLower "$1")")" in 
+        "true")
+            return 0
+        ;;
+        "false")
+            return 1
+        ;;
+    esac;
     case "$(toLower "$(printEval "${1}")")" in 
         "true")
             return 0
