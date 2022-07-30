@@ -65,7 +65,10 @@ while read -r Dir; do
         _Shebang=""
         for File in "${_FileList[@]}"; do
             _Shebang="$(grep "^#!" "$File" | sed "s|^#!||g")"
-            if ! [[ "$_Shebang" = "/bin/sh" ]]; then
+            if [[ -z "${_Shebang}" ]]; then
+                echo "$Name: $File はシェブンが設定されていません" >&2
+                Errors=$(( Errors + 1 ))
+            elif ! [[ "$_Shebang" = "/bin/sh" ]]; then
                 echo "$Name: $File のシェバンは /bin/sh ではありません (${Name}のShellはAnyです)" >&2
                 Errors=$(( Errors + 1 ))
             fi
