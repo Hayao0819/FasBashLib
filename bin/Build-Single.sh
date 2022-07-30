@@ -97,6 +97,14 @@ MakeFuncName(){
     return 0
 }
 
+
+_Check_Dependency(){
+    which shfmt >/dev/null 2>&1 || {
+        Msg.Err "shfmt is not installed."
+        exit 1
+    }
+}
+
 # Set version
 _Make_Version(){
     # 初期化
@@ -282,7 +290,7 @@ _GetFuncCodeFromFile(){
 }
 
 _MakeOneLineFunc(){
-    sed "$ s|^}$|;}|g" | grep -v "^ *\#" | RemoveBlank | sed "s|^| |g; s|$| |g" | tr -d "\n"| RemoveBlank | sed -E "s| +| |g"
+    sed "$ s|^}$|;}|g" | grep -v "^ *\#" | RemoveBlank | sed "s|^| |g; s|$| |g" | sed "s|^ *}|;}|g" | tr -d "\n"| RemoveBlank | sed -E "s| +| |g"
     #sed ":a s/[\]$//; N; s/[\]$//; s/\n/ /; t a ;"
     echo
 }
@@ -525,14 +533,23 @@ _Make_OutFile(){
     # Minify
     #bash "$LibDir/minifier/Minify.sh" -f="$TmpOutFile" > "$OutFile"
 
+    # 出力先ディレクトリの作成
     mkdir -p "$(dirname "${OutFile}")"
+
+    # 出力
     #cat "$TmpOutFile" > "$OutFile"
-    grep -v "^$" "${TmpOutFile}" > "$OutFile"
+    #grep -v "^$" "${TmpOutFile}" > "$OutFile"
+    shfmt -ln bash -i 0 -s "$TmpOutFile" > "$OutFile"
+
+    # 関数リストの作成
     if [[ "$GenerateFuncList" = true ]]; then
         cat "$TmpFile_FuncList" > "${OutFile%.sh}-list"
     fi
+
+    # 一時ディレクトリの削除
     rm -rf "$TmpDir"
     echo "$OutFile にビルドされました" >&2
+    return 0
 }
 
 # Parse args
@@ -602,6 +619,7 @@ done
 set -- "${NoArg[@]}"
 
 
+_Check_Dependency
 _Make_Version
 _Make_CodeType
 _Make_Prepare
