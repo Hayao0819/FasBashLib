@@ -10,7 +10,7 @@ Errors=0
 while read -r Dir; do
     Name="$(basename "$Dir")"
 
-    echo "${Name}: Checking ..."
+    echo "${Name}: Checking ..." >&2
 
     # ディレクトリ名とMetaのNameを確認
     if [[ "${Name}" != "$("$LibDir/GetMeta.sh" "${Name}" "Name")" ]]; then
@@ -32,7 +32,7 @@ while read -r Dir; do
     readarray -t _FileList < <("$LibDir/GetMeta.sh" "${Name}" "Files" | tr "," "\n" | sed "s|^ *||g; s| *$||g; s|^	*||g; s|	*$||g; /^$/d" | sed "s|^|${Dir}/|g")
     for File in "${_FileList[@]}"; do
         if ! [[ -e "$File" ]]; then
-            echo "${Name}: $File が存在しません"
+            echo "${Name}: $File が存在しません" >&2
             Errors=$(( Errors + 1 ))
         fi
     done
@@ -54,11 +54,23 @@ while read -r Dir; do
 
         if ! printf "%s\n" "${_FileList[@]}"| grep -qx "$(realpath "$File")"; then
             if ! printf "%s\n" "${_IgnoreFileList[@]}"| grep -qx "$(realpath "$File")"; then
-                echo "${Name}: $File はライブラリとして認識されていません"
+                echo "${Name}: $File はライブラリとして認識されていません" >&2
                 Errors=$(( Errors + 1 ))
             fi
         fi
     done < <(find "$Dir" -name "*.sh" -mindepth 1)
+
+    # シェバンを確認
+    if [[ "$(GetMeta "$Name" "Shell")" = "Any" ]]; then
+        _Shebang=""
+        for File in "${_FileList[@]}"; do
+            _Shebang="$(grep "^#!" "$File" | sed "s|^#!||g")"
+            if ! [[ "$_Shebang" = "/bin/sh" ]]; then
+                echo "$Name: $File のシェバンは /bin/sh ではありません (${Name}のShellはAnyです)" >&2
+                Errors=$(( Errors + 1 ))
+            fi
+        done 
+    fi
 
     # テストを実行
     #"${BinDir}/Test-Run.sh" "$Name"
@@ -66,7 +78,7 @@ while read -r Dir; do
     # ShellCheckを実行
     while read -r File; do
         if [[ "$(file --mime-type "$File" | cut -d " " -f 2)" = "text/x-shellscript" ]]; then
-            echo "Run shell check $File" >&2
+            #echo "Run shell check $File" >&2
             shellcheck -s bash -x "$File" || Errors=$(( Errors + 1 ))
         fi
     done < <("${LibDir}/GetFileList.sh" "$Name")
