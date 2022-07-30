@@ -28,7 +28,7 @@
 # shellcheck disable=all
 
 declare -r FSBLIB_LIBLIST=("Core" "URL" "ParseArg" "Array" "Sqlite3" "Readlink" "Message" "Ini" "ArchLinux" "Prompt" "AwkForCalc" "Pacman" "Csv" "SrcInfo" "BetterShell" "Cache" "Misskey")
-declare -r FSBLIB_VERSION='v0.2.4.r308.g96aed2a-upper'
+declare -r FSBLIB_VERSION='v0.2.4.r312.g2273d51-upper'
 declare -r FSBLIB_REQUIRE='ModernBash'
 
 Fsblib.EnvCheck() {
@@ -37,9 +37,10 @@ Fsblib.EnvCheck() {
 		return 0
 		;;
 	"ModernShell")
-		[[ "$(cut -d "." -f 1 <<<"$BASH_VERSION")" == "5" ]] && return 0
+		[ "$(echo "$BASH_VERSION" | cut -d "." -f 1)" = "5" ] && return 0
 		;;
 	esac
+	return 1
 }
 FsblibEnvCheck() {
 	Fsblib.EnvCheck
