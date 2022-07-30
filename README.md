@@ -73,13 +73,13 @@ You can add your script to this list. Please send a Pull request.
 
 FasBashLib is composed of these projects. Deepest thanks to their contributors!
 
-- [agners/archlinuxarm-docker] - Arch Linux ARM Docker images
+- [agners/archlinuxarm-docker](https://github.com/agners/archlinuxarm-docker) - Arch Linux ARM Docker images
 - [ko1nksm/readlinkf](https://github.com/ko1nksm/readlinkf) - The functions in `Readlink.sh` are taken from this repository.
 - [reconquest/shdoc](https://github.com/reconquest/shdoc) - Script to generate documentation from source code
 - [Zuzzuc/Bash-minifier](https://github.com/Zuzzuc/Bash-minifier) - Script used to minify bash scripts
 - [mvdan/sh](https://github.com/mvdan/sh) - `Build-Single.sh` formats the generated scruples using shfmt.
 - [ShellShoccar-jpn/Parsrs](https://github.com/ShellShoccar-jpn/Parsrs) - Simple parsers written in POSIX shell (for `Parsrs`)
 - [shimataro/ssh-key-action](https://github.com/shimataro/ssh-key-action) - Auto build and update with GitHub Action
-- [softprops/action-gh-release] - Make new release from tag with GitHub Action
+- [softprops/action-gh-release](https://github.com/softprops/action-gh-release) - Make new release from tag with GitHub Action
 - [mfinelli/setup-shfmt](https://github.com/mfinelli/setup-shfmt) - Setup shfmt and run it on GitHub Action
 - [watasuke102/MIT-SUSHI-WARE](https://github.com/watasuke102/mit-sushi-ware) - MIT-derived license that only wants copyright notice and sushi
