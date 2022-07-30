@@ -3,6 +3,11 @@ name: Build dev branch
 on: 
   workflow_dispatch:
   push:
+    paths:
+      - src/**
+      - bin/**
+      - lib/**
+      - static/**
     branches:
       - dev-0.2.x
 
