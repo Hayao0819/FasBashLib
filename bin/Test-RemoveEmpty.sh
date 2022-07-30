@@ -15,11 +15,17 @@ Remove(){
 # Remove empty file
 while read -r File; do
     [[ -e "$File" ]] || continue
+
+    # Allow empty Result.txt
+    if [[ "$(basename "$File")" = "Result.txt" ]]; then
+        continue
+    fi
+
     # shellcheck disable=SC2143
     if [[ -z "$(grep -v "^$" "$File" | grep -v "^#")" ]]; then
         Remove "$File"
     fi
-done < <(find "${TestDir}" -type f)
+done < <(find "${TestsDir}" -type f)
 
 # Remove empty directory
 while read -r Dir; do
@@ -29,4 +35,4 @@ while read -r Dir; do
     if [[ -z "$(find "${Dir}")" ]]; then
         Remove "$Dir"
     fi
-done < <(find "${TestDir}" -type d)
+done < <(find "${TestsDir}" -type d)
