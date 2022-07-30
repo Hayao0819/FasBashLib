@@ -13,6 +13,9 @@
     <a href="https://github.com/Hayao0819/FasBashLib/commits/">
         <img src="https://img.shields.io/github/last-commit/Hayao0819/FasBashLib?style=flat-square">
     </a>
+    <a href="https://github.com/Hayao0819/FasBashLib/commits/">
+        <img src="https://img.shields.io/github/commit-activity/m/Hayao0819/FasBashLib?style=flat-square">
+    </a>
     <a href="https://github.com/Hayao0819/FasBashLib/">
         <img src="https://img.shields.io/github/repo-size/Hayao0819/FasBashLib?style=flat-square">
     </a>
