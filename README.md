@@ -67,6 +67,7 @@ See [How to test](./docs/TEST.md)
 You can add your script to this list. Please send a Pull request.
 
 - [10 Number Game](https://gist.github.com/Hayao0819/caad8ef3952bdfef7287ef8c5d71e03c) - A simple game about math
+- [ArchNews.sh](https://gist.github.com/Hayao0819/897be45dfedb0aa4fcc2735a0831966f) - Show the latest Arch Linux news
 - [Hayao0819/MisskeyBot](https://github.com/Hayao0819/MisskeyBot) - A Misskey Bot to renote automatically
 
 ## Special thanks
