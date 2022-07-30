@@ -15,6 +15,9 @@ jobs:
           submodules: true
           fetch-depth: 0 
 
+      - name: Setup shfmt
+        uses: mfinelli/setup-shfmt@v1.0.0
+
       - name: Build and create archive
         run: |
           make -B VERSION="${GITHUB_REF#refs/tags/}" release
