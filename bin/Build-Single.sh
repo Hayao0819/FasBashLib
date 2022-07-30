@@ -100,7 +100,7 @@ MakeFuncName(){
 
 _Check_Dependency(){
     which shfmt >/dev/null 2>&1 || {
-        Msg.Err "shfmt is not installed."
+        echo "shfmt is not installed." >&2
         exit 1
     }
 }
