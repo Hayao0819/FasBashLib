@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
 EnvCheck(){
     case "$FSBLIB_REQUIRE" in
@@ -6,9 +6,10 @@ EnvCheck(){
             return 0
             ;;
         "ModernShell")
-            [[ "$(cut -d "." -f 1 <<< "$BASH_VERSION")" = "5" ]] && return 0
+            [ "$(echo "$BASH_VERSION" | cut -d "." -f 1)" = "5" ] && return 0
             ;;
     esac
+    return 1
 }
 
 FsblibEnvCheck(){
