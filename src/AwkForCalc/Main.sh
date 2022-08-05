@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
 
 Print(){
@@ -6,15 +6,13 @@ Print(){
 }
 
 Float(){
-    local AWKSCALE="${AWKSCALE-"5"}"
-    awk "BEGIN {printf (\"%4.${AWKSCALE}f\n\", $*)}"
+    awk "BEGIN {printf (\"%4.${AWKSCALE-"5"}f\n\", $*)}"
 }
 
 # log10(100)=2
 # Log 10 100
 Log(){
-    local _Base="$1" _Number="$2"
-    @Float "log(${_Number}) / log($_Base)"
+    @Float "log(${2}) / log($1)"
 }
 
 Pi(){
