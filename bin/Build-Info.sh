@@ -32,6 +32,8 @@ while read -r Lib; do
     echo "${Lib}の情報を収集中..." >&2
     Require="$("$LibDir/SolveRequire.sh" -nomyself "$Lib" | LineToJsonArray)"
     Depends=$(GetMeta -c "$Lib" Depends | LineToJsonArray)
+    FuncList="$("$LibDir/GetFuncList.sh" -noprefix "$Lib" | LineToJsonArray)"
+
 
     Json="$(
         MakeJson \
@@ -39,6 +41,7 @@ while read -r Lib; do
             "description=$(GetMeta "$Lib" "Description")"\
             "require=$Require" \
             "depends=$Depends" \
+            "functions=$FuncList" \
             "shell=$(GetMeta "$Lib" "Shell")" \
             "prefix=$(GetMeta "$Lib" "Prefix")"
         )"
