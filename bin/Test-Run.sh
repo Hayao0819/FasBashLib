@@ -17,8 +17,9 @@ BashArgs=()
 
 
 # Build fasbashlib
+set -o pipefail
 echo "ライブラリをビルドしています..." >&2
-"$BinDir/Build-Single.sh" -out "$MainLibFile" "${LibToRunTest[@]}" 2> /dev/null || {
+"$BinDir/Build-Single.sh" -out "$MainLibFile" "${LibToRunTest[@]}" 2>&1 | sed "s|^|Build-Single.sh: |g" >&2 || {
     echo "Failed to build library!" >&2
     exit 1
 }
