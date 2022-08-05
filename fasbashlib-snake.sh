@@ -28,7 +28,7 @@
 # shellcheck disable=all
 
 declare -r FSBLIB_LIBLIST=("Core" "URL" "parse_arg" "Array" "Sqlite3" "Readlink" "Message" "Ini" "ArchLinux" "Prompt" "AwkForCalc" "Pacman" "Csv" "SrcInfo" "BetterShell" "Cache" "Misskey")
-declare -r FSBLIB_VERSION='v0.2.4.r326.ga1d0231-snake'
+declare -r FSBLIB_VERSION='v0.2.4.r329.gcd98a0e-snake'
 declare -r FSBLIB_REQUIRE='ModernBash'
 
 fsblib.env_check() {
@@ -737,12 +737,10 @@ awk.cos() {
 	awk.float "cos($*)"
 }
 awk.float() {
-	local AWKSCALE="${AWKSCALE-"5"}"
-	awk "BEGIN {printf (\"%4.${AWKSCALE}f\n\", $*)}"
+	awk "BEGIN {printf (\"%4.${AWKSCALE-"5"}f\n\", $*)}"
 }
 awk.log() {
-	local _Base="$1" _Number="$2"
-	awk.float "log(${_Number}) / log($_Base)"
+	awk.float "log(${2}) / log($1)"
 }
 awk.pi() {
 	awk.float "atan2(0, -0)"
