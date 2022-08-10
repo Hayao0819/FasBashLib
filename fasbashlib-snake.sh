@@ -28,7 +28,7 @@
 # shellcheck disable=all
 
 declare -r FSBLIB_LIBLIST=("ArchLinux" "Array" "AwkForCalc" "BetterShell" "Cache" "Core" "Csv" "Ini" "Message" "Misskey" "Pacman" "parse_arg" "Prompt" "Readlink" "Sqlite3" "SrcInfo" "URL")
-declare -r FSBLIB_VERSION='v0.2.4.r335.gb0f6288-snake'
+declare -r FSBLIB_VERSION='v0.2.4.r338.g3754fe5-snake'
 declare -r FSBLIB_REQUIRE='ModernBash'
 
 arch.get_kernel_file_list() {
@@ -1205,7 +1205,10 @@ srcinfo.get_value() {
 		print_eval_array _SrcInfo | srcinfo.get_value_in_pkg_base "$1"
 		return 0
 	}
-	[[ -n ${2-""} ]] || return 1
+	[[ -n ${2-""} ]] || {
+		echo "No pkgname or pkgbase is specified" 1>&2
+		return 1
+	}
 	if array_includes _AllValues "$1" || array_includes _AllArrays "$1"; then
 		array_append _Output < <(print_eval_array _SrcInfo | srcinfo.get_value_in_pkg_base "$1")
 		array_append _Output < <(print_eval_array _SrcInfo | srcinfo.get_value_in_pkg_name "$2" "$1")
@@ -1213,7 +1216,7 @@ srcinfo.get_value() {
 		return 0
 	fi
 	array_includes _AllArraysWithArch "$1" || return 1
-	local _Arch _ArchList
+	local _Arch _ArchList=()
 	if [[ -z ${3-""} ]]; then
 		array_append _ArchList < <(print_eval_array _SrcInfo | srcinfo.get_value arch "$2")
 	else

@@ -28,7 +28,7 @@
 # shellcheck disable=all
 
 declare -r FSBLIB_LIBLIST=("ArchLinux" "Array" "AwkForCalc" "BetterShell" "Cache" "Core" "Csv" "Ini" "Message" "Misskey" "Pacman" "ParseArg" "Prompt" "Readlink" "Sqlite3" "SrcInfo" "URL")
-declare -r FSBLIB_VERSION='v0.2.4.r335.gb0f6288-upper'
+declare -r FSBLIB_VERSION='v0.2.4.r338.g3754fe5-upper'
 declare -r FSBLIB_REQUIRE='ModernBash'
 
 Arch.GetKernelFileList() {
@@ -1205,7 +1205,10 @@ SrcInfo.GetValue() {
 		PrintEvalArray _SrcInfo | SrcInfo.GetValueInPkgBase "$1"
 		return 0
 	}
-	[[ -n ${2-""} ]] || return 1
+	[[ -n ${2-""} ]] || {
+		echo "No pkgname or pkgbase is specified" 1>&2
+		return 1
+	}
 	if ArrayIncludes _AllValues "$1" || ArrayIncludes _AllArrays "$1"; then
 		ArrayAppend _Output < <(PrintEvalArray _SrcInfo | SrcInfo.GetValueInPkgBase "$1")
 		ArrayAppend _Output < <(PrintEvalArray _SrcInfo | SrcInfo.GetValueInPkgName "$2" "$1")
@@ -1213,7 +1216,7 @@ SrcInfo.GetValue() {
 		return 0
 	fi
 	ArrayIncludes _AllArraysWithArch "$1" || return 1
-	local _Arch _ArchList
+	local _Arch _ArchList=()
 	if [[ -z ${3-""} ]]; then
 		ArrayAppend _ArchList < <(PrintEvalArray _SrcInfo | SrcInfo.GetValue arch "$2")
 	else
