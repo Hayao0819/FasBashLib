@@ -182,8 +182,52 @@ _Make_Require(){
     fi
 }
 
-# 汚いので書き直す！！！！！！！！
 _Make_TargetLib(){
+    declare -a -g TargetLib=()
+    local _LibLoaded=false
+
+    # 引数が指定されている場合
+    if [[ "$_LibLoaded" = false ]] && (( "$#" > 0 )); then
+        readarray -t TargetLib < <(printf "${SrcDir}/%s\n" "${RequireLib[@]}" "${@}")
+        _LibLoaded=true
+    fi
+
+    # 引数が指定されていない + 完全にすべてをビルドする場合
+    if [[ "$_LibLoaded" = false ]] && [[ "$NoIgnore" = true ]]; then
+        readarray -t TargetLib < <("${BinDir}/List.sh" -q | ForEach printf "${SrcDir}/{}\n")
+        _LibLoaded=true
+    fi
+
+    # 引数が指定されていない + 一部を除外する場合
+    if [[ "$_LibLoaded" = false ]]; then
+        local _isSkipped
+        _isSkipped(){
+            if PrintArray "${ForceLoadLib[@]}" | grep -qx "$1"; then
+                return 1
+            elif { ! PrintArray "${IgnoreLib[@]}" | grep -qx "$1"; } && [[ ! "$(GetMeta "$1" ExcludeFromAll)" == "true" ]]; then
+                return 1
+            fi
+            return 0
+        }
+
+        while read -r Lib; do
+            if ! _isSkipped "$Lib"; then
+                TargetLib+=("$SrcDir/$Lib")
+            else
+                echo "Skip $Lib" >&2
+            fi
+        done < <("$BinDir/List.sh" -q)
+    fi
+
+    readarray -t TargetLib < <(printf "%s\n" "${TargetLib[@]}" | sort )
+    echo "Load libs: $(printf "%s\n" "${TargetLib[@]}" | xargs -L 1 basename | tr "\n" " ")" >&2
+
+    return 0
+}
+
+# _Make_TargetLibを書き直す前のやつ
+# 動作はこっちに準拠する
+_Make_TargetLib_old(){
     # 読み込むライブラリの一覧
     # TargetLib配列にはライブラリのディレクトリへのフルパスが代入されています
     readarray -t TargetLib < <(
@@ -206,6 +250,7 @@ _Make_TargetLib(){
 
             done
         fi
+        readarray -t LoadLibDir < <(printf "%s\n" "${LoadLibDir[@]}" | sort)
         echo "Load libs: $(printf "%s\n" "${LoadLibDir[@]}" | xargs -L 1 basename | tr "\n" " ")" >&2
         printf "%s\n" "${LoadLibDir[@]}"
         unset LoadLibDir
