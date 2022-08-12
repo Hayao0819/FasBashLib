@@ -28,7 +28,7 @@
 # shellcheck disable=all
 
 declare -r FSBLIB_LIBLIST=("ArchLinux" "Array" "AwkForCalc" "BetterShell" "Cache" "Core" "Csv" "Ini" "Message" "Misskey" "Pacman" "parse_arg" "Prompt" "Readlink" "Sqlite3" "SrcInfo" "URL")
-declare -r FSBLIB_VERSION='v0.2.4.r338.g3754fe5-snake'
+declare -r FSBLIB_VERSION='v0.2.4.r341.gd322b4e-snake'
 declare -r FSBLIB_REQUIRE='ModernBash'
 
 arch.get_kernel_file_list() {
@@ -602,11 +602,23 @@ misskey.notes.renotes() {
 misskey.notes.search() {
 	misskey.binding_base "notes/search" query limit -- "$@"
 }
+misskey.users.get_frequently_replied_users() {
+	misskey.binding_base "users/get-frequently-replied-users" userId -- "${1:-"$(misskey.my_id)"}" "${@:2}"
+}
 misskey.users.notes() {
 	misskey.binding_base "users/notes" userId -- "${1:-"$(misskey.my_id)"}" "${@:2}"
 }
+misskey.users.pages() {
+	misskey.binding_base "users/pages" userId -- "${1:-"$(misskey.my_id)"}" "${@:2}"
+}
 misskey.users.search_by_username_and_host() {
 	misskey.binding_base "users/search-by-username-and-host" username -- "${1:-"$(misskey.my_user_name)"}" "${@:2}"
+}
+misskey.users.show() {
+	misskey.binding_base "users/show" userId -- "${1:-"$(misskey.my_id)"}" "${@:2}"
+}
+misskey.users.stats() {
+	misskey.binding_base "users/stats" userId -- "${1:-"$(misskey.my_id)"}" "${@:2}"
 }
 misskey.admin.server_info() {
 	misskey.binding_base "/admin/server-info" -- "$@"

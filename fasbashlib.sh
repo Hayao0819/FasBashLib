@@ -28,7 +28,7 @@
 # shellcheck disable=all
 
 declare -r FSBLIB_LIBLIST=("ArchLinux" "Array" "AwkForCalc" "BetterShell" "Cache" "Core" "Csv" "Ini" "Message" "Misskey" "Pacman" "ParseArg" "Prompt" "Readlink" "Sqlite3" "SrcInfo" "URL")
-declare -r FSBLIB_VERSION='v0.2.4.r338.g3754fe5-upper'
+declare -r FSBLIB_VERSION='v0.2.4.r341.gd322b4e-upper'
 declare -r FSBLIB_REQUIRE='ModernBash'
 
 Arch.GetKernelFileList() {
@@ -602,11 +602,23 @@ Misskey.Notes.Renotes() {
 Misskey.Notes.Search() {
 	Misskey.BindingBase "notes/search" query limit -- "$@"
 }
+Misskey.Users.GetFrequentlyRepliedUsers() {
+	Misskey.BindingBase "users/get-frequently-replied-users" userId -- "${1:-"$(Misskey.MyId)"}" "${@:2}"
+}
 Misskey.Users.Notes() {
 	Misskey.BindingBase "users/notes" userId -- "${1:-"$(Misskey.MyId)"}" "${@:2}"
 }
+Misskey.Users.Pages() {
+	Misskey.BindingBase "users/pages" userId -- "${1:-"$(Misskey.MyId)"}" "${@:2}"
+}
 Misskey.Users.SearchByUsernameAndHost() {
 	Misskey.BindingBase "users/search-by-username-and-host" username -- "${1:-"$(Misskey.MyUserName)"}" "${@:2}"
+}
+Misskey.Users.Show() {
+	Misskey.BindingBase "users/show" userId -- "${1:-"$(Misskey.MyId)"}" "${@:2}"
+}
+Misskey.Users.Stats() {
+	Misskey.BindingBase "users/stats" userId -- "${1:-"$(Misskey.MyId)"}" "${@:2}"
 }
 Misskey.Admin.ServerInfo() {
 	Misskey.BindingBase "/admin/server-info" -- "$@"
