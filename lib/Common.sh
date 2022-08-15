@@ -154,3 +154,30 @@ MakeJson ()
         fi;
     done | sed "s|}{|,|g" | jq -c -M
 }
+
+PrintEval() {
+    eval echo "\${$1}"
+}
+
+Bool() {
+    [[ "${1-""}" ]] && return 1
+    case "$(RemoveBlank <<<"$(ToLower "$1")")" in
+    "true")
+        return 0
+        ;;
+    "false")
+        return 1
+        ;;
+    esac
+    case "$(ToLower "$(PrintEval "${1}")")" in
+    "true")
+        return 0
+        ;;
+    "" | "false")
+        return 1
+        ;;
+    *)
+        return 2
+        ;;
+    esac
+}

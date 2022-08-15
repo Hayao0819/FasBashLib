@@ -128,7 +128,10 @@ GetValue(){
     }
 
     # 全てのセクション内で1度もしくは複数指定可能
-    [[ -n "${2-""}" ]] || return 1
+    [[ -n "${2-""}" ]] || {
+        echo "No pkgname or pkgbase is specified" >&2
+        return 1
+    }
     if ArrayIncludes _AllValues "$1" || ArrayIncludes _AllArrays "$1"; then
         ArrayAppend _Output < <(PrintEvalArray _SrcInfo | @GetValueInPkgBase "$1")
         ArrayAppend _Output < <(PrintEvalArray _SrcInfo | @GetValueInPkgName "$2" "$1")
@@ -140,7 +143,7 @@ GetValue(){
     ArrayIncludes _AllArraysWithArch "$1" || return 1
 
     # 全てのセクション内で複数指定可能かつアーキテクチャごとの設定が可能
-    local _Arch _ArchList
+    local _Arch _ArchList=()
     if [[ -z "${3-""}" ]]; then
         ArrayAppend _ArchList < <(PrintEvalArray _SrcInfo | @GetValue arch "$2")
     else
