@@ -19,30 +19,35 @@ RELEASE_BUILD_ARGS := -ver "${VERSION}"
 BASIC_BUILD_ARGS   := 
 SNAKE_BUILD_ARGS   := -snake
 LOWER_BUILD_ARGS   := -lower
+ADDITIONAL_BUILD_ARGS :=
 
 TARGET_LIB         :=
 DEBUG              := false
+STDIO              := false
 
 ifeq (${DEBUG},true)
 	ALL_BUILD_ARGS+= -debug -verbose
 endif
 
+ifeq (${STDIO},true)
+	ADDITIONAL_BUILD_ARGS+= -out /dev/stdout
+endif
 
 all: single single-snake single-lower
 
 single:
-	${Build-Single.sh} ${ALL_BUILD_ARGS} ${SINGLE_BUILD_ARGS} ${BASIC_BUILD_ARGS} -out ${CURRENT_DIR}/${BASIC_FILENAME} ${TARGET_LIB}
+	${Build-Single.sh} ${ALL_BUILD_ARGS} ${SINGLE_BUILD_ARGS} ${BASIC_BUILD_ARGS} -out ${CURRENT_DIR}/${BASIC_FILENAME} ${ADDITIONAL_BUILD_ARGS} ${TARGET_LIB}
 
 single-snake:
-	${Build-Single.sh} ${ALL_BUILD_ARGS} ${SINGLE_BUILD_ARGS} ${SNAKE_BUILD_ARGS} -out ${CURRENT_DIR}/${SNAKE_FILENAME} ${TARGET_LIB}
+	${Build-Single.sh} ${ALL_BUILD_ARGS} ${SINGLE_BUILD_ARGS} ${SNAKE_BUILD_ARGS} -out ${CURRENT_DIR}/${SNAKE_FILENAME} ${ADDITIONAL_BUILD_ARGS} ${TARGET_LIB}
 
 single-lower:
-	${Build-Single.sh} ${ALL_BUILD_ARGS} ${SINGLE_BUILD_ARGS} ${LOWER_BUILD_ARGS} -out ${CURRENT_DIR}/${LOWER_FILENAME} ${TARGET_LIB}
+	${Build-Single.sh} ${ALL_BUILD_ARGS} ${SINGLE_BUILD_ARGS} ${LOWER_BUILD_ARGS} -out ${CURRENT_DIR}/${LOWER_FILENAME} ${ADDITIONAL_BUILD_ARGS} ${TARGET_LIB}
 
 release:
-	${Build-Single.sh} ${ALL_BUILD_ARGS} ${RELEASE_BUILD_ARGS} ${BASIC_BUILD_ARGS} -out ${RELEASE_DIR}/${BASIC_FILENAME} ${TARGET_LIB}
-	${Build-Single.sh} ${ALL_BUILD_ARGS} ${RELEASE_BUILD_ARGS} ${SNAKE_BUILD_ARGS} -out ${RELEASE_DIR}/${SNAKE_FILENAME} ${TARGET_LIB}
-	${Build-Single.sh} ${ALL_BUILD_ARGS} ${RELEASE_BUILD_ARGS} ${LOWER_BUILD_ARGS} -out ${RELEASE_DIR}/${LOWER_FILENAME} ${TARGET_LIB}
+	${Build-Single.sh} ${ALL_BUILD_ARGS} ${RELEASE_BUILD_ARGS} ${BASIC_BUILD_ARGS} -out ${RELEASE_DIR}/${BASIC_FILENAME} ${ADDITIONAL_BUILD_ARGS} ${TARGET_LIB}
+	${Build-Single.sh} ${ALL_BUILD_ARGS} ${RELEASE_BUILD_ARGS} ${SNAKE_BUILD_ARGS} -out ${RELEASE_DIR}/${SNAKE_FILENAME} ${ADDITIONAL_BUILD_ARGS} ${TARGET_LIB}
+	${Build-Single.sh} ${ALL_BUILD_ARGS} ${RELEASE_BUILD_ARGS} ${LOWER_BUILD_ARGS} -out ${RELEASE_DIR}/${LOWER_FILENAME} ${ADDITIONAL_BUILD_ARGS} ${TARGET_LIB}
 	${CURRENT_DIR}/bin/Build-Zip.sh -out ${RELEASE_DIR} -- ${ALL_BUILD_ARGS} ${RELEASE_BUILD_ARGS}
 
 docs:
@@ -57,10 +62,10 @@ install:
 	"${CURRENT_DIR}/bin/Build-Multi.sh" -out "${DESTDIR}/usr/lib/fasbashlib/"
 
 	# install single file
-	"${CURRENT_DIR}/bin/Build-Single.sh" ${ALL_BUILD_ARGS} ${INSTALL_BUILD_ARGS} -out "${DESTDIR}/usr/lib/${BASIC_FILENAME}" ${TARGET_LIB}
+	"${CURRENT_DIR}/bin/Build-Single.sh" ${ALL_BUILD_ARGS} ${INSTALL_BUILD_ARGS} -out "${DESTDIR}/usr/lib/${BASIC_FILENAME}" ${ADDITIONAL_BUILD_ARGS} ${TARGET_LIB}
 
 	# install single snakecase
-	"${CURRENT_DIR}/bin/Build-Single.sh" ${ALL_BUILD_ARGS} ${INSTALL_BUILD_ARGS} -out "${DESTDIR}/usr/lib/${SNAKE_FILENAME}" -snake ${TARGET_LIB}
+	"${CURRENT_DIR}/bin/Build-Single.sh" ${ALL_BUILD_ARGS} ${INSTALL_BUILD_ARGS} -out "${DESTDIR}/usr/lib/${SNAKE_FILENAME}" -snake ${ADDITIONAL_BUILD_ARGS} ${TARGET_LIB}
 
 	# install docs
 	"${CURRENT_DIR}/bin/Build-Docs.sh" -out "${DESTDIR}/usr/share/doc/fasbashlib/"
