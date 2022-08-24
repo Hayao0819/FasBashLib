@@ -79,13 +79,21 @@ GetPacmanKeyringDir(){
 GetLatestPkgVer(){
     local _LANG="${LANG-""}"
     export LANG=C
-    ForEach @Run -Si "{}" | grep "^Version" | cut -d ":" -f 2 | RemoveBlank
+    if [[ -z "${*}" ]]; then
+        cat
+    else
+        PrintArray "$@"
+    fi | ForEach @Run -Si "{}" | grep "^Version" | cut -d ":" -f 2 | RemoveBlank
     [[ -n "$_LANG" ]] && export LANG="$_LANG"
     return 0
 }
 
 GetInstalledPkgVer(){
-    ForEach pacman -Qq "{}" | cut -d " " -f 2
+    if [[ -z "${*}" ]]; then
+        cat
+    else
+        PrintArray "$@"
+    fi | ForEach pacman -Q "{}" | cut -d " " -f 2
     PrintArray "${PIPESTATUS[@]}" | grep -qx "1" && return 1
     return 0
 }
