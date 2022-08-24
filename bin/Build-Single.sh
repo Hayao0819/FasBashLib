@@ -290,12 +290,17 @@ _Make_Header(){
     #    -e "s|%LIBLIST%|$(PrintArray "${TargetLib[@]}" | GetBaseName | sed 's|^|"|g; s|$|"|g' | tr "\n" " ")|g" \
     #    "${StaticDir}/script-head.sh" > "$TmpOutFile"
 
+    
     sed \
         -e "s|%LIBLIST%|$(PrintArray "${TargetLib[@]}" | GetBaseName | sed 's|^|"|g; s|$|"|g' | tr "\n" " ")|g" \
-        "${StaticDir}/script-head.sh" > "$TmpOutFile"
+        -e "s|%FUNCLIST%|$(sed "s| = |.|g" "$TmpFile_FuncList" | sed "s|^\.||g" | sed -e "s|^|\"|g" -e "s|$|\"|g" | tr "\n" " "; echo)|g" \
+        "${StaticDir}/script-head.sh" > "$TmpDir/Internal/Header.sh"
+
+    # ヘッダーをファイルに書き込む
+    #cat "$TmpDir/Internal/Header.sh" > "$TmpOutFile"
 
     # 作成に失敗した場合に終了
-    [[ -e "$TmpOutFile" ]] || exit 1
+    [[ -e "$TmpDir/Internal/Header.sh" ]] || exit 1
 }
 
 # _GetFuncListFromFile <File>
@@ -367,10 +372,12 @@ _Make_Lib(){
         _DefinedFuncInLib=()
         LibName="$(basename "$Dir")"
         LibPrefix="$("$LibDir/GetMeta.sh" "$LibName" "Prefix")"
-        TmpLibFile="$TmpDir/$LibName.sh"
+        TmpLibFile="$TmpDir/LibFiles/$LibName.sh"
         ReplacePrefix=true
 
         # ファイルの初期化
+        mkdir -p "$(dirname "$TmpLibFile")"
+        mkdir -p "$TmpDir/Internal"
         echo -n > "$TmpLibFile"
 
         #Prefix置換えを行うかどうか
@@ -484,7 +491,8 @@ _Make_Lib(){
         
 
         # 完成したライブラリを全体に追加
-        cat "$TmpLibFile" >> "$TmpOutFile"
+        #cat "$TmpLibFile" >> "$TmpOutFile"
+        cat "$TmpLibFile" >> "$TmpDir/Internal/Funcs.sh"
     done
 }
 
@@ -502,7 +510,7 @@ _Make_All_Replace(){
             NewFuncName=$(MakeFuncName "${LibPrefix-""}" "$Func")
 
             "${Debug}" && echo "置き換え3: 全ての${OldFuncName}を${NewFuncName}に置き換え" >&2
-            SedI "s|${OldFuncName}|${NewFuncName}|g" "$TmpOutFile"
+            SedI "s|${OldFuncName}|${NewFuncName}|g" "$TmpDir/Internal/Funcs.sh"
         done < "$TmpFile_FuncList"
     elif [[ "$Delimiter" != "." ]]; then
         # 区切り文字の置き換え
@@ -516,7 +524,7 @@ _Make_All_Replace(){
             NewFuncName="${LibPrefix}${Delimiter}${Func}"
 
             "${Debug}" && echo "置き換え3: 全ての${OldFuncName}を${NewFuncName}に置き換え" >&2
-            SedI "s|${OldFuncName}|${NewFuncName}|g" "$TmpOutFile"
+            SedI "s|${OldFuncName}|${NewFuncName}|g" "$TmpDir/Internal/Funcs.sh"
         done < "$TmpFile_FuncList"
     fi
 }
@@ -569,9 +577,17 @@ _Make_Const(){
         PrintArray "${Error[@]}"
         return 1
     else
-        PrintArray "${AddLine[@]}" "" >> "$TmpOutFile"
+        PrintArray "${AddLine[@]}" "" >> "$TmpDir/Internal/Consts.sh"
         return 0
     fi
+}
+
+_Make_TmpOutFile(){
+    mkdir -p "$(dirname "$TmpOutFile")"
+    cat "$TmpDir/Internal/Header.sh" "$TmpDir/Internal/Consts.sh" "$TmpDir/Internal/Funcs.sh" > "$TmpOutFile"
+    #cat "$TmpOutFile"
+    [[ -e "$TmpOutFile" ]] || exit 1
+    return 0
 }
 
 _Make_OutFile(){
@@ -671,8 +687,9 @@ _Make_Prepare
 _Make_Require "$@"
 _Make_TargetLib "$@"
 _Make_Shell
-_Make_Header
-_Make_Const
 _Make_Lib
+_Make_Const
 _Make_All_Replace
+_Make_Header
+_Make_TmpOutFile
 _Make_OutFile
