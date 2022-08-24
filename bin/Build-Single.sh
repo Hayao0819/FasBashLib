@@ -281,20 +281,16 @@ _Make_Shell(){
 }
 
 _Make_Header(){
-    # Create temp file with header
-    #cat "$StaticDir/script-head.sh" > "$TmpOutFile"
-    #
-    #sed \
-    #    -e "s|%VERSION%|${Version-""}|g" \
-    #    -e "s|%REQUIRE%|${RequireShell}|g" \
-    #    -e "s|%LIBLIST%|$(PrintArray "${TargetLib[@]}" | GetBaseName | sed 's|^|"|g; s|$|"|g' | tr "\n" " ")|g" \
-    #    "${StaticDir}/script-head.sh" > "$TmpOutFile"
 
-    
     sed \
         -e "s|%LIBLIST%|$(PrintArray "${TargetLib[@]}" | GetBaseName | sed 's|^|"|g; s|$|"|g' | tr "\n" " ")|g" \
-        -e "s|%FUNCLIST%|$(sed "s| = |.|g" "$TmpFile_FuncList" | sed "s|^\.||g" | sed -e "s|^|\"|g" -e "s|$|\"|g" | tr "\n" " "; echo)|g" \
+        -e "s|%FUNCLIST%||g" \
         "${StaticDir}/script-head.sh" > "$TmpDir/Internal/Header.sh"
+
+    #sed \
+    #    -e "s|%LIBLIST%|$(PrintArray "${TargetLib[@]}" | GetBaseName | sed 's|^|"|g; s|$|"|g' | tr "\n" " ")|g" \
+    #    -e "s|%FUNCLIST%|$(sed "s| = |.|g" "$TmpFile_FuncList" | sed "s|^\.||g" | sed -e "s|^|\"|g" -e "s|$|\"|g" | tr "\n" " "; echo)|g" \
+    #    "${StaticDir}/script-head.sh" > "$TmpDir/Internal/Header.sh"
 
     # ヘッダーをファイルに書き込む
     #cat "$TmpDir/Internal/Header.sh" > "$TmpOutFile"
