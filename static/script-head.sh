@@ -28,3 +28,4 @@
 # shellcheck disable=all
 
 declare -r FSBLIB_LIBLIST=(%LIBLIST%)
+declare -r FSBLIB_FUNCLIST=(%FUNCLIST%)
