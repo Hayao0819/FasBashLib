@@ -281,16 +281,25 @@ _Make_Shell(){
 }
 
 _Make_Header(){
+    local __Make_FUNCLIST
+    __Make_FUNCLIST(){
+        #sed "s| = |.|g" "$TmpFile_FuncList" | sed "s|^\.||g" | sed -e "s|^|\"|g" -e "s|$|\"|g" | tr "\n" " "; echo
 
-    sed \
-        -e "s|%LIBLIST%|$(PrintArray "${TargetLib[@]}" | GetBaseName | sed 's|^|"|g; s|$|"|g' | tr "\n" " ")|g" \
-        -e "s|%FUNCLIST%||g" \
-        "${StaticDir}/script-head.sh" > "$TmpDir/Internal/Header.sh"
+        local _Prefix _Name
+        echo "Making function list..." >&2
+        # shellcheck disable=SC2016
+        ForEach eval 'IFS=" = " read -r _Prefix _Name <<< "{}"; MakeFuncName "$_Prefix" "$_Name"' < "$TmpFile_FuncList" | sed -e "s|^|\"|g" -e "s|$|\"|g" | tr "\n" " "
+    }
 
     #sed \
     #    -e "s|%LIBLIST%|$(PrintArray "${TargetLib[@]}" | GetBaseName | sed 's|^|"|g; s|$|"|g' | tr "\n" " ")|g" \
-    #    -e "s|%FUNCLIST%|$(sed "s| = |.|g" "$TmpFile_FuncList" | sed "s|^\.||g" | sed -e "s|^|\"|g" -e "s|$|\"|g" | tr "\n" " "; echo)|g" \
+    #    -e "s|%FUNCLIST%||g" \
     #    "${StaticDir}/script-head.sh" > "$TmpDir/Internal/Header.sh"
+
+    sed \
+        -e "s|%LIBLIST%|$(PrintArray "${TargetLib[@]}" | GetBaseName | sed 's|^|"|g; s|$|"|g' | tr "\n" " ")|g" \
+        -e "s|%FUNCLIST%|$(__Make_FUNCLIST)|g" \
+        "${StaticDir}/script-head.sh" > "$TmpDir/Internal/Header.sh"
 
     # ヘッダーをファイルに書き込む
     #cat "$TmpDir/Internal/Header.sh" > "$TmpOutFile"
