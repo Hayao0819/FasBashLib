@@ -405,6 +405,7 @@ _Make_Lib(){
             _DefinedFuncInLib+=("${_DefinedFuncInFile[@]}")
 
             for Func in "${_DefinedFuncInFile[@]}"; do
+                ReplacePrefix=true
                 if PrintArray "${_NoPrefixFunc[@]}" | grep -qx "$Func"; then
                     ReplacePrefix=false
                 fi
