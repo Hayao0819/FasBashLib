@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 EnvCheck(){
     case "$FSBLIB_REQUIRE" in
@@ -14,4 +14,15 @@ EnvCheck(){
 
 FsblibEnvCheck(){
     @EnvCheck
+}
+
+RequireLib(){
+    local lib missing=() return=0
+    for lib in "$@"; do
+        if ! [[ "${FSBLIB_LIBLIST[*]}" == *" $lib "* ]]; then
+            missing+=("$lib")
+            return=1
+        fi
+    done
+    return "$return"
 }
