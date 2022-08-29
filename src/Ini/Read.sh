@@ -152,7 +152,8 @@ GetParam(){
                 fi
                 ;;
             "PARAM-VALUE")
-                [[ "$_InSection" = false ]] || echo "${VALUE}"
+                [[ "$_InSection" = false ]] && continue
+                [[ "${FSBLIB_INI_PARSED_PARAM}" = "$2" ]] && echo "$FSBLIB_INI_PARSED_VALUE"
                 ;;
             "ERROR")
                 echo "Line $_LineNo: Failed to parse Ini" >&2
