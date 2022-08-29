@@ -27,9 +27,9 @@
 #
 # shellcheck disable=all
 
-declare -r FSBLIB_LIBLIST=("ArchLinux" "Array" "AwkForCalc" "BetterShell" "Cache" "Core" "Csv" "Ini" "Message" "Misskey" "Pacman" "ParseArg" "Prompt" "Readlink" "Sqlite3" "SrcInfo" "URL")
-declare -r FSBLIB_FUNCLIST=("Arch.GetKernelFileList" "Arch.GetKernelSrcList" "Arch.GetMkinitcpioPresetList" "Array.Append" "Array.FromStr" "Array.Pop" "Array.Push" "Array.Remove" "Array.Rev" "Array.Shift" "Array.Eval" "Array.Last" "Array.Print" "Array.IndexOf" "Array.LastIndex" "Array.Length" "Array.ForEach" "Array.Includes" "Awk.Cos" "Awk.Float" "Awk.Log" "Awk.Pi" "Awk.Print" "Awk.Rad" "Awk.Sin" "Awk.Tan" "AddNewToArray" "ArrayAppend" "ArrayIncludes" "ArrayIndex" "GetArrayIndex" "PrintArray" "PrintEvalArray" "RevArray" "StrToCharList" "FileType" "GetBaseName" "GetFileExt" "RemoveFileExt" "CheckFuncDefined" "ForEach" "GetLine" "IsAvailable" "Loop" "BreakChar" "CutLastString" "GetLastSplitString" "IsUUID" "PrintEval" "RandomString" "RemoveBlank" "TextBox" "ToLower" "ToLowerStdin" "CalcInt" "Ntest" "Sum" "Bool" "GetFuncList" "UnsetAllFunc" "Match" "RemoveMatchLine" "Cache.Exist" "Cache.Get" "Cache.GetDir" "Cache.GetFileLastUpdate" "Cache.GetID" "Cache.GetTimeDiffFromLastUpdate" "Cache.Create" "Cache.CreateDir" "Fsblib.EnvCheck" "FsblibEnvCheck" "Csv.GetClm" "Csv.GetClmCnt" "Csv.ToBashArray" "Ini.GetLastParam" "Ini.GetParam" "Ini.GetParamList" "Ini.GetSectionList" "Ini.ParseLine" "Ini.NewParam" "Ini.NewSection" "Ini.SetValue" "Msg.Common" "Msg.Debug" "Msg.Err" "Msg.Info" "Msg.Warn" "Misskey.Notes.Create" "Misskey.Notes.Renotes" "Misskey.Notes.Search" "Misskey.Users.GetFrequentlyRepliedUsers" "Misskey.Users.Notes" "Misskey.Users.Pages" "Misskey.Users.SearchByUsernameAndHost" "Misskey.Users.Show" "Misskey.Users.Stats" "Misskey.Admin.ServerInfo" "Misskey.Setup" "Misskey.I" "Misskey.Meta" "Misskey.ServerInfo" "Misskey.BindingBase" "Misskey.MakeJson" "Misskey.SendReq" "Misskey.IsAdmin" "Misskey.MyId" "Misskey.MyName" "Misskey.MyUserName" "Pm.CheckPkg" "Pm.GetConfig" "Pm.GetInstalledPkgVer" "Pm.GetKeyringList" "Pm.GetLatestPkgVer" "Pm.GetName" "Pm.GetPacmanKernelPkg" "Pm.GetPacmanKeyringDir" "Pm.GetRepoConf" "Pm.GetRepoListFromConf" "Pm.GetRepoPkgList" "Pm.GetRepoServer" "Pm.GetRepoVer" "Pm.GetRoot" "Pm.IsRepoPkg" "Pm.PacmanGpg" "Pm.Run" "Pm.RunKey" "Pm.GetDbNextSection" "Pm.GetDbSection" "Pm.GetDbSectionList" "Pm.CreateDbTmpDir" "Pm.DeleteDbTmpDir" "Pm.GetDbTmpDir" "Pm.GetPkgArch" "Pm.GetRepoListFromLocalDb" "Pm.GetSyncAllDesc" "Pm.GetSyncDbDesc" "Pm.GetSyncDbDescPath" "Pm.GetVirtualPkgList" "Pm.IsOpendSyncDb" "Pm.OpenSyncDb" "Pm.OpenedSyncDbList" "Pm.ParsePkgFileName" "ParseArg" "Choice" "Readlinkf" "Readlinkf_Posix" "Readlinkf_Readlink" "Sqlite3.Call" "Sqlite3.Connect" "Sqlite3.Create" "Sqlite3.CurrentDb" "Sqlite3.Delete" "Sqlite3.ExistField" "Sqlite3.ExistTable" "Sqlite3.Insert" "Sqlite3.Select" "Sqlite3.SelectAll" "SrcInfo.Format" "SrcInfo.GetKeyList" "SrcInfo.GetPkgBase" "SrcInfo.GetPkgName" "SrcInfo.GetSectionList" "SrcInfo.GetValue" "SrcInfo.GetValueInPkgBase" "SrcInfo.GetValueInPkgName" "SrcInfo.Parse" "URL.Authority" "URL.Fragment" "URL.Host" "URL.NoScheme" "URL.Path" "URL.PathAndQueryAndFragment" "URL.Port" "URL.Query" "URL.Scheme" "URL.User" "URL.HasAuthority" "URL.HasFragment" "URL.HasPort" "URL.HasQuery" "URL.HasUser" "URL.Parse" "URL.GetQuery" "URL.ParseQuery")
-declare -r FSBLIB_VERSION='v0.2.5.r315.g2ed9e7c-upper'
+declare -r FSBLIB_LIBLIST=("ArchLinux" "Array" "AwkForCalc" "BetterShell" "Cache" "Core" "Csv" "Emerge" "Ini" "Message" "Misskey" "Pacman" "ParseArg" "Prompt" "Readlink" "Sqlite3" "SrcInfo" "URL")
+declare -r FSBLIB_FUNCLIST=("Arch.GetKernelFileList" "Arch.GetKernelSrcList" "Arch.GetMkinitcpioPresetList" "Array.Append" "Array.FromStr" "Array.Pop" "Array.Push" "Array.Remove" "Array.Rev" "Array.Shift" "Array.Eval" "Array.Last" "Array.Print" "Array.IndexOf" "Array.LastIndex" "Array.Length" "Array.ForEach" "Array.Includes" "Awk.Cos" "Awk.Float" "Awk.Log" "Awk.Pi" "Awk.Print" "Awk.Rad" "Awk.Sin" "Awk.Tan" "AddNewToArray" "ArrayAppend" "ArrayIncludes" "ArrayIndex" "GetArrayIndex" "PrintArray" "PrintEvalArray" "RevArray" "StrToCharList" "FileType" "GetBaseName" "GetFileExt" "RemoveFileExt" "CheckFuncDefined" "ForEach" "GetLine" "IsAvailable" "Loop" "BreakChar" "CutLastString" "GetLastSplitString" "IsUUID" "PrintEval" "RandomString" "RemoveBlank" "TextBox" "ToLower" "ToLowerStdin" "CalcInt" "Ntest" "Sum" "Bool" "GetFuncList" "UnsetAllFunc" "Match" "RemoveMatchLine" "Cache.Exist" "Cache.Get" "Cache.GetDir" "Cache.GetFileLastUpdate" "Cache.GetID" "Cache.GetTimeDiffFromLastUpdate" "Cache.Create" "Cache.CreateDir" "Fsblib.EnvCheck" "FsblibEnvCheck" "Csv.GetClm" "Csv.GetClmCnt" "Csv.ToBashArray" "Em.GetAllPkgList" "Em.GetDefaultRepoName" "Em.GetInstalledPkgList" "Em.GetRepoConf" "Em.GetRepoLocation" "Em.GetRepoPkgList" "Em.GetWorldPkgList" "Em.NoVersion" "Ini.GetLastParam" "Ini.GetParam" "Ini.GetParamList" "Ini.GetSectionList" "Ini.ParseLine" "Ini.NewParam" "Ini.NewSection" "Ini.SetValue" "Msg.Common" "Msg.Debug" "Msg.Err" "Msg.Info" "Msg.Warn" "Misskey.Notes.Create" "Misskey.Notes.Renotes" "Misskey.Notes.Search" "Misskey.Users.GetFrequentlyRepliedUsers" "Misskey.Users.Notes" "Misskey.Users.Pages" "Misskey.Users.SearchByUsernameAndHost" "Misskey.Users.Show" "Misskey.Users.Stats" "Misskey.Admin.ServerInfo" "Misskey.Setup" "Misskey.I" "Misskey.Meta" "Misskey.ServerInfo" "Misskey.BindingBase" "Misskey.MakeJson" "Misskey.SendReq" "Misskey.IsAdmin" "Misskey.MyId" "Misskey.MyName" "Misskey.MyUserName" "Pm.CheckPkg" "Pm.GetConfig" "Pm.GetInstalledPkgVer" "Pm.GetKeyringList" "Pm.GetLatestPkgVer" "Pm.GetName" "Pm.GetPacmanKernelPkg" "Pm.GetPacmanKeyringDir" "Pm.GetRepoConf" "Pm.GetRepoListFromConf" "Pm.GetRepoPkgList" "Pm.GetRepoServer" "Pm.GetRepoVer" "Pm.GetRoot" "Pm.IsRepoPkg" "Pm.PacmanGpg" "Pm.Run" "Pm.RunKey" "Pm.GetDbNextSection" "Pm.GetDbSection" "Pm.GetDbSectionList" "Pm.CreateDbTmpDir" "Pm.DeleteDbTmpDir" "Pm.GetDbTmpDir" "Pm.GetPkgArch" "Pm.GetRepoListFromLocalDb" "Pm.GetSyncAllDesc" "Pm.GetSyncDbDesc" "Pm.GetSyncDbDescPath" "Pm.GetVirtualPkgList" "Pm.IsOpendSyncDb" "Pm.OpenSyncDb" "Pm.OpenedSyncDbList" "Pm.ParsePkgFileName" "ParseArg" "Choice" "Readlinkf" "Readlinkf_Posix" "Readlinkf_Readlink" "Sqlite3.Call" "Sqlite3.Connect" "Sqlite3.Create" "Sqlite3.CurrentDb" "Sqlite3.Delete" "Sqlite3.ExistField" "Sqlite3.ExistTable" "Sqlite3.Insert" "Sqlite3.Select" "Sqlite3.SelectAll" "SrcInfo.Format" "SrcInfo.GetKeyList" "SrcInfo.GetPkgBase" "SrcInfo.GetPkgName" "SrcInfo.GetSectionList" "SrcInfo.GetValue" "SrcInfo.GetValueInPkgBase" "SrcInfo.GetValueInPkgName" "SrcInfo.Parse" "URL.Authority" "URL.Fragment" "URL.Host" "URL.NoScheme" "URL.Path" "URL.PathAndQueryAndFragment" "URL.Port" "URL.Query" "URL.Scheme" "URL.User" "URL.HasAuthority" "URL.HasFragment" "URL.HasPort" "URL.HasQuery" "URL.HasUser" "URL.Parse" "URL.GetQuery" "URL.ParseQuery")
+declare -r FSBLIB_VERSION='v0.2.5.r321.g16a69dc-upper'
 declare -r FSBLIB_REQUIRE='ModernBash'
 
 Arch.GetKernelFileList() {
@@ -389,6 +389,32 @@ Csv.ToBashArray() {
 		)
 	done < <(seq 1 "$#")
 }
+Em.GetAllPkgList() {
+	Em.GetRepoConf | sed -e 's/^ *//' -e 's/ *$//' | grep "^ *location *=" | sed -e 's/^location *= *//' | xargs -L1 realpath | xargs -I{} bash -c "find '{}' -mindepth 3 -maxdepth 3 -type f -name '*.ebuild' | sed -e 's|{}/||g' -e 's|.ebuild$||g'" | awk -F "/" '{print $1"/"$3}'
+}
+Em.GetDefaultRepoName() {
+	Em.GetRepoConf | Ini.GetParam DEFAULT main-repo
+}
+Em.GetInstalledPkgList() {
+	find /var/db/pkg/ -mindepth 2 -maxdepth 2 -type d | sed 's|/var/db/pkg/||g'
+}
+Em.GetRepoConf() {
+	cat /etc/portage/repos.conf /etc/portage/repos.conf/* 2>/dev/null
+}
+Em.GetRepoLocation() {
+	Em.GetRepoConf | Ini.GetParam "$1" location
+}
+Em.GetRepoPkgList() {
+	local _RepoPath
+	_RepoPath="$(Em.GetRepoLocation "$1")"
+	find "$_RepoPath" -mindepth 3 -maxdepth 3 -type f -name '*.ebuild' | sed -e "s|${_RepoPath%/}/||g" -e 's|.ebuild$||g' | awk -F "/" '{print $1"/"$3}'
+}
+Em.GetWorldPkgList() {
+	sed -E 's|:.+$||g' /var/lib/portage/world | xargs -I{} bash -c 'ls -d /var/db/pkg/{}-* | sed "s|/var/db/pkg/||g" | grep -E "{}-[0-9]"'
+}
+Em.NoVersion() {
+	sed -E 's|\-[0-9]+.+||g'
+}
 Ini.GetLastParam() {
 	Ini.GetParamList "$1" | tail -n 1
 }
@@ -407,7 +433,8 @@ Ini.GetParam() {
 			fi
 			;;
 		"PARAM-VALUE")
-			[[ $_InSection == false ]] || echo "${VALUE}"
+			[[ $_InSection == false ]] && continue
+			[[ ${FSBLIB_INI_PARSED_PARAM} == "$2" ]] && echo "$FSBLIB_INI_PARSED_VALUE"
 			;;
 		"ERROR")
 			echo "Line $_LineNo: Failed to parse Ini" 1>&2

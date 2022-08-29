@@ -27,9 +27,9 @@
 #
 # shellcheck disable=all
 
-declare -r FSBLIB_LIBLIST=("ArchLinux" "Array" "AwkForCalc" "BetterShell" "Cache" "Core" "Csv" "Ini" "Message" "Misskey" "Pacman" "ParseArg" "Prompt" "Readlink" "Sqlite3" "SrcInfo" "URL")
-declare -r FSBLIB_FUNCLIST=("Arch.getKernelFileList" "Arch.getKernelSrcList" "Arch.getMkinitcpioPresetList" "Array.append" "Array.fromStr" "Array.pop" "Array.push" "Array.remove" "Array.rev" "Array.shift" "Array.eval" "Array.last" "Array.print" "Array.indexOf" "Array.lastIndex" "Array.length" "Array.forEach" "Array.includes" "Awk.cos" "Awk.float" "Awk.log" "Awk.pi" "Awk.print" "Awk.rad" "Awk.sin" "Awk.tan" "addNewToArray" "arrayAppend" "arrayIncludes" "arrayIndex" "getArrayIndex" "printArray" "printEvalArray" "revArray" "strToCharList" "fileType" "getBaseName" "getFileExt" "removeFileExt" "checkFuncDefined" "forEach" "getLine" "isAvailable" "loop" "breakChar" "cutLastString" "getLastSplitString" "isUUID" "printEval" "randomString" "removeBlank" "textBox" "toLower" "toLowerStdin" "calcInt" "ntest" "sum" "bool" "getFuncList" "unsetAllFunc" "match" "removeMatchLine" "Cache.exist" "Cache.get" "Cache.getDir" "Cache.getFileLastUpdate" "Cache.getID" "Cache.getTimeDiffFromLastUpdate" "Cache.create" "Cache.createDir" "Fsblib.envCheck" "Fsblib.fsblibEnvCheck" "Csv.getClm" "Csv.getClmCnt" "Csv.toBashArray" "Ini.getLastParam" "Ini.getParam" "Ini.getParamList" "Ini.getSectionList" "Ini.parseLine" "Ini.newParam" "Ini.newSection" "Ini.setValue" "Msg.common" "Msg.debug" "Msg.err" "Msg.info" "Msg.warn" "Misskey.notes.Create" "Misskey.notes.Renotes" "Misskey.notes.Search" "Misskey.users.GetFrequentlyRepliedUsers" "Misskey.users.Notes" "Misskey.users.Pages" "Misskey.users.SearchByUsernameAndHost" "Misskey.users.Show" "Misskey.users.Stats" "Misskey.admin.ServerInfo" "Misskey.setup" "Misskey.i" "Misskey.meta" "Misskey.serverInfo" "Misskey.bindingBase" "Misskey.makeJson" "Misskey.sendReq" "Misskey.isAdmin" "Misskey.myId" "Misskey.myName" "Misskey.myUserName" "Pm.checkPkg" "Pm.getConfig" "Pm.getInstalledPkgVer" "Pm.getKeyringList" "Pm.getLatestPkgVer" "Pm.getName" "Pm.getPacmanKernelPkg" "Pm.getPacmanKeyringDir" "Pm.getRepoConf" "Pm.getRepoListFromConf" "Pm.getRepoPkgList" "Pm.getRepoServer" "Pm.getRepoVer" "Pm.getRoot" "Pm.isRepoPkg" "Pm.pacmanGpg" "Pm.run" "Pm.runKey" "Pm.getDbNextSection" "Pm.getDbSection" "Pm.getDbSectionList" "Pm.createDbTmpDir" "Pm.deleteDbTmpDir" "Pm.getDbTmpDir" "Pm.getPkgArch" "Pm.getRepoListFromLocalDb" "Pm.getSyncAllDesc" "Pm.getSyncDbDesc" "Pm.getSyncDbDescPath" "Pm.getVirtualPkgList" "Pm.isOpendSyncDb" "Pm.openSyncDb" "Pm.openedSyncDbList" "Pm.parsePkgFileName" "parseArg" "choice" "readlinkf" "readlinkf_Posix" "readlinkf_Readlink" "Sqlite3.call" "Sqlite3.connect" "Sqlite3.create" "Sqlite3.currentDb" "Sqlite3.delete" "Sqlite3.existField" "Sqlite3.existTable" "Sqlite3.insert" "Sqlite3.select" "Sqlite3.selectAll" "SrcInfo.format" "SrcInfo.getKeyList" "SrcInfo.getPkgBase" "SrcInfo.getPkgName" "SrcInfo.getSectionList" "SrcInfo.getValue" "SrcInfo.getValueInPkgBase" "SrcInfo.getValueInPkgName" "SrcInfo.parse" "URL.authority" "URL.fragment" "URL.host" "URL.noScheme" "URL.path" "URL.pathAndQueryAndFragment" "URL.port" "URL.query" "URL.scheme" "URL.user" "URL.hasAuthority" "URL.hasFragment" "URL.hasPort" "URL.hasQuery" "URL.hasUser" "URL.parse" "URL.getQuery" "URL.parseQuery")
-declare -r FSBLIB_VERSION='v0.2.5.r315.g2ed9e7c-lower'
+declare -r FSBLIB_LIBLIST=("ArchLinux" "Array" "AwkForCalc" "BetterShell" "Cache" "Core" "Csv" "Emerge" "Ini" "Message" "Misskey" "Pacman" "ParseArg" "Prompt" "Readlink" "Sqlite3" "SrcInfo" "URL")
+declare -r FSBLIB_FUNCLIST=("Arch.getKernelFileList" "Arch.getKernelSrcList" "Arch.getMkinitcpioPresetList" "Array.append" "Array.fromStr" "Array.pop" "Array.push" "Array.remove" "Array.rev" "Array.shift" "Array.eval" "Array.last" "Array.print" "Array.indexOf" "Array.lastIndex" "Array.length" "Array.forEach" "Array.includes" "Awk.cos" "Awk.float" "Awk.log" "Awk.pi" "Awk.print" "Awk.rad" "Awk.sin" "Awk.tan" "addNewToArray" "arrayAppend" "arrayIncludes" "arrayIndex" "getArrayIndex" "printArray" "printEvalArray" "revArray" "strToCharList" "fileType" "getBaseName" "getFileExt" "removeFileExt" "checkFuncDefined" "forEach" "getLine" "isAvailable" "loop" "breakChar" "cutLastString" "getLastSplitString" "isUUID" "printEval" "randomString" "removeBlank" "textBox" "toLower" "toLowerStdin" "calcInt" "ntest" "sum" "bool" "getFuncList" "unsetAllFunc" "match" "removeMatchLine" "Cache.exist" "Cache.get" "Cache.getDir" "Cache.getFileLastUpdate" "Cache.getID" "Cache.getTimeDiffFromLastUpdate" "Cache.create" "Cache.createDir" "Fsblib.envCheck" "Fsblib.fsblibEnvCheck" "Csv.getClm" "Csv.getClmCnt" "Csv.toBashArray" "Em.getAllPkgList" "Em.getDefaultRepoName" "Em.getInstalledPkgList" "Em.getRepoConf" "Em.getRepoLocation" "Em.getRepoPkgList" "Em.getWorldPkgList" "Em.noVersion" "Ini.getLastParam" "Ini.getParam" "Ini.getParamList" "Ini.getSectionList" "Ini.parseLine" "Ini.newParam" "Ini.newSection" "Ini.setValue" "Msg.common" "Msg.debug" "Msg.err" "Msg.info" "Msg.warn" "Misskey.notes.Create" "Misskey.notes.Renotes" "Misskey.notes.Search" "Misskey.users.GetFrequentlyRepliedUsers" "Misskey.users.Notes" "Misskey.users.Pages" "Misskey.users.SearchByUsernameAndHost" "Misskey.users.Show" "Misskey.users.Stats" "Misskey.admin.ServerInfo" "Misskey.setup" "Misskey.i" "Misskey.meta" "Misskey.serverInfo" "Misskey.bindingBase" "Misskey.makeJson" "Misskey.sendReq" "Misskey.isAdmin" "Misskey.myId" "Misskey.myName" "Misskey.myUserName" "Pm.checkPkg" "Pm.getConfig" "Pm.getInstalledPkgVer" "Pm.getKeyringList" "Pm.getLatestPkgVer" "Pm.getName" "Pm.getPacmanKernelPkg" "Pm.getPacmanKeyringDir" "Pm.getRepoConf" "Pm.getRepoListFromConf" "Pm.getRepoPkgList" "Pm.getRepoServer" "Pm.getRepoVer" "Pm.getRoot" "Pm.isRepoPkg" "Pm.pacmanGpg" "Pm.run" "Pm.runKey" "Pm.getDbNextSection" "Pm.getDbSection" "Pm.getDbSectionList" "Pm.createDbTmpDir" "Pm.deleteDbTmpDir" "Pm.getDbTmpDir" "Pm.getPkgArch" "Pm.getRepoListFromLocalDb" "Pm.getSyncAllDesc" "Pm.getSyncDbDesc" "Pm.getSyncDbDescPath" "Pm.getVirtualPkgList" "Pm.isOpendSyncDb" "Pm.openSyncDb" "Pm.openedSyncDbList" "Pm.parsePkgFileName" "parseArg" "choice" "readlinkf" "readlinkf_Posix" "readlinkf_Readlink" "Sqlite3.call" "Sqlite3.connect" "Sqlite3.create" "Sqlite3.currentDb" "Sqlite3.delete" "Sqlite3.existField" "Sqlite3.existTable" "Sqlite3.insert" "Sqlite3.select" "Sqlite3.selectAll" "SrcInfo.format" "SrcInfo.getKeyList" "SrcInfo.getPkgBase" "SrcInfo.getPkgName" "SrcInfo.getSectionList" "SrcInfo.getValue" "SrcInfo.getValueInPkgBase" "SrcInfo.getValueInPkgName" "SrcInfo.parse" "URL.authority" "URL.fragment" "URL.host" "URL.noScheme" "URL.path" "URL.pathAndQueryAndFragment" "URL.port" "URL.query" "URL.scheme" "URL.user" "URL.hasAuthority" "URL.hasFragment" "URL.hasPort" "URL.hasQuery" "URL.hasUser" "URL.parse" "URL.getQuery" "URL.parseQuery")
+declare -r FSBLIB_VERSION='v0.2.5.r321.g16a69dc-lower'
 declare -r FSBLIB_REQUIRE='ModernBash'
 
 Arch.getKernelFileList() {
@@ -389,6 +389,32 @@ Csv.toBashArray() {
 		)
 	done < <(seq 1 "$#")
 }
+Em.getAllPkgList() {
+	Em.getRepoConf | sed -e 's/^ *//' -e 's/ *$//' | grep "^ *location *=" | sed -e 's/^location *= *//' | xargs -L1 realpath | xargs -I{} bash -c "find '{}' -mindepth 3 -maxdepth 3 -type f -name '*.ebuild' | sed -e 's|{}/||g' -e 's|.ebuild$||g'" | awk -F "/" '{print $1"/"$3}'
+}
+Em.getDefaultRepoName() {
+	Em.getRepoConf | Ini.getParam DEFAULT main-repo
+}
+Em.getInstalledPkgList() {
+	find /var/db/pkg/ -mindepth 2 -maxdepth 2 -type d | sed 's|/var/db/pkg/||g'
+}
+Em.getRepoConf() {
+	cat /etc/portage/repos.conf /etc/portage/repos.conf/* 2>/dev/null
+}
+Em.getRepoLocation() {
+	Em.getRepoConf | Ini.getParam "$1" location
+}
+Em.getRepoPkgList() {
+	local _RepoPath
+	_RepoPath="$(Em.getRepoLocation "$1")"
+	find "$_RepoPath" -mindepth 3 -maxdepth 3 -type f -name '*.ebuild' | sed -e "s|${_RepoPath%/}/||g" -e 's|.ebuild$||g' | awk -F "/" '{print $1"/"$3}'
+}
+Em.getWorldPkgList() {
+	sed -E 's|:.+$||g' /var/lib/portage/world | xargs -I{} bash -c 'ls -d /var/db/pkg/{}-* | sed "s|/var/db/pkg/||g" | grep -E "{}-[0-9]"'
+}
+Em.noVersion() {
+	sed -E 's|\-[0-9]+.+||g'
+}
 Ini.getLastParam() {
 	Ini.getParamList "$1" | tail -n 1
 }
@@ -407,7 +433,8 @@ Ini.getParam() {
 			fi
 			;;
 		"PARAM-VALUE")
-			[[ $_InSection == false ]] || echo "${VALUE}"
+			[[ $_InSection == false ]] && continue
+			[[ ${FSBLIB_INI_PARSED_PARAM} == "$2" ]] && echo "$FSBLIB_INI_PARSED_VALUE"
 			;;
 		"ERROR")
 			echo "Line $_LineNo: Failed to parse Ini" 1>&2
