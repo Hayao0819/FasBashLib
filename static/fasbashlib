@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+LibraryPATH="%LIBRARYPATH%"
+
+readarray -t LibraryVersionList < <()
+
+HelpDoc(){
+        echo "Return loadable shell script that you want to use"
+        echo
+        echo " Usage: ${0} version-type Lib1 Lib2 ..."
+        echo
+        echo " Options:"
+        echo "     -h    Show this message"
+        echo "     -p    Add library dir"
+        echo "     -x    Script source mode"
+        echo
+        echo " Version:"
+        echo " "
+        
+}
