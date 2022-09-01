@@ -83,7 +83,9 @@ _Make_GetFilesFromSourceCode(){
             echo "Failed to checkout: $Commit" >&2
             exit 1
         }
+        trap 'rm -rf "$TmpDir/archive/$Commit"; exit 1' SIGHUP SIGINT SIGQUIT SIGTERM 
         make RELEASE_DIR="$TmpDir/archive/$Commit" release
+        trap SIGHUP SIGINT SIGQUIT SIGTERM 
         git checkout "${DefaultBranchName}" || {
             echo "Failed to checkout default branch: $DefaultBranchName"
             exit 1
