@@ -21,8 +21,6 @@ jobs:
       - name: Build and create archive
         run: |
           make -B VERSION="${GITHUB_REF#refs/tags/}" release
-          make -B docs
-          zip docs.zip docs/*
 
       - name: Create release
         id: create_release
@@ -41,7 +39,6 @@ jobs:
         with:
           files: |
             release-out/*
-            docs.zip
 
       - name: Create Release Note
         run: |
