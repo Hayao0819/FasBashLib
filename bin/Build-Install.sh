@@ -5,9 +5,8 @@
 source <(curl -sL "https://github.com/Hayao0819/FasBashLib/releases/download/v0.2.4/fasbashlib.sh")
 source "$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)/lib/Common.sh"
 
-DESTDIR="${DESTDIR-""}/usr/" INSTALLDIR="/lib/fasbashlib/"
-
-OutputDir="${DESTDIR}/${INSTALLDIR}"
+DESTDIR="${DESTDIR-""}"
+INSTALLDIR="/usr/lib/fasbashlib/"
 
 TmpDir="$(mktemp -d -t "fasbashlib.XXXXX")"
 MinVersion="v0.2.5.1"
@@ -21,7 +20,7 @@ GitCommitToBuild=()
 
 _Make_Prepare(){
     # Create directories
-    mkdir -p "$TmpDir" "$DESTDIR"
+    mkdir -p "$TmpDir" "${DESTDIR}/${INSTALLDIR}"
 
     echo "Working directory: $TmpDir" >&2
 
@@ -102,7 +101,7 @@ NoArg=()
 while [[ -n "${1-""}" ]]; do
     case "${1}" in
         "-dir")
-            DESTDIR="$2"
+            DESTDIR="$(Readlinkf "$2")"
             shift 2
             ;;
         "--")
