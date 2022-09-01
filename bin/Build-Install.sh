@@ -45,7 +45,9 @@ _Make_GetFilesFromGitHub(){
 
         for File in "${DownloadFileList[@]}"; do
             echo "Downloading $File from $Tag" >&2
-            curl -L -# -o "$TmpDir/archive/$Tag/$File" "https://github.com/Hayao0819/FasBashLib/releases/download/${Tag}/${File}"
+            curl -L -# -o "$TmpDir/archive/$Tag/$File" "https://github.com/Hayao0819/FasBashLib/releases/download/${Tag}/${File}" || {
+                echo "Failed to download: https://github.com/Hayao0819/FasBashLib/releases/download/${Tag}/${File}"
+            }
         done
     done
 }
