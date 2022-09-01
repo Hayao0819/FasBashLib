@@ -70,14 +70,21 @@ _Make_Unpack(){
         echo "There is no tag or commit to install" >&2
         exit 1
     fi
+
     local Dir File UnpackDir
     for Dir in "$TmpDir/archive/"*; do
         for File in "${DownloadFileList[@]}"; do 
-            UnpackDir="$TmpDir/dest/${INSTALLDIR}/$(basename "$Dir")"
+            [[ "$File" = *".zip" ]] || continue
+
+            UnpackDir="$TmpDir/dest/${INSTALLDIR}/$(basename "$Dir")/$(cut -d "-" -f 2 <<< "$(RemoveFileExt <<< "$File")")"
             echo "Unpacking $Dir/$File to $UnpackDir" >&2
             mkdir -p "$UnpackDir"
-            #unzip -d "$UnpackDir" "$Dir/$File"
-            tar -C "$UnpackDir" -xf "$Dir/$File"
+            cd "$Dir" || {
+                echo "Cannot unpack archives for $(basename "$Dir")" >&2
+                continue
+            }
+            unzip -d "$UnpackDir" "$Dir/$File"
+            #tar -C "$UnpackDir" -xf "$Dir/$File"
         done
     done
 }
