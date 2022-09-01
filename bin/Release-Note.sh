@@ -5,6 +5,7 @@
 source "$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)/lib/Common.sh"
 TargetTag="${1-""}"
 HasSnakeCase=true
+HasLowerCase=true
 
 # Check git
 if [[ ! -e "${MainDir}/.git" ]]; then
