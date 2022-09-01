@@ -10,7 +10,8 @@ source "$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)/lib/Common.sh"
 DESTDIR="${DESTDIR-""}"
 INSTALLDIR="/usr/lib/fasbashlib/"
 
-TmpDir="$(mktemp -d -t "fasbashlib.XXXXX")"
+#TmpDir="$(mktemp -d -t "fasbashlib.XXXXX")"
+TmpDir="$MainDir/work"
 MinVersion="v0.2.5.1"
 DownloadFileList=(
     "fasbashlib.zip" "fasbashlib-lower.zip" "fasbashlib-snake.zip"
@@ -18,7 +19,19 @@ DownloadFileList=(
 )
 TagNameToBuild=()
 GitCommitToBuild=()
+DefaultBranchName=""
 
+#_Run(){
+#    local _LockDir="$TmpDir/Lockfile/"
+#    [[ -e "$_LockDir/$1" ]] && return 0
+#    mkdir -p "$_LockDir"
+#    if "$@"; then
+#        echo > "${_LockDir}/$1"
+#    else
+#        echo "Failed to run: $*" >&2
+#        exit 1
+#    fi
+#}
 
 _Make_Prepare(){
     # Create directories
@@ -27,6 +40,13 @@ _Make_Prepare(){
     echo "Working directory: $TmpDir" >&2
 
     # Get source codes
+    if [[ -e "$TmpDir/src/.git" ]]; then
+        cd "$TmpDir/src/" || return 1
+        git pull
+        return 0
+    fi
+
+    rm -rf "${TmpDir}/src"
     git clone --recursive "https://github.com/Hayao0819/FasBashLib.git" "$TmpDir/src"
 }
 
@@ -46,6 +66,7 @@ _Make_GetFilesFromGitHub(){
         #done < <($BinDir/Release-Link.sh "$Tag")
 
         for File in "${DownloadFileList[@]}"; do
+            [[ -e "$TmpDir/archive/$Tag/$File" ]] && continue
             echo "Downloading $File from $Tag" >&2
             curl -L -# -o "$TmpDir/archive/$Tag/$File" "https://github.com/Hayao0819/FasBashLib/releases/download/${Tag}/${File}" || {
                 echo "Failed to download: https://github.com/Hayao0819/FasBashLib/releases/download/${Tag}/${File}"
