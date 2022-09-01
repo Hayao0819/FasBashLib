@@ -74,18 +74,19 @@ _Make_Unpack(){
 
     local Dir File UnpackDir
     for Dir in "$TmpDir/archive/"*; do
-        for File in "${DownloadFileList[@]}"; do 
-            [[ "$File" = *".zip" ]] || continue
-
-            UnpackDir="$TmpDir/dest/${INSTALLDIR}/$(basename "$Dir")/$(cut -d "-" -f 2 <<< "$(RemoveFileExt <<< "$File")")"
-            echo "Unpacking $Dir/$File to $UnpackDir" >&2
+        for File in "${DownloadFileList[@]}"; do
+            UnpackDir="$TmpDir/dest/${INSTALLDIR}/$(basename "$Dir")/$(cut -d "-" -f 2 <<< "$(RemoveFileExt <<< "$File")")/single"
             mkdir -p "$UnpackDir"
-            cd "$Dir" || {
-                echo "Cannot unpack archives for $(basename "$Dir")" >&2
-                continue
-            }
-            unzip -d "$UnpackDir" "$Dir/$File"
-            #tar -C "$UnpackDir" -xf "$Dir/$File"
+            if [[ "$File" = *".zip" ]]; then
+                echo "Unpacking $Dir/$File to $UnpackDir" >&2        
+                cd "$Dir" || {
+                    echo "Cannot unpack archives for $(basename "$Dir")" >&2
+                    continue
+                }
+                unzip -o -d "$UnpackDir" "$Dir/$File"
+            else
+                install -m 644 "$Dir/$File" "$UnpackDir"
+            fi
         done
     done
 }
