@@ -16,7 +16,7 @@ DownloadFileList=(
     "fasbashlib.sh"  "fasbashlib-lower.sh"  "fasbashlib-snake.sh"  
 )
 TagNameToBuild=()
-GitCommitToBuild=(a28c26576b1c2b36120611d84c33ddf8956bf53f)
+GitCommitToBuild=()
 
 
 _Make_Prepare(){
@@ -57,7 +57,7 @@ _Make_GetFilesFromSourceCode(){
     cd "$TmpDir/src" || exit 1
     for Commit in "${GitCommitToBuild[@]}"; do
         git checkout "$Commit" || {
-            echo "Failed to checkout $Commit"
+            echo "Failed to checkout: $Commit" >&2
             exit 1
         }
         make RELEASE_DIR="$TmpDir/archive/$Commit" release
@@ -115,7 +115,7 @@ set -- "${NoArg[@]}"
 _Make_Prepare
 _Make_Builable_Version
 _Make_GetFilesFromGitHub
-#_Make_GetFilesFromSourceCode
+_Make_GetFilesFromSourceCode
 _Make_Unpack
 _Make_Install
 echo "$TmpDir"
