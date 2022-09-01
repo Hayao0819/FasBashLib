@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC2154
-
 # shellcheck source=/dev/null
+
+set -Eeu -o pipefail
+
 source <(curl -sL "https://github.com/Hayao0819/FasBashLib/releases/download/v0.2.4/fasbashlib.sh")
 source "$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)/lib/Common.sh"
 
