@@ -35,20 +35,33 @@ while [[ -n "${1-""}" ]]; do
     esac
 done
 
-mkdir -p "$TmpDir" "$OutDir"
+mkdir -p "$TmpDir" "$OutDir" "$TmpDocs" "$TmpLower" "$TmpUpper" "$TmpSnake"
 
-# Document
-"${BinDir}/Build-Docs.sh" -out "$TmpDocs"
-zip "$OutDir/fasbashlib-document.zip" "${TmpDocs}/"*
 
-# Upper
-"${BinDir}/Build-Multi.sh" -out "$TmpUpper" -- "$@"
-zip "$OutDir/fasbashlib.zip" "${TmpUpper}/"*
+{
+    # Document
+    cd "$TmpDocs" || exit 1
+    "${BinDir}/Build-Docs.sh" -out "$TmpDocs"
+    zip "$OutDir/fasbashlib-document.zip" ./*
+}
 
-# Lower
-"${BinDir}/Build-Multi.sh" -out "$TmpLower" -- "$@" -lower
-zip "$OutDir/fasbashlib-lower.zip" "${TmpLower}/"*
+{
+    # upper
+    cd "$TmpUpper" || exit 1
+    "${BinDir}/Build-Multi.sh" -out "$TmpUpper" -- "$@"
+    zip "$OutDir/fasbashlib.zip" ./*
+}
 
-# Snake
-"${BinDir}/Build-Multi.sh" -out "$TmpSnake" -- "$@" -snake
-zip "$OutDir/fasbashlib-snake.zip" "${TmpSnake}/"*
+{
+    # Lower
+    cd "$TmpLower" || exit 1
+    "${BinDir}/Build-Multi.sh" -out "$TmpLower" -- "$@" -lower
+    zip "$OutDir/fasbashlib-lower.zip" ./*
+}
+
+{
+    # Snake
+    cd "$TmpSnake" || exit 1
+    "${BinDir}/Build-Multi.sh" -out "$TmpSnake" -- "$@" -snake
+    zip "$OutDir/fasbashlib-snake.zip" ./*
+}
