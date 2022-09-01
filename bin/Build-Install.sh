@@ -66,6 +66,10 @@ _Make_GetFilesFromSourceCode(){
 
 _Make_Unpack(){
     set -xv
+    if [[ -z "$(PrintArray "${GitCommitToBuild[@]}" "${TagNameToBuild[@]}")" ]]; then
+        echo "There is no tag or commit to install" >&2
+        exit 1
+    fi
     local Dir File UnpackDir
     for Dir in "$TmpDir/archive/"*; do
         for File in "${DownloadFileList[@]}"; do 
