@@ -33,6 +33,7 @@ _Make_Prepare(){
 _Make_Builable_Version(){
     cd "$TmpDir/src" || exit 1
     readarray -t TagNameToBuild < <(git tag | sed -n "/${MinVersion}/,\$p")
+    DefaultBranchName="$(git symbolic-ref --short HEAD)"
 }
 
 _Make_GetFilesFromGitHub(){
@@ -62,6 +63,10 @@ _Make_GetFilesFromSourceCode(){
             exit 1
         }
         make RELEASE_DIR="$TmpDir/archive/$Commit" release
+        git checkout "${DefaultBranchName}" || {
+            echo "Failed to checkout default branch: $DefaultBranchName"
+            exit 1
+        }
     done
 }
 
