@@ -5,16 +5,19 @@
 
 ```bash
 # shellcheck source=/dev/null
-source /dev/stdin < <(
-    fasbashlib -x "%TAG%" 2> /dev/null || curl -sL "%SOURCEURL%"
-)
+source <(curl -sL "%SOURCEURL%")
+```
+
+### LowerCase Version
+
+```bash
+# shellcheck source=/dev/null
+source <(curl -sL "%LOWERSOURCEURL%")
 ```
 
 ### SnakeCase Version
 
 ```bash
 # shellcheck source=/dev/null
-source /dev/stdin < <(
-    fasbashlib -s -x "%TAG%" 2> /dev/null || curl -sL "%SNAKESOURCEURL%"
-)
+source <(curl -sL "%SNAKESOURCEURL%")
 ```

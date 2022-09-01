@@ -31,6 +31,7 @@ HeadCommitID="$(git rev-parse HEAD)"
 BeforeTag="$(git tag | grep -B 1 -x -- "${TargetTag}" | head -n 1)"
 SourceURL="$("$BinDir/Release-Link.sh" "$TargetTag" | grep "fasbashlib.sh$")"
 SourceURL_Snake="$("$BinDir/Release-Link.sh" "$TargetTag" | grep "fasbashlib-snake.sh$")" || HasSnakeCase=false
+SourceURL_Lower="$("$BinDir/Release-Link.sh" "$TargetTag" | grep "fasbashlib-lower.sh$")" || HasLowerCase=false
 TempFile="$(mktemp)"
 
 # Log
@@ -47,6 +48,12 @@ if [[ "${HasSnakeCase}" = true ]]; then
     SedArgs+=(-e "s|%SNAKESOURCEURL%|${SourceURL_Snake}|g")
 else
     SedArgs+=(-e "s|%SNAKESOURCEURL%||g")
+fi
+
+if [[ "${HasLowerCase}" = true ]]; then
+    SedArgs+=(-e "s|%LOWERSOURCEURL%|${SourceURL_Lower}|g")
+else
+    SedArgs+=(-e "s|%LOWERSOURCEURL%||g")
 fi
 
 # Checkout
