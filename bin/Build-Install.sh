@@ -26,7 +26,7 @@ TagNameToBuild=()
 GitCommitToBuild=()
 DefaultBranchName=""
 BuildTagFromSource=false # タグ付けされたバージョンをソースからビルドするかどうか
-NoTagBuild=true
+NoTagBuild=false
 
 #_Run(){
 #    local _LockDir="$TmpDir/Lockfile/"
