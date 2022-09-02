@@ -135,11 +135,13 @@ _Make_Unpack(){
         exit 1
     fi
 
-    local Dir File UnpackDir
+    local Dir OrgFileName File UnpackDir
+    rm -rf "$TmpDir/dest/"
     for Dir in "$TmpDir/archive/"*; do
-        for File in "${DownloadFileList[@]}"; do
-            UnpackDir="$TmpDir/dest/${INSTALLDIR}/$(basename "$Dir")/$(cut -d "-" -f 2 <<< "$(RemoveFileExt <<< "$File")")/single"
-            mkdir -p "$UnpackDir"
+        for OrgFileName in "${!DownloadFileList[@]}"; do
+            File="${DownloadFileList["${OrgFileName}"]}"
+            TargetDir="$TmpDir/dest/${INSTALLDIR}/$(basename "$Dir")/"
+            UnpackDir="$TargetDir/$(cut -d "." -f 1 <<< "$File")"
             if [[ "$File" = *".tar.gz" ]]; then
                 echo "Unpacking $Dir/$File to $UnpackDir" >&2        
                 cd "$Dir" || {
@@ -147,9 +149,11 @@ _Make_Unpack(){
                     continue
                 }
                 #unzip -o -d "$UnpackDir" "$Dir/$File"
+                mkdir -p "$UnpackDir"
                 tar -x -v -f "$Dir/$File" -C "$UnpackDir"
             else
-                install -m 644 "$Dir/$File" "$UnpackDir"
+                mkdir -p "$TargetDir"
+                install -m 644 "$Dir/$File" "$TargetDir"
             fi
         done
     done
