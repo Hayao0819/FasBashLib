@@ -86,10 +86,11 @@ _Make_GetFilesFromGitHub(){
         #while read -r Link; do
         #done < <($BinDir/Release-Link.sh "$Tag")
 
-        for File in "${DownloadFileList[@]}"; do
-            [[ -e "$TmpDir/archive/$Tag/$File" ]] && continue
+        for File in "${!DownloadFileList[@]}"; do
+            SaveFile="$TmpDir/archive/$Tag/${DownloadFileList["${File}"]}"
+            [[ -e "$SaveFile" ]] && continue
             echo "Downloading $File from $Tag" >&2
-            curl -L -# -o "$TmpDir/archive/$Tag/$File" "https://github.com/Hayao0819/FasBashLib/releases/download/${Tag}/${File}" || {
+            curl -L -# -o "$SaveFile" "https://github.com/Hayao0819/FasBashLib/releases/download/${Tag}/${File}" || {
                 echo "Failed to download: https://github.com/Hayao0819/FasBashLib/releases/download/${Tag}/${File}"
             }
         done
