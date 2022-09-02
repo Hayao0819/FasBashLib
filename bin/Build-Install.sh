@@ -75,11 +75,10 @@ _Make_GetInfoFromGit(){
 
     git config advice.detachedHead false
     DefaultBranchName="$(git symbolic-ref --short HEAD)"
-    MaxVersion="$(git describe --tags --abbrev=0)"
 }
 
 _Make_GetFilesFromGitHub(){
-    local Tag File
+    local Tag File SaveFile
 
     for Tag in "${TagNameToBuild[@]}"; do
         mkdir -p "$TmpDir/archive/$Tag"
