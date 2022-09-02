@@ -49,7 +49,7 @@ jobs:
           make -B RELEASE_DIR="./" release
           make -B docs
           rm -rf .gitignore && echo "Removed .gitignore"
-          git add --force ./docs/ ./fasbashlib*.sh ./fasbashlib*.zip
+          git add --force ./docs/ ./fasbashlib*.sh ./fasbashlib*.tar.gz
           git commit -m "Update: Updated built docs and fasbashlib.sh (${GITHUB_SHA})" || true
           git push --force origin "${PUSH_BRANCH}"
     

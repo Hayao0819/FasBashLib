@@ -31,7 +31,7 @@ HelpDoc(){
     echo "    run             Run funtion"
     echo "    single          Build single-file library"
     echo "    all             Build all files"
-    echo "    zip             Build multi file and compress"
+    echo "    zip | archive   Build multi file and compress"
     echo "    info | json     Build a JSON that has information about library"
     echo
     echo " check Commands:"
@@ -84,14 +84,14 @@ Main(){
                 info | json | j* | i*)
                     RunScript "${BinDir}/Build-Info.sh" "$@"
                     ;;
-                all | a*)
+                all)
                     SCRIPT_RUN=true
                     (
                         cd "$MainDir"
                         make
                     )
                     ;;
-                zip | z*)
+                zip | z* | archive)
                     RunScript "$BinDir/Build-Zip.sh" "$@"
                     ;;
             esac
