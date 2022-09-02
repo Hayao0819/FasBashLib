@@ -13,6 +13,7 @@ INSTALLDIR="/usr/lib/fasbashlib/"
 #TmpDir="$(mktemp -d -t "fasbashlib.XXXXX")"
 TmpDir="$MainDir/work"
 MinVersion="v0.2.5.1"
+MaxVersion="v0.2.5.1"
 DownloadFileList=(
     "fasbashlib.zip" "fasbashlib-lower.zip" "fasbashlib-snake.zip"
     "fasbashlib.sh"  "fasbashlib-lower.sh"  "fasbashlib-snake.sh"  
@@ -20,6 +21,7 @@ DownloadFileList=(
 TagNameToBuild=()
 GitCommitToBuild=()
 DefaultBranchName=""
+BuildTagFromSource=true # タグ付けされたバージョンをソースからビルドするかどうか
 
 #_Run(){
 #    local _LockDir="$TmpDir/Lockfile/"
@@ -55,12 +57,18 @@ _Make_Prepare(){
     git clone --recursive "https://github.com/Hayao0819/FasBashLib.git" "$TmpDir/src"
 }
 
-_Make_Builable_Version(){
+_Make_GetInfoFromGit(){
     cd "$TmpDir/src" || exit 1
-    #readarray -t TagNameToBuild < <(git tag | sed -n "/${MinVersion}/,\$p")
-    readarray -t GitCommitToBuild < <(git tag | sed -n "/${MinVersion}/,\$p")
+
+    if [[ "${BuildTagFromSource}" = true ]]; then
+        readarray -t GitCommitToBuild < <(git tag | sed -n "/${MinVersion}/,/${MaxVersion}/p")
+    else
+        readarray -t TagNameToBuild < <(git tag | sed -n "/${MinVersion}/,\$p")
+    fi
+
     git config advice.detachedHead false
     DefaultBranchName="$(git symbolic-ref --short HEAD)"
+    MaxVersion="$(git describe --tags --abbrev=0)"
 }
 
 _Make_GetFilesFromGitHub(){
@@ -162,7 +170,7 @@ set -- "${NoArg[@]}"
 
 
 _Make_Prepare
-_Make_Builable_Version
+_Make_GetInfoFromGit
 _Make_GetFilesFromGitHub
 _Make_GetFilesFromSourceCode
 _Make_Unpack
