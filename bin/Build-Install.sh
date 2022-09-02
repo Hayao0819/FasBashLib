@@ -106,12 +106,20 @@ _Make_GetFilesFromSourceCode(){
             exit 1
         }
         trap 'git checkout "${DefaultBranchName}"; rm -rf "$TmpDir/archive/$Commit"; exit 1' SIGHUP SIGINT SIGQUIT SIGTERM 
-        make RELEASE_DIR="$TmpDir/archive/$Commit" release
+        make RELEASE_DIR="$TmpDir/build/$Commit" release
         trap SIGHUP SIGINT SIGQUIT SIGTERM 
         git checkout "${DefaultBranchName}" || {
             echo "Failed to checkout default branch: $DefaultBranchName"
             exit 1
         }
+
+        for File in "${!DownloadFileList[@]}"; do
+            SaveFile="$TmpDir/archive/$Commit/${DownloadFileList["${File}"]}"
+            [[ -e "$SaveFile" ]] && continue
+            echo "Copying $File from $Commit" >&2
+            mkdir -p "$(dirname "$SaveFile")"
+            cp "$TmpDir/build/$Commit/$File" "$SaveFile"
+        done
     done
 }
 
