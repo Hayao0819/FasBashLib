@@ -107,13 +107,14 @@ _Make_Unpack(){
         for File in "${DownloadFileList[@]}"; do
             UnpackDir="$TmpDir/dest/${INSTALLDIR}/$(basename "$Dir")/$(cut -d "-" -f 2 <<< "$(RemoveFileExt <<< "$File")")/single"
             mkdir -p "$UnpackDir"
-            if [[ "$File" = *".zip" ]]; then
+            if [[ "$File" = *".tar.gz" ]]; then
                 echo "Unpacking $Dir/$File to $UnpackDir" >&2        
                 cd "$Dir" || {
                     echo "Cannot unpack archives for $(basename "$Dir")" >&2
                     continue
                 }
-                unzip -o -d "$UnpackDir" "$Dir/$File"
+                #unzip -o -d "$UnpackDir" "$Dir/$File"
+                tar -x -v -f "$Dir/$File" -C "$UnpackDir"
             else
                 install -m 644 "$Dir/$File" "$UnpackDir"
             fi
