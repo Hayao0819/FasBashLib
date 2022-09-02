@@ -39,11 +39,18 @@ for Dir in "$SrcDir" "$StaticDir" "$LibDir"; do
     }
 done
 
+RunWithMsg(){
+    echo "Run: $*" >&2
+    "$@"
+}
+
 # Build
 # Load src
 while read -r Dir; do
-    _Lib="$(basename "$Dir")"
-    echo "Run: " "$MainDir/bin/Build-Single.sh" "${@}" -out "$OutDir/$_Lib.sh" -noreq "$_Lib"
-    "$MainDir/bin/Build-Single.sh" "${@}" -out "$OutDir/$_Lib.sh" -noreq "$_Lib"
+    {
+        _Lib="$(basename "$Dir")"
+        "$MainDir/bin/Build-Single.sh" "${@}" -out "$OutDir/$_Lib.sh" -noreq "$_Lib"
+    } &
 done < <("$BinDir/List.sh" -q)
+wait
 unset Dir File

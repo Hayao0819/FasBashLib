@@ -15,6 +15,7 @@ Delimiter="."
 NoRequire=false
 OneLine=false # うまく動かないよ
 NoIgnore=false # すべてのIgnore設定を無視
+NoParalell=false # 並列ビルドを無効化
 
 CodeType="Upper"
 #CodeType="Lower"
@@ -374,132 +375,143 @@ _Make_Lib(){
     # ライブラリをサブシェル内で読み込んでファイルに追記
     echo -n > "$TmpFile_FuncList"
     for Dir in "${TargetLib[@]}"; do
-        _DefinedFuncInLib=()
-        LibName="$(basename "$Dir")"
-        LibPrefix="$("$LibDir/GetMeta.sh" "$LibName" "Prefix")"
-        TmpLibFile="$TmpDir/LibFiles/$LibName.sh"
-        ReplacePrefix=true
-
-        # ファイルの初期化
-        mkdir -p "$(dirname "$TmpLibFile")"
-        mkdir -p "$TmpDir/Internal"
-        echo -n > "$TmpLibFile"
-
-        #Prefix置換えを行うかどうか
-        if [[ -z "${LibPrefix-""}" ]]; then
-            ReplacePrefix=false
+        if [[ "$NoParalell" = true ]]; then
+            wait
         fi
+        {
+            _DefinedFuncInLib=()
+            LibName="$(basename "$Dir")"
+            LibPrefix="$("$LibDir/GetMeta.sh" "$LibName" "Prefix")"
+            TmpLibFile="$TmpDir/LibFiles/$LibName.sh"
+            ReplacePrefix=true
 
-        readarray -t _NoPrefixFunc < <(GetMeta -c "$LibName" "NoPrefixFunc")
+            # ファイルの初期化
+            mkdir -p "$(dirname "$TmpLibFile")"
+            mkdir -p "$TmpDir/Internal"
+            echo -n > "$TmpLibFile"
 
-        # ライブラリのファイルごとに関数を読み取ってTmpLibFileに関数を書き込み
-        # この際に関数定義部分のプレフィックスとスネークケース置き換えを行う
-        while read -r File; do
-            _CheckLoadedFile "${Dir}/${File}" || continue
-
-            # _DefinedFuncInFile と _DefinedFuncInLib はライブラリごとの関数の一覧
-            # プレフィックスは除外されており、元のソースコードの関数名がそのまま記述されます。
-            # それに対してTmpFile_FuncListはプレフィックス置き換えまで済ませた全てのライブラリの関数をグローバルに列挙します。
-            # TmpFile_FuncListは最終処理で他ライブラリの関数呼び出しをスネークケースに置き換えるのに使用されます。
-            readarray -t _DefinedFuncInFile < <(_GetFuncListFromFile "${Dir}/${File}")
-            _DefinedFuncInLib+=("${_DefinedFuncInFile[@]}")
-
-            for Func in "${_DefinedFuncInFile[@]}"; do
-                ReplacePrefix=true
-                if PrintArray "${_NoPrefixFunc[@]}" | grep -qx "$Func"; then
-                    ReplacePrefix=false
-                fi
-
-                if [[ "${ReplacePrefix}" = false ]] && [[ "$CodeType" = "$DefaultCodeType" ]]; then
-                    # 関数の置き換えを一切行わない場合
-                    echo " = $Func" >> "$TmpFile_FuncList"
-                    "$Debug" && echo "${Func}を${TmpLibFile}に書き込み" >&2
-                    if "${OneLine-"false"}"; then
-                        _GetFuncCodeFromFile "${Dir}/${File}" "$Func" | _MakeOneLineFunc >> "$TmpLibFile"
-                    else
-                        _GetFuncCodeFromFile "${Dir}/${File}" "$Func" >> "$TmpLibFile"
-                    fi
-                    continue
-                else
-                    # 関数の定義部分を書き換え
-                    local NewFuncName=""
-                    echo "${LibPrefix-""} = ${Func}" >> "$TmpFile_FuncList"
-                    NewFuncName="$(MakeFuncName "${LibPrefix-""}" "$Func")"
-                    "${Debug}" && echo "置き換え1: 関数定義の${Func}を${NewFuncName}に置き換えて${TmpLibFile}に書き込み" >&2
-
-                    # 関数を1行にまとめられないかなって...
-                    if "${OneLine-"false"}"; then
-                        _GetFuncCodeFromFile "${Dir}/${File}" "$Func" | sed "1 s|${Func} ()|${NewFuncName} ()|g" | \
-                            grep -v "^ *\#" | _MakeOneLineFunc >> "$TmpLibFile"
-                        echo >> "$TmpLibFile"
-                    else
-                        _GetFuncCodeFromFile "${Dir}/${File}" "$Func" | sed "1 s|${Func} ()|${NewFuncName} ()|g" | grep -v "^ *\#" >> "$TmpLibFile"
-                    fi
-                fi
-            done
-        #done < <("$LibDir/GetMeta.sh" "${LibName}" "Files" | tr "," "\n")
-        done < <("$LibDir/GetFileList.sh" "${LibName}" | GetBaseName)
-
-        if [[ "${DontRunAtMarkReplacement}" = false ]]; then
-            local NewLibPrefix="$LibPrefix" #LibPrefixの置換え用変数
-
-            # 同じライブラリ内での関数呼び出し(@関数)を置き換え
-            # 置き換えは全てTmpLibFileのみで完結します
-            # 置き換える関数の一覧は _DefinedFuncInLib から取得
-            "$Debug" && echo "${LibName}の@呼び出しを置き換え" >&2
+            #Prefix置換えを行うかどうか
             if [[ -z "${LibPrefix-""}" ]]; then
-                "${Debug}" && echo "プレフィックスが設定されていないため、${LibName}の置き換えをスキップ" >&2
-                # プレフィックスが設定されていない場合、@関数は存在しない
-                # スネークケースへの置き換えは全てまとめて最後に行う
-            else
-                # スネークケースが有効化されている場合、プレフィックスは小文字にする
-                #if [[ "${SnakeCase}" = true ]]; then
-                if [[ "$CodeType" = "Snake" ]]; then
-                    NewLibPrefix="$(ToLower "${LibPrefix}")"
-                fi
+                ReplacePrefix=false
+            fi
 
-                # Func: ソースコードに記述されたそのままの関数名
-                # 例えば、SrcInfo.GetValueなら"GetValue"の部分
-                for Func in "${_DefinedFuncInLib[@]}"; do
-                    # NoPrefixに指定されている場合の処理
-                    if PrintArray "${_NoPrefixFunc[@]}" | grep -qx "$Func"; then
-                        "$Debug" && echo "NoPrefixに指定されているため${Func}の置き換えをスキップ" >&2
-                        continue
+            readarray -t _NoPrefixFunc < <(GetMeta -c "$LibName" "NoPrefixFunc")
+
+            # ライブラリのファイルごとに関数を読み取ってTmpLibFileに関数を書き込み
+            # この際に関数定義部分のプレフィックスとスネークケース置き換えを行う
+            while read -r File; do
+                _CheckLoadedFile "${Dir}/${File}" || continue
+
+                # _DefinedFuncInFile と _DefinedFuncInLib はライブラリごとの関数の一覧
+                # プレフィックスは除外されており、元のソースコードの関数名がそのまま記述されます。
+                # それに対してTmpFile_FuncListはプレフィックス置き換えまで済ませた全てのライブラリの関数をグローバルに列挙します。
+                # TmpFile_FuncListは最終処理で他ライブラリの関数呼び出しをスネークケースに置き換えるのに使用されます。
+                readarray -t _DefinedFuncInFile < <(_GetFuncListFromFile "${Dir}/${File}")
+                _DefinedFuncInLib+=("${_DefinedFuncInFile[@]}")
+
+                for Func in "${_DefinedFuncInFile[@]}"; do
+                    if [[ "$NoParalell" = true ]]; then
+                        wait
                     fi
-    
-                    # ドット以降の関数名を変換
-                    NewFuncName=$(MakeFuncName "" "$Func")
-                    "${Debug}" && echo "置き換え2: ${TmpLibFile}内の@${Func}を${NewLibPrefix}${Delimiter}${NewFuncName}に置き換え" >&2
+                    {
+                        ReplacePrefix=true
+                        if PrintArray "${_NoPrefixFunc[@]}" | grep -qx "$Func"; then
+                            ReplacePrefix=false
+                        fi
 
-                    # 1つめは行末に書かれた関数の置き換え
-                    # 2つめは関数の後に数字やアルファベット以外がある場合の置き換え
-                    SedI \
-                        -e "s|@${Func}$|${NewLibPrefix}${Delimiter}${NewFuncName}|g" \
-                        -e "s|@${Func}\([^a-zA-Z0-9]\)|${NewLibPrefix}${Delimiter}${NewFuncName}\1|g" \
-                        "$TmpLibFile"
+                        if [[ "${ReplacePrefix}" = false ]] && [[ "$CodeType" = "$DefaultCodeType" ]]; then
+                            # 関数の置き換えを一切行わない場合
+                            echo " = $Func" >> "$TmpFile_FuncList"
+                            "$Debug" && echo "${Func}を${TmpLibFile}に書き込み" >&2
+                            if "${OneLine-"false"}"; then
+                                _GetFuncCodeFromFile "${Dir}/${File}" "$Func" | _MakeOneLineFunc >> "$TmpLibFile"
+                            else
+                                _GetFuncCodeFromFile "${Dir}/${File}" "$Func" >> "$TmpLibFile"
+                            fi
+                        else
+                            # 関数の定義部分を書き換え
+                            local NewFuncName=""
+                            echo "${LibPrefix-""} = ${Func}" >> "$TmpFile_FuncList"
+                            NewFuncName="$(MakeFuncName "${LibPrefix-""}" "$Func")"
+                            "${Debug}" && echo "置き換え1: 関数定義の${Func}を${NewFuncName}に置き換えて${TmpLibFile}に書き込み" >&2
+
+                            # 関数を1行にまとめられないかなって...
+                            if "${OneLine-"false"}"; then
+                                _GetFuncCodeFromFile "${Dir}/${File}" "$Func" | sed "1 s|${Func} ()|${NewFuncName} ()|g" | \
+                                    grep -v "^ *\#" | _MakeOneLineFunc >> "$TmpLibFile"
+                                echo >> "$TmpLibFile"
+                            else
+                                _GetFuncCodeFromFile "${Dir}/${File}" "$Func" | sed "1 s|${Func} ()|${NewFuncName} ()|g" | grep -v "^ *\#" >> "$TmpLibFile"
+                            fi
+                        fi
+                    } &
                 done
-            fi
-        fi
+                wait
+            #done < <("$LibDir/GetMeta.sh" "${LibName}" "Files" | tr "," "\n")
+            done < <("$LibDir/GetFileList.sh" "${LibName}" | GetBaseName)
 
-        # ファイル埋め込みを実行
-        local EmbeddedFile=""
-        while read -r Embedded; do
-            EmbeddedFile="$Dir/$(GetMeta "$LibName" "$Embedded" "Embedded")"
-            if [[ ! -e "$EmbeddedFile"  ]]; then
-                echo -e "Failed to load ${EmbeddedFile}\nNo such file." >&2
-                return 1
-            fi
-            echo "Load file: $EmbeddedFile" >&2
-            SedI "/^%$Embedded%$/r ${EmbeddedFile}" "$TmpLibFile"
-            SedI "/^%$Embedded%$/d" "$TmpLibFile"
-            
-        done < <(GetMetaParam "$LibName" "Embedded")
+            if [[ "${DontRunAtMarkReplacement}" = false ]]; then
+                local NewLibPrefix="$LibPrefix" #LibPrefixの置換え用変数
+
+                # 同じライブラリ内での関数呼び出し(@関数)を置き換え
+                # 置き換えは全てTmpLibFileのみで完結します
+                # 置き換える関数の一覧は _DefinedFuncInLib から取得
+                "$Debug" && echo "${LibName}の@呼び出しを置き換え" >&2
+                if [[ -z "${LibPrefix-""}" ]]; then
+                    "${Debug}" && echo "プレフィックスが設定されていないため、${LibName}の置き換えをスキップ" >&2
+                    # プレフィックスが設定されていない場合、@関数は存在しない
+                    # スネークケースへの置き換えは全てまとめて最後に行う
+                else
+                    # スネークケースが有効化されている場合、プレフィックスは小文字にする
+                    #if [[ "${SnakeCase}" = true ]]; then
+                    if [[ "$CodeType" = "Snake" ]]; then
+                        NewLibPrefix="$(ToLower "${LibPrefix}")"
+                    fi
+
+                    # Func: ソースコードに記述されたそのままの関数名
+                    # 例えば、SrcInfo.GetValueなら"GetValue"の部分
+                    for Func in "${_DefinedFuncInLib[@]}"; do
+                        # NoPrefixに指定されている場合の処理
+                        if PrintArray "${_NoPrefixFunc[@]}" | grep -qx "$Func"; then
+                            "$Debug" && echo "NoPrefixに指定されているため${Func}の置き換えをスキップ" >&2
+                            continue
+                        fi
         
+                        # ドット以降の関数名を変換
+                        NewFuncName=$(MakeFuncName "" "$Func")
+                        "${Debug}" && echo "置き換え2: ${TmpLibFile}内の@${Func}を${NewLibPrefix}${Delimiter}${NewFuncName}に置き換え" >&2
 
-        # 完成したライブラリを全体に追加
-        #cat "$TmpLibFile" >> "$TmpOutFile"
-        cat "$TmpLibFile" >> "$TmpDir/Internal/Funcs.sh"
+                        # 1つめは行末に書かれた関数の置き換え
+                        # 2つめは関数の後に数字やアルファベット以外がある場合の置き換え
+                        SedI \
+                            -e "s|@${Func}$|${NewLibPrefix}${Delimiter}${NewFuncName}|g" \
+                            -e "s|@${Func}\([^a-zA-Z0-9]\)|${NewLibPrefix}${Delimiter}${NewFuncName}\1|g" \
+                            "$TmpLibFile"
+                    done
+                fi
+            fi
+
+            # ファイル埋め込みを実行
+            local EmbeddedFile=""
+            while read -r Embedded; do
+                EmbeddedFile="$Dir/$(GetMeta "$LibName" "$Embedded" "Embedded")"
+                if [[ ! -e "$EmbeddedFile"  ]]; then
+                    echo -e "Failed to load ${EmbeddedFile}\nNo such file." >&2
+                    return 1
+                fi
+                echo "Load file: $EmbeddedFile" >&2
+                SedI "/^%$Embedded%$/r ${EmbeddedFile}" "$TmpLibFile"
+                SedI "/^%$Embedded%$/d" "$TmpLibFile"
+                
+            done < <(GetMetaParam "$LibName" "Embedded")
+            
+
+            # 完成したライブラリを全体に追加
+            #cat "$TmpLibFile" >> "$TmpOutFile"
+            cat "$TmpLibFile" >> "$TmpDir/Internal/Funcs.sh"
+        } &
     done
+    wait 
 }
 
 _Make_All_Replace(){
