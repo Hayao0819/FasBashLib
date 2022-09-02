@@ -51,6 +51,14 @@ Also, Bash has no type restrictions, so even something as simple as evaluating b
 
 This library has many functions, especially for arrays, that make it easy to write safe code that takes special characters such as whitespace into account.
 
+Furthermore, shell scripts currently lack a system for managing and loading libraries in a consistent manner.
+
+FasBashLib is modular and assists in adding and removing functions and loading them in various environments.
+
+If you want to add your own functions, fork this project and place your shell scripts in src.
+
+Testing, documentation generation, local installation, and dynamic loading from online are all supported.
+
 ## Use it
 
 See [How to use it](./docs/USE.md)
