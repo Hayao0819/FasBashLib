@@ -4,6 +4,7 @@
 # shellcheck source=/dev/null
 source "$(cd "$(dirname "${0}")/../" || exit 1 ; pwd)/lib/Common.sh"
 OutFile="$MainDir/fasbashlib.json"
+TmpDir="$(mktemp -d -t "fasbashlib-build-info.XXXXX")"
 
 while [[ -n "${1-""}" ]]; do
     case "${1}" in
@@ -29,25 +30,26 @@ LineToJsonArray(){
 Args=()
 
 while read -r Lib; do
+    {
     echo "${Lib}の情報を収集中..." >&2
     Require="$("$LibDir/SolveRequire.sh" -nomyself "$Lib" | LineToJsonArray)"
     Depends=$(GetMeta -c "$Lib" Depends | LineToJsonArray)
     FuncList="$("$LibDir/GetFuncList.sh" -noprefix "$Lib" | LineToJsonArray)"
-
-
-    Json="$(
-        MakeJson \
-            "name=${Lib}" \
-            "description=$(GetMeta "$Lib" "Description")"\
-            "require=$Require" \
-            "depends=$Depends" \
-            "functions=$FuncList" \
-            "shell=$(GetMeta "$Lib" "Shell")" \
-            "prefix=$(GetMeta "$Lib" "Prefix")"
-        )"
-
-    Args+=("${Lib}=$Json")
-
+    MakeJson \
+        "name=${Lib}" \
+        "description=$(GetMeta "$Lib" "Description")"\
+        "require=$Require" \
+        "depends=$Depends" \
+        "functions=$FuncList" \
+        "shell=$(GetMeta "$Lib" "Shell")" \
+        "prefix=$(GetMeta "$Lib" "Prefix")" > "$TmpDir/$Lib"
+    } &
 done < <(GetLibList)
+wait
+
+for Lib in "${TmpDir}/"*; do
+    Args+=("$(basename "$Lib")=$(cat "$Lib")")
+done
 
 MakeJson "${Args[@]}" > "$OutFile"
+rm -rf "$TmpDir"
