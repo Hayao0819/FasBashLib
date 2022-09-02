@@ -21,7 +21,7 @@ DownloadFileList=(
 TagNameToBuild=()
 GitCommitToBuild=()
 DefaultBranchName=""
-BuildTagFromSource=true # タグ付けされたバージョンをソースからビルドするかどうか
+BuildTagFromSource=false # タグ付けされたバージョンをソースからビルドするかどうか
 
 #_Run(){
 #    local _LockDir="$TmpDir/Lockfile/"
