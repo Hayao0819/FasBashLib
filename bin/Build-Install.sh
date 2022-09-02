@@ -100,6 +100,12 @@ _Make_GetFilesFromSourceCode(){
     local Commit
     cd "$TmpDir/src" || exit 1
     for Commit in "${GitCommitToBuild[@]}"; do
+
+        for File in "${!DownloadFileList[@]}"; do
+            SaveFile="$TmpDir/archive/$Commit/${DownloadFileList["${File}"]}"
+            [[ -e "$SaveFile" ]]
+        done && continue
+
         git checkout "$Commit" || {
             echo "Failed to checkout: $Commit" >&2
             exit 1
