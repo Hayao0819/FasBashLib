@@ -54,6 +54,7 @@ _Make_Builable_Version(){
     cd "$TmpDir/src" || exit 1
     #readarray -t TagNameToBuild < <(git tag | sed -n "/${MinVersion}/,\$p")
     readarray -t GitCommitToBuild < <(git tag | sed -n "/${MinVersion}/,\$p")
+    git config advice.detachedHead false
     DefaultBranchName="$(git symbolic-ref --short HEAD)"
 }
 
