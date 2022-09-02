@@ -14,9 +14,13 @@ INSTALLDIR="/usr/lib/fasbashlib/"
 TmpDir="$MainDir/work"
 MinVersion="v0.2.5.1"
 MaxVersion="v0.2.5.1"
-DownloadFileList=(
-    "fasbashlib.zip" "fasbashlib-lower.zip" "fasbashlib-snake.zip"
-    "fasbashlib.sh"  "fasbashlib-lower.sh"  "fasbashlib-snake.sh"  
+declare -A DownloadFileList=(
+    ["fasbashlib.tar.gz"]="upper.tar.gz"
+    ["fasbashlib-lower.tar.gz"]="lower.tar.gz"
+    ["fasbashlib-snake.tar.gz"]="snake.tar.gz"
+    ["fasbashlib.sh"]="upper.sh"
+    ["fasbashlib-lower.sh"]="lower.sh"
+    ["fasbashlib-snake.sh"]="snake.sh"
 )
 TagNameToBuild=()
 GitCommitToBuild=()
