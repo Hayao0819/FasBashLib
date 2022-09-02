@@ -37,6 +37,11 @@ _Make_Prepare(){
     # Create directories
     mkdir -p "$TmpDir" "${DESTDIR}/${INSTALLDIR}"
 
+    if [[ -n "$(ls -A "${DESTDIR}/${INSTALLDIR}/")" ]]; then
+        echo "WANINHG: Directory ${DESTDIR}/${INSTALLDIR} is not empty." >&2
+        exit 1
+    fi
+
     echo "Working directory: $TmpDir" >&2
 
     # Get source codes
