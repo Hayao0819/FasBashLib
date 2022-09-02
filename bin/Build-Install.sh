@@ -22,6 +22,7 @@ TagNameToBuild=()
 GitCommitToBuild=()
 DefaultBranchName=""
 BuildTagFromSource=false # タグ付けされたバージョンをソースからビルドするかどうか
+NoTagBuild=true
 
 #_Run(){
 #    local _LockDir="$TmpDir/Lockfile/"
@@ -59,11 +60,13 @@ _Make_Prepare(){
 
 _Make_GetInfoFromGit(){
     cd "$TmpDir/src" || exit 1
-
-    if [[ "${BuildTagFromSource}" = true ]]; then
-        readarray -t GitCommitToBuild < <(git tag | sed -n "/${MinVersion}/,/${MaxVersion}/p")
-    else
-        readarray -t TagNameToBuild < <(git tag | sed -n "/${MinVersion}/,\$p")
+    MaxVersion="$(git describe --tags --abbrev=0)"
+    if [[ "$NoTagBuild" = false ]]; then
+        if [[ "${BuildTagFromSource}" = true ]]; then
+            readarray -t GitCommitToBuild < <(git tag | sed -n "/${MinVersion}/,/${MaxVersion}/p")
+        else
+            readarray -t TagNameToBuild < <(git tag | sed -n "/${MinVersion}/,\$p")
+        fi
     fi
 
     git config advice.detachedHead false
