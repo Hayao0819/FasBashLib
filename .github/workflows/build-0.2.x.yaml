@@ -38,8 +38,8 @@ jobs:
         run: |
           echo "$GH_PAGES_REPO_DEPLOY_KEY" > ~/deploy_key.pem
           chmod 600 ~/deploy_key.pem
-          git config --local user.email "hayao@fascode.net"
-          git config --local user.name "hayao[bot]"
+          git config --local user.email "github-actions@github.com"
+          git config --local user.name "github-actions"
           git config pull.rebase false
           git config remote.origin.url "git@github.com:Hayao0819/FasBashLib.git"
           echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
