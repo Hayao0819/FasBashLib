@@ -1,7 +1,7 @@
 # Maintainer : Yamada Hayao <development@fascode.net>
 
 pkgname=fasbashlib
-pkgver=0.1.2
+pkgver=0.2.5.1
 pkgrel=1
 pkgdesc='A collection of small but awasome functions for Bash'
 arch=('any')
