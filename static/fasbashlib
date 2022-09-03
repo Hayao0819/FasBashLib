@@ -1,20 +1,116 @@
 #!/usr/bin/env bash
 
-LibraryPATH="%LIBRARYPATH%"
+#LibraryPATH="%LIBRARYPATH%"
+LibraryPATH="/usr/lib/fasbashlib"
 
-readarray -t LibraryVersionList < <()
+# shellcheck disable=SC2010
+readarray -t LibraryVersionList < <(ls "$LibraryPATH" 2> /dev/null | grep -v "filelist")
 
-HelpDoc(){
-        echo "Return loadable shell script that you want to use"
-        echo
-        echo " Usage: ${0} version-type Lib1 Lib2 ..."
-        echo
-        echo " Options:"
-        echo "     -h    Show this message"
-        echo "     -p    Add library dir"
-        echo "     -x    Script source mode"
-        echo
-        echo " Version:"
-        echo " "
-        
+ScriptSourceMode=false
+LibList=()
+VersionAndType=""
+VersionToLoad=""
+TypeToLoad=""
+
+_HelpDoc(){
+    echo "Return loadable shell script that you want to use"
+    echo
+    echo " Usage: ${0} version-type Lib1 Lib2 ..."
+    echo
+    echo " Options:"
+    echo "     -h    Show this message"
+    echo "     -x    Script source mode"
+    echo
+    echo " Version:"
+    echo -n "     "
+    printf "%s," "${LibraryVersionList[@]}" | sed 's/,$//'; echo
 }
+
+Msg.Error(){
+    echo "ERROR: $*" >&2
+}
+
+_Check_Args(){
+    [[ -n "$VersionAndType" ]] || {
+        Msg.Error "Version and type is not specified."
+        _HelpDoc
+        exit 1
+    }
+
+    [[ -n "${LibList[*]}" ]] || {
+        Msg.Error "Library is not specified."
+        _HelpDoc
+        exit 1
+    }
+
+    VersionToLoad="$(cut -d "-" -f 1 <<< "$VersionAndType")"
+    TypeToLoad="$(cut -d "-" -f 2 <<< "$VersionAndType")"
+
+    [[ -d "$LibraryPATH/$VersionToLoad" ]] || {
+        Msg.Error "Version $VersionToLoad is not found."
+        _HelpDoc
+        exit 1
+    }
+
+    [[ -d "$LibraryPATH/$VersionToLoad/$TypeToLoad" ]] || {
+        Msg.Error "Type $TypeToLoad is not found."
+        _HelpDoc
+        exit 1
+    }
+}
+
+_GetRequireList(){
+    [[ -e "$LibraryPATH/$VersionToLoad/info.json" ]] || {
+        Msg.Error "Library information is not found."
+        _HelpDoc
+        exit 1
+    }
+
+    local Lib
+    for Lib in "${LibList[@]}"; do
+        readarray -O "${#LibList[@]}" -t LibList < <(jq -r ".$Lib.require[]?" "$LibraryPATH/$VersionToLoad/info.json")
+    done
+    readarray -t LibList < <(printf "%s\n" "${LibList[@]}" | sort -u | uniq)
+}
+
+_PrintCode(){
+    local Lib
+
+    if [[ "$ScriptSourceMode" = true ]]; then
+        for Lib in "${LibList[@]}"; do
+            cat "$LibraryPATH/$VersionToLoad/$TypeToLoad/${Lib}.sh"
+        done | sed 's/^#.*$//'
+    else
+        for Lib in "${LibList[@]}"; do
+            echo "$LibraryPATH/$VersionToLoad/$TypeToLoad/${Lib}.sh"
+        done | sed 's/^#.*$//'
+    fi
+}
+
+
+#-- Main --#
+while getopts "hx" opt; do
+    case "$opt" in
+        x)
+            ScriptSourceMode=true
+            ;;
+        h)
+            _HelpDoc
+            exit 0
+            ;;
+        *)
+            _HelpDoc
+            exit 1
+            ;;
+    esac
+done
+shift $((OPTIND - 1))
+
+VersionAndType="$1"
+shift 1
+LibList=("$@")
+
+# start
+_Check_Args
+_GetRequireList "$VersionAndType" "$@"
+_PrintCode
