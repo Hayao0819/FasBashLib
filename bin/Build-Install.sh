@@ -160,6 +160,11 @@ _Make_Unpack(){
     done
 }
 
+
+_Make_FileList(){
+    find "$TmpDir/dest/" -type f | sed "s|^$TmpDir/dest/||" > "$TmpDir/dest/${INSTALLDIR}/filelist"
+}
+
 _Make_Install(){
     local Dir
     for Dir in "$TmpDir/dest/"*; do
@@ -199,5 +204,6 @@ _Make_GetInfoFromGit
 _Make_GetFilesFromGitHub
 _Make_GetFilesFromSourceCode
 _Make_Unpack
+_Make_FileList
 _Make_Install
 echo "$TmpDir"
