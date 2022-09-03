@@ -24,10 +24,10 @@ declare -A DownloadFileList=(
     ["fasbashlib.json"]="info.json"
 )
 TagNameToBuild=()
-GitCommitToBuild=()
+GitCommitToBuild=(380bcf011aa07386afc0db43bb2232e71cc7cbc0)
 DefaultBranchName=""
 BuildTagFromSource=false # タグ付けされたバージョンをソースからビルドするかどうか
-NoTagBuild=false
+NoTagBuild=true
 
 #_Run(){
 #    local _LockDir="$TmpDir/Lockfile/"
@@ -168,6 +168,12 @@ _Make_FileList(){
     find "$TmpDir/dest/" -type f | sed "s|^$TmpDir/dest/||" > "$TmpDir/dest/${INSTALLDIR}/filelist"
 }
 
+
+_Make_MainCommand(){
+    mkdir -p "$TmpDir/dest/usr/bin/"
+    install -m 755 "${StaticDir}/fasbashlib" "$TmpDir/dest/usr/bin/"
+}
+
 _Make_Install(){
     local Dir
     for Dir in "$TmpDir/dest/"*; do
@@ -208,5 +214,6 @@ _Make_GetFilesFromGitHub
 _Make_GetFilesFromSourceCode
 _Make_Unpack
 _Make_FileList
+_Make_MainCommand
 _Make_Install
 echo "$TmpDir"
