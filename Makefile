@@ -13,9 +13,8 @@ LOWER_FILENAME     := fasbashlib-lower.sh
 
 # Build arguments
 ALL_BUILD_ARGS     :=
-SINGLE_BUILD_ARGS  := #-ignore Misskey 
+SINGLE_BUILD_ARGS  :=
 INSTALL_BUILD_ARGS := -ver "${VERSION}"
-RELEASE_BUILD_ARGS := -ver "${VERSION}"
 BASIC_BUILD_ARGS   := 
 SNAKE_BUILD_ARGS   := -snake
 LOWER_BUILD_ARGS   := -lower
@@ -55,27 +54,12 @@ docs:
 	bash ${CURRENT_DIR}/bin/Build-Docs.sh
 
 install:
-	mkdir -p "${DESTDIR}/usr/lib/fasbashlib/"
-	mkdir -p "${DESTDIR}/usr/share/doc/fasbashlib/"
-	mkdir -p "${DESTDIR}/usr/share/licenses/fasbashlib"
+	bash ${CURRENT_DIR}/bin/Build-Install.sh -dir "${DESTDIR}"
 
-	# install multifile
-	"${CURRENT_DIR}/bin/Build-Multi.sh" -out "${DESTDIR}/usr/lib/fasbashlib/"
-
-	# install single file
-	"${CURRENT_DIR}/bin/Build-Single.sh" ${ALL_BUILD_ARGS} ${INSTALL_BUILD_ARGS} -out "${DESTDIR}/usr/lib/${BASIC_FILENAME}" ${ADDITIONAL_BUILD_ARGS} ${TARGET_LIB}
-
-	# install single snakecase
-	"${CURRENT_DIR}/bin/Build-Single.sh" ${ALL_BUILD_ARGS} ${INSTALL_BUILD_ARGS} -out "${DESTDIR}/usr/lib/${SNAKE_FILENAME}" -snake ${ADDITIONAL_BUILD_ARGS} ${TARGET_LIB}
-
-	# install docs
-	"${CURRENT_DIR}/bin/Build-Docs.sh" -out "${DESTDIR}/usr/share/doc/fasbashlib/"
-
-	# install license
-	install -Dm 644 "${CURRENT_DIR}/LICENSE.md" "${DESTDIR}/usr/share/licenses/fasbashlib/LICENSE.md"
-
-	# install fasbashlib command
-	install -Dm 755 "${CURRENT_DIR}/misc/fasbashlib" "${DESTDIR}/usr/bin/fasbashlib"
+uninstall:
+	[[ -e /usr/lib/fasbashlib/filelist ]] || exit 1
+	xargs rm < <(sed "s|^|/|g" /usr/lib/fasbashlib/filelist)
+	find /usr/lib/fasbashlib -type d -empty -delete
 
 test:
 	bash ${CURRENT_DIR}/bin/Check-Lib.sh
