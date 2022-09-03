@@ -21,6 +21,7 @@ declare -A DownloadFileList=(
     ["fasbashlib.sh"]="upper.sh"
     ["fasbashlib-lower.sh"]="lower.sh"
     ["fasbashlib-snake.sh"]="snake.sh"
+    ["fasbashlib.json"]="info.json"
 )
 TagNameToBuild=()
 GitCommitToBuild=()
