@@ -138,7 +138,9 @@ _Make_Unpack(){
 
     local Dir OrgFileName File UnpackDir
     rm -rf "$TmpDir/dest/"
-    for Dir in "$TmpDir/archive/"*; do
+
+    #for Dir in "$TmpDir/archive/"*; do
+    while read -r Dir; do
         for OrgFileName in "${!DownloadFileList[@]}"; do
             File="${DownloadFileList["${OrgFileName}"]}"
             TargetDir="$TmpDir/dest/${INSTALLDIR}/$(basename "$Dir")/"
@@ -157,7 +159,7 @@ _Make_Unpack(){
                 install -m 644 "$Dir/$File" "$TargetDir"
             fi
         done
-    done
+    done < <(PrintArray "${GitCommitToBuild[@]}" "${TagNameToBuild[@]}" | sed "s|^|$TmpDir/archive/|")
 }
 
 
