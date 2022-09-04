@@ -33,6 +33,7 @@ HelpDoc(){
     echo "    all             Build all files"
     echo "    zip | archive   Build multi file and compress"
     echo "    info | json     Build a JSON that has information about library"
+    echo "    install         Build all version and install to /usr/lib/fasbashlib"
     echo
     echo " check Commands:"
     echo "    bin             Run shellcheck for management scripts"
@@ -81,8 +82,11 @@ Main(){
                 single | s*)
                     RunScript "$BinDir/Build-Single.sh" "$@"
                     ;;
-                info | json | j* | i*)
+                info | json | j*)
                     RunScript "${BinDir}/Build-Info.sh" "$@"
+                    ;;
+                install)
+                    RunsScript "${BinDir}/Build-Install.sh" "$@"
                     ;;
                 all)
                     SCRIPT_RUN=true
