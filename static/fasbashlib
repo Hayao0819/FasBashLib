@@ -41,7 +41,11 @@ Msg.Error(){
     echo "ERROR: $*" >&2
 }
 
-_CheckArgsForLoad(){
+_LoadCommand_CheckArgs(){
+    VersionAndType="$1"
+    shift 1
+    LibList=("$@")
+
     [[ -n "$VersionAndType" ]] || {
         Msg.Error "Version and type is not specified."
         _HelpDoc
@@ -70,7 +74,7 @@ _CheckArgsForLoad(){
     }
 }
 
-_GetInstalledLibList(){
+_LoadCommand_GetInstalledLibList(){
     [[ -e "$LibraryPATH/$VersionToLoad/info.json" ]] || {
         Msg.Error "Library information is not found."
         _HelpDoc
@@ -80,7 +84,7 @@ _GetInstalledLibList(){
     readarray -t InstalledLibList < <(jq -r ". | keys | .[]" "$LibraryPATH/$VersionToLoad/info.json")
 }
 
-_GetRequireList(){
+_LoadCommand_GetRequireList(){
     local Lib
     for Lib in "${LibList[@]}"; do
         if ! [[ "${InstalledLibList[*]}" =~ $Lib ]]; then
@@ -93,9 +97,8 @@ _GetRequireList(){
     readarray -t LibList < <(printf "%s\n" "${LibList[@]}" | sort -u | uniq)
 }
 
-_PrintCode(){
+_LoadCommand_PrintCode(){
     local Lib
-
     if [[ "$ScriptSourceMode" = true ]]; then
         for Lib in "${LibList[@]}"; do
             cat "$LibraryPATH/$VersionToLoad/$TypeToLoad/${Lib}.sh"
@@ -103,16 +106,16 @@ _PrintCode(){
     else
         for Lib in "${LibList[@]}"; do
             echo "$LibraryPATH/$VersionToLoad/$TypeToLoad/${Lib}.sh"
-        done | sed 's/^#.*$//'
+        done
     fi
 }
 
 
 _LoadCommand(){
-    _CheckArgsForLoad
-    _GetInstalledLibList
-    _GetRequireList "$VersionAndType" "$@"
-    _PrintCode
+    _LoadCommand_CheckArgs "$@"
+    _LoadCommand_GetInstalledLibList
+    _LoadCommand_GetRequireList #"$VersionAndType" "$@"
+    _LoadCommand_PrintCode
 }
 
 _ListCommand_VersionList(){
@@ -129,7 +132,7 @@ _ListCommand(){
     fi
 
     if ! [[ "${LibraryVersionList[*]}" =~ $1 ]]; then
-        echo "Version $1 is not found." >&2
+        Msg.Error "Version $1 is not found."
         exit 1
     fi
 
@@ -138,7 +141,7 @@ _ListCommand(){
         jq -r ". | keys | .[]" "$LibraryPATH/$1/info.json"
         exit 0
     elif ! [[ "${InstalledLibList[*]}" =~ $2 ]]; then
-        echo "Library $2 is not found." >&2
+        Msg.Error "Library $2 is not found."
         exit 1
     fi
 
@@ -164,10 +167,6 @@ while getopts "hx" opt; do
     esac
 done
 shift $((OPTIND - 1))
-
-VersionAndType="$1"
-shift 1
-LibList=("$@")
 
 # start
 case "${1,,}" in
