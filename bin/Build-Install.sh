@@ -70,7 +70,7 @@ _Make_GetInfoFromGit(){
         if [[ "${BuildTagFromSource}" = true ]]; then
             readarray -t GitCommitToBuild < <(git tag | sed -n "/${MinVersion}/,/${MaxVersion}/p")
         else
-            readarray -t TagNameToBuild < <(git tag | sed -n "/${MinVersion}/,\$p")
+            readarray -t TagNameToBuild < <(git tag | sed -n "/${MinVersion}/,/${MaxVersion}/p")
         fi
     fi
 
