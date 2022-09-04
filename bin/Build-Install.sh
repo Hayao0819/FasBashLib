@@ -163,15 +163,13 @@ _Make_Unpack(){
     done < <(PrintArray "${GitCommitToBuild[@]}" "${TagNameToBuild[@]}" | sed "s|^|$TmpDir/archive/|")
 }
 
-
-_Make_FileList(){
-    find "$TmpDir/dest/" -type f | sed "s|^$TmpDir/dest/||" > "$TmpDir/dest/${INSTALLDIR}/filelist"
-}
-
-
 _Make_MainCommand(){
     mkdir -p "$TmpDir/dest/usr/bin/"
     install -m 755 "${StaticDir}/fasbashlib" "$TmpDir/dest/usr/bin/"
+}
+
+_Make_FileList(){
+    find "$TmpDir/dest/" -type f | sed "s|^$TmpDir/dest/||" > "$TmpDir/dest/${INSTALLDIR}/filelist"
 }
 
 _Make_Install(){
@@ -213,7 +211,7 @@ _Make_GetInfoFromGit
 _Make_GetFilesFromGitHub
 _Make_GetFilesFromSourceCode
 _Make_Unpack
-_Make_FileList
 _Make_MainCommand
+_Make_FileList
 _Make_Install
 echo "$TmpDir"
