@@ -49,7 +49,7 @@ RunWithMsg(){
 while read -r Dir; do
     {
         _Lib="$(basename "$Dir")"
-        "$MainDir/bin/Build-Single.sh" "${@}" -out "$OutDir/$_Lib.sh" -noreq "$_Lib"
+        "$MainDir/bin/Build-Single.sh" "${@}" -out "$OutDir/$_Lib.sh" -noreq "$_Lib" -multimode
     } &
 done < <("$BinDir/List.sh" -q)
 wait

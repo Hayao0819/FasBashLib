@@ -16,6 +16,7 @@ NoRequire=false
 OneLine=false # うまく動かないよ
 NoIgnore=false # すべてのIgnore設定を無視
 NoParalell=false # 並列ビルドを無効化
+MultiFileMode=false # マルチファイルモード（スクリプトが複数回sourceされることを許可します）
 
 CodeType="Upper"
 #CodeType="Lower"
@@ -553,8 +554,8 @@ _Make_Const(){
     # ハードコーディングされた定数
     ConstList+=("Core:FSBLIB_VERSION" "Core:FSBLIB_REQUIRE")
     AddLine+=(
-        "declare -r FSBLIB_VERSION='${Version-""}'"
-        "declare -r FSBLIB_REQUIRE='${RequireShell-""}'"
+        "FSBLIB_VERSION='${Version-""}'"
+        "FSBLIB_REQUIRE='${RequireShell-""}'"
     )
 
     # ライブラリの定数
@@ -581,7 +582,7 @@ _Make_Const(){
 
                 # 定数を追加
                 ConstList+=("${Lib}:${Var}") # 重複の確認に使う配列
-                AddLine+=("declare -r ${Var}='$(GetMeta "$Lib" "$Var" "Const" | RemoveBlank | sed "s|^\"||g; s|\"$||g")'")
+                AddLine+=("${Var}='$(GetMeta "$Lib" "$Var" "Const" | RemoveBlank | sed "s|^\"||g; s|\"$||g")'")
             else
                 # 定数名エラー
                 Error+=("Constant '$Var' in $Lib is missing name. Its name should be started with '$VarNameStart'")
@@ -595,7 +596,14 @@ _Make_Const(){
         PrintArray "${Error[@]}"
         return 1
     else
-        PrintArray "${AddLine[@]}" "" >> "$TmpDir/Internal/Consts.sh"
+        if [[ "$MultiFileMode" = true ]]; then
+            PrintArray "${AddLine[@]}" "" >> "$TmpDir/Internal/Consts.sh"
+        else
+            {
+                PrintArray "${AddLine[@]}" | sed "s|^|declare -r |g"
+                echo
+            } >> "$TmpDir/Internal/Consts.sh"
+        fi
         return 0
     fi
 }
@@ -679,6 +687,10 @@ while [[ -n "${1-""}" ]]; do
         "-forceadd")
             ForceLoadLib+=("$2")
             shift 2
+            ;;
+        "-multimode")
+            MultiFileMode=true
+            shift 1
             ;;
         "--")
             shift 1
