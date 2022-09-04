@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -Eeuo pipefail
+
 #LibraryPATH="%LIBRARYPATH%"
 LibraryPATH="/usr/lib/fasbashlib"
 
