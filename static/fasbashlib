@@ -18,22 +18,30 @@ TypeToLoad=""
 _HelpDoc(){
     echo "Return loadable shell script that you want to use"
     echo
-    echo " Usage: ${0} version-type Lib1 Lib2 ..."
+    echo " Usage: ${0} load version-type Lib1 Lib2 ..."
+    echo " Usage: ${0} list [version] [Lib]"
     echo
-    echo " Options:"
+    echo " Options for all:"
     echo "     -h    Show this message"
+    echo
+    echo " Options for load:"
     echo "     -x    Script source mode"
+    echo
+    echo " Options for list:"
+    echo "     There is no options"
     echo
     echo " Version:"
     echo -n "     "
     printf "%s," "${LibraryVersionList[@]}" | sed 's/,$//'; echo
+    echo " Type:"
+    echo "     upper, lower, snake"
 }
 
 Msg.Error(){
     echo "ERROR: $*" >&2
 }
 
-_Check_Args(){
+_CheckArgsForLoad(){
     [[ -n "$VersionAndType" ]] || {
         Msg.Error "Version and type is not specified."
         _HelpDoc
@@ -100,6 +108,45 @@ _PrintCode(){
 }
 
 
+_LoadCommand(){
+    _CheckArgsForLoad
+    _GetInstalledLibList
+    _GetRequireList "$VersionAndType" "$@"
+    _PrintCode
+}
+
+_ListCommand_VersionList(){
+    printf "%s¥\n" "${LibraryVersionList[@]}"
+    return 0
+}
+
+# $1=Version $2=Lib
+_ListCommand(){
+    # 引数なしの場合はバージョン一覧を表示
+    if [[ -z "$1" ]]; then
+        _ListCommand_VersionList
+        exit 0
+    fi
+
+    if ! [[ "${LibraryVersionList[*]}" =~ $1 ]]; then
+        echo "Version $1 is not found." >&2
+        exit 1
+    fi
+
+    # バージョンのみ指定で存在する場合関数一覧を表示
+    if [[ -z "${2-""}" ]]; then
+        jq -r ". | keys | .[]" "$LibraryPATH/$1/info.json"
+        exit 0
+    elif ! [[ "${InstalledLibList[*]}" =~ $2 ]]; then
+        echo "Library $2 is not found." >&2
+        exit 1
+    fi
+
+    # バージョンと関数名が指定されている場合は関数の一覧を表示
+    jq -r ".$2.functions[]" "$LibraryPATH/$1/info.json"
+    exit 0
+}
+
 #-- Main --#
 while getopts "hx" opt; do
     case "$opt" in
@@ -123,7 +170,11 @@ shift 1
 LibList=("$@")
 
 # start
-_Check_Args
-_GetInstalledLibList
-_GetRequireList "$VersionAndType" "$@"
-_PrintCode
+case "${1,,}" in
+    "load" )
+        _LoadCommand "$@"
+        ;;
+    "list" )
+        _ListCommand "$@"
+        ;;
+esac
