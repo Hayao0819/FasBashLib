@@ -10,6 +10,7 @@ readarray -t LibraryVersionList < <(ls "$LibraryPATH" 2> /dev/null | grep -v "fi
 
 ScriptSourceMode=false
 LibList=()
+InstalledLibList=()
 VersionAndType=""
 VersionToLoad=""
 TypeToLoad=""
@@ -61,15 +62,24 @@ _Check_Args(){
     }
 }
 
-_GetRequireList(){
+_GetInstalledLibList(){
     [[ -e "$LibraryPATH/$VersionToLoad/info.json" ]] || {
         Msg.Error "Library information is not found."
         _HelpDoc
         exit 1
     }
 
+    readarray -t InstalledLibList < <(jq -r ". | keys | .[]" "$LibraryPATH/$VersionToLoad/info.json")
+}
+
+_GetRequireList(){
     local Lib
     for Lib in "${LibList[@]}"; do
+        if ! [[ "${InstalledLibList[*]}" =~ $Lib ]]; then
+            Msg.Error "Library $Lib is not found."
+            _HelpDoc
+            exit 1
+        fi
         readarray -O "${#LibList[@]}" -t LibList < <(jq -r ".$Lib.require[]?" "$LibraryPATH/$VersionToLoad/info.json")
     done
     readarray -t LibList < <(printf "%s\n" "${LibList[@]}" | sort -u | uniq)
@@ -114,5 +124,6 @@ LibList=("$@")
 
 # start
 _Check_Args
+_GetInstalledLibList
 _GetRequireList "$VersionAndType" "$@"
 _PrintCode
