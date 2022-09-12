@@ -458,13 +458,13 @@ _Make_Lib(){
                 # 置き換えは全てTmpLibFileのみで完結します
                 # 置き換える関数の一覧は _DefinedFuncInLib から取得
                 "$Debug" && echo "${LibName}の@呼び出しを置き換え" >&2
-
-                #if [[ -z "${LibPrefix-""}" ]]; then
-                #    "${Debug}" && echo "プレフィックスが設定されていないため、${LibName}の置き換えをスキップ" >&2
-                #    # プレフィックスが設定されていない場合、@関数は存在しない
-                #    # スネークケースへの置き換えは全てまとめて最後に行う
-                #else
+                if [[ -z "${LibPrefix-""}" ]]; then
+                    "${Debug}" && echo "プレフィックスが設定されていないため、${LibName}の置き換えをスキップ" >&2
+                    # プレフィックスが設定されていない場合、@関数は存在しない
+                    # スネークケースへの置き換えは全てまとめて最後に行う
+                else
                     # スネークケースが有効化されている場合、プレフィックスは小文字にする
+                    #if [[ "${SnakeCase}" = true ]]; then
                     if [[ "$CodeType" = "Snake" ]]; then
                         NewLibPrefix="$(ToLower "${LibPrefix}")"
                     fi
@@ -489,7 +489,7 @@ _Make_Lib(){
                             -e "s|@${Func}\([^a-zA-Z0-9]\)|${NewLibPrefix}${Delimiter}${NewFuncName}\1|g" \
                             "$TmpLibFile"
                     done
-                #fi
+                fi
             fi
 
             # ファイル埋め込みを実行
