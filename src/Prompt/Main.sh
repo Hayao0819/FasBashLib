@@ -67,3 +67,12 @@ Choice(){
     # デフォルト値が設定されず、何も入力されなかった場合
     return 1
 }
+
+
+ChoiceLoop(){
+    while true; do
+        if @Choice "$@"; then
+            break
+        fi
+    done
+}
