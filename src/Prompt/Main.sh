@@ -59,8 +59,8 @@ Choice(){
     done
 
     # 返り値が設定されている場合、結果を出力後、終了
-    { [[ "${_number}"  = true ]] && [[ -n "${_returnint+SET}" ]]; } && { echo "${_returnint}" && return 0 ;}
-    { [[ "${_number}" = false ]] && [[ -n "${_returnstr+SET}" ]]; } && { echo "${_returnstr}" && return 0 ;}
+    { [[ "${_number}"  = true ]] && [[ -n "${_returnint:-""}" ]]; } && { echo "${_returnint}" && return 0 ;}
+    { [[ "${_number}" = false ]] && [[ -n "${_returnstr:-""}" ]]; } && { echo "${_returnstr}" && return 0 ;}
 
     # ここまでで、返り値が設定されていない場合
     # 該当する選択肢が存在しなかった場合
