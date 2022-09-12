@@ -71,7 +71,7 @@ Choice(){
 
 ChoiceLoop(){
     while true; do
-        if @Choice "$@"; then
+        if Choice "$@"; then
             break
         fi
     done
