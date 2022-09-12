@@ -28,10 +28,74 @@
 # shellcheck disable=all
 
 FSBLIB_LIBLIST+=("ArchLinux" "Array" "AwkForCalc" "BetterShell" "Cache" "Core" "Csv" "Emerge" "Ini" "Message" "Misskey" "Pacman" "ParseArg" "Prompt" "Readlink" "Sqlite3" "SrcInfo" "URL")
-FSBLIB_FUNCLIST+=("Choice" "ChoiceLoop" "Csv.GetClm" "Sqlite3.Create" "Csv.ToBashArray" "Sqlite3.Insert" "Sqlite3.Select" "Sqlite3.Delete" "Sqlite3.Call" "Csv.GetClmCnt" "Sqlite3.ExistTable" "Sqlite3.CurrentDb" "Arch.GetKernelFileList" "Arch.GetKernelSrcList" "Sqlite3.Connect" "Sqlite3.ExistField" "Sqlite3.SelectAll" "Arch.GetMkinitcpioPresetList" "Misskey.Notes.Create" "Misskey.Notes.Renotes" "Misskey.Notes.Search" "ParseArg" "Cache.Exist" "Cache.Get" "Cache.GetDir" "Cache.GetFileLastUpdate" "Cache.GetID" "Cache.GetTimeDiffFromLastUpdate" "Fsblib.EnvCheck" "FsblibEnvCheck" "Em.GetAllPkgList" "Em.GetDefaultRepoName" "SrcInfo.GetValue" "SrcInfo.GetValueInPkgName" "Em.GetRepoLocation" "Em.GetRepoPkgList" "Em.GetWorldPkgList" "Pm.CheckPkg" "SrcInfo.Format" "Pm.GetConfig" "SrcInfo.GetKeyList" "Pm.GetInstalledPkgVer" "SrcInfo.GetPkgBase" "Pm.GetKeyringList" "Em.GetRepoConf" "Pm.GetName" "SrcInfo.Parse" "Pm.GetPacmanKernelPkg" "Pm.GetPacmanKeyringDir" "Pm.GetRepoConf" "Fsblib.RequireLib" "Pm.GetRepoListFromConf" "Pm.GetRepoServer" "Pm.GetRepoVer" "Readlinkf_Readlink" "SrcInfo.GetPkgName" "Pm.IsRepoPkg" "Pm.Run" "Readlinkf_Posix" "Pm.RunKey" "SrcInfo.GetValueInPkgBase" "Em.GetInstalledPkgList" "Ini.ParseLine" "Pm.GetLatestPkgVer" "SrcInfo.GetSectionList" "Readlinkf" "Pm.PacmanGpg" "PrintEvalArray" "GetArrayIndex" "Ini.GetLastParam" "Ini.GetSectionList" "Awk.Cos" "Ini.GetParam" "Awk.Float" "Ini.GetParamList" "Awk.Log" "ArrayAppend" "Awk.Pi" "ArrayIncludes" "ArrayIndex" "Awk.Sin" "RevArray" "Awk.Tan" "StrToCharList" "PrintArray" "Pm.GetRoot" "Pm.GetRepoPkgList" "AddNewToArray" "Awk.Rad" "URL.Authority" "URL.Fragment" "URL.Host" "URL.NoScheme" "URL.Path" "URL.Port" "URL.Scheme" "URL.User" "Awk.Print" "URL.PathAndQueryAndFragment" "URL.Query" "Msg.Debug" "Msg.Err" "Msg.Warn" "Array.Append" "Array.Pop" "Array.Push" "Array.Remove" "Array.Shift" "Msg.Info" "Msg.Common" "Array.FromStr" "Array.Rev" "Misskey.Users.GetFrequentlyRepliedUsers" "Misskey.Users.Notes" "Misskey.Users.Pages" "Misskey.Users.Show" "Misskey.Users.Stats" "Misskey.Users.SearchByUsernameAndHost" "Ini.NewSection" "Ini.SetValue" "Ini.NewParam" "Pm.GetDbNextSection" "Pm.GetDbSectionList" "Pm.GetDbSection" "Cache.Create" "Cache.CreateDir" "URL.HasAuthority" "URL.HasFragment" "URL.HasPort" "URL.HasUser" "Em.NoVersion" "GetBaseName" "FileType" "GetFileExt" "URL.HasQuery" "RemoveFileExt" "Array.Eval" "Array.Last" "Array.Print" "Misskey.Admin.ServerInfo" "Pm.DeleteDbTmpDir" "Pm.GetDbTmpDir" "Pm.OpenSyncDb" "Pm.CreateDbTmpDir" "Pm.GetPkgArch" "Pm.IsOpendSyncDb" "Pm.GetRepoListFromLocalDb" "Pm.ParsePkgFileName" "Pm.GetSyncDbDesc" "Pm.GetVirtualPkgList" "Pm.GetSyncAllDesc" "Pm.GetSyncDbDescPath" "Pm.OpenedSyncDbList" "URL.Parse" "ForEach" "GetLine" "Loop" "CheckFuncDefined" "IsAvailable" "Array.IndexOf" "Array.LastIndex" "Array.Length" "Misskey.Setup" "URL.ParseQuery" "URL.GetQuery" "IsUUID" "PrintEval" "RandomString" "BreakChar" "RemoveBlank" "CutLastString" "GetLastSplitString" "ToLower" "ToLowerStdin" "TextBox" "Array.ForEach" "Array.Includes" "Misskey.ServerInfo" "Misskey.Meta" "Misskey.I" "Sum" "Ntest" "CalcInt" "Misskey.MakeJson" "Misskey.SendReq" "Misskey.BindingBase" "Bool" "Misskey.MyName" "Misskey.MyUserName" "Misskey.MyId" "Misskey.IsAdmin" "UnsetAllFunc" "GetFuncList" "Match" "RemoveMatchLine")
-declare -r FSBLIB_VERSION='v0.2.5.1.r417.gfac1fef-upper'
+FSBLIB_FUNCLIST+=("Cache.Exist" "Cache.Get" "Cache.GetID" "Cache.GetTimeDiffFromLastUpdate" "Sqlite3.Call" "Cache.GetFileLastUpdate" "Sqlite3.Connect" "Sqlite3.Delete" "Sqlite3.Insert" "Sqlite3.Create" "Cache.GetDir" "Sqlite3.CurrentDb" "Sqlite3.Select" "Sqlite3.ExistTable" "URL.Authority" "URL.Fragment" "URL.NoScheme" "Sqlite3.ExistField" "URL.PathAndQueryAndFragment" "URL.Port" "URL.Query" "URL.Scheme" "Sqlite3.SelectAll" "URL.User" "URL.Host" "Csv.GetClm" "Csv.ToBashArray" "Pm.Run" "URL.Path" "Pm.CheckPkg" "Pm.GetConfig" "Pm.GetInstalledPkgVer" "Pm.GetLatestPkgVer" "Pm.GetRepoConf" "Pm.GetName" "Pm.GetRoot" "Csv.GetClmCnt" "Pm.GetPacmanKernelPkg" "Pm.IsRepoPkg" "ArrayAppend" "ArrayIndex" "Pm.GetRepoPkgList" "GetArrayIndex" "Pm.GetRepoServer" "AddNewToArray" "PrintEvalArray" "Arch.GetKernelSrcList" "StrToCharList" "Pm.PacmanGpg" "ArrayIncludes" "Arch.GetMkinitcpioPresetList" "Pm.RunKey" "Pm.GetRepoListFromConf" "Pm.GetRepoVer" "Arch.GetKernelFileList" "SrcInfo.GetValue" "SrcInfo.GetPkgBase" "SrcInfo.GetValueInPkgBase" "SrcInfo.GetPkgName" "SrcInfo.Parse" "RevArray" "SrcInfo.GetValueInPkgName" "Pm.GetKeyringList" "PrintArray" "Pm.GetPacmanKeyringDir" "SrcInfo.GetKeyList" "SrcInfo.Format" "SrcInfo.GetSectionList" "Ini.GetLastParam" "Ini.GetParam" "Ini.GetSectionList" "Choice" "Ini.ParseLine" "ChoiceLoop" "Misskey.Notes.Create" "Misskey.Notes.Renotes" "Misskey.Notes.Search" "Ini.GetParamList" "Awk.Cos" "Awk.Float" "Awk.Pi" "Awk.Print" "Awk.Rad" "Awk.Sin" "Awk.Tan" "ParseArg" "Array.Append" "Array.FromStr" "Array.Pop" "Array.Push" "Array.Remove" "Array.Shift" "Readlinkf_Readlink" "Awk.Log" "Array.Rev" "Msg.Common" "Msg.Debug" "Readlinkf" "Readlinkf_Posix" "Msg.Warn" "Msg.Info" "Msg.Err" "Em.GetRepoConf" "Em.GetRepoLocation" "Em.GetDefaultRepoName" "Em.GetInstalledPkgList" "Em.GetAllPkgList" "Em.GetRepoPkgList" "Em.GetWorldPkgList" "Fsblib.EnvCheck" "FsblibEnvCheck" "Fsblib.RequireLib" "Cache.CreateDir" "Cache.Create" "URL.HasFragment" "URL.HasAuthority" "URL.HasPort" "URL.HasQuery" "Pm.GetDbSection" "URL.HasUser" "Pm.GetDbSectionList" "Pm.GetDbNextSection" "Ini.NewParam" "Ini.NewSection" "Ini.SetValue" "Misskey.Users.GetFrequentlyRepliedUsers" "Misskey.Users.SearchByUsernameAndHost" "Misskey.Users.Show" "Misskey.Users.Stats" "Misskey.Users.Notes" "FileType" "GetBaseName" "Misskey.Users.Pages" "GetFileExt" "RemoveFileExt" "Array.Eval" "Array.Last" "Em.NoVersion" "Array.Print" "Pm.CreateDbTmpDir" "Pm.DeleteDbTmpDir" "Pm.GetDbTmpDir" "Pm.GetSyncDbDescPath" "Pm.GetRepoListFromLocalDb" "Pm.GetVirtualPkgList" "Pm.IsOpendSyncDb" "Pm.GetSyncDbDesc" "Pm.GetPkgArch" "Pm.OpenSyncDb" "Misskey.Admin.ServerInfo" "Pm.OpenedSyncDbList" "Pm.ParsePkgFileName" "URL.Parse" "Pm.GetSyncAllDesc" "IsAvailable" "CheckFuncDefined" "GetLine" "ForEach" "Loop" "Array.IndexOf" "Array.LastIndex" "Array.Length" "URL.ParseQuery" "URL.GetQuery" "Misskey.Setup" "BreakChar" "GetLastSplitString" "PrintEval" "IsUUID" "RandomString" "RemoveBlank" "CutLastString" "TextBox" "ToLower" "ToLowerStdin" "Array.Includes" "Array.ForEach" "Misskey.ServerInfo" "Misskey.I" "Misskey.Meta" "Sum" "Ntest" "CalcInt" "Misskey.SendReq" "Misskey.BindingBase" "Misskey.MakeJson" "Bool" "UnsetAllFunc" "GetFuncList" "Misskey.MyId" "Misskey.MyName" "Misskey.MyUserName" "Misskey.IsAdmin" "RemoveMatchLine" "Match")
+declare -r FSBLIB_VERSION='v0.2.5.1.r421.gece24c1-upper'
 declare -r FSBLIB_REQUIRE='ModernBash'
 
+ChoiceLoop() {
+	while true; do
+		if Choice "$@"; then
+			break
+		fi
+	done
+}
+Choice() {
+	local arg OPTARG OPTIND
+	local _count _choice
+	local _default="" _question="" _returnstr="" _mark=" "
+	local _count=0 _digit=0 _returnint=
+	local _number=false
+	local _choice_list=()
+	while getopts "ad:p:n" arg; do
+		case "${arg}" in
+		d)
+			_default="${OPTARG}"
+			;;
+		p)
+			_question="${OPTARG}"
+			;;
+		n)
+			_number=true
+			;;
+		*)
+			exit 1
+			;;
+		esac
+	done
+	shift "$((OPTIND - 1))" || return 1
+	_choice_list=("${@}") _digit="${##}"
+	((${#_choice_list[@]} <= 0)) && echo "An exception error has occurred." 1>&2 && exit 1
+	((${#_choice_list[@]} == 1)) && _returnint="${_returnint:="1"}" _returnstr="${_returnstr:="${_choice_list[*]}"}"
+	[[ -n ${_question-""} ]] && echo "   ${_question}" 1>&2
+	for ((_count = 1; _count <= ${#_choice_list[@]}; _count++)); do
+		_choice="${_choice_list[$((_count - 1))]}" _mark=" "
+		{
+			[[ ! ${_default} == "" ]] && [[ ${_choice} == "${_default}" ]]
+		} && _mark="*"
+		printf " ${_mark} %${_digit}d: ${_choice}\n" "${_count}" 1>&2
+	done
+	echo -n "   (1 ~ ${#_choice_list[@]}) > " 1>&2 && read -r _input
+	{
+		[[ -z ${_input-""} ]] && [[ -n ${_default-""} ]]
+	} && _returnint="${_returnint:="0"}" _returnstr="${_returnstr:="${_default}"}"
+	{
+		printf "%s" "${_input}" | grep -qE "^[0-9]+$" && ((1 <= _input)) && ((_input <= ${#_choice_list[@]}))
+	} && _returnint="${_returnint:="${_input}"}" _returnstr="${_returnstr:="${_choice_list[$((_input - 1))]}"}"
+	for ((i = 0; i <= ${#_choice_list[@]} - 1; i++)); do
+		[[ ${_choice_list["${i}"],,} == "${_input,,}" ]] && _returnint="${_returnint:="$((i + 1))"}" _returnstr="${_returnstr:="${_choice_list["${i}"]}"}"
+	done
+	{
+		[[ ${_number} == true ]] && [[ -n ${_returnint:-""} ]]
+	} && {
+		echo "${_returnint}" && return 0
+	}
+	{
+		[[ ${_number} == false ]] && [[ -n ${_returnstr:-""} ]]
+	} && {
+		echo "${_returnstr}" && return 0
+	}
+	return 1
+}
 ParseArg() {
 	local _Arg _Chr _Cnt
 	local _Long=() _LongWithArg=() _Short=() _ShortWithArg=()
@@ -126,123 +190,8 @@ ParseArg() {
 	OPTRET=("${_OutArg[@]}" -- "${_NoArg[@]}")
 	return 0
 }
-Choice() {
-	local arg OPTARG OPTIND
-	local _count _choice
-	local _default="" _question="" _returnstr="" _mark=" "
-	local _count=0 _digit=0 _returnint=
-	local _number=false
-	local _choice_list=()
-	while getopts "ad:p:n" arg; do
-		case "${arg}" in
-		d)
-			_default="${OPTARG}"
-			;;
-		p)
-			_question="${OPTARG}"
-			;;
-		n)
-			_number=true
-			;;
-		*)
-			exit 1
-			;;
-		esac
-	done
-	shift "$((OPTIND - 1))" || return 1
-	_choice_list=("${@}") _digit="${##}"
-	((${#_choice_list[@]} <= 0)) && echo "An exception error has occurred." 1>&2 && exit 1
-	((${#_choice_list[@]} == 1)) && _returnint="${_returnint:="1"}" _returnstr="${_returnstr:="${_choice_list[*]}"}"
-	[[ -n ${_question-""} ]] && echo "   ${_question}" 1>&2
-	for ((_count = 1; _count <= ${#_choice_list[@]}; _count++)); do
-		_choice="${_choice_list[$((_count - 1))]}" _mark=" "
-		{
-			[[ ! ${_default} == "" ]] && [[ ${_choice} == "${_default}" ]]
-		} && _mark="*"
-		printf " ${_mark} %${_digit}d: ${_choice}\n" "${_count}" 1>&2
-	done
-	echo -n "   (1 ~ ${#_choice_list[@]}) > " 1>&2 && read -r _input
-	{
-		[[ -z ${_input-""} ]] && [[ -n ${_default-""} ]]
-	} && _returnint="${_returnint:="0"}" _returnstr="${_returnstr:="${_default}"}"
-	{
-		printf "%s" "${_input}" | grep -qE "^[0-9]+$" && ((1 <= _input)) && ((_input <= ${#_choice_list[@]}))
-	} && _returnint="${_returnint:="${_input}"}" _returnstr="${_returnstr:="${_choice_list[$((_input - 1))]}"}"
-	for ((i = 0; i <= ${#_choice_list[@]} - 1; i++)); do
-		[[ ${_choice_list["${i}"],,} == "${_input,,}" ]] && _returnint="${_returnint:="$((i + 1))"}" _returnstr="${_returnstr:="${_choice_list["${i}"]}"}"
-	done
-	{
-		[[ ${_number} == true ]] && [[ -n ${_returnint:-""} ]]
-	} && {
-		echo "${_returnint}" && return 0
-	}
-	{
-		[[ ${_number} == false ]] && [[ -n ${_returnstr:-""} ]]
-	} && {
-		echo "${_returnstr}" && return 0
-	}
-	return 1
-}
-ChoiceLoop() {
-	while true; do
-		if .Choice "$@"; then
-			break
-		fi
-	done
-}
-FsblibEnvCheck() {
-	Fsblib.EnvCheck
-}
-Fsblib.EnvCheck() {
-	case "$FSBLIB_REQUIRE" in
-	"Any")
-		return 0
-		;;
-	"ModernShell")
-		[ "$(echo "$BASH_VERSION" | cut -d "." -f 1)" = "5" ] && return 0
-		;;
-	esac
-	return 1
-}
-Fsblib.RequireLib() {
-	local lib missing=() return=0
-	for lib in "$@"; do
-		if ! [[ ${FSBLIB_LIBLIST[*]} == *" $lib "* ]]; then
-			missing+=("$lib")
-			return=1
-		fi
-	done
-	return "$return"
-}
-Csv.GetClm() {
-	grep -v "^#" | sed "/^$/d" | cut -d "${CSVDELIM-","}" -f "$1"
-}
-Csv.ToBashArray() {
-	local _RawCsvLine=() _Line _ClmCnt=0
-	local ArrayPrefix="${ArrayPrefix-"{}"}"
-	readarray -t _RawCsvLine < <(
-		while read -r _Line; do
-			(($(tr "${CSVDELIM-","}" "\n" <<<"$_Line" | wc -l) >= ${#})) && echo "$_Line"
-		done < <(grep -v "^#")
-	)
-	_ClmCnt=$(PrintArray "${_RawCsvLine[@]}" | Csv.GetClmCnt)
-	while read -r _Cnt; do
-		readarray -t "$(sed "s|{}|$(eval "echo \"\${${_Cnt}}\"")|g" <<<"$ArrayPrefix")" < <(
-			PrintArray "${_RawCsvLine[@]}" | cut -d "${CSVDELIM-","}" -f "$_Cnt"
-		)
-	done < <(seq 1 "$#")
-}
-Csv.GetClmCnt() {
-	local _RawCsvLine=()
-	local _Line _ClmCnt=0
-	readarray -t _RawCsvLine
-	while read -r _Line; do
-		grep -qE "^#" <<<"$_Line" && continue
-		_CurrentClmCnt=$(tr "${CSVDELIM-","}" "\n" | wc -l)
-		((_CurrentClmCnt > _ClmCnt)) && _ClmCnt="$_CurrentClmCnt"
-	done < <(PrintArray "${_RawCsvLine[@]}")
-	RemoveBlank <<<"$_ClmCnt"
-	return 0
+Readlinkf() {
+	Readlinkf_Posix "$@"
 }
 Readlinkf_Posix() {
 	[ "${1:-}" ] || return 1
@@ -303,29 +252,68 @@ Readlinkf_Readlink() {
 	done
 	return 1
 }
-Readlinkf() {
-	Readlinkf_Posix "$@"
-}
-Arch.GetMkinitcpioPresetList() {
-	find "/etc/mkinitcpio.d/" -name "*.preset" -type f | GetBaseName | RemoveFileExt
+Arch.GetKernelFileList() {
+	find "/boot" -maxdepth 1 -mindepth 1 -name "vmlinuz-*"
 }
 Arch.GetKernelSrcList() {
 	find "/usr/src" -mindepth 1 -maxdepth 1 -type l -name "linux*"
 }
-Arch.GetKernelFileList() {
-	find "/boot" -maxdepth 1 -mindepth 1 -name "vmlinuz-*"
+Arch.GetMkinitcpioPresetList() {
+	find "/etc/mkinitcpio.d/" -name "*.preset" -type f | GetBaseName | RemoveFileExt
 }
-Msg.Debug() {
-	Msg.Common "Debug:" "${*}" stderr
+Csv.GetClm() {
+	grep -v "^#" | sed "/^$/d" | cut -d "${CSVDELIM-","}" -f "$1"
 }
-Msg.Err() {
-	Msg.Common "Error:" "${*}" stderr
+Csv.ToBashArray() {
+	local _RawCsvLine=() _Line _ClmCnt=0
+	local ArrayPrefix="${ArrayPrefix-"{}"}"
+	readarray -t _RawCsvLine < <(
+		while read -r _Line; do
+			(($(tr "${CSVDELIM-","}" "\n" <<<"$_Line" | wc -l) >= ${#})) && echo "$_Line"
+		done < <(grep -v "^#")
+	)
+	_ClmCnt=$(PrintArray "${_RawCsvLine[@]}" | Csv.GetClmCnt)
+	while read -r _Cnt; do
+		readarray -t "$(sed "s|{}|$(eval "echo \"\${${_Cnt}}\"")|g" <<<"$ArrayPrefix")" < <(
+			PrintArray "${_RawCsvLine[@]}" | cut -d "${CSVDELIM-","}" -f "$_Cnt"
+		)
+	done < <(seq 1 "$#")
 }
-Msg.Info() {
-	Msg.Common " Info:" "${*}" stdout
+Csv.GetClmCnt() {
+	local _RawCsvLine=()
+	local _Line _ClmCnt=0
+	readarray -t _RawCsvLine
+	while read -r _Line; do
+		grep -qE "^#" <<<"$_Line" && continue
+		_CurrentClmCnt=$(tr "${CSVDELIM-","}" "\n" | wc -l)
+		((_CurrentClmCnt > _ClmCnt)) && _ClmCnt="$_CurrentClmCnt"
+	done < <(PrintArray "${_RawCsvLine[@]}")
+	RemoveBlank <<<"$_ClmCnt"
+	return 0
 }
-Msg.Warn() {
-	Msg.Common " Warn:" "${*}" stderr
+FsblibEnvCheck() {
+	Fsblib.EnvCheck
+}
+Fsblib.EnvCheck() {
+	case "$FSBLIB_REQUIRE" in
+	"Any")
+		return 0
+		;;
+	"ModernShell")
+		[ "$(echo "$BASH_VERSION" | cut -d "." -f 1)" = "5" ] && return 0
+		;;
+	esac
+	return 1
+}
+Fsblib.RequireLib() {
+	local lib missing=() return=0
+	for lib in "$@"; do
+		if ! [[ ${FSBLIB_LIBLIST[*]} == *" $lib "* ]]; then
+			missing+=("$lib")
+			return=1
+		fi
+	done
+	return "$return"
 }
 Msg.Common() {
 	local i l="$1" string="$2" out="${3-""}"
@@ -350,20 +338,23 @@ Msg.Common() {
 		;;
 	esac
 }
-Awk.Cos() {
-	Awk.Float "cos($*)"
+Msg.Debug() {
+	Msg.Common "Debug:" "${*}" stderr
+}
+Msg.Warn() {
+	Msg.Common " Warn:" "${*}" stderr
+}
+Msg.Info() {
+	Msg.Common " Info:" "${*}" stdout
+}
+Msg.Err() {
+	Msg.Common "Error:" "${*}" stderr
 }
 Awk.Float() {
 	awk "BEGIN {printf (\"%4.${AWKSCALE-"5"}f\n\", $*)}"
 }
-Awk.Log() {
-	Awk.Float "log(${2}) / log($1)"
-}
-Awk.Pi() {
-	Awk.Float "atan2(0, -0)"
-}
-Awk.Sin() {
-	Awk.Float "sin($*)"
+Awk.Print() {
+	awk "BEGIN {print $*}"
 }
 Awk.Tan() {
 	Awk.Float "sin($1)/tan($1)"
@@ -371,25 +362,28 @@ Awk.Tan() {
 Awk.Rad() {
 	Awk.Float "$1 * $(Awk.Pi) / 180 "
 }
-Awk.Print() {
-	awk "BEGIN {print $*}"
+Awk.Cos() {
+	Awk.Float "cos($*)"
 }
-SrcInfo.GetKeyList() {
-	SrcInfo.Format | cut -d "=" -f 1
+Awk.Pi() {
+	Awk.Float "atan2(0, -0)"
 }
-SrcInfo.Format() {
-	RemoveBlank | sed "/^$/d" | grep -v "^#" | ForEach eval 'SrcInfo.Parse Line <<< "{}"'
+Awk.Sin() {
+	Awk.Float "sin($*)"
 }
-SrcInfo.GetValueInPkgName() {
+Awk.Log() {
+	Awk.Float "log(${2}) / log($1)"
+}
+SrcInfo.GetValueInPkgBase() {
 	local _Line
 	while read -r _Line; do
 		_Key="$(SrcInfo.Parse Key <<<"$_Line")"
 		case "$_Key" in
-		"$2")
+		"$1")
 			SrcInfo.Parse Value <<<"$_Line"
 			;;
 		esac
-	done < <(SrcInfo.GetPkgName "$1")
+	done < <(SrcInfo.GetPkgBase)
 }
 SrcInfo.GetValue() {
 	local _SrcInfo=()
@@ -427,38 +421,6 @@ SrcInfo.GetValue() {
 		ArrayAppend _Output < <(PrintEvalArray _SrcInfo | SrcInfo.GetValueInPkgName "$2" "$1_${_Arch}")
 	done
 	PrintEvalArray _Output
-	return 0
-}
-SrcInfo.GetValueInPkgBase() {
-	local _Line
-	while read -r _Line; do
-		_Key="$(SrcInfo.Parse Key <<<"$_Line")"
-		case "$_Key" in
-		"$1")
-			SrcInfo.Parse Value <<<"$_Line"
-			;;
-		esac
-	done < <(SrcInfo.GetPkgBase)
-}
-SrcInfo.Parse() {
-	local _Output="${1-""}"
-	[[ -n ${_Output} ]] || return 1
-	shift 1
-	local _String _Key _Value
-	_String="$(cat)"
-	_Key="$(cut -d "=" -f 1 <<<"$_String" | RemoveBlank)"
-	_Value="$(cut -d "=" -f 2- <<<"$_String" | RemoveBlank)"
-	case "$_Output" in
-	"Line")
-		echo "$_Key=$_Value"
-		;;
-	"Key")
-		echo "$_Key"
-		;;
-	"Value")
-		echo "$_Value"
-		;;
-	esac
 	return 0
 }
 SrcInfo.GetPkgName() {
@@ -503,18 +465,98 @@ SrcInfo.GetPkgBase() {
 		esac
 	done < <(SrcInfo.Format)
 }
+SrcInfo.Format() {
+	RemoveBlank | sed "/^$/d" | grep -v "^#" | ForEach eval 'SrcInfo.Parse Line <<< "{}"'
+}
+SrcInfo.Parse() {
+	local _Output="${1-""}"
+	[[ -n ${_Output} ]] || return 1
+	shift 1
+	local _String _Key _Value
+	_String="$(cat)"
+	_Key="$(cut -d "=" -f 1 <<<"$_String" | RemoveBlank)"
+	_Value="$(cut -d "=" -f 2- <<<"$_String" | RemoveBlank)"
+	case "$_Output" in
+	"Line")
+		echo "$_Key=$_Value"
+		;;
+	"Key")
+		echo "$_Key"
+		;;
+	"Value")
+		echo "$_Value"
+		;;
+	esac
+	return 0
+}
+SrcInfo.GetValueInPkgName() {
+	local _Line
+	while read -r _Line; do
+		_Key="$(SrcInfo.Parse Key <<<"$_Line")"
+		case "$_Key" in
+		"$2")
+			SrcInfo.Parse Value <<<"$_Line"
+			;;
+		esac
+	done < <(SrcInfo.GetPkgName "$1")
+}
+SrcInfo.GetKeyList() {
+	SrcInfo.Format | cut -d "=" -f 1
+}
 SrcInfo.GetSectionList() {
 	SrcInfo.Format | grep -e "^pkgbase" -e "^pkgname"
 }
-Sqlite3.Create() {
-	local _table="$1" _args=() _columns=()
-	shift 1 || return 1
-	_columns=("$@")
-	_args+=(create table "$_table" "(")
-	ForEach eval '_args+=("\"{}\"" ,)' < <(PrintEvalArray _columns)
-	Array.Pop _args
-	_args+=(")")
-	Sqlite3.Call "${_args[*]}"
+Cache.Exist() {
+	local _File
+	_File="$(Cache.CreateDir)/$1"
+	[[ -e $_File ]] || return 1
+	(("$(Cache.GetTimeDiffFromLastUpdate "$_File")" > "${KEEPCACHESEC-"86400"}")) && return 2
+	return 0
+}
+Cache.Get() {
+	cat "$(Cache.GetDir)/$1" 2>/dev/null || return 1
+}
+Cache.GetID() {
+	if [[ -z ${FSBLIB_CACHEID-""} ]]; then
+		Cache.CreateDir >/dev/null
+	fi
+	echo "$FSBLIB_CACHEID"
+}
+Cache.GetFileLastUpdate() {
+	local _isGnu=false
+	date --help 2>/dev/null | grep -q "GNU" && _isGnu=true
+	if [[ $_isGnu == true ]]; then
+		date +%s -r "$1"
+	else
+		{
+			eval "$(stat -s "$1")"
+			echo "$st_mtime"
+		}
+	fi
+}
+Cache.GetTimeDiffFromLastUpdate() {
+	local _Now _Last
+	_Now="$(date "+%s")"
+	_Last="$(Cache.GetFileLastUpdate "$1")"
+	echo "$((_Now - _Last))"
+	return 0
+}
+Cache.GetDir() {
+	echo "${TMPDIR-"/tmp"}/$(Cache.GetID)"
+}
+Cache.CreateDir() {
+	FSBLIB_CACHEID="${FSBLIB_CACHEID-"$(RandomString "10")"}"
+	export FSBLIB_CACHEID="$FSBLIB_CACHEID"
+	local TMPDIR="${TMPDIR-"/tmp"}"
+	local _Dir="$TMPDIR/${FSBLIB_CACHEID}"
+	mkdir -p "$_Dir"
+	echo "$_Dir"
+	return 0
+}
+Cache.Create() {
+	Cache.CreateDir >/dev/null
+	cat >"$(Cache.GetDir)/${1}"
+	cat "$(Cache.GetDir)/$1"
 }
 Sqlite3.Delete() {
 	local _table="$1" _args=()
@@ -529,14 +571,19 @@ Sqlite3.Delete() {
 	fi
 	Sqlite3.Call "${_args[*]}"
 }
-Sqlite3.Select() {
-	local _table="$1" _args=()
+Sqlite3.Connect() {
+	export SQLITE3_DBPATH="$1"
+	echo ".open \"$SQLITE3_DBPATH\"" | sqlite3
+	return 0
+}
+Sqlite3.Create() {
+	local _table="$1" _args=() _columns=()
 	shift 1 || return 1
-	local _values=("$@")
-	_args+=(select)
-	ForEach eval '_args+=("\"{}\"" ,)' < <(PrintEvalArray _values)
+	_columns=("$@")
+	_args+=(create table "$_table" "(")
+	ForEach eval '_args+=("\"{}\"" ,)' < <(PrintEvalArray _columns)
 	Array.Pop _args
-	_args+=("from" "$_table" ";")
+	_args+=(")")
 	Sqlite3.Call "${_args[*]}"
 }
 Sqlite3.Insert() {
@@ -549,6 +596,40 @@ Sqlite3.Insert() {
 	_args+=(");")
 	Sqlite3.Call "${_args[*]}"
 }
+Sqlite3.CurrentDb() {
+	if [[ -z ${SQLITE3_DBPATH-""} ]]; then
+		Msg.Err "No datebase is connected."
+		return 1
+	fi
+	echo "${SQLITE3_DBPATH}"
+	return 0
+}
+Sqlite3.Call() {
+	Msg.Debug sqlite3 "${SQLITE3_OPTIONS[@]}" "$SQLITE3_DBPATH" "$@" 1>&2
+	sqlite3 "${SQLITE3_OPTIONS[@]}" "$SQLITE3_DBPATH" "$@"
+}
+Sqlite3.ExistField() {
+	_result="$(Sqlite3.Call "SELECT * FROM '$1' WHERE $2 = '$3' LIMIT 1;")"
+	if [[ -n ${_result-""} ]]; then
+		return 0
+	fi
+	return 1
+}
+Sqlite3.Select() {
+	local _table="$1" _args=()
+	shift 1 || return 1
+	local _values=("$@")
+	_args+=(select)
+	ForEach eval '_args+=("\"{}\"" ,)' < <(PrintEvalArray _values)
+	Array.Pop _args
+	_args+=("from" "$_table" ";")
+	Sqlite3.Call "${_args[*]}"
+}
+Sqlite3.SelectAll() {
+	local _table="$1" _args=()
+	shift 1 || return 1
+	Sqlite3.Call "select * from $_table"
+}
 Sqlite3.ExistTable() {
 	local _result
 	_result="$(Sqlite3.Call "SELECT COUNT(*) 
@@ -560,86 +641,27 @@ Sqlite3.ExistTable() {
 	fi
 	return 1
 }
-Sqlite3.CurrentDb() {
-	if [[ -z ${SQLITE3_DBPATH-""} ]]; then
-		Msg.Err "No datebase is connected."
-		return 1
-	fi
-	echo "${SQLITE3_DBPATH}"
-	return 0
+Ini.GetLastParam() {
+	Ini.GetParamList "$1" | tail -n 1
 }
-Sqlite3.SelectAll() {
-	local _table="$1" _args=()
-	shift 1 || return 1
-	Sqlite3.Call "select * from $_table"
-}
-Sqlite3.Connect() {
-	export SQLITE3_DBPATH="$1"
-	echo ".open \"$SQLITE3_DBPATH\"" | sqlite3
-	return 0
-}
-Sqlite3.ExistField() {
-	_result="$(Sqlite3.Call "SELECT * FROM '$1' WHERE $2 = '$3' LIMIT 1;")"
-	if [[ -n ${_result-""} ]]; then
-		return 0
-	fi
-	return 1
-}
-Sqlite3.Call() {
-	Msg.Debug sqlite3 "${SQLITE3_OPTIONS[@]}" "$SQLITE3_DBPATH" "$@" 1>&2
-	sqlite3 "${SQLITE3_OPTIONS[@]}" "$SQLITE3_DBPATH" "$@"
-}
-Cache.Get() {
-	cat "$(Cache.GetDir)/$1" 2>/dev/null || return 1
-}
-Cache.GetFileLastUpdate() {
-	local _isGnu=false
-	date --help 2>/dev/null | grep -q "GNU" && _isGnu=true
-	if [[ $_isGnu == true ]]; then
-		date +%s -r "$1"
-	else
-		{
-			eval "$(stat -s "$1")"
-			echo "$st_mtime"
-		}
-	fi
-}
-Cache.GetID() {
-	if [[ -z ${FSBLIB_CACHEID-""} ]]; then
-		Cache.CreateDir >/dev/null
-	fi
-	echo "$FSBLIB_CACHEID"
-}
-Cache.GetTimeDiffFromLastUpdate() {
-	local _Now _Last
-	_Now="$(date "+%s")"
-	_Last="$(Cache.GetFileLastUpdate "$1")"
-	echo "$((_Now - _Last))"
-	return 0
-}
-Cache.Exist() {
-	local _File
-	_File="$(Cache.CreateDir)/$1"
-	[[ -e $_File ]] || return 1
-	(("$(Cache.GetTimeDiffFromLastUpdate "$_File")" > "${KEEPCACHESEC-"86400"}")) && return 2
-	return 0
-}
-Cache.GetDir() {
-	echo "${TMPDIR-"/tmp"}/$(Cache.GetID)"
-}
-Cache.Create() {
-	Cache.CreateDir >/dev/null
-	cat >"$(Cache.GetDir)/${1}"
-	cat "$(Cache.GetDir)/$1"
-}
-Cache.CreateDir() {
-	FSBLIB_CACHEID="${FSBLIB_CACHEID-"$(RandomString "10")"}"
-	export FSBLIB_CACHEID="$FSBLIB_CACHEID"
-	local TMPDIR="${TMPDIR-"/tmp"}"
-	local _Dir="$TMPDIR/${FSBLIB_CACHEID}"
-	mkdir -p "$_Dir"
-	echo "$_Dir"
-	return 0
+Ini.GetSectionList() {
+	local _RawIniLine=()
+	local _Line _LineNo=1 _Exit=0
+	readarray -t _RawIniLine
+	while read -r _Line; do
+		Ini.ParseLine <<<"$_Line"
+		case "$TYPE" in
+		"SECTION")
+			echo "$SECTION"
+			;;
+		"ERROR")
+			echo "Line $_LineNo: Failed to parse Ini" 1>&2
+			_Exit=1
+			;;
+		esac
+		_LineNo=$((_LineNo + 1))
+	done < <(PrintArray "${_RawIniLine[@]}")
+	return "$_Exit"
 }
 Ini.ParseLine() {
 	local _Line
@@ -671,52 +693,6 @@ Ini.ParseLine() {
 	esac
 	return 0
 }
-Ini.GetParam() {
-	local _RawIniLine=()
-	local _Line _LineNo=1 _Exit=0 _InSection=false
-	readarray -t _RawIniLine
-	while read -r _Line; do
-		Ini.ParseLine <<<"$_Line"
-		case "$TYPE" in
-		"SECTION")
-			if [[ $SECTION == "$1" ]]; then
-				_InSection=true
-			else
-				_InSection=false
-			fi
-			;;
-		"PARAM-VALUE")
-			[[ $_InSection == false ]] && continue
-			[[ ${FSBLIB_INI_PARSED_PARAM} == "$2" ]] && echo "$FSBLIB_INI_PARSED_VALUE"
-			;;
-		"ERROR")
-			echo "Line $_LineNo: Failed to parse Ini" 1>&2
-			_Exit=1
-			;;
-		esac
-		_LineNo=$((_LineNo + 1))
-	done < <(PrintArray "${_RawIniLine[@]}")
-	return "$_Exit"
-}
-Ini.GetSectionList() {
-	local _RawIniLine=()
-	local _Line _LineNo=1 _Exit=0
-	readarray -t _RawIniLine
-	while read -r _Line; do
-		Ini.ParseLine <<<"$_Line"
-		case "$TYPE" in
-		"SECTION")
-			echo "$SECTION"
-			;;
-		"ERROR")
-			echo "Line $_LineNo: Failed to parse Ini" 1>&2
-			_Exit=1
-			;;
-		esac
-		_LineNo=$((_LineNo + 1))
-	done < <(PrintArray "${_RawIniLine[@]}")
-	return "$_Exit"
-}
 Ini.GetParamList() {
 	local _RawIniLine=()
 	local _Line _LineNo=1 _Exit=0 _InSection=false
@@ -743,23 +719,32 @@ Ini.GetParamList() {
 	done < <(PrintArray "${_RawIniLine[@]}")
 	return "$_Exit"
 }
-Ini.GetLastParam() {
-	Ini.GetParamList "$1" | tail -n 1
-}
-Ini.NewSection() {
-	local IniContents=()
-	local Section="$1"
-	readarray -t IniContents
-	if PrintArray "${IniContents[@]}" | Ini.GetSectionList | grep -x "$Section" >/dev/null; then
-		PrintEvalArray IniContents
-		return 0
-	fi
-	if [[ -z "$(Array.Last IniContents)" ]]; then
-		Array.Pop IniContents
-	fi
-	IniContents+=("" "[$Section]")
-	PrintEvalArray IniContents
-	return 0
+Ini.GetParam() {
+	local _RawIniLine=()
+	local _Line _LineNo=1 _Exit=0 _InSection=false
+	readarray -t _RawIniLine
+	while read -r _Line; do
+		Ini.ParseLine <<<"$_Line"
+		case "$TYPE" in
+		"SECTION")
+			if [[ $SECTION == "$1" ]]; then
+				_InSection=true
+			else
+				_InSection=false
+			fi
+			;;
+		"PARAM-VALUE")
+			[[ $_InSection == false ]] && continue
+			[[ ${FSBLIB_INI_PARSED_PARAM} == "$2" ]] && echo "$FSBLIB_INI_PARSED_VALUE"
+			;;
+		"ERROR")
+			echo "Line $_LineNo: Failed to parse Ini" 1>&2
+			_Exit=1
+			;;
+		esac
+		_LineNo=$((_LineNo + 1))
+	done < <(PrintArray "${_RawIniLine[@]}")
+	return "$_Exit"
 }
 Ini.NewParam() {
 	local IniContents=() Line
@@ -812,485 +797,46 @@ Ini.SetValue() {
 	readarray -t IniContents < <(PrintArray "${IniContents[@]}" | Ini.NewSection "$Section" | Ini.NewParam "$Section" "$Param")
 	PrintEvalArray IniContents
 }
-Em.GetWorldPkgList() {
-	sed -E 's|:.+$||g' /var/lib/portage/world | xargs -I{} bash -c 'ls -d /var/db/pkg/{}-* | sed "s|/var/db/pkg/||g" | grep -E "{}-[0-9]"'
-}
-Em.GetRepoLocation() {
-	Em.GetRepoConf | Ini.GetParam "$1" location
+Ini.NewSection() {
+	local IniContents=()
+	local Section="$1"
+	readarray -t IniContents
+	if PrintArray "${IniContents[@]}" | Ini.GetSectionList | grep -x "$Section" >/dev/null; then
+		PrintEvalArray IniContents
+		return 0
+	fi
+	if [[ -z "$(Array.Last IniContents)" ]]; then
+		Array.Pop IniContents
+	fi
+	IniContents+=("" "[$Section]")
+	PrintEvalArray IniContents
+	return 0
 }
 Em.GetRepoPkgList() {
 	local _RepoPath
 	_RepoPath="$(Em.GetRepoLocation "$1")"
 	find "$_RepoPath" -mindepth 3 -maxdepth 3 -type f -name '*.ebuild' | sed -e "s|${_RepoPath%/}/||g" -e 's|.ebuild$||g' | awk -F "/" '{print $1"/"$3}'
 }
-Em.GetAllPkgList() {
-	Em.GetRepoConf | sed -e 's/^ *//' -e 's/ *$//' | grep "^ *location *=" | sed -e 's/^location *= *//' | xargs -L1 realpath | xargs -I{} bash -c "find '{}' -mindepth 3 -maxdepth 3 -type f -name '*.ebuild' | sed -e 's|{}/||g' -e 's|.ebuild$||g'" | awk -F "/" '{print $1"/"$3}'
-}
-Em.GetDefaultRepoName() {
-	Em.GetRepoConf | Ini.GetParam DEFAULT main-repo
-}
-Em.GetRepoConf() {
-	cat /etc/portage/repos.conf /etc/portage/repos.conf/* 2>/dev/null
+Em.GetWorldPkgList() {
+	sed -E 's|:.+$||g' /var/lib/portage/world | xargs -I{} bash -c 'ls -d /var/db/pkg/{}-* | sed "s|/var/db/pkg/||g" | grep -E "{}-[0-9]"'
 }
 Em.GetInstalledPkgList() {
 	find /var/db/pkg/ -mindepth 2 -maxdepth 2 -type d | sed 's|/var/db/pkg/||g'
 }
+Em.GetRepoLocation() {
+	Em.GetRepoConf | Ini.GetParam "$1" location
+}
+Em.GetAllPkgList() {
+	Em.GetRepoConf | sed -e 's/^ *//' -e 's/ *$//' | grep "^ *location *=" | sed -e 's/^location *= *//' | xargs -L1 realpath | xargs -I{} bash -c "find '{}' -mindepth 3 -maxdepth 3 -type f -name '*.ebuild' | sed -e 's|{}/||g' -e 's|.ebuild$||g'" | awk -F "/" '{print $1"/"$3}'
+}
+Em.GetRepoConf() {
+	cat /etc/portage/repos.conf /etc/portage/repos.conf/* 2>/dev/null
+}
+Em.GetDefaultRepoName() {
+	Em.GetRepoConf | Ini.GetParam DEFAULT main-repo
+}
 Em.NoVersion() {
 	sed -E 's|\-[0-9]+.+||g'
-}
-URL.Authority() {
-	local i _NoScheme
-	while read -r i; do
-		_NoScheme=$(URL.NoScheme <<<"$i")
-		[[ $_NoScheme == "//"* ]] || return 1
-		cut -d "/" -f 1 < <(sed "s|^//||g" <<<"$_NoScheme")
-	done
-}
-URL.Path() {
-	URL.PathAndQueryAndFragment | cut -d "#" -f 1 | cut -d "?" -f 1
-}
-URL.User() {
-	local i
-	while read -r i; do
-		[[ $i == *"@"* ]] || {
-			echo ""
-			continue
-		}
-		cut -d "@" -f 1 <<<"$i"
-	done < <(URL.Authority)
-}
-URL.PathAndQueryAndFragment() {
-	local i
-	while read -r i; do
-		sed "s|^//$(URL.Authority <<<"$i")||g" <<<"$(URL.NoScheme <<<"$i")"
-	done
-}
-URL.Host() {
-	URL.Authority | cut -d "@" -f 2- | cut -d ":" -f 1
-}
-URL.Fragment() {
-	local i
-	i="$(URL.PathAndQueryAndFragment)"
-	[[ $i == *"#"* ]] || return 0
-	cut -d "#" -f 2- <<<"$i"
-}
-URL.Port() {
-	local i
-	while read -r i; do
-		[[ $i == *":"* ]] || {
-			continue
-		}
-		cut -d ":" -f 2 <<<"$i"
-	done < <(URL.Authority)
-}
-URL.NoScheme() {
-	cut -d ":" -f 2-
-}
-URL.Scheme() {
-	cut -d ":" -f 1
-}
-URL.Query() {
-	local i
-	while read -r i; do
-		URL.PathAndQueryAndFragment <<<"$i" | sed "s|#$(URL.Fragment <<<"$i")||g" | cut -d "?" -f 2-
-	done
-}
-URL.HasFragment() {
-	local i="${1-""}"
-	[[ -n $i ]] || read -r i
-	[[ "$(URL.PathAndQueryAndFragment <<<"$i")" == *"#"* ]]
-}
-URL.HasAuthority() {
-	local i="${1-""}"
-	[[ -n $i ]] || read -r i
-	[[ "$(URL.NoScheme <<<"$i")" == "//"* ]]
-}
-URL.HasPort() {
-	local i="${1-""}"
-	[[ -n $i ]] || read -r i
-	[[ "$(URL.Authority <<<"$i")" == *":"* ]]
-}
-URL.HasQuery() {
-	local i="${1-""}"
-	[[ -n $i ]] || read -r i
-	[[ "$(URL.PathAndQueryAndFragment <<<"$i")" == *"?"* ]]
-}
-URL.HasUser() {
-	local i="${1-""}"
-	[[ -n $i ]] || read -r i
-	[[ "$(URL.Authority <<<"$i")" == *"@"* ]]
-}
-URL.Parse() {
-	local i="${1-""}"
-	if [[ -z ${i} ]]; then
-		read -r i
-	fi
-	URL.Scheme <<<"$i"
-	echo ":"
-	if URL.HasAuthority "$i"; then
-		if URL.HasUser "$i"; then
-			URL.User <<<"$i"
-			echo "@"
-		fi
-		URL.Host <<<"$i"
-		if URL.HasPort "$i"; then
-			echo ":"
-			URL.Port <<<"$i"
-		fi
-	fi
-	URL.Path <<<"$i"
-	if URL.HasFragment "$i"; then
-		echo "#"
-		URL.Fragment <<<"$i"
-	fi
-	if URL.HasQuery "$i"; then
-		echo "?"
-		URL.Query <<<"$i"
-	fi
-}
-URL.ParseQuery() {
-	local i="${1-""}"
-	if [[ -z ${i} ]]; then
-		read -r i
-	fi
-	if grep -q "[a-zA-Z]://" <<<"$i"; then
-		i="$(URL.Query <<<"$i")"
-	fi
-	i="$(sed "s|^\?||g" <<<"$i")"
-	tr "&" "\n" <<<"$i" | cut -d "#" -f 1
-}
-URL.GetQuery() {
-	grep "^ *$1=" | cut -d "=" -f 2-
-}
-Array.Shift() {
-	readarray -t "$1" < <(PrintEvalArray "$1" | sed "1,${2-"1"}d")
-}
-Array.Append() {
-	local _ArrName="$1"
-	shift 1 || return 1
-	readarray -t -O "$(ArrayIndex "$_ArrName")" "$_ArrName" < <(cat)
-}
-Array.FromStr() {
-	declare -a -x "$1"
-	readarray -t "$1" < <(BreakChar)
-}
-Array.Push() {
-	eval "PrintArray \"\${$1[@]}\"" | grep -qx "$2" && return 0
-	eval "$1+=(\"$2\")"
-}
-Array.Rev() {
-	readarray -t "$1" < <(PrintEvalArray "$1" | tac)
-}
-Array.Pop() {
-	readarray -t "$1" < <(PrintEvalArray "$1" | sed -e '$d')
-}
-Array.Remove() {
-	readarray -t "$1" < <(PrintEvalArray "$1" | RemoveMatchLine "$2")
-}
-Array.Eval() {
-	eval "PrintArray \"\${$1[@]}\""
-}
-Array.Print() {
-	(($# >= 1)) || return 0
-	printf "%s\n" "${@}"
-}
-Array.Last() {
-	PrintEval "$1[$(Array.LastIndex "$1")]"
-}
-Array.IndexOf() {
-	local n=()
-	readarray -t n < <(grep -x -n "$1" | cut -d ":" -f 1 | ForEach eval echo '$(( {} - 1 ))')
-	(("${#n[@]}" >= 1)) || return 1
-	PrintArray "${n[@]}"
-	return 0
-}
-Array.LastIndex() {
-	CalcInt "$(Array.Length "$1")" - 1
-}
-Array.Length() {
-	PrintEval "#${1}[@]"
-}
-Array.ForEach() {
-	PrintEvalArray "$1" | ForEach "${@:2}"
-}
-Array.Includes() {
-	PrintEvalArray "$1" | grep -qx "$2"
-}
-Pm.GetKeyringList() {
-	find "$(@GetKeyringDir)" -name "*.gpg" | GetBaseName | RemoveFileExt
-}
-Pm.GetName() {
-	cut -d "<" -f 1 | cut -d ">" -f 1 | cut -d "=" -f 1
-}
-Pm.GetPacmanKernelPkg() {
-	echo "there is nothing"
-}
-Pm.GetRepoListFromConf() {
-	Pm.GetConfig --repo-list
-}
-Pm.GetRepoVer() {
-	Pm.Run -Sp --print-format '%v' "$1"
-}
-Pm.CheckPkg() {
-	local p
-	for p in "$@"; do
-		Pm.Run -Qq "$p" >/dev/null 2>&1 || return 1
-	done
-	return 0
-}
-Pm.GetPacmanKeyringDir() {
-	local _KeyringDir=""
-	_KeyringDir="$(LANG=C pacman-key -h | RemoveBlank | grep -A 1 -- "^--populate" | tail -n 1 | cut -d "/" -f 2- | sed "s|'$||g")"
-	: "${_KeyringDir="usr/share/pacman/keyrings"}"
-	_KeyringDir="$(Pm.GetRoot)/$_KeyringDir"
-	_KeyringDir="$(sed -E "s|/+|/|g" <<<"$_KeyringDir")"
-	if [[ -e $_KeyringDir ]]; then
-		Readlinkf "$_KeyringDir"
-	else
-		echo "$_KeyringDir"
-	fi
-}
-Pm.GetLatestPkgVer() {
-	local _LANG="${LANG-""}"
-	export LANG=C
-	if [[ -z ${*} ]]; then
-		cat
-	else
-		PrintArray "$@"
-	fi | ForEach Pm.Run -Si "{}" | grep "^Version" | cut -d ":" -f 2 | RemoveBlank
-	[[ -n $_LANG ]] && export LANG="$_LANG"
-	return 0
-}
-Pm.GetRepoServer() {
-	ForEach eval 'Pm.GetConfig -r {}' | grep "^Server" | ForEach eval "Ini.ParseLine <<< '{}' ; printf '%s\n' \${VALUE}"
-}
-Pm.IsRepoPkg() {
-	Pm.Run -Slq | grep -qx "$(Pm.GetName <<<"$1")"
-}
-Pm.Run() {
-	pacman --noconfirm --config "${PACMAN_CONF-"/etc/pacman.conf"}" "$@"
-}
-Pm.PacmanGpg() {
-	gpg --homedir "$(Pm.GetConfig GPGDir)" "$@"
-}
-Pm.GetConfig() {
-	LANG=C pacman-conf --config="${PACMAN_CONF-"/etc/pacman.conf"}" "$@"
-}
-Pm.RunKey() {
-	pacman-key --config "${PACMAN_CONF-"/etc/pacman.conf"}" "$@"
-}
-Pm.GetInstalledPkgVer() {
-	if [[ -z ${*} ]]; then
-		cat
-	else
-		PrintArray "$@"
-	fi | ForEach pacman -Q "{}" | cut -d " " -f 2
-	PrintArray "${PIPESTATUS[@]}" | grep -qx "1" && return 1
-	return 0
-}
-Pm.GetRepoConf() {
-	ForEach eval 'echo [{}] && Pm.GetConfig -r {}'
-}
-Pm.GetRoot() {
-	Pm.GetConfig RootDir
-}
-Pm.GetRepoPkgList() {
-	Pm.Run -Slq "$@"
-}
-Pm.GetDbNextSection() {
-	Pm.GetDbSectionList | grep -x -A 1 "^%$1%$" | GetLine 2 | sed "s|^%||g; s|%$||g"
-}
-Pm.GetDbSectionList() {
-	grep -E "^%.*%$"
-}
-Pm.GetDbSection() {
-	readarray -t _Stdin
-	PrintArray "${_Stdin[@]}" | sed -ne "/^%$1%$/,/^%$(PrintEvalArray _Stdin | Pm.GetDbNextSection "$1")%$/p" | sed '1d; $d'
-}
-Pm.DeleteDbTmpDir() {
-	rm -rf "$(Pm.GetDbTmpDir)"
-}
-Pm.OpenSyncDb() {
-	local _Dir _RepoDb
-	Pm.CreateDbTmpDir
-	_Dir="$(Pm.GetDbTmpDir)/sync/$1"
-	mkdir -p "$_Dir"
-	_RepoDb="$(Pm.GetConfig DBPath)/sync/$1.db"
-	[[ -e $_RepoDb ]] || return 1
-	tar -xzf "${_RepoDb}" -C "$_Dir" || return 1
-}
-Pm.GetPkgArch() {
-	Pm.GetSyncDbDesc "$1" | Pm.GetDbSection ARCH | RemoveBlank
-}
-Pm.GetDbTmpDir() {
-	echo "${TMPDIR-"/tmp"}/fasbashlib-pacman-db"
-}
-Pm.IsOpendSyncDb() {
-	readarray -t _PkgDbList < <(find "$(Pm.GetDbTmpDir)/sync/$1" -mindepth 1 -maxdepth 1 -type d)
-	(("${#_PkgDbList[@]}" > 0)) && return 0
-	return 1
-}
-Pm.CreateDbTmpDir() {
-	mkdir -p "$(Pm.GetDbTmpDir)"
-}
-Pm.GetVirtualPkgList() {
-	Pm.GetRepoListFromLocalDb | ForEach Pm.OpenSyncDb {}
-	Pm.GetSyncAllDesc | ForEach eval "Pm.GetDbSection PROVIDES < {}" | RemoveBlank
-}
-Pm.GetSyncDbDesc() {
-	local _path
-	_path="$(Pm.GetSyncDbDescPath "$1")"
-	[[ -e $_path ]] || return 1
-	cat "$_path/desc"
-}
-Pm.ParsePkgFileName() {
-	local _Pkg="$1"
-	local _PkgName _PkgVer _PkgRel _Arch _FileExt
-	local _PkgWithOutExt
-	if grep "/" <<<"$_Pkg"; then
-		_Pkg="$(basename "$_Pkg")"
-	fi
-	_FileExt="$(GetLastSplitString "-" "$_Pkg" | cut -d "." -f 2-)"
-	_PkgWithOutExt="${_Pkg%%".${_FileExt}"}"
-	_Arch=$(GetLastSplitString "-" "${_PkgWithOutExt}")
-	_PkgRel=$(GetLastSplitString "-" "${_PkgWithOutExt%%"-${_Arch}"}")
-	_PkgVer=$(GetLastSplitString "-" "${_PkgWithOutExt%%"-${_PkgRel}-${_Arch}"}")
-	_PkgName="${_PkgWithOutExt%%"-${_PkgVer}-${_PkgRel}-${_Arch}"}"
-	_ParsedPkg=("${_PkgName}" "-" "$_PkgVer" "-" "$_PkgRel" "-" "$_Arch" ".$_FileExt")
-	if [[ ! "$(PrintArray "${_ParsedPkg[@]}" | tr -d "\n")" == "${_Pkg}" ]]; then
-		return 1
-	fi
-	PrintArray "${_ParsedPkg[@]}"
-}
-Pm.GetRepoListFromLocalDb() {
-	find "$(Pm.GetConfig DBPath)/sync" -mindepth 1 -maxdepth 1 -type f | GetBaseName | sed "s|.db$||g"
-	return 0
-}
-Pm.GetSyncAllDesc() {
-	find "$(Pm.GetDbTmpDir)" -mindepth 3 -maxdepth 3 -name "desc" -type f
-}
-Pm.GetSyncDbDescPath() {
-	local _repo
-	_repo="$(pacman -Sp --print-format '%r' "$1")"
-	{
-		IsPacmanSyncDbOpend "$_repo" || OpenPacmanSyncDb "$_repo"
-	} || return 1
-	echo "$(Pm.GetDbTmpDir)/sync/$(pacman -Sp --print-format '%r/%n-%v' "$1")"
-}
-Pm.OpenedSyncDbList() {
-	find "$(Pm.GetDbTmpDir)/sync/" -mindepth 1 -maxdepth 1 -type d
-}
-Misskey.Notes.Create() {
-	Misskey.BindingBase "notes/create" text -- "$@"
-}
-Misskey.Notes.Renotes() {
-	Misskey.BindingBase "notes/renotes" noteId limit sinceId untilId -- "$@"
-}
-Misskey.Notes.Search() {
-	Misskey.BindingBase "notes/search" query limit -- "$@"
-}
-Misskey.Users.Show() {
-	Misskey.BindingBase "users/show" userId -- "${1:-"$(Misskey.MyId)"}" "${@:2}"
-}
-Misskey.Users.Stats() {
-	Misskey.BindingBase "users/stats" userId -- "${1:-"$(Misskey.MyId)"}" "${@:2}"
-}
-Misskey.Users.Pages() {
-	Misskey.BindingBase "users/pages" userId -- "${1:-"$(Misskey.MyId)"}" "${@:2}"
-}
-Misskey.Users.SearchByUsernameAndHost() {
-	Misskey.BindingBase "users/search-by-username-and-host" username -- "${1:-"$(Misskey.MyUserName)"}" "${@:2}"
-}
-Misskey.Users.GetFrequentlyRepliedUsers() {
-	Misskey.BindingBase "users/get-frequently-replied-users" userId -- "${1:-"$(Misskey.MyId)"}" "${@:2}"
-}
-Misskey.Users.Notes() {
-	Misskey.BindingBase "users/notes" userId -- "${1:-"$(Misskey.MyId)"}" "${@:2}"
-}
-Misskey.Admin.ServerInfo() {
-	Misskey.BindingBase "/admin/server-info" -- "$@"
-}
-Misskey.Setup() {
-	export MISSKEY_DOMAIN="${1-"${MISSKEY_DOMAIN-""}"}"
-	export MISSKEY_TOKEN="${2-"${MISSKEY_TOKEN-""}"}"
-	export MISSKEY_ENTRY="https://${MISSKEY_DOMAIN}/api"
-}
-Misskey.I() {
-	Misskey.BindingBase "/i" -- "$@"
-}
-Misskey.ServerInfo() {
-	Misskey.BindingBase "/server-info" -- "$@"
-}
-Misskey.Meta() {
-	Misskey.BindingBase "/meta" -- "$@"
-}
-Misskey.MakeJson() {
-	local i _Key _Value
-	for i in "i=$MISSKEY_TOKEN" "$@"; do
-		_Key=$(cut -d "=" -f 1 <<<"$i")
-		_Value=$(cut -d "=" -f 2- <<<"$i")
-		if [[ $_Value =~ ^[0-9]+$ ]] || [[ $_Value == true ]] || [[ $_Value == false ]] || [[ $_Value == "{"*"}" ]] || [[ $_Value == "["*"]" ]]; then
-			echo -n "{\"$_Key\": $_Value}"
-		else
-			echo -n "{\"$_Key\": \"$_Value\"}"
-		fi
-	done | sed "s|}{|,|g" | jq -c -M
-}
-Misskey.SendReq() {
-	local _Url="$1" _CurlArgs=()
-	shift 1
-	_CurlArgs+=(-s -L)
-	_CurlArgs+=(-X POST)
-	_CurlArgs+=(-H "Content-Type: application/json")
-	_CurlArgs+=(-d "$(Misskey.MakeJson "$@")")
-	_CurlArgs+=("$_Url")
-	Msg.Debug "Run: ${_CurlArgs[*]//"${MISSKEY_TOKEN}"/"TOKEN"}"
-	curl "${_CurlArgs[@]}"
-}
-Misskey.BindingBase() {
-	local _API="$1"
-	shift 1
-	local i _APIArgs=("") _Args
-	for i in "$@"; do
-		shift 1 2>/dev/null || true
-		if [[ $i == "--" ]]; then
-			break
-		else
-			_APIArgs+=("$i")
-		fi
-	done
-	local _Cnt _Shifted=false
-	for ((_Cnt = 1; _Cnt <= "${#_APIArgs[@]} - 1"; _Cnt++)); do
-		_Args+=("${_APIArgs[$_Cnt]}=$(eval echo "\${${_Cnt}:-""}")")
-		if [[ -z "$(eval echo "\${$((_Cnt + 1)):-""}")" ]]; then
-			shift "$_Cnt"
-			_Shifted=true
-			break
-		fi
-	done
-	if ! Bool _Shifted; then
-		_Shifted=true
-		shift "$((${#_APIArgs[@]} - 1))"
-	fi
-	if [[ -z ${MISSKEY_ENTRY-""} ]]; then
-		Misskey.Setup "${MISSKEY_DOMAIN}" "$MISSKEY_TOKEN"
-	fi
-	Misskey.SendReq "${MISSKEY_ENTRY%/}/${_API#/}" "${_Args[@]}" "$@"
-}
-Misskey.MyId() {
-	Misskey.I | jq -r ".id"
-}
-Misskey.MyUserName() {
-	Misskey.I | jq -r ".username"
-}
-Misskey.MyName() {
-	Misskey.I | jq -r ".name"
-}
-Misskey.IsAdmin() {
-	Bool "$(Misskey.I | jq -r ".isAdmin")"
-}
-PrintEvalArray() {
-	Array.Eval "$1"
 }
 GetArrayIndex() {
 	Array.IndexOf "$1"
@@ -1298,26 +844,32 @@ GetArrayIndex() {
 ArrayAppend() {
 	Array.Append "$1"
 }
-ArrayIncludes() {
-	Array.Includes "$@"
+AddNewToArray() {
+	Array.Push "$@"
 }
-StrToCharList() {
-	Array.FromStr "$1"
-}
-PrintArray() {
-	Array.Print "$@"
+PrintEvalArray() {
+	Array.Eval "$1"
 }
 ArrayIndex() {
 	Array.Length "$1"
 }
+PrintArray() {
+	Array.Print "$@"
+}
+StrToCharList() {
+	Array.FromStr "$1"
+}
 RevArray() {
 	Array.Rev "$1"
 }
-AddNewToArray() {
-	Array.Push "$@"
+ArrayIncludes() {
+	Array.Includes "$@"
 }
 GetFileExt() {
 	GetBaseName | rev | cut -d "." -f 1 | rev
+}
+FileType() {
+	file --mime-type -b "$1"
 }
 RemoveFileExt() {
 	local Ext
@@ -1326,8 +878,17 @@ RemoveFileExt() {
 GetBaseName() {
 	ForEach basename "{}"
 }
-FileType() {
-	file --mime-type -b "$1"
+IsAvailable() {
+	type "$1" 2>/dev/null 1>&2
+}
+Loop() {
+	local _T="$1"
+	shift 1 || return 1
+	((_T == 0)) && return 0
+	ForEach "$@" < <(yes "" | head -n "$_T")
+}
+CheckFuncDefined() {
+	typeset -f "${1}" >/dev/null || return 1
 }
 ForEach() {
 	local _Item
@@ -1338,35 +899,19 @@ ForEach() {
 GetLine() {
 	head -n "$1" | tail -n 1
 }
-Loop() {
-	local _T="$1"
-	shift 1 || return 1
-	((_T == 0)) && return 0
-	ForEach "$@" < <(yes "" | head -n "$_T")
+RemoveBlank() {
+	sed "s|^ *||g; s| *$||g; s|^	*||g; s|	*$||g; /^$/d"
 }
-IsAvailable() {
-	type "$1" 2>/dev/null 1>&2
+BreakChar() {
+	grep -o "."
 }
-CheckFuncDefined() {
-	typeset -f "${1}" >/dev/null || return 1
+GetLastSplitString() {
+	rev <<<"$2" | cut -d "$1" -f 1 | rev
 }
 IsUUID() {
 	local _UUID="${1-""}"
 	[[ ${_UUID//-/} =~ ^[[:xdigit:]]{32}$ ]] && return 0
 	return 1
-}
-PrintEval() {
-	eval echo "\${$1}"
-}
-BreakChar() {
-	grep -o "."
-}
-CutLastString() {
-	echo "${1%%"${2}"}"
-	return 0
-}
-RemoveBlank() {
-	sed "s|^ *||g; s| *$||g; s|^	*||g; s|	*$||g; /^$/d"
 }
 TextBox() {
 	local _Content=() _Length _Vertical="|" _Line="=" _Header="${1-""}"
@@ -1384,8 +929,12 @@ TextBox() {
 	done
 	echo "${_Vertical}$(Loop "$((_Length + 1))" echo -n "${_Line}")${_Vertical}"
 }
-GetLastSplitString() {
-	rev <<<"$2" | cut -d "$1" -f 1 | rev
+CutLastString() {
+	echo "${1%%"${2}"}"
+	return 0
+}
+PrintEval() {
+	eval echo "\${$1}"
 }
 RandomString() {
 	base64 <"/dev/random" | fold -w "$1" | head -n 1
@@ -1433,14 +982,14 @@ Bool() {
 		;;
 	esac
 }
+GetFuncList() {
+	declare -F | cut -d " " -f 3
+}
 UnsetAllFunc() {
 	local Func
 	while read -r Func; do
 		unset "$Func"
 	done < <(GetFuncList)
-}
-GetFuncList() {
-	declare -F | cut -d " " -f 3
 }
 RemoveMatchLine() {
 	local i unseted=false
@@ -1462,4 +1011,455 @@ Match() {
 		fi
 	done
 	return 1
+}
+Array.Remove() {
+	readarray -t "$1" < <(PrintEvalArray "$1" | RemoveMatchLine "$2")
+}
+Array.FromStr() {
+	declare -a -x "$1"
+	readarray -t "$1" < <(BreakChar)
+}
+Array.Shift() {
+	readarray -t "$1" < <(PrintEvalArray "$1" | sed "1,${2-"1"}d")
+}
+Array.Pop() {
+	readarray -t "$1" < <(PrintEvalArray "$1" | sed -e '$d')
+}
+Array.Push() {
+	eval "PrintArray \"\${$1[@]}\"" | grep -qx "$2" && return 0
+	eval "$1+=(\"$2\")"
+}
+Array.Append() {
+	local _ArrName="$1"
+	shift 1 || return 1
+	readarray -t -O "$(ArrayIndex "$_ArrName")" "$_ArrName" < <(cat)
+}
+Array.Rev() {
+	readarray -t "$1" < <(PrintEvalArray "$1" | tac)
+}
+Array.Eval() {
+	eval "PrintArray \"\${$1[@]}\""
+}
+Array.Print() {
+	(($# >= 1)) || return 0
+	printf "%s\n" "${@}"
+}
+Array.Last() {
+	PrintEval "$1[$(Array.LastIndex "$1")]"
+}
+Array.Length() {
+	PrintEval "#${1}[@]"
+}
+Array.IndexOf() {
+	local n=()
+	readarray -t n < <(grep -x -n "$1" | cut -d ":" -f 1 | ForEach eval echo '$(( {} - 1 ))')
+	(("${#n[@]}" >= 1)) || return 1
+	PrintArray "${n[@]}"
+	return 0
+}
+Array.LastIndex() {
+	CalcInt "$(Array.Length "$1")" - 1
+}
+Array.Includes() {
+	PrintEvalArray "$1" | grep -qx "$2"
+}
+Array.ForEach() {
+	PrintEvalArray "$1" | ForEach "${@:2}"
+}
+URL.NoScheme() {
+	cut -d ":" -f 2-
+}
+URL.PathAndQueryAndFragment() {
+	local i
+	while read -r i; do
+		sed "s|^//$(URL.Authority <<<"$i")||g" <<<"$(URL.NoScheme <<<"$i")"
+	done
+}
+URL.Scheme() {
+	cut -d ":" -f 1
+}
+URL.User() {
+	local i
+	while read -r i; do
+		[[ $i == *"@"* ]] || {
+			echo ""
+			continue
+		}
+		cut -d "@" -f 1 <<<"$i"
+	done < <(URL.Authority)
+}
+URL.Fragment() {
+	local i
+	i="$(URL.PathAndQueryAndFragment)"
+	[[ $i == *"#"* ]] || return 0
+	cut -d "#" -f 2- <<<"$i"
+}
+URL.Host() {
+	URL.Authority | cut -d "@" -f 2- | cut -d ":" -f 1
+}
+URL.Authority() {
+	local i _NoScheme
+	while read -r i; do
+		_NoScheme=$(URL.NoScheme <<<"$i")
+		[[ $_NoScheme == "//"* ]] || return 1
+		cut -d "/" -f 1 < <(sed "s|^//||g" <<<"$_NoScheme")
+	done
+}
+URL.Port() {
+	local i
+	while read -r i; do
+		[[ $i == *":"* ]] || {
+			continue
+		}
+		cut -d ":" -f 2 <<<"$i"
+	done < <(URL.Authority)
+}
+URL.Query() {
+	local i
+	while read -r i; do
+		URL.PathAndQueryAndFragment <<<"$i" | sed "s|#$(URL.Fragment <<<"$i")||g" | cut -d "?" -f 2-
+	done
+}
+URL.Path() {
+	URL.PathAndQueryAndFragment | cut -d "#" -f 1 | cut -d "?" -f 1
+}
+URL.HasAuthority() {
+	local i="${1-""}"
+	[[ -n $i ]] || read -r i
+	[[ "$(URL.NoScheme <<<"$i")" == "//"* ]]
+}
+URL.HasFragment() {
+	local i="${1-""}"
+	[[ -n $i ]] || read -r i
+	[[ "$(URL.PathAndQueryAndFragment <<<"$i")" == *"#"* ]]
+}
+URL.HasPort() {
+	local i="${1-""}"
+	[[ -n $i ]] || read -r i
+	[[ "$(URL.Authority <<<"$i")" == *":"* ]]
+}
+URL.HasQuery() {
+	local i="${1-""}"
+	[[ -n $i ]] || read -r i
+	[[ "$(URL.PathAndQueryAndFragment <<<"$i")" == *"?"* ]]
+}
+URL.HasUser() {
+	local i="${1-""}"
+	[[ -n $i ]] || read -r i
+	[[ "$(URL.Authority <<<"$i")" == *"@"* ]]
+}
+URL.Parse() {
+	local i="${1-""}"
+	if [[ -z ${i} ]]; then
+		read -r i
+	fi
+	URL.Scheme <<<"$i"
+	echo ":"
+	if URL.HasAuthority "$i"; then
+		if URL.HasUser "$i"; then
+			URL.User <<<"$i"
+			echo "@"
+		fi
+		URL.Host <<<"$i"
+		if URL.HasPort "$i"; then
+			echo ":"
+			URL.Port <<<"$i"
+		fi
+	fi
+	URL.Path <<<"$i"
+	if URL.HasFragment "$i"; then
+		echo "#"
+		URL.Fragment <<<"$i"
+	fi
+	if URL.HasQuery "$i"; then
+		echo "?"
+		URL.Query <<<"$i"
+	fi
+}
+URL.GetQuery() {
+	grep "^ *$1=" | cut -d "=" -f 2-
+}
+URL.ParseQuery() {
+	local i="${1-""}"
+	if [[ -z ${i} ]]; then
+		read -r i
+	fi
+	if grep -q "[a-zA-Z]://" <<<"$i"; then
+		i="$(URL.Query <<<"$i")"
+	fi
+	i="$(sed "s|^\?||g" <<<"$i")"
+	tr "&" "\n" <<<"$i" | cut -d "#" -f 1
+}
+Pm.GetName() {
+	cut -d "<" -f 1 | cut -d ">" -f 1 | cut -d "=" -f 1
+}
+Pm.GetRoot() {
+	Pm.GetConfig RootDir
+}
+Pm.GetInstalledPkgVer() {
+	if [[ -z ${*} ]]; then
+		cat
+	else
+		PrintArray "$@"
+	fi | ForEach pacman -Q "{}" | cut -d " " -f 2
+	PrintArray "${PIPESTATUS[@]}" | grep -qx "1" && return 1
+	return 0
+}
+Pm.GetPacmanKernelPkg() {
+	echo "there is nothing"
+}
+Pm.Run() {
+	pacman --noconfirm --config "${PACMAN_CONF-"/etc/pacman.conf"}" "$@"
+}
+Pm.IsRepoPkg() {
+	Pm.Run -Slq | grep -qx "$(Pm.GetName <<<"$1")"
+}
+Pm.GetLatestPkgVer() {
+	local _LANG="${LANG-""}"
+	export LANG=C
+	if [[ -z ${*} ]]; then
+		cat
+	else
+		PrintArray "$@"
+	fi | ForEach Pm.Run -Si "{}" | grep "^Version" | cut -d ":" -f 2 | RemoveBlank
+	[[ -n $_LANG ]] && export LANG="$_LANG"
+	return 0
+}
+Pm.GetRepoConf() {
+	ForEach eval 'echo [{}] && Pm.GetConfig -r {}'
+}
+Pm.PacmanGpg() {
+	gpg --homedir "$(Pm.GetConfig GPGDir)" "$@"
+}
+Pm.RunKey() {
+	pacman-key --config "${PACMAN_CONF-"/etc/pacman.conf"}" "$@"
+}
+Pm.GetRepoVer() {
+	Pm.Run -Sp --print-format '%v' "$1"
+}
+Pm.GetConfig() {
+	LANG=C pacman-conf --config="${PACMAN_CONF-"/etc/pacman.conf"}" "$@"
+}
+Pm.GetKeyringList() {
+	find "$(@GetKeyringDir)" -name "*.gpg" | GetBaseName | RemoveFileExt
+}
+Pm.GetRepoServer() {
+	ForEach eval 'Pm.GetConfig -r {}' | grep "^Server" | ForEach eval "Ini.ParseLine <<< '{}' ; printf '%s\n' \${VALUE}"
+}
+Pm.GetRepoPkgList() {
+	Pm.Run -Slq "$@"
+}
+Pm.CheckPkg() {
+	local p
+	for p in "$@"; do
+		Pm.Run -Qq "$p" >/dev/null 2>&1 || return 1
+	done
+	return 0
+}
+Pm.GetPacmanKeyringDir() {
+	local _KeyringDir=""
+	_KeyringDir="$(LANG=C pacman-key -h | RemoveBlank | grep -A 1 -- "^--populate" | tail -n 1 | cut -d "/" -f 2- | sed "s|'$||g")"
+	: "${_KeyringDir="usr/share/pacman/keyrings"}"
+	_KeyringDir="$(Pm.GetRoot)/$_KeyringDir"
+	_KeyringDir="$(sed -E "s|/+|/|g" <<<"$_KeyringDir")"
+	if [[ -e $_KeyringDir ]]; then
+		Readlinkf "$_KeyringDir"
+	else
+		echo "$_KeyringDir"
+	fi
+}
+Pm.GetRepoListFromConf() {
+	Pm.GetConfig --repo-list
+}
+Pm.GetDbSection() {
+	readarray -t _Stdin
+	PrintArray "${_Stdin[@]}" | sed -ne "/^%$1%$/,/^%$(PrintEvalArray _Stdin | Pm.GetDbNextSection "$1")%$/p" | sed '1d; $d'
+}
+Pm.GetDbSectionList() {
+	grep -E "^%.*%$"
+}
+Pm.GetDbNextSection() {
+	Pm.GetDbSectionList | grep -x -A 1 "^%$1%$" | GetLine 2 | sed "s|^%||g; s|%$||g"
+}
+Pm.GetRepoListFromLocalDb() {
+	find "$(Pm.GetConfig DBPath)/sync" -mindepth 1 -maxdepth 1 -type f | GetBaseName | sed "s|.db$||g"
+	return 0
+}
+Pm.GetSyncDbDescPath() {
+	local _repo
+	_repo="$(pacman -Sp --print-format '%r' "$1")"
+	{
+		IsPacmanSyncDbOpend "$_repo" || OpenPacmanSyncDb "$_repo"
+	} || return 1
+	echo "$(Pm.GetDbTmpDir)/sync/$(pacman -Sp --print-format '%r/%n-%v' "$1")"
+}
+Pm.GetDbTmpDir() {
+	echo "${TMPDIR-"/tmp"}/fasbashlib-pacman-db"
+}
+Pm.CreateDbTmpDir() {
+	mkdir -p "$(Pm.GetDbTmpDir)"
+}
+Pm.GetVirtualPkgList() {
+	Pm.GetRepoListFromLocalDb | ForEach Pm.OpenSyncDb {}
+	Pm.GetSyncAllDesc | ForEach eval "Pm.GetDbSection PROVIDES < {}" | RemoveBlank
+}
+Pm.DeleteDbTmpDir() {
+	rm -rf "$(Pm.GetDbTmpDir)"
+}
+Pm.IsOpendSyncDb() {
+	readarray -t _PkgDbList < <(find "$(Pm.GetDbTmpDir)/sync/$1" -mindepth 1 -maxdepth 1 -type d)
+	(("${#_PkgDbList[@]}" > 0)) && return 0
+	return 1
+}
+Pm.GetSyncDbDesc() {
+	local _path
+	_path="$(Pm.GetSyncDbDescPath "$1")"
+	[[ -e $_path ]] || return 1
+	cat "$_path/desc"
+}
+Pm.GetPkgArch() {
+	Pm.GetSyncDbDesc "$1" | Pm.GetDbSection ARCH | RemoveBlank
+}
+Pm.OpenSyncDb() {
+	local _Dir _RepoDb
+	Pm.CreateDbTmpDir
+	_Dir="$(Pm.GetDbTmpDir)/sync/$1"
+	mkdir -p "$_Dir"
+	_RepoDb="$(Pm.GetConfig DBPath)/sync/$1.db"
+	[[ -e $_RepoDb ]] || return 1
+	tar -xzf "${_RepoDb}" -C "$_Dir" || return 1
+}
+Pm.OpenedSyncDbList() {
+	find "$(Pm.GetDbTmpDir)/sync/" -mindepth 1 -maxdepth 1 -type d
+}
+Pm.ParsePkgFileName() {
+	local _Pkg="$1"
+	local _PkgName _PkgVer _PkgRel _Arch _FileExt
+	local _PkgWithOutExt
+	if grep "/" <<<"$_Pkg"; then
+		_Pkg="$(basename "$_Pkg")"
+	fi
+	_FileExt="$(GetLastSplitString "-" "$_Pkg" | cut -d "." -f 2-)"
+	_PkgWithOutExt="${_Pkg%%".${_FileExt}"}"
+	_Arch=$(GetLastSplitString "-" "${_PkgWithOutExt}")
+	_PkgRel=$(GetLastSplitString "-" "${_PkgWithOutExt%%"-${_Arch}"}")
+	_PkgVer=$(GetLastSplitString "-" "${_PkgWithOutExt%%"-${_PkgRel}-${_Arch}"}")
+	_PkgName="${_PkgWithOutExt%%"-${_PkgVer}-${_PkgRel}-${_Arch}"}"
+	_ParsedPkg=("${_PkgName}" "-" "$_PkgVer" "-" "$_PkgRel" "-" "$_Arch" ".$_FileExt")
+	if [[ ! "$(PrintArray "${_ParsedPkg[@]}" | tr -d "\n")" == "${_Pkg}" ]]; then
+		return 1
+	fi
+	PrintArray "${_ParsedPkg[@]}"
+}
+Pm.GetSyncAllDesc() {
+	find "$(Pm.GetDbTmpDir)" -mindepth 3 -maxdepth 3 -name "desc" -type f
+}
+Misskey.Notes.Renotes() {
+	Misskey.BindingBase "notes/renotes" noteId limit sinceId untilId -- "$@"
+}
+Misskey.Notes.Search() {
+	Misskey.BindingBase "notes/search" query limit -- "$@"
+}
+Misskey.Notes.Create() {
+	Misskey.BindingBase "notes/create" text -- "$@"
+}
+Misskey.Users.GetFrequentlyRepliedUsers() {
+	Misskey.BindingBase "users/get-frequently-replied-users" userId -- "${1:-"$(Misskey.MyId)"}" "${@:2}"
+}
+Misskey.Users.SearchByUsernameAndHost() {
+	Misskey.BindingBase "users/search-by-username-and-host" username -- "${1:-"$(Misskey.MyUserName)"}" "${@:2}"
+}
+Misskey.Users.Stats() {
+	Misskey.BindingBase "users/stats" userId -- "${1:-"$(Misskey.MyId)"}" "${@:2}"
+}
+Misskey.Users.Show() {
+	Misskey.BindingBase "users/show" userId -- "${1:-"$(Misskey.MyId)"}" "${@:2}"
+}
+Misskey.Users.Pages() {
+	Misskey.BindingBase "users/pages" userId -- "${1:-"$(Misskey.MyId)"}" "${@:2}"
+}
+Misskey.Users.Notes() {
+	Misskey.BindingBase "users/notes" userId -- "${1:-"$(Misskey.MyId)"}" "${@:2}"
+}
+Misskey.Admin.ServerInfo() {
+	Misskey.BindingBase "/admin/server-info" -- "$@"
+}
+Misskey.Setup() {
+	export MISSKEY_DOMAIN="${1-"${MISSKEY_DOMAIN-""}"}"
+	export MISSKEY_TOKEN="${2-"${MISSKEY_TOKEN-""}"}"
+	export MISSKEY_ENTRY="https://${MISSKEY_DOMAIN}/api"
+}
+Misskey.ServerInfo() {
+	Misskey.BindingBase "/server-info" -- "$@"
+}
+Misskey.I() {
+	Misskey.BindingBase "/i" -- "$@"
+}
+Misskey.Meta() {
+	Misskey.BindingBase "/meta" -- "$@"
+}
+Misskey.SendReq() {
+	local _Url="$1" _CurlArgs=()
+	shift 1
+	_CurlArgs+=(-s -L)
+	_CurlArgs+=(-X POST)
+	_CurlArgs+=(-H "Content-Type: application/json")
+	_CurlArgs+=(-d "$(Misskey.MakeJson "$@")")
+	_CurlArgs+=("$_Url")
+	Msg.Debug "Run: ${_CurlArgs[*]//"${MISSKEY_TOKEN}"/"TOKEN"}"
+	curl "${_CurlArgs[@]}"
+}
+Misskey.MakeJson() {
+	local i _Key _Value
+	for i in "i=$MISSKEY_TOKEN" "$@"; do
+		_Key=$(cut -d "=" -f 1 <<<"$i")
+		_Value=$(cut -d "=" -f 2- <<<"$i")
+		if [[ $_Value =~ ^[0-9]+$ ]] || [[ $_Value == true ]] || [[ $_Value == false ]] || [[ $_Value == "{"*"}" ]] || [[ $_Value == "["*"]" ]]; then
+			echo -n "{\"$_Key\": $_Value}"
+		else
+			echo -n "{\"$_Key\": \"$_Value\"}"
+		fi
+	done | sed "s|}{|,|g" | jq -c -M
+}
+Misskey.BindingBase() {
+	local _API="$1"
+	shift 1
+	local i _APIArgs=("") _Args
+	for i in "$@"; do
+		shift 1 2>/dev/null || true
+		if [[ $i == "--" ]]; then
+			break
+		else
+			_APIArgs+=("$i")
+		fi
+	done
+	local _Cnt _Shifted=false
+	for ((_Cnt = 1; _Cnt <= "${#_APIArgs[@]} - 1"; _Cnt++)); do
+		_Args+=("${_APIArgs[$_Cnt]}=$(eval echo "\${${_Cnt}:-""}")")
+		if [[ -z "$(eval echo "\${$((_Cnt + 1)):-""}")" ]]; then
+			shift "$_Cnt"
+			_Shifted=true
+			break
+		fi
+	done
+	if ! Bool _Shifted; then
+		_Shifted=true
+		shift "$((${#_APIArgs[@]} - 1))"
+	fi
+	if [[ -z ${MISSKEY_ENTRY-""} ]]; then
+		Misskey.Setup "${MISSKEY_DOMAIN}" "$MISSKEY_TOKEN"
+	fi
+	Misskey.SendReq "${MISSKEY_ENTRY%/}/${_API#/}" "${_Args[@]}" "$@"
+}
+Misskey.MyUserName() {
+	Misskey.I | jq -r ".username"
+}
+Misskey.MyId() {
+	Misskey.I | jq -r ".id"
+}
+Misskey.IsAdmin() {
+	Bool "$(Misskey.I | jq -r ".isAdmin")"
+}
+Misskey.MyName() {
+	Misskey.I | jq -r ".name"
 }

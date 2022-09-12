@@ -28,10 +28,136 @@
 # shellcheck disable=all
 
 FSBLIB_LIBLIST+=("ArchLinux" "Array" "AwkForCalc" "BetterShell" "Cache" "Core" "Csv" "Emerge" "Ini" "Message" "Misskey" "Pacman" "ParseArg" "Prompt" "Readlink" "Sqlite3" "SrcInfo" "URL")
-FSBLIB_FUNCLIST+=("csv.get_clm" "csv.get_clm_cnt" "csv.to_bash_array" "msg.common" "msg.debug" "pm.check_pkg" "msg.err" "msg.info" "pm.get_installed_pkg_ver" "msg.warn" "pm.get_keyring_list" "pm.get_latest_pkg_ver" "pm.run_key" "pm.get_name" "pm.get_pacman_kernel_pkg" "pm.get_repo_pkg_list" "pm.get_repo_ver" "pm.get_repo_server" "pm.is_repo_pkg" "pm.pacman_gpg" "pm.run" "pm.get_config" "ini.get_last_param" "ini.get_param_list" "ini.get_section_list" "pm.get_root" "ini.parse_line" "pm.get_repo_list_from_conf" "pm.get_pacman_keyring_dir" "ini.get_param" "pm.get_repo_conf" "fsblib.env_check" "fsblib.fsblib_env_check" "cache.exist" "fsblib.require_lib" "cache.get" "em.get_repo_conf" "cache.get_dir" "em.get_repo_location" "em.get_repo_pkg_list" "cache.get_id" "cache.get_time_diff_from_last_update" "em.get_world_pkg_list" "em.get_installed_pkg_list" "em.get_default_repo_name" "srcinfo.format" "srcinfo.get_key_list" "srcinfo.get_pkg_base" "url.authority" "srcinfo.get_pkg_name" "url.fragment" "srcinfo.get_value" "url.host" "srcinfo.get_value_in_pkg_base" "url.no_scheme" "url.path" "cache.get_file_last_update" "url.path_and_query_and_fragment" "srcinfo.parse" "url.port" "url.user" "srcinfo.get_section_list" "url.query" "arch.get_kernel_src_list" "url.scheme" "arch.get_mkinitcpio_preset_list" "em.get_all_pkg_list" "sqlite3.select" "sqlite3.insert" "sqlite3.exist_table" "sqlite3.exist_field" "srcinfo.get_value_in_pkg_name" "sqlite3.current_db" "choice" "sqlite3.create" "awk.cos" "awk.float" "awk.pi" "awk.print" "readlinkf" "awk.sin" "readlinkf__posix" "readlinkf__readlink" "sqlite3.delete" "choice_loop" "misskey.notes.create" "arch.get_kernel_file_list" "awk.log" "awk.tan" "misskey.notes.search" "sqlite3.select_all" "sqlite3.call" "awk.rad" "sqlite3.connect" "misskey.notes.renotes" "parse_arg" "array.append" "array.from_str" "array.pop" "array.push" "array.remove" "array.rev" "array.shift" "add_new_to_array" "array_includes" "array_index" "get_array_index" "print_array" "print_eval_array" "rev_array" "str_to_char_list" "array_append" "em.no_version" "ini.new_param" "ini.new_section" "pm.get_db_section" "pm.get_db_next_section" "pm.get_db_section_list" "ini.set_value" "cache.create_dir" "cache.create" "url.has_query" "url.has_user" "url.has_authority" "url.has_fragment" "misskey.users.get_frequently_replied_users" "url.has_port" "misskey.users.pages" "misskey.users.notes" "misskey.users.search_by_username_and_host" "misskey.users.stats" "misskey.users.show" "get_file_ext" "remove_file_ext" "file_type" "get_base_name" "array.last" "array.print" "array.eval" "pm.get_db_tmp_dir" "pm.get_pkg_arch" "pm.get_repo_list_from_local_db" "pm.get_sync_all_desc" "pm.is_opend_sync_db" "pm.open_sync_db" "pm.get_virtual_pkg_list" "pm.get_sync_db_desc" "pm.delete_db_tmp_dir" "pm.get_sync_db_desc_path" "pm.create_db_tmp_dir" "pm.parse_pkg_file_name" "pm.opened_sync_db_list" "url.parse" "check_func_defined" "is_available" "get_line" "for_each" "loop" "misskey.admin.server_info" "array.last_index" "array.length" "array.index_of" "break_char" "url.get_query" "cut_last_string" "url.parse_query" "get_last_split_string" "to_lower_stdin" "print_eval" "random_string" "text_box" "to_lower" "is_uu_id" "remove_blank" "misskey.setup" "array.includes" "array.for_each" "calc_int" "sum" "ntest" "misskey.meta" "misskey.server_info" "misskey.i" "bool" "misskey.make_json" "misskey.send_req" "misskey.binding_base" "get_func_list" "unset_all_func" "misskey.my_id" "misskey.my_name" "misskey.is_admin" "misskey.my_user_name" "match" "remove_match_line")
-declare -r FSBLIB_VERSION='v0.2.5.1.r417.gfac1fef-snake'
+FSBLIB_FUNCLIST+=("fsblib.env_check" "fsblib.fsblib_env_check" "fsblib.require_lib" "arch.get_kernel_file_list" "arch.get_kernel_src_list" "srcinfo.get_value_in_pkg_base" "srcinfo.format" "srcinfo.get_value_in_pkg_name" "srcinfo.get_key_list" "srcinfo.parse" "srcinfo.get_pkg_base" "srcinfo.get_pkg_name" "srcinfo.get_value" "arch.get_mkinitcpio_preset_list" "srcinfo.get_section_list" "sqlite3.exist_table" "sqlite3.insert" "sqlite3.select_all" "sqlite3.connect" "sqlite3.current_db" "sqlite3.delete" "pm.check_pkg" "sqlite3.exist_field" "pm.get_config" "pm.get_latest_pkg_ver" "pm.get_pacman_kernel_pkg" "pm.get_repo_ver" "pm.get_pacman_keyring_dir" "pm.get_root" "pm.is_repo_pkg" "pm.pacman_gpg" "pm.run_key" "pm.run" "pm.get_keyring_list" "sqlite3.call" "sqlite3.create" "readlinkf" "cache.exist" "readlinkf__posix" "cache.get" "readlinkf__readlink" "cache.get_dir" "pm.get_repo_server" "sqlite3.select" "cache.get_file_last_update" "cache.get_time_diff_from_last_update" "pm.get_repo_pkg_list" "pm.get_installed_pkg_ver" "misskey.notes.renotes" "misskey.notes.search" "pm.get_repo_list_from_conf" "pm.get_repo_conf" "pm.get_name" "cache.get_id" "msg.common" "msg.info" "msg.warn" "choice" "msg.err" "choice_loop" "awk.cos" "awk.float" "awk.log" "awk.rad" "awk.print" "awk.sin" "awk.tan" "url.authority" "url.fragment" "url.path" "url.path_and_query_and_fragment" "url.port" "awk.pi" "misskey.notes.create" "msg.debug" "url.query" "em.get_default_repo_name" "em.get_installed_pkg_list" "em.get_world_pkg_list" "em.get_repo_conf" "em.get_repo_location" "em.get_all_pkg_list" "ini.get_last_param" "ini.get_param" "ini.get_param_list" "ini.get_section_list" "em.get_repo_pkg_list" "parse_arg" "url.user" "url.scheme" "ini.parse_line" "url.host" "url.no_scheme" "array.pop" "array.push" "array.remove" "array.rev" "array.shift" "add_new_to_array" "array_includes" "array.from_str" "get_array_index" "print_array" "print_eval_array" "rev_array" "str_to_char_list" "array_index" "array_append" "csv.get_clm_cnt" "csv.to_bash_array" "csv.get_clm" "array.append" "pm.get_db_section_list" "cache.create" "cache.create_dir" "url.has_authority" "url.has_port" "pm.get_db_next_section" "url.has_fragment" "pm.get_db_section" "url.has_user" "url.has_query" "array.eval" "array.last" "array.print" "ini.set_value" "get_base_name" "file_type" "get_file_ext" "remove_file_ext" "ini.new_section" "ini.new_param" "misskey.users.notes" "misskey.users.pages" "misskey.users.show" "misskey.users.stats" "misskey.users.get_frequently_replied_users" "em.no_version" "misskey.users.search_by_username_and_host" "pm.create_db_tmp_dir" "pm.get_repo_list_from_local_db" "pm.get_virtual_pkg_list" "pm.parse_pkg_file_name" "pm.opened_sync_db_list" "pm.get_pkg_arch" "pm.is_opend_sync_db" "pm.get_sync_all_desc" "pm.get_sync_db_desc_path" "pm.open_sync_db" "pm.delete_db_tmp_dir" "pm.get_sync_db_desc" "pm.get_db_tmp_dir" "loop" "for_each" "check_func_defined" "get_line" "is_available" "url.parse" "array.index_of" "array.length" "array.last_index" "misskey.admin.server_info" "cut_last_string" "break_char" "is_uu_id" "text_box" "random_string" "remove_blank" "print_eval" "get_last_split_string" "to_lower_stdin" "to_lower" "url.get_query" "url.parse_query" "array.for_each" "array.includes" "misskey.setup" "ntest" "calc_int" "sum" "misskey.i" "misskey.meta" "misskey.server_info" "bool" "misskey.send_req" "misskey.make_json" "misskey.binding_base" "get_func_list" "unset_all_func" "misskey.is_admin" "misskey.my_user_name" "misskey.my_id" "misskey.my_name" "remove_match_line" "match")
+declare -r FSBLIB_VERSION='v0.2.5.1.r421.gece24c1-snake'
 declare -r FSBLIB_REQUIRE='ModernBash'
 
+choice_loop() {
+	while true; do
+		if choice "$@"; then
+			break
+		fi
+	done
+}
+choice() {
+	local arg OPTARG OPTIND
+	local _count _choice
+	local _default="" _question="" _returnstr="" _mark=" "
+	local _count=0 _digit=0 _returnint=
+	local _number=false
+	local _choice_list=()
+	while getopts "ad:p:n" arg; do
+		case "${arg}" in
+		d)
+			_default="${OPTARG}"
+			;;
+		p)
+			_question="${OPTARG}"
+			;;
+		n)
+			_number=true
+			;;
+		*)
+			exit 1
+			;;
+		esac
+	done
+	shift "$((OPTIND - 1))" || return 1
+	_choice_list=("${@}") _digit="${##}"
+	((${#_choice_list[@]} <= 0)) && echo "An exception error has occurred." 1>&2 && exit 1
+	((${#_choice_list[@]} == 1)) && _returnint="${_returnint:="1"}" _returnstr="${_returnstr:="${_choice_list[*]}"}"
+	[[ -n ${_question-""} ]] && echo "   ${_question}" 1>&2
+	for ((_count = 1; _count <= ${#_choice_list[@]}; _count++)); do
+		_choice="${_choice_list[$((_count - 1))]}" _mark=" "
+		{
+			[[ ! ${_default} == "" ]] && [[ ${_choice} == "${_default}" ]]
+		} && _mark="*"
+		printf " ${_mark} %${_digit}d: ${_choice}\n" "${_count}" 1>&2
+	done
+	echo -n "   (1 ~ ${#_choice_list[@]}) > " 1>&2 && read -r _input
+	{
+		[[ -z ${_input-""} ]] && [[ -n ${_default-""} ]]
+	} && _returnint="${_returnint:="0"}" _returnstr="${_returnstr:="${_default}"}"
+	{
+		printf "%s" "${_input}" | grep -qE "^[0-9]+$" && ((1 <= _input)) && ((_input <= ${#_choice_list[@]}))
+	} && _returnint="${_returnint:="${_input}"}" _returnstr="${_returnstr:="${_choice_list[$((_input - 1))]}"}"
+	for ((i = 0; i <= ${#_choice_list[@]} - 1; i++)); do
+		[[ ${_choice_list["${i}"],,} == "${_input,,}" ]] && _returnint="${_returnint:="$((i + 1))"}" _returnstr="${_returnstr:="${_choice_list["${i}"]}"}"
+	done
+	{
+		[[ ${_number} == true ]] && [[ -n ${_returnint:-""} ]]
+	} && {
+		echo "${_returnint}" && return 0
+	}
+	{
+		[[ ${_number} == false ]] && [[ -n ${_returnstr:-""} ]]
+	} && {
+		echo "${_returnstr}" && return 0
+	}
+	return 1
+}
+readlinkf() {
+	readlinkf_Posix "$@"
+}
+readlinkf__readlink() {
+	[ "${1:-}" ] || return 1
+	max_symlinks=40
+	CDPATH=''
+	target=$1
+	[ -e "${target%/}" ] || target=${1%"${1##*[!/]}"}
+	[ -d "${target:-/}" ] && target="$target/"
+	cd -P . 2>/dev/null || return 1
+	while [ "$max_symlinks" -ge 0 ] && max_symlinks=$((max_symlinks - 1)); do
+		if [ ! "$target" = "${target%/*}" ]; then
+			case $target in
+			/*)
+				cd -P "${target%/*}/" 2>/dev/null || break
+				;;
+			*)
+				cd -P "./${target%/*}" 2>/dev/null || break
+				;;
+			esac
+			target=${target##*/}
+		fi
+		if [ ! -L "$target" ]; then
+			target="${PWD%/}${target:+/}${target}"
+			printf '%s\n' "${target:-/}"
+			return 0
+		fi
+		target=$(readlink -- "$target" 2>/dev/null) || break
+	done
+	return 1
+}
+readlinkf__posix() {
+	[ "${1:-}" ] || return 1
+	max_symlinks=40
+	CDPATH=''
+	target=$1
+	[ -e "${target%/}" ] || target=${1%"${1##*[!/]}"}
+	[ -d "${target:-/}" ] && target="$target/"
+	cd -P . 2>/dev/null || return 1
+	while [ "$max_symlinks" -ge 0 ] && max_symlinks=$((max_symlinks - 1)); do
+		if [ ! "$target" = "${target%/*}" ]; then
+			case $target in
+			/*)
+				cd -P "${target%/*}/" 2>/dev/null || break
+				;;
+			*)
+				cd -P "./${target%/*}" 2>/dev/null || break
+				;;
+			esac
+			target=${target##*/}
+		fi
+		if [ ! -L "$target" ]; then
+			target="${PWD%/}${target:+/}${target}"
+			printf '%s\n' "${target:-/}"
+			return 0
+		fi
+		link=$(ls -dl -- "$target" 2>/dev/null) || break
+		target=${link#*" $target -> "}
+	done
+	return 1
+}
 parse_arg() {
 	local _Arg _Chr _Cnt
 	local _Long=() _LongWithArg=() _Short=() _ShortWithArg=()
@@ -126,70 +252,6 @@ parse_arg() {
 	OPTRET=("${_OutArg[@]}" -- "${_NoArg[@]}")
 	return 0
 }
-choice_loop() {
-	while true; do
-		if .choice "$@"; then
-			break
-		fi
-	done
-}
-choice() {
-	local arg OPTARG OPTIND
-	local _count _choice
-	local _default="" _question="" _returnstr="" _mark=" "
-	local _count=0 _digit=0 _returnint=
-	local _number=false
-	local _choice_list=()
-	while getopts "ad:p:n" arg; do
-		case "${arg}" in
-		d)
-			_default="${OPTARG}"
-			;;
-		p)
-			_question="${OPTARG}"
-			;;
-		n)
-			_number=true
-			;;
-		*)
-			exit 1
-			;;
-		esac
-	done
-	shift "$((OPTIND - 1))" || return 1
-	_choice_list=("${@}") _digit="${##}"
-	((${#_choice_list[@]} <= 0)) && echo "An exception error has occurred." 1>&2 && exit 1
-	((${#_choice_list[@]} == 1)) && _returnint="${_returnint:="1"}" _returnstr="${_returnstr:="${_choice_list[*]}"}"
-	[[ -n ${_question-""} ]] && echo "   ${_question}" 1>&2
-	for ((_count = 1; _count <= ${#_choice_list[@]}; _count++)); do
-		_choice="${_choice_list[$((_count - 1))]}" _mark=" "
-		{
-			[[ ! ${_default} == "" ]] && [[ ${_choice} == "${_default}" ]]
-		} && _mark="*"
-		printf " ${_mark} %${_digit}d: ${_choice}\n" "${_count}" 1>&2
-	done
-	echo -n "   (1 ~ ${#_choice_list[@]}) > " 1>&2 && read -r _input
-	{
-		[[ -z ${_input-""} ]] && [[ -n ${_default-""} ]]
-	} && _returnint="${_returnint:="0"}" _returnstr="${_returnstr:="${_default}"}"
-	{
-		printf "%s" "${_input}" | grep -qE "^[0-9]+$" && ((1 <= _input)) && ((_input <= ${#_choice_list[@]}))
-	} && _returnint="${_returnint:="${_input}"}" _returnstr="${_returnstr:="${_choice_list[$((_input - 1))]}"}"
-	for ((i = 0; i <= ${#_choice_list[@]} - 1; i++)); do
-		[[ ${_choice_list["${i}"],,} == "${_input,,}" ]] && _returnint="${_returnint:="$((i + 1))"}" _returnstr="${_returnstr:="${_choice_list["${i}"]}"}"
-	done
-	{
-		[[ ${_number} == true ]] && [[ -n ${_returnint:-""} ]]
-	} && {
-		echo "${_returnint}" && return 0
-	}
-	{
-		[[ ${_number} == false ]] && [[ -n ${_returnstr:-""} ]]
-	} && {
-		echo "${_returnstr}" && return 0
-	}
-	return 1
-}
 fsblib.env_check() {
 	case "$FSBLIB_REQUIRE" in
 	"Any")
@@ -214,106 +276,17 @@ fsblib.require_lib() {
 fsblib.fsblib_env_check() {
 	fsblib.env_check
 }
-readlinkf__posix() {
-	[ "${1:-}" ] || return 1
-	max_symlinks=40
-	CDPATH=''
-	target=$1
-	[ -e "${target%/}" ] || target=${1%"${1##*[!/]}"}
-	[ -d "${target:-/}" ] && target="$target/"
-	cd -P . 2>/dev/null || return 1
-	while [ "$max_symlinks" -ge 0 ] && max_symlinks=$((max_symlinks - 1)); do
-		if [ ! "$target" = "${target%/*}" ]; then
-			case $target in
-			/*)
-				cd -P "${target%/*}/" 2>/dev/null || break
-				;;
-			*)
-				cd -P "./${target%/*}" 2>/dev/null || break
-				;;
-			esac
-			target=${target##*/}
-		fi
-		if [ ! -L "$target" ]; then
-			target="${PWD%/}${target:+/}${target}"
-			printf '%s\n' "${target:-/}"
-			return 0
-		fi
-		link=$(ls -dl -- "$target" 2>/dev/null) || break
-		target=${link#*" $target -> "}
-	done
-	return 1
-}
-readlinkf() {
-	readlinkf_Posix "$@"
-}
-readlinkf__readlink() {
-	[ "${1:-}" ] || return 1
-	max_symlinks=40
-	CDPATH=''
-	target=$1
-	[ -e "${target%/}" ] || target=${1%"${1##*[!/]}"}
-	[ -d "${target:-/}" ] && target="$target/"
-	cd -P . 2>/dev/null || return 1
-	while [ "$max_symlinks" -ge 0 ] && max_symlinks=$((max_symlinks - 1)); do
-		if [ ! "$target" = "${target%/*}" ]; then
-			case $target in
-			/*)
-				cd -P "${target%/*}/" 2>/dev/null || break
-				;;
-			*)
-				cd -P "./${target%/*}" 2>/dev/null || break
-				;;
-			esac
-			target=${target##*/}
-		fi
-		if [ ! -L "$target" ]; then
-			target="${PWD%/}${target:+/}${target}"
-			printf '%s\n' "${target:-/}"
-			return 0
-		fi
-		target=$(readlink -- "$target" 2>/dev/null) || break
-	done
-	return 1
-}
 arch.get_kernel_src_list() {
 	find "/usr/src" -mindepth 1 -maxdepth 1 -type l -name "linux*"
-}
-arch.get_mkinitcpio_preset_list() {
-	find "/etc/mkinitcpio.d/" -name "*.preset" -type f | get_base_name | remove_file_ext
 }
 arch.get_kernel_file_list() {
 	find "/boot" -maxdepth 1 -mindepth 1 -name "vmlinuz-*"
 }
-csv.get_clm() {
-	grep -v "^#" | sed "/^$/d" | cut -d "${CSVDELIM-","}" -f "$1"
+arch.get_mkinitcpio_preset_list() {
+	find "/etc/mkinitcpio.d/" -name "*.preset" -type f | get_base_name | remove_file_ext
 }
-csv.get_clm_cnt() {
-	local _RawCsvLine=()
-	local _Line _ClmCnt=0
-	readarray -t _RawCsvLine
-	while read -r _Line; do
-		grep -qE "^#" <<<"$_Line" && continue
-		_CurrentClmCnt=$(tr "${CSVDELIM-","}" "\n" | wc -l)
-		((_CurrentClmCnt > _ClmCnt)) && _ClmCnt="$_CurrentClmCnt"
-	done < <(print_array "${_RawCsvLine[@]}")
-	remove_blank <<<"$_ClmCnt"
-	return 0
-}
-csv.to_bash_array() {
-	local _RawCsvLine=() _Line _ClmCnt=0
-	local ArrayPrefix="${ArrayPrefix-"{}"}"
-	readarray -t _RawCsvLine < <(
-		while read -r _Line; do
-			(($(tr "${CSVDELIM-","}" "\n" <<<"$_Line" | wc -l) >= ${#})) && echo "$_Line"
-		done < <(grep -v "^#")
-	)
-	_ClmCnt=$(print_array "${_RawCsvLine[@]}" | csv.get_clm_cnt)
-	while read -r _Cnt; do
-		readarray -t "$(sed "s|{}|$(eval "echo \"\${${_Cnt}}\"")|g" <<<"$ArrayPrefix")" < <(
-			print_array "${_RawCsvLine[@]}" | cut -d "${CSVDELIM-","}" -f "$_Cnt"
-		)
-	done < <(seq 1 "$#")
+msg.info() {
+	msg.common " Info:" "${*}" stdout
 }
 msg.common() {
 	local i l="$1" string="$2" out="${3-""}"
@@ -338,58 +311,65 @@ msg.common() {
 		;;
 	esac
 }
-msg.info() {
-	msg.common " Info:" "${*}" stdout
+msg.err() {
+	msg.common "Error:" "${*}" stderr
 }
 msg.debug() {
 	msg.common "Debug:" "${*}" stderr
 }
-msg.err() {
-	msg.common "Error:" "${*}" stderr
-}
 msg.warn() {
 	msg.common " Warn:" "${*}" stderr
 }
-awk.print() {
-	awk "BEGIN {print $*}"
+csv.to_bash_array() {
+	local _RawCsvLine=() _Line _ClmCnt=0
+	local ArrayPrefix="${ArrayPrefix-"{}"}"
+	readarray -t _RawCsvLine < <(
+		while read -r _Line; do
+			(($(tr "${CSVDELIM-","}" "\n" <<<"$_Line" | wc -l) >= ${#})) && echo "$_Line"
+		done < <(grep -v "^#")
+	)
+	_ClmCnt=$(print_array "${_RawCsvLine[@]}" | csv.get_clm_cnt)
+	while read -r _Cnt; do
+		readarray -t "$(sed "s|{}|$(eval "echo \"\${${_Cnt}}\"")|g" <<<"$ArrayPrefix")" < <(
+			print_array "${_RawCsvLine[@]}" | cut -d "${CSVDELIM-","}" -f "$_Cnt"
+		)
+	done < <(seq 1 "$#")
 }
-awk.cos() {
-	awk.float "cos($*)"
+csv.get_clm() {
+	grep -v "^#" | sed "/^$/d" | cut -d "${CSVDELIM-","}" -f "$1"
 }
-awk.tan() {
-	awk.float "sin($1)/tan($1)"
+csv.get_clm_cnt() {
+	local _RawCsvLine=()
+	local _Line _ClmCnt=0
+	readarray -t _RawCsvLine
+	while read -r _Line; do
+		grep -qE "^#" <<<"$_Line" && continue
+		_CurrentClmCnt=$(tr "${CSVDELIM-","}" "\n" | wc -l)
+		((_CurrentClmCnt > _ClmCnt)) && _ClmCnt="$_CurrentClmCnt"
+	done < <(print_array "${_RawCsvLine[@]}")
+	remove_blank <<<"$_ClmCnt"
+	return 0
 }
-awk.log() {
-	awk.float "log(${2}) / log($1)"
-}
-awk.sin() {
-	awk.float "sin($*)"
-}
-awk.pi() {
-	awk.float "atan2(0, -0)"
-}
-awk.float() {
-	awk "BEGIN {printf (\"%4.${AWKSCALE-"5"}f\n\", $*)}"
-}
-awk.rad() {
-	awk.float "$1 * $(awk.pi) / 180 "
-}
-srcinfo.get_key_list() {
-	srcinfo.format | cut -d "=" -f 1
-}
-srcinfo.get_pkg_name() {
-	local _Line _Key _InSection=false _TargetPkgName="$1"
+srcinfo.get_value_in_pkg_name() {
+	local _Line
 	while read -r _Line; do
 		_Key="$(srcinfo.parse Key <<<"$_Line")"
 		case "$_Key" in
-		"pkgname")
-			if [[ "$(srcinfo.parse Value <<<"$_Line")" == "$_TargetPkgName" ]]; then
-				_InSection=true
-			else
-				_InSection=false
-			fi
+		"$2")
+			srcinfo.parse Value <<<"$_Line"
 			;;
+		esac
+	done < <(srcinfo.get_pkg_name "$1")
+}
+srcinfo.get_pkg_base() {
+	local _Line _Key _InSection=false
+	while read -r _Line; do
+		_Key="$(srcinfo.parse Key <<<"$_Line")"
+		case "$_Key" in
 		"pkgbase")
+			_InSection=true
+			;;
+		"pkgname")
 			_InSection=false
 			;;
 		*)
@@ -399,6 +379,27 @@ srcinfo.get_pkg_name() {
 			;;
 		esac
 	done < <(srcinfo.format)
+}
+srcinfo.parse() {
+	local _Output="${1-""}"
+	[[ -n ${_Output} ]] || return 1
+	shift 1
+	local _String _Key _Value
+	_String="$(cat)"
+	_Key="$(cut -d "=" -f 1 <<<"$_String" | remove_blank)"
+	_Value="$(cut -d "=" -f 2- <<<"$_String" | remove_blank)"
+	case "$_Output" in
+	"Line")
+		echo "$_Key=$_Value"
+		;;
+	"Key")
+		echo "$_Key"
+		;;
+	"Value")
+		echo "$_Value"
+		;;
+	esac
+	return 0
 }
 srcinfo.get_value_in_pkg_base() {
 	local _Line
@@ -410,6 +411,15 @@ srcinfo.get_value_in_pkg_base() {
 			;;
 		esac
 	done < <(srcinfo.get_pkg_base)
+}
+srcinfo.get_section_list() {
+	srcinfo.format | grep -e "^pkgbase" -e "^pkgname"
+}
+srcinfo.format() {
+	remove_blank | sed "/^$/d" | grep -v "^#" | for_each eval 'srcinfo.parse Line <<< "{}"'
+}
+srcinfo.get_key_list() {
+	srcinfo.format | cut -d "=" -f 1
 }
 srcinfo.get_value() {
 	local _SrcInfo=()
@@ -449,15 +459,19 @@ srcinfo.get_value() {
 	print_eval_array _Output
 	return 0
 }
-srcinfo.get_pkg_base() {
-	local _Line _Key _InSection=false
+srcinfo.get_pkg_name() {
+	local _Line _Key _InSection=false _TargetPkgName="$1"
 	while read -r _Line; do
 		_Key="$(srcinfo.parse Key <<<"$_Line")"
 		case "$_Key" in
-		"pkgbase")
-			_InSection=true
-			;;
 		"pkgname")
+			if [[ "$(srcinfo.parse Value <<<"$_Line")" == "$_TargetPkgName" ]]; then
+				_InSection=true
+			else
+				_InSection=false
+			fi
+			;;
+		"pkgbase")
 			_InSection=false
 			;;
 		*)
@@ -468,61 +482,29 @@ srcinfo.get_pkg_base() {
 		esac
 	done < <(srcinfo.format)
 }
-srcinfo.format() {
-	remove_blank | sed "/^$/d" | grep -v "^#" | for_each eval 'srcinfo.parse Line <<< "{}"'
+awk.log() {
+	awk.float "log(${2}) / log($1)"
 }
-srcinfo.get_section_list() {
-	srcinfo.format | grep -e "^pkgbase" -e "^pkgname"
+awk.sin() {
+	awk.float "sin($*)"
 }
-srcinfo.parse() {
-	local _Output="${1-""}"
-	[[ -n ${_Output} ]] || return 1
-	shift 1
-	local _String _Key _Value
-	_String="$(cat)"
-	_Key="$(cut -d "=" -f 1 <<<"$_String" | remove_blank)"
-	_Value="$(cut -d "=" -f 2- <<<"$_String" | remove_blank)"
-	case "$_Output" in
-	"Line")
-		echo "$_Key=$_Value"
-		;;
-	"Key")
-		echo "$_Key"
-		;;
-	"Value")
-		echo "$_Value"
-		;;
-	esac
-	return 0
+awk.print() {
+	awk "BEGIN {print $*}"
 }
-srcinfo.get_value_in_pkg_name() {
-	local _Line
-	while read -r _Line; do
-		_Key="$(srcinfo.parse Key <<<"$_Line")"
-		case "$_Key" in
-		"$2")
-			srcinfo.parse Value <<<"$_Line"
-			;;
-		esac
-	done < <(srcinfo.get_pkg_name "$1")
+awk.cos() {
+	awk.float "cos($*)"
 }
-sqlite3.insert() {
-	local _table="$1" _args=()
-	shift 1 || return 1
-	local _values=("$@")
-	_args+=(insert into "$_table" values '(')
-	for_each eval '_args+=("\"{}\"" ,)' < <(print_eval_array _values)
-	array.pop _args
-	_args+=(");")
-	sqlite3.call "${_args[*]}"
+awk.float() {
+	awk "BEGIN {printf (\"%4.${AWKSCALE-"5"}f\n\", $*)}"
 }
-sqlite3.current_db() {
-	if [[ -z ${SQLITE3_DBPATH-""} ]]; then
-		msg.err "No datebase is connected."
-		return 1
-	fi
-	echo "${SQLITE3_DBPATH}"
-	return 0
+awk.tan() {
+	awk.float "sin($1)/tan($1)"
+}
+awk.pi() {
+	awk.float "atan2(0, -0)"
+}
+awk.rad() {
+	awk.float "$1 * $(awk.pi) / 180 "
 }
 sqlite3.delete() {
 	local _table="$1" _args=()
@@ -537,6 +519,30 @@ sqlite3.delete() {
 	fi
 	sqlite3.call "${_args[*]}"
 }
+sqlite3.create() {
+	local _table="$1" _args=() _columns=()
+	shift 1 || return 1
+	_columns=("$@")
+	_args+=(create table "$_table" "(")
+	for_each eval '_args+=("\"{}\"" ,)' < <(print_eval_array _columns)
+	array.pop _args
+	_args+=(")")
+	sqlite3.call "${_args[*]}"
+}
+sqlite3.call() {
+	msg.debug sqlite3 "${SQLITE3_OPTIONS[@]}" "$SQLITE3_DBPATH" "$@" 1>&2
+	sqlite3 "${SQLITE3_OPTIONS[@]}" "$SQLITE3_DBPATH" "$@"
+}
+sqlite3.insert() {
+	local _table="$1" _args=()
+	shift 1 || return 1
+	local _values=("$@")
+	_args+=(insert into "$_table" values '(')
+	for_each eval '_args+=("\"{}\"" ,)' < <(print_eval_array _values)
+	array.pop _args
+	_args+=(");")
+	sqlite3.call "${_args[*]}"
+}
 sqlite3.select() {
 	local _table="$1" _args=()
 	shift 1 || return 1
@@ -546,10 +552,6 @@ sqlite3.select() {
 	array.pop _args
 	_args+=("from" "$_table" ";")
 	sqlite3.call "${_args[*]}"
-}
-sqlite3.call() {
-	msg.debug sqlite3 "${SQLITE3_OPTIONS[@]}" "$SQLITE3_DBPATH" "$@" 1>&2
-	sqlite3 "${SQLITE3_OPTIONS[@]}" "$SQLITE3_DBPATH" "$@"
 }
 sqlite3.exist_table() {
 	local _result
@@ -569,19 +571,17 @@ sqlite3.exist_field() {
 	fi
 	return 1
 }
-sqlite3.create() {
-	local _table="$1" _args=() _columns=()
-	shift 1 || return 1
-	_columns=("$@")
-	_args+=(create table "$_table" "(")
-	for_each eval '_args+=("\"{}\"" ,)' < <(print_eval_array _columns)
-	array.pop _args
-	_args+=(")")
-	sqlite3.call "${_args[*]}"
-}
 sqlite3.connect() {
 	export SQLITE3_DBPATH="$1"
 	echo ".open \"$SQLITE3_DBPATH\"" | sqlite3
+	return 0
+}
+sqlite3.current_db() {
+	if [[ -z ${SQLITE3_DBPATH-""} ]]; then
+		msg.err "No datebase is connected."
+		return 1
+	fi
+	echo "${SQLITE3_DBPATH}"
 	return 0
 }
 sqlite3.select_all() {
@@ -589,31 +589,18 @@ sqlite3.select_all() {
 	shift 1 || return 1
 	sqlite3.call "select * from $_table"
 }
-cache.get_dir() {
-	echo "${TMPDIR-"/tmp"}/$(cache.get_id)"
-}
-cache.get_id() {
-	if [[ -z ${FSBLIB_CACHEID-""} ]]; then
-		cache.create_dir >/dev/null
-	fi
-	echo "$FSBLIB_CACHEID"
-}
-cache.get() {
-	cat "$(cache.get_dir)/$1" 2>/dev/null || return 1
-}
-cache.get_time_diff_from_last_update() {
-	local _Now _Last
-	_Now="$(date "+%s")"
-	_Last="$(cache.get_file_last_update "$1")"
-	echo "$((_Now - _Last))"
-	return 0
-}
 cache.exist() {
 	local _File
 	_File="$(cache.create_dir)/$1"
 	[[ -e $_File ]] || return 1
 	(("$(cache.get_time_diff_from_last_update "$_File")" > "${KEEPCACHESEC-"86400"}")) && return 2
 	return 0
+}
+cache.get_dir() {
+	echo "${TMPDIR-"/tmp"}/$(cache.get_id)"
+}
+cache.get() {
+	cat "$(cache.get_dir)/$1" 2>/dev/null || return 1
 }
 cache.get_file_last_update() {
 	local _isGnu=false
@@ -627,6 +614,24 @@ cache.get_file_last_update() {
 		}
 	fi
 }
+cache.get_time_diff_from_last_update() {
+	local _Now _Last
+	_Now="$(date "+%s")"
+	_Last="$(cache.get_file_last_update "$1")"
+	echo "$((_Now - _Last))"
+	return 0
+}
+cache.get_id() {
+	if [[ -z ${FSBLIB_CACHEID-""} ]]; then
+		cache.create_dir >/dev/null
+	fi
+	echo "$FSBLIB_CACHEID"
+}
+cache.create() {
+	cache.create_dir >/dev/null
+	cat >"$(cache.get_dir)/${1}"
+	cat "$(cache.get_dir)/$1"
+}
 cache.create_dir() {
 	FSBLIB_CACHEID="${FSBLIB_CACHEID-"$(random_string "10")"}"
 	export FSBLIB_CACHEID="$FSBLIB_CACHEID"
@@ -635,37 +640,6 @@ cache.create_dir() {
 	mkdir -p "$_Dir"
 	echo "$_Dir"
 	return 0
-}
-cache.create() {
-	cache.create_dir >/dev/null
-	cat >"$(cache.get_dir)/${1}"
-	cat "$(cache.get_dir)/$1"
-}
-em.get_world_pkg_list() {
-	sed -E 's|:.+$||g' /var/lib/portage/world | xargs -I{} bash -c 'ls -d /var/db/pkg/{}-* | sed "s|/var/db/pkg/||g" | grep -E "{}-[0-9]"'
-}
-em.get_repo_location() {
-	em.get_repo_conf | ini.get_param "$1" location
-}
-em.get_repo_conf() {
-	cat /etc/portage/repos.conf /etc/portage/repos.conf/* 2>/dev/null
-}
-em.get_default_repo_name() {
-	em.get_repo_conf | ini.get_param DEFAULT main-repo
-}
-em.get_repo_pkg_list() {
-	local _RepoPath
-	_RepoPath="$(em.get_repo_location "$1")"
-	find "$_RepoPath" -mindepth 3 -maxdepth 3 -type f -name '*.ebuild' | sed -e "s|${_RepoPath%/}/||g" -e 's|.ebuild$||g' | awk -F "/" '{print $1"/"$3}'
-}
-em.get_installed_pkg_list() {
-	find /var/db/pkg/ -mindepth 2 -maxdepth 2 -type d | sed 's|/var/db/pkg/||g'
-}
-em.get_all_pkg_list() {
-	em.get_repo_conf | sed -e 's/^ *//' -e 's/ *$//' | grep "^ *location *=" | sed -e 's/^location *= *//' | xargs -L1 realpath | xargs -I{} bash -c "find '{}' -mindepth 3 -maxdepth 3 -type f -name '*.ebuild' | sed -e 's|{}/||g' -e 's|.ebuild$||g'" | awk -F "/" '{print $1"/"$3}'
-}
-em.no_version() {
-	sed -E 's|\-[0-9]+.+||g'
 }
 ini.get_param_list() {
 	local _RawIniLine=()
@@ -693,15 +667,23 @@ ini.get_param_list() {
 	done < <(print_array "${_RawIniLine[@]}")
 	return "$_Exit"
 }
-ini.get_section_list() {
+ini.get_param() {
 	local _RawIniLine=()
-	local _Line _LineNo=1 _Exit=0
+	local _Line _LineNo=1 _Exit=0 _InSection=false
 	readarray -t _RawIniLine
 	while read -r _Line; do
 		ini.parse_line <<<"$_Line"
 		case "$TYPE" in
 		"SECTION")
-			echo "$SECTION"
+			if [[ $SECTION == "$1" ]]; then
+				_InSection=true
+			else
+				_InSection=false
+			fi
+			;;
+		"PARAM-VALUE")
+			[[ $_InSection == false ]] && continue
+			[[ ${FSBLIB_INI_PARSED_PARAM} == "$2" ]] && echo "$FSBLIB_INI_PARSED_VALUE"
 			;;
 		"ERROR")
 			echo "Line $_LineNo: Failed to parse Ini" 1>&2
@@ -711,6 +693,9 @@ ini.get_section_list() {
 		_LineNo=$((_LineNo + 1))
 	done < <(print_array "${_RawIniLine[@]}")
 	return "$_Exit"
+}
+ini.get_last_param() {
+	ini.get_param_list "$1" | tail -n 1
 }
 ini.parse_line() {
 	local _Line
@@ -742,23 +727,15 @@ ini.parse_line() {
 	esac
 	return 0
 }
-ini.get_param() {
+ini.get_section_list() {
 	local _RawIniLine=()
-	local _Line _LineNo=1 _Exit=0 _InSection=false
+	local _Line _LineNo=1 _Exit=0
 	readarray -t _RawIniLine
 	while read -r _Line; do
 		ini.parse_line <<<"$_Line"
 		case "$TYPE" in
 		"SECTION")
-			if [[ $SECTION == "$1" ]]; then
-				_InSection=true
-			else
-				_InSection=false
-			fi
-			;;
-		"PARAM-VALUE")
-			[[ $_InSection == false ]] && continue
-			[[ ${FSBLIB_INI_PARSED_PARAM} == "$2" ]] && echo "$FSBLIB_INI_PARSED_VALUE"
+			echo "$SECTION"
 			;;
 		"ERROR")
 			echo "Line $_LineNo: Failed to parse Ini" 1>&2
@@ -769,8 +746,27 @@ ini.get_param() {
 	done < <(print_array "${_RawIniLine[@]}")
 	return "$_Exit"
 }
-ini.get_last_param() {
-	ini.get_param_list "$1" | tail -n 1
+ini.new_section() {
+	local IniContents=()
+	local Section="$1"
+	readarray -t IniContents
+	if print_array "${IniContents[@]}" | ini.get_section_list | grep -x "$Section" >/dev/null; then
+		print_eval_array IniContents
+		return 0
+	fi
+	if [[ -z "$(array.last IniContents)" ]]; then
+		array.pop IniContents
+	fi
+	IniContents+=("" "[$Section]")
+	print_eval_array IniContents
+	return 0
+}
+ini.set_value() {
+	local IniContents=()
+	local Section="$1" Param="$2"
+	readarray -t IniContents
+	readarray -t IniContents < <(print_array "${IniContents[@]}" | ini.new_section "$Section" | ini.new_param "$Section" "$Param")
+	print_eval_array IniContents
 }
 ini.new_param() {
 	local IniContents=() Line
@@ -816,527 +812,71 @@ ini.new_param() {
 	print_eval_array NewIniContents
 	return 0
 }
-ini.set_value() {
-	local IniContents=()
-	local Section="$1" Param="$2"
-	readarray -t IniContents
-	readarray -t IniContents < <(print_array "${IniContents[@]}" | ini.new_section "$Section" | ini.new_param "$Section" "$Param")
-	print_eval_array IniContents
+em.get_repo_pkg_list() {
+	local _RepoPath
+	_RepoPath="$(em.get_repo_location "$1")"
+	find "$_RepoPath" -mindepth 3 -maxdepth 3 -type f -name '*.ebuild' | sed -e "s|${_RepoPath%/}/||g" -e 's|.ebuild$||g' | awk -F "/" '{print $1"/"$3}'
 }
-ini.new_section() {
-	local IniContents=()
-	local Section="$1"
-	readarray -t IniContents
-	if print_array "${IniContents[@]}" | ini.get_section_list | grep -x "$Section" >/dev/null; then
-		print_eval_array IniContents
-		return 0
-	fi
-	if [[ -z "$(array.last IniContents)" ]]; then
-		array.pop IniContents
-	fi
-	IniContents+=("" "[$Section]")
-	print_eval_array IniContents
-	return 0
+em.get_repo_location() {
+	em.get_repo_conf | ini.get_param "$1" location
 }
-array.pop() {
-	readarray -t "$1" < <(print_eval_array "$1" | sed -e '$d')
+em.get_default_repo_name() {
+	em.get_repo_conf | ini.get_param DEFAULT main-repo
 }
-array.shift() {
-	readarray -t "$1" < <(print_eval_array "$1" | sed "1,${2-"1"}d")
+em.get_all_pkg_list() {
+	em.get_repo_conf | sed -e 's/^ *//' -e 's/ *$//' | grep "^ *location *=" | sed -e 's/^location *= *//' | xargs -L1 realpath | xargs -I{} bash -c "find '{}' -mindepth 3 -maxdepth 3 -type f -name '*.ebuild' | sed -e 's|{}/||g' -e 's|.ebuild$||g'" | awk -F "/" '{print $1"/"$3}'
 }
-array.remove() {
-	readarray -t "$1" < <(print_eval_array "$1" | RemovematchLine "$2")
+em.get_world_pkg_list() {
+	sed -E 's|:.+$||g' /var/lib/portage/world | xargs -I{} bash -c 'ls -d /var/db/pkg/{}-* | sed "s|/var/db/pkg/||g" | grep -E "{}-[0-9]"'
 }
-array.rev() {
-	readarray -t "$1" < <(print_eval_array "$1" | tac)
+em.get_installed_pkg_list() {
+	find /var/db/pkg/ -mindepth 2 -maxdepth 2 -type d | sed 's|/var/db/pkg/||g'
 }
-array.append() {
-	local _ArrName="$1"
-	shift 1 || return 1
-	readarray -t -O "$(array_index "$_ArrName")" "$_ArrName" < <(cat)
+em.get_repo_conf() {
+	cat /etc/portage/repos.conf /etc/portage/repos.conf/* 2>/dev/null
 }
-array.from_str() {
-	declare -a -x "$1"
-	readarray -t "$1" < <(break_char)
-}
-array.push() {
-	eval "print_array \"\${$1[@]}\"" | grep -qx "$2" && return 0
-	eval "$1+=(\"$2\")"
-}
-array.last() {
-	print_eval "$1[$(array.last_index "$1")]"
-}
-array.eval() {
-	eval "print_array \"\${$1[@]}\""
-}
-array.print() {
-	(($# >= 1)) || return 0
-	printf "%s\n" "${@}"
-}
-array.last_index() {
-	calc_int "$(array.length "$1")" - 1
-}
-array.index_of() {
-	local n=()
-	readarray -t n < <(grep -x -n "$1" | cut -d ":" -f 1 | for_each eval echo '$(( {} - 1 ))')
-	(("${#n[@]}" >= 1)) || return 1
-	print_array "${n[@]}"
-	return 0
-}
-array.length() {
-	print_eval "#${1}[@]"
-}
-array.includes() {
-	print_eval_array "$1" | grep -qx "$2"
-}
-array.for_each() {
-	print_eval_array "$1" | for_each "${@:2}"
-}
-url.path_and_query_and_fragment() {
-	local i
-	while read -r i; do
-		sed "s|^//$(url.authority <<<"$i")||g" <<<"$(url.no_scheme <<<"$i")"
-	done
-}
-url.query() {
-	local i
-	while read -r i; do
-		url.path_and_query_and_fragment <<<"$i" | sed "s|#$(url.fragment <<<"$i")||g" | cut -d "?" -f 2-
-	done
-}
-url.scheme() {
-	cut -d ":" -f 1
-}
-url.authority() {
-	local i _NoScheme
-	while read -r i; do
-		_NoScheme=$(url.no_scheme <<<"$i")
-		[[ $_NoScheme == "//"* ]] || return 1
-		cut -d "/" -f 1 < <(sed "s|^//||g" <<<"$_NoScheme")
-	done
-}
-url.user() {
-	local i
-	while read -r i; do
-		[[ $i == *"@"* ]] || {
-			echo ""
-			continue
-		}
-		cut -d "@" -f 1 <<<"$i"
-	done < <(url.authority)
-}
-url.host() {
-	url.authority | cut -d "@" -f 2- | cut -d ":" -f 1
-}
-url.path() {
-	url.path_and_query_and_fragment | cut -d "#" -f 1 | cut -d "?" -f 1
-}
-url.no_scheme() {
-	cut -d ":" -f 2-
-}
-url.port() {
-	local i
-	while read -r i; do
-		[[ $i == *":"* ]] || {
-			continue
-		}
-		cut -d ":" -f 2 <<<"$i"
-	done < <(url.authority)
-}
-url.fragment() {
-	local i
-	i="$(url.path_and_query_and_fragment)"
-	[[ $i == *"#"* ]] || return 0
-	cut -d "#" -f 2- <<<"$i"
-}
-url.has_authority() {
-	local i="${1-""}"
-	[[ -n $i ]] || read -r i
-	[[ "$(url.no_scheme <<<"$i")" == "//"* ]]
-}
-url.has_port() {
-	local i="${1-""}"
-	[[ -n $i ]] || read -r i
-	[[ "$(url.authority <<<"$i")" == *":"* ]]
-}
-url.has_fragment() {
-	local i="${1-""}"
-	[[ -n $i ]] || read -r i
-	[[ "$(url.path_and_query_and_fragment <<<"$i")" == *"#"* ]]
-}
-url.has_query() {
-	local i="${1-""}"
-	[[ -n $i ]] || read -r i
-	[[ "$(url.path_and_query_and_fragment <<<"$i")" == *"?"* ]]
-}
-url.has_user() {
-	local i="${1-""}"
-	[[ -n $i ]] || read -r i
-	[[ "$(url.authority <<<"$i")" == *"@"* ]]
-}
-url.parse() {
-	local i="${1-""}"
-	if [[ -z ${i} ]]; then
-		read -r i
-	fi
-	url.scheme <<<"$i"
-	echo ":"
-	if url.has_authority "$i"; then
-		if url.has_user "$i"; then
-			url.user <<<"$i"
-			echo "@"
-		fi
-		url.host <<<"$i"
-		if url.has_port "$i"; then
-			echo ":"
-			url.port <<<"$i"
-		fi
-	fi
-	url.path <<<"$i"
-	if url.has_fragment "$i"; then
-		echo "#"
-		url.fragment <<<"$i"
-	fi
-	if url.has_query "$i"; then
-		echo "?"
-		url.query <<<"$i"
-	fi
-}
-url.parse_query() {
-	local i="${1-""}"
-	if [[ -z ${i} ]]; then
-		read -r i
-	fi
-	if grep -q "[a-zA-Z]://" <<<"$i"; then
-		i="$(url.query <<<"$i")"
-	fi
-	i="$(sed "s|^\?||g" <<<"$i")"
-	tr "&" "\n" <<<"$i" | cut -d "#" -f 1
-}
-url.get_query() {
-	grep "^ *$1=" | cut -d "=" -f 2-
-}
-pm.get_repo_server() {
-	for_each eval 'pm.get_config -r {}' | grep "^Server" | for_each eval "ini.parse_line <<< '{}' ; printf '%s\n' \${VALUE}"
-}
-pm.get_installed_pkg_ver() {
-	if [[ -z ${*} ]]; then
-		cat
-	else
-		print_array "$@"
-	fi | for_each pacman -Q "{}" | cut -d " " -f 2
-	print_array "${PIPESTATUS[@]}" | grep -qx "1" && return 1
-	return 0
-}
-pm.get_keyring_list() {
-	find "$(@GetKeyringDir)" -name "*.gpg" | get_base_name | remove_file_ext
-}
-pm.get_latest_pkg_ver() {
-	local _LANG="${LANG-""}"
-	export LANG=C
-	if [[ -z ${*} ]]; then
-		cat
-	else
-		print_array "$@"
-	fi | for_each pm.run -Si "{}" | grep "^Version" | cut -d ":" -f 2 | remove_blank
-	[[ -n $_LANG ]] && export LANG="$_LANG"
-	return 0
-}
-pm.check_pkg() {
-	local p
-	for p in "$@"; do
-		pm.run -Qq "$p" >/dev/null 2>&1 || return 1
-	done
-	return 0
-}
-pm.get_repo_pkg_list() {
-	pm.run -Slq "$@"
-}
-pm.get_pacman_kernel_pkg() {
-	echo "there is nothing"
-}
-pm.is_repo_pkg() {
-	pm.run -Slq | grep -qx "$(pm.get_name <<<"$1")"
-}
-pm.run_key() {
-	pacman-key --config "${PACMAN_CONF-"/etc/pacman.conf"}" "$@"
-}
-pm.get_repo_ver() {
-	pm.run -Sp --print-format '%v' "$1"
-}
-pm.run() {
-	pacman --noconfirm --config "${PACMAN_CONF-"/etc/pacman.conf"}" "$@"
-}
-pm.get_pacman_keyring_dir() {
-	local _KeyringDir=""
-	_KeyringDir="$(LANG=C pacman-key -h | remove_blank | grep -A 1 -- "^--populate" | tail -n 1 | cut -d "/" -f 2- | sed "s|'$||g")"
-	: "${_KeyringDir="usr/share/pacman/keyrings"}"
-	_KeyringDir="$(pm.get_root)/$_KeyringDir"
-	_KeyringDir="$(sed -E "s|/+|/|g" <<<"$_KeyringDir")"
-	if [[ -e $_KeyringDir ]]; then
-		readlinkf "$_KeyringDir"
-	else
-		echo "$_KeyringDir"
-	fi
-}
-pm.get_root() {
-	pm.get_config RootDir
-}
-pm.get_repo_list_from_conf() {
-	pm.get_config --repo-list
-}
-pm.get_name() {
-	cut -d "<" -f 1 | cut -d ">" -f 1 | cut -d "=" -f 1
-}
-pm.get_config() {
-	LANG=C pacman-conf --config="${PACMAN_CONF-"/etc/pacman.conf"}" "$@"
-}
-pm.get_repo_conf() {
-	for_each eval 'echo [{}] && pm.get_config -r {}'
-}
-pm.pacman_gpg() {
-	gpg --homedir "$(pm.get_config GPGDir)" "$@"
-}
-pm.get_db_section() {
-	readarray -t _Stdin
-	print_array "${_Stdin[@]}" | sed -ne "/^%$1%$/,/^%$(print_eval_array _Stdin | pm.get_db_next_section "$1")%$/p" | sed '1d; $d'
-}
-pm.get_db_next_section() {
-	pm.get_db_section_list | grep -x -A 1 "^%$1%$" | get_line 2 | sed "s|^%||g; s|%$||g"
-}
-pm.get_db_section_list() {
-	grep -E "^%.*%$"
-}
-pm.get_pkg_arch() {
-	pm.get_sync_db_desc "$1" | pm.get_db_section ARCH | remove_blank
-}
-pm.get_repo_list_from_local_db() {
-	find "$(pm.get_config DBPath)/sync" -mindepth 1 -maxdepth 1 -type f | get_base_name | sed "s|.db$||g"
-	return 0
-}
-pm.get_sync_db_desc() {
-	local _path
-	_path="$(pm.get_sync_db_desc_path "$1")"
-	[[ -e $_path ]] || return 1
-	cat "$_path/desc"
-}
-pm.get_sync_all_desc() {
-	find "$(pm.get_db_tmp_dir)" -mindepth 3 -maxdepth 3 -name "desc" -type f
-}
-pm.open_sync_db() {
-	local _Dir _RepoDb
-	pm.create_db_tmp_dir
-	_Dir="$(pm.get_db_tmp_dir)/sync/$1"
-	mkdir -p "$_Dir"
-	_RepoDb="$(pm.get_config DBPath)/sync/$1.db"
-	[[ -e $_RepoDb ]] || return 1
-	tar -xzf "${_RepoDb}" -C "$_Dir" || return 1
-}
-pm.is_opend_sync_db() {
-	readarray -t _PkgDbList < <(find "$(pm.get_db_tmp_dir)/sync/$1" -mindepth 1 -maxdepth 1 -type d)
-	(("${#_PkgDbList[@]}" > 0)) && return 0
-	return 1
-}
-pm.get_virtual_pkg_list() {
-	pm.get_repo_list_from_local_db | for_each pm.open_sync_db {}
-	pm.get_sync_all_desc | for_each eval "pm.get_db_section PROVIDES < {}" | remove_blank
-}
-pm.get_db_tmp_dir() {
-	echo "${TMPDIR-"/tmp"}/fasbashlib-pacman-db"
-}
-pm.parse_pkg_file_name() {
-	local _Pkg="$1"
-	local _PkgName _PkgVer _PkgRel _Arch _FileExt
-	local _PkgWithOutExt
-	if grep "/" <<<"$_Pkg"; then
-		_Pkg="$(basename "$_Pkg")"
-	fi
-	_FileExt="$(get_last_split_string "-" "$_Pkg" | cut -d "." -f 2-)"
-	_PkgWithOutExt="${_Pkg%%".${_FileExt}"}"
-	_Arch=$(get_last_split_string "-" "${_PkgWithOutExt}")
-	_PkgRel=$(get_last_split_string "-" "${_PkgWithOutExt%%"-${_Arch}"}")
-	_PkgVer=$(get_last_split_string "-" "${_PkgWithOutExt%%"-${_PkgRel}-${_Arch}"}")
-	_PkgName="${_PkgWithOutExt%%"-${_PkgVer}-${_PkgRel}-${_Arch}"}"
-	_ParsedPkg=("${_PkgName}" "-" "$_PkgVer" "-" "$_PkgRel" "-" "$_Arch" ".$_FileExt")
-	if [[ ! "$(print_array "${_ParsedPkg[@]}" | tr -d "\n")" == "${_Pkg}" ]]; then
-		return 1
-	fi
-	print_array "${_ParsedPkg[@]}"
-}
-pm.get_sync_db_desc_path() {
-	local _repo
-	_repo="$(pacman -Sp --print-format '%r' "$1")"
-	{
-		IsPacmanSyncDbOpend "$_repo" || OpenPacmanSyncDb "$_repo"
-	} || return 1
-	echo "$(pm.get_db_tmp_dir)/sync/$(pacman -Sp --print-format '%r/%n-%v' "$1")"
-}
-pm.create_db_tmp_dir() {
-	mkdir -p "$(pm.get_db_tmp_dir)"
-}
-pm.delete_db_tmp_dir() {
-	rm -rf "$(pm.get_db_tmp_dir)"
-}
-pm.opened_sync_db_list() {
-	find "$(pm.get_db_tmp_dir)/sync/" -mindepth 1 -maxdepth 1 -type d
-}
-misskey.notes.search() {
-	misskey.binding_base "notes/search" query limit -- "$@"
-}
-misskey.notes.create() {
-	misskey.binding_base "notes/create" text -- "$@"
-}
-misskey.notes.renotes() {
-	misskey.binding_base "notes/renotes" noteId limit sinceId untilId -- "$@"
-}
-misskey.users.stats() {
-	misskey.binding_base "users/stats" userId -- "${1:-"$(misskey.my_id)"}" "${@:2}"
-}
-misskey.users.search_by_username_and_host() {
-	misskey.binding_base "users/search-by-username-and-host" username -- "${1:-"$(misskey.my_user_name)"}" "${@:2}"
-}
-misskey.users.pages() {
-	misskey.binding_base "users/pages" userId -- "${1:-"$(misskey.my_id)"}" "${@:2}"
-}
-misskey.users.show() {
-	misskey.binding_base "users/show" userId -- "${1:-"$(misskey.my_id)"}" "${@:2}"
-}
-misskey.users.get_frequently_replied_users() {
-	misskey.binding_base "users/get-frequently-replied-users" userId -- "${1:-"$(misskey.my_id)"}" "${@:2}"
-}
-misskey.users.notes() {
-	misskey.binding_base "users/notes" userId -- "${1:-"$(misskey.my_id)"}" "${@:2}"
-}
-misskey.admin.server_info() {
-	misskey.binding_base "/admin/server-info" -- "$@"
-}
-misskey.setup() {
-	export MISSKEY_DOMAIN="${1-"${MISSKEY_DOMAIN-""}"}"
-	export MISSKEY_TOKEN="${2-"${MISSKEY_TOKEN-""}"}"
-	export MISSKEY_ENTRY="https://${MISSKEY_DOMAIN}/api"
-}
-misskey.meta() {
-	misskey.binding_base "/meta" -- "$@"
-}
-misskey.server_info() {
-	misskey.binding_base "/server-info" -- "$@"
-}
-misskey.i() {
-	misskey.binding_base "/i" -- "$@"
-}
-misskey.make_json() {
-	local i _Key _Value
-	for i in "i=$MISSKEY_TOKEN" "$@"; do
-		_Key=$(cut -d "=" -f 1 <<<"$i")
-		_Value=$(cut -d "=" -f 2- <<<"$i")
-		if [[ $_Value =~ ^[0-9]+$ ]] || [[ $_Value == true ]] || [[ $_Value == false ]] || [[ $_Value == "{"*"}" ]] || [[ $_Value == "["*"]" ]]; then
-			echo -n "{\"$_Key\": $_Value}"
-		else
-			echo -n "{\"$_Key\": \"$_Value\"}"
-		fi
-	done | sed "s|}{|,|g" | jq -c -M
-}
-misskey.send_req() {
-	local _Url="$1" _CurlArgs=()
-	shift 1
-	_CurlArgs+=(-s -L)
-	_CurlArgs+=(-X POST)
-	_CurlArgs+=(-H "Content-Type: application/json")
-	_CurlArgs+=(-d "$(misskey.make_json "$@")")
-	_CurlArgs+=("$_Url")
-	msg.debug "Run: ${_CurlArgs[*]//"${MISSKEY_TOKEN}"/"TOKEN"}"
-	curl "${_CurlArgs[@]}"
-}
-misskey.binding_base() {
-	local _API="$1"
-	shift 1
-	local i _APIArgs=("") _Args
-	for i in "$@"; do
-		shift 1 2>/dev/null || true
-		if [[ $i == "--" ]]; then
-			break
-		else
-			_APIArgs+=("$i")
-		fi
-	done
-	local _Cnt _Shifted=false
-	for ((_Cnt = 1; _Cnt <= "${#_APIArgs[@]} - 1"; _Cnt++)); do
-		_Args+=("${_APIArgs[$_Cnt]}=$(eval echo "\${${_Cnt}:-""}")")
-		if [[ -z "$(eval echo "\${$((_Cnt + 1)):-""}")" ]]; then
-			shift "$_Cnt"
-			_Shifted=true
-			break
-		fi
-	done
-	if ! bool _Shifted; then
-		_Shifted=true
-		shift "$((${#_APIArgs[@]} - 1))"
-	fi
-	if [[ -z ${MISSKEY_ENTRY-""} ]]; then
-		misskey.setup "${MISSKEY_DOMAIN}" "$MISSKEY_TOKEN"
-	fi
-	misskey.send_req "${MISSKEY_ENTRY%/}/${_API#/}" "${_Args[@]}" "$@"
-}
-misskey.my_id() {
-	misskey.i | jq -r ".id"
-}
-misskey.is_admin() {
-	bool "$(misskey.i | jq -r ".isAdmin")"
-}
-misskey.my_name() {
-	misskey.i | jq -r ".name"
-}
-misskey.my_user_name() {
-	misskey.i | jq -r ".username"
-}
-array_includes() {
-	array.includes "$@"
-}
-str_to_char_list() {
-	array.from_str "$1"
+em.no_version() {
+	sed -E 's|\-[0-9]+.+||g'
 }
 add_new_to_array() {
 	array.push "$@"
 }
-array_index() {
-	array.length "$1"
-}
-rev_array() {
-	array.rev "$1"
+str_to_char_list() {
+	array.from_str "$1"
 }
 print_array() {
 	array.print "$@"
 }
-get_array_index() {
-	array.index_of "$1"
+array_append() {
+	array.append "$1"
+}
+array_includes() {
+	array.includes "$@"
 }
 print_eval_array() {
 	array.eval "$1"
 }
-array_append() {
-	array.append "$1"
+get_array_index() {
+	array.index_of "$1"
+}
+rev_array() {
+	array.rev "$1"
+}
+array_index() {
+	array.length "$1"
 }
 remove_file_ext() {
 	local Ext
 	for_each eval 'Ext=$(get_file_ext <<< {}); sed "s|.$Ext$||g" <<< {}; unset Ext'
 }
-get_file_ext() {
-	get_base_name | rev | cut -d "." -f 1 | rev
+file_type() {
+	file --mime-type -b "$1"
 }
 get_base_name() {
 	for_each basename "{}"
 }
-file_type() {
-	file --mime-type -b "$1"
-}
-check_func_defined() {
-	typeset -f "${1}" >/dev/null || return 1
-}
-is_available() {
-	type "$1" 2>/dev/null 1>&2
-}
-get_line() {
-	head -n "$1" | tail -n 1
+get_file_ext() {
+	get_base_name | rev | cut -d "." -f 1 | rev
 }
 for_each() {
 	local _Item
@@ -1344,17 +884,20 @@ for_each() {
 		"${@//"{}"/"${_Item}"}" || return "${?}"
 	done
 }
+is_available() {
+	type "$1" 2>/dev/null 1>&2
+}
 loop() {
 	local _T="$1"
 	shift 1 || return 1
 	((_T == 0)) && return 0
 	for_each "$@" < <(yes "" | head -n "$_T")
 }
-break_char() {
-	grep -o "."
+get_line() {
+	head -n "$1" | tail -n 1
 }
-get_last_split_string() {
-	rev <<<"$2" | cut -d "$1" -f 1 | rev
+check_func_defined() {
+	typeset -f "${1}" >/dev/null || return 1
 }
 text_box() {
 	local _Content=() _Length _Vertical="|" _Line="=" _Header="${1-""}"
@@ -1376,10 +919,26 @@ cut_last_string() {
 	echo "${1%%"${2}"}"
 	return 0
 }
+break_char() {
+	grep -o "."
+}
+random_string() {
+	base64 <"/dev/random" | fold -w "$1" | head -n 1
+	return 0
+}
+get_last_split_string() {
+	rev <<<"$2" | cut -d "$1" -f 1 | rev
+}
 is_uu_id() {
 	local _UUID="${1-""}"
 	[[ ${_UUID//-/} =~ ^[[:xdigit:]]{32}$ ]] && return 0
 	return 1
+}
+remove_blank() {
+	sed "s|^ *||g; s| *$||g; s|^	*||g; s|	*$||g; /^$/d"
+}
+print_eval() {
+	eval echo "\${$1}"
 }
 to_lower_stdin() {
 	local _Str
@@ -1390,24 +949,14 @@ to_lower() {
 	local _Str="${1,,}"
 	[[ -z ${_Str-""} ]] || echo "${_Str}"
 }
-print_eval() {
-	eval echo "\${$1}"
-}
-random_string() {
-	base64 <"/dev/random" | fold -w "$1" | head -n 1
-	return 0
-}
-remove_blank() {
-	sed "s|^ *||g; s| *$||g; s|^	*||g; s|	*$||g; /^$/d"
-}
-calc_int() {
-	echo "$(("$@"))"
-}
 sum() {
 	local _Arg=()
 	for_each eval '_Arg+=("{}" "+")' < <(print_array "$@")
 	readarray -t _Arg < <(print_array "${_Arg[@]}" | sed "${#_Arg[@]}d")
 	calc_int "${_Arg[@]}"
+}
+calc_int() {
+	echo "$(("$@"))"
 }
 ntest() {
 	(("$@")) || return 1
@@ -1462,4 +1011,455 @@ match() {
 		fi
 	done
 	return 1
+}
+array.remove() {
+	readarray -t "$1" < <(print_eval_array "$1" | remove_match_line "$2")
+}
+array.push() {
+	eval "print_array \"\${$1[@]}\"" | grep -qx "$2" && return 0
+	eval "$1+=(\"$2\")"
+}
+array.pop() {
+	readarray -t "$1" < <(print_eval_array "$1" | sed -e '$d')
+}
+array.append() {
+	local _ArrName="$1"
+	shift 1 || return 1
+	readarray -t -O "$(array_index "$_ArrName")" "$_ArrName" < <(cat)
+}
+array.shift() {
+	readarray -t "$1" < <(print_eval_array "$1" | sed "1,${2-"1"}d")
+}
+array.from_str() {
+	declare -a -x "$1"
+	readarray -t "$1" < <(break_char)
+}
+array.rev() {
+	readarray -t "$1" < <(print_eval_array "$1" | tac)
+}
+array.print() {
+	(($# >= 1)) || return 0
+	printf "%s\n" "${@}"
+}
+array.eval() {
+	eval "print_array \"\${$1[@]}\""
+}
+array.last() {
+	print_eval "$1[$(array.last_index "$1")]"
+}
+array.length() {
+	print_eval "#${1}[@]"
+}
+array.index_of() {
+	local n=()
+	readarray -t n < <(grep -x -n "$1" | cut -d ":" -f 1 | for_each eval echo '$(( {} - 1 ))')
+	(("${#n[@]}" >= 1)) || return 1
+	print_array "${n[@]}"
+	return 0
+}
+array.last_index() {
+	calc_int "$(array.length "$1")" - 1
+}
+array.for_each() {
+	print_eval_array "$1" | for_each "${@:2}"
+}
+array.includes() {
+	print_eval_array "$1" | grep -qx "$2"
+}
+url.port() {
+	local i
+	while read -r i; do
+		[[ $i == *":"* ]] || {
+			continue
+		}
+		cut -d ":" -f 2 <<<"$i"
+	done < <(url.authority)
+}
+url.authority() {
+	local i _NoScheme
+	while read -r i; do
+		_NoScheme=$(url.no_scheme <<<"$i")
+		[[ $_NoScheme == "//"* ]] || return 1
+		cut -d "/" -f 1 < <(sed "s|^//||g" <<<"$_NoScheme")
+	done
+}
+url.scheme() {
+	cut -d ":" -f 1
+}
+url.fragment() {
+	local i
+	i="$(url.path_and_query_and_fragment)"
+	[[ $i == *"#"* ]] || return 0
+	cut -d "#" -f 2- <<<"$i"
+}
+url.no_scheme() {
+	cut -d ":" -f 2-
+}
+url.path() {
+	url.path_and_query_and_fragment | cut -d "#" -f 1 | cut -d "?" -f 1
+}
+url.query() {
+	local i
+	while read -r i; do
+		url.path_and_query_and_fragment <<<"$i" | sed "s|#$(url.fragment <<<"$i")||g" | cut -d "?" -f 2-
+	done
+}
+url.path_and_query_and_fragment() {
+	local i
+	while read -r i; do
+		sed "s|^//$(url.authority <<<"$i")||g" <<<"$(url.no_scheme <<<"$i")"
+	done
+}
+url.user() {
+	local i
+	while read -r i; do
+		[[ $i == *"@"* ]] || {
+			echo ""
+			continue
+		}
+		cut -d "@" -f 1 <<<"$i"
+	done < <(url.authority)
+}
+url.host() {
+	url.authority | cut -d "@" -f 2- | cut -d ":" -f 1
+}
+url.has_user() {
+	local i="${1-""}"
+	[[ -n $i ]] || read -r i
+	[[ "$(url.authority <<<"$i")" == *"@"* ]]
+}
+url.has_port() {
+	local i="${1-""}"
+	[[ -n $i ]] || read -r i
+	[[ "$(url.authority <<<"$i")" == *":"* ]]
+}
+url.has_authority() {
+	local i="${1-""}"
+	[[ -n $i ]] || read -r i
+	[[ "$(url.no_scheme <<<"$i")" == "//"* ]]
+}
+url.has_fragment() {
+	local i="${1-""}"
+	[[ -n $i ]] || read -r i
+	[[ "$(url.path_and_query_and_fragment <<<"$i")" == *"#"* ]]
+}
+url.has_query() {
+	local i="${1-""}"
+	[[ -n $i ]] || read -r i
+	[[ "$(url.path_and_query_and_fragment <<<"$i")" == *"?"* ]]
+}
+url.parse() {
+	local i="${1-""}"
+	if [[ -z ${i} ]]; then
+		read -r i
+	fi
+	url.scheme <<<"$i"
+	echo ":"
+	if url.has_authority "$i"; then
+		if url.has_user "$i"; then
+			url.user <<<"$i"
+			echo "@"
+		fi
+		url.host <<<"$i"
+		if url.has_port "$i"; then
+			echo ":"
+			url.port <<<"$i"
+		fi
+	fi
+	url.path <<<"$i"
+	if url.has_fragment "$i"; then
+		echo "#"
+		url.fragment <<<"$i"
+	fi
+	if url.has_query "$i"; then
+		echo "?"
+		url.query <<<"$i"
+	fi
+}
+url.get_query() {
+	grep "^ *$1=" | cut -d "=" -f 2-
+}
+url.parse_query() {
+	local i="${1-""}"
+	if [[ -z ${i} ]]; then
+		read -r i
+	fi
+	if grep -q "[a-zA-Z]://" <<<"$i"; then
+		i="$(url.query <<<"$i")"
+	fi
+	i="$(sed "s|^\?||g" <<<"$i")"
+	tr "&" "\n" <<<"$i" | cut -d "#" -f 1
+}
+pm.run_key() {
+	pacman-key --config "${PACMAN_CONF-"/etc/pacman.conf"}" "$@"
+}
+pm.check_pkg() {
+	local p
+	for p in "$@"; do
+		pm.run -Qq "$p" >/dev/null 2>&1 || return 1
+	done
+	return 0
+}
+pm.get_repo_server() {
+	for_each eval 'pm.get_config -r {}' | grep "^Server" | for_each eval "ini.parse_line <<< '{}' ; printf '%s\n' \${VALUE}"
+}
+pm.get_config() {
+	LANG=C pacman-conf --config="${PACMAN_CONF-"/etc/pacman.conf"}" "$@"
+}
+pm.is_repo_pkg() {
+	pm.run -Slq | grep -qx "$(pm.get_name <<<"$1")"
+}
+pm.run() {
+	pacman --noconfirm --config "${PACMAN_CONF-"/etc/pacman.conf"}" "$@"
+}
+pm.get_keyring_list() {
+	find "$(@GetKeyringDir)" -name "*.gpg" | get_base_name | remove_file_ext
+}
+pm.pacman_gpg() {
+	gpg --homedir "$(pm.get_config GPGDir)" "$@"
+}
+pm.get_latest_pkg_ver() {
+	local _LANG="${LANG-""}"
+	export LANG=C
+	if [[ -z ${*} ]]; then
+		cat
+	else
+		print_array "$@"
+	fi | for_each pm.run -Si "{}" | grep "^Version" | cut -d ":" -f 2 | remove_blank
+	[[ -n $_LANG ]] && export LANG="$_LANG"
+	return 0
+}
+pm.get_repo_conf() {
+	for_each eval 'echo [{}] && pm.get_config -r {}'
+}
+pm.get_installed_pkg_ver() {
+	if [[ -z ${*} ]]; then
+		cat
+	else
+		print_array "$@"
+	fi | for_each pacman -Q "{}" | cut -d " " -f 2
+	print_array "${PIPESTATUS[@]}" | grep -qx "1" && return 1
+	return 0
+}
+pm.get_root() {
+	pm.get_config RootDir
+}
+pm.get_pacman_kernel_pkg() {
+	echo "there is nothing"
+}
+pm.get_pacman_keyring_dir() {
+	local _KeyringDir=""
+	_KeyringDir="$(LANG=C pacman-key -h | remove_blank | grep -A 1 -- "^--populate" | tail -n 1 | cut -d "/" -f 2- | sed "s|'$||g")"
+	: "${_KeyringDir="usr/share/pacman/keyrings"}"
+	_KeyringDir="$(pm.get_root)/$_KeyringDir"
+	_KeyringDir="$(sed -E "s|/+|/|g" <<<"$_KeyringDir")"
+	if [[ -e $_KeyringDir ]]; then
+		readlinkf "$_KeyringDir"
+	else
+		echo "$_KeyringDir"
+	fi
+}
+pm.get_repo_list_from_conf() {
+	pm.get_config --repo-list
+}
+pm.get_name() {
+	cut -d "<" -f 1 | cut -d ">" -f 1 | cut -d "=" -f 1
+}
+pm.get_repo_pkg_list() {
+	pm.run -Slq "$@"
+}
+pm.get_repo_ver() {
+	pm.run -Sp --print-format '%v' "$1"
+}
+pm.get_db_section_list() {
+	grep -E "^%.*%$"
+}
+pm.get_db_next_section() {
+	pm.get_db_section_list | grep -x -A 1 "^%$1%$" | get_line 2 | sed "s|^%||g; s|%$||g"
+}
+pm.get_db_section() {
+	readarray -t _Stdin
+	print_array "${_Stdin[@]}" | sed -ne "/^%$1%$/,/^%$(print_eval_array _Stdin | pm.get_db_next_section "$1")%$/p" | sed '1d; $d'
+}
+pm.get_repo_list_from_local_db() {
+	find "$(pm.get_config DBPath)/sync" -mindepth 1 -maxdepth 1 -type f | get_base_name | sed "s|.db$||g"
+	return 0
+}
+pm.create_db_tmp_dir() {
+	mkdir -p "$(pm.get_db_tmp_dir)"
+}
+pm.open_sync_db() {
+	local _Dir _RepoDb
+	pm.create_db_tmp_dir
+	_Dir="$(pm.get_db_tmp_dir)/sync/$1"
+	mkdir -p "$_Dir"
+	_RepoDb="$(pm.get_config DBPath)/sync/$1.db"
+	[[ -e $_RepoDb ]] || return 1
+	tar -xzf "${_RepoDb}" -C "$_Dir" || return 1
+}
+pm.is_opend_sync_db() {
+	readarray -t _PkgDbList < <(find "$(pm.get_db_tmp_dir)/sync/$1" -mindepth 1 -maxdepth 1 -type d)
+	(("${#_PkgDbList[@]}" > 0)) && return 0
+	return 1
+}
+pm.opened_sync_db_list() {
+	find "$(pm.get_db_tmp_dir)/sync/" -mindepth 1 -maxdepth 1 -type d
+}
+pm.delete_db_tmp_dir() {
+	rm -rf "$(pm.get_db_tmp_dir)"
+}
+pm.get_sync_db_desc() {
+	local _path
+	_path="$(pm.get_sync_db_desc_path "$1")"
+	[[ -e $_path ]] || return 1
+	cat "$_path/desc"
+}
+pm.get_sync_all_desc() {
+	find "$(pm.get_db_tmp_dir)" -mindepth 3 -maxdepth 3 -name "desc" -type f
+}
+pm.get_pkg_arch() {
+	pm.get_sync_db_desc "$1" | pm.get_db_section ARCH | remove_blank
+}
+pm.parse_pkg_file_name() {
+	local _Pkg="$1"
+	local _PkgName _PkgVer _PkgRel _Arch _FileExt
+	local _PkgWithOutExt
+	if grep "/" <<<"$_Pkg"; then
+		_Pkg="$(basename "$_Pkg")"
+	fi
+	_FileExt="$(get_last_split_string "-" "$_Pkg" | cut -d "." -f 2-)"
+	_PkgWithOutExt="${_Pkg%%".${_FileExt}"}"
+	_Arch=$(get_last_split_string "-" "${_PkgWithOutExt}")
+	_PkgRel=$(get_last_split_string "-" "${_PkgWithOutExt%%"-${_Arch}"}")
+	_PkgVer=$(get_last_split_string "-" "${_PkgWithOutExt%%"-${_PkgRel}-${_Arch}"}")
+	_PkgName="${_PkgWithOutExt%%"-${_PkgVer}-${_PkgRel}-${_Arch}"}"
+	_ParsedPkg=("${_PkgName}" "-" "$_PkgVer" "-" "$_PkgRel" "-" "$_Arch" ".$_FileExt")
+	if [[ ! "$(print_array "${_ParsedPkg[@]}" | tr -d "\n")" == "${_Pkg}" ]]; then
+		return 1
+	fi
+	print_array "${_ParsedPkg[@]}"
+}
+pm.get_virtual_pkg_list() {
+	pm.get_repo_list_from_local_db | for_each pm.open_sync_db {}
+	pm.get_sync_all_desc | for_each eval "pm.get_db_section PROVIDES < {}" | remove_blank
+}
+pm.get_sync_db_desc_path() {
+	local _repo
+	_repo="$(pacman -Sp --print-format '%r' "$1")"
+	{
+		IsPacmanSyncDbOpend "$_repo" || OpenPacmanSyncDb "$_repo"
+	} || return 1
+	echo "$(pm.get_db_tmp_dir)/sync/$(pacman -Sp --print-format '%r/%n-%v' "$1")"
+}
+pm.get_db_tmp_dir() {
+	echo "${TMPDIR-"/tmp"}/fasbashlib-pacman-db"
+}
+misskey.notes.renotes() {
+	misskey.binding_base "notes/renotes" noteId limit sinceId untilId -- "$@"
+}
+misskey.notes.search() {
+	misskey.binding_base "notes/search" query limit -- "$@"
+}
+misskey.notes.create() {
+	misskey.binding_base "notes/create" text -- "$@"
+}
+misskey.users.stats() {
+	misskey.binding_base "users/stats" userId -- "${1:-"$(misskey.my_id)"}" "${@:2}"
+}
+misskey.users.show() {
+	misskey.binding_base "users/show" userId -- "${1:-"$(misskey.my_id)"}" "${@:2}"
+}
+misskey.users.get_frequently_replied_users() {
+	misskey.binding_base "users/get-frequently-replied-users" userId -- "${1:-"$(misskey.my_id)"}" "${@:2}"
+}
+misskey.users.notes() {
+	misskey.binding_base "users/notes" userId -- "${1:-"$(misskey.my_id)"}" "${@:2}"
+}
+misskey.users.pages() {
+	misskey.binding_base "users/pages" userId -- "${1:-"$(misskey.my_id)"}" "${@:2}"
+}
+misskey.users.search_by_username_and_host() {
+	misskey.binding_base "users/search-by-username-and-host" username -- "${1:-"$(misskey.my_user_name)"}" "${@:2}"
+}
+misskey.admin.server_info() {
+	misskey.binding_base "/admin/server-info" -- "$@"
+}
+misskey.setup() {
+	export MISSKEY_DOMAIN="${1-"${MISSKEY_DOMAIN-""}"}"
+	export MISSKEY_TOKEN="${2-"${MISSKEY_TOKEN-""}"}"
+	export MISSKEY_ENTRY="https://${MISSKEY_DOMAIN}/api"
+}
+misskey.i() {
+	misskey.binding_base "/i" -- "$@"
+}
+misskey.meta() {
+	misskey.binding_base "/meta" -- "$@"
+}
+misskey.server_info() {
+	misskey.binding_base "/server-info" -- "$@"
+}
+misskey.binding_base() {
+	local _API="$1"
+	shift 1
+	local i _APIArgs=("") _Args
+	for i in "$@"; do
+		shift 1 2>/dev/null || true
+		if [[ $i == "--" ]]; then
+			break
+		else
+			_APIArgs+=("$i")
+		fi
+	done
+	local _Cnt _Shifted=false
+	for ((_Cnt = 1; _Cnt <= "${#_APIArgs[@]} - 1"; _Cnt++)); do
+		_Args+=("${_APIArgs[$_Cnt]}=$(eval echo "\${${_Cnt}:-""}")")
+		if [[ -z "$(eval echo "\${$((_Cnt + 1)):-""}")" ]]; then
+			shift "$_Cnt"
+			_Shifted=true
+			break
+		fi
+	done
+	if ! bool _Shifted; then
+		_Shifted=true
+		shift "$((${#_APIArgs[@]} - 1))"
+	fi
+	if [[ -z ${MISSKEY_ENTRY-""} ]]; then
+		misskey.setup "${MISSKEY_DOMAIN}" "$MISSKEY_TOKEN"
+	fi
+	misskey.send_req "${MISSKEY_ENTRY%/}/${_API#/}" "${_Args[@]}" "$@"
+}
+misskey.send_req() {
+	local _Url="$1" _CurlArgs=()
+	shift 1
+	_CurlArgs+=(-s -L)
+	_CurlArgs+=(-X POST)
+	_CurlArgs+=(-H "Content-Type: application/json")
+	_CurlArgs+=(-d "$(misskey.make_json "$@")")
+	_CurlArgs+=("$_Url")
+	msg.debug "Run: ${_CurlArgs[*]//"${MISSKEY_TOKEN}"/"TOKEN"}"
+	curl "${_CurlArgs[@]}"
+}
+misskey.make_json() {
+	local i _Key _Value
+	for i in "i=$MISSKEY_TOKEN" "$@"; do
+		_Key=$(cut -d "=" -f 1 <<<"$i")
+		_Value=$(cut -d "=" -f 2- <<<"$i")
+		if [[ $_Value =~ ^[0-9]+$ ]] || [[ $_Value == true ]] || [[ $_Value == false ]] || [[ $_Value == "{"*"}" ]] || [[ $_Value == "["*"]" ]]; then
+			echo -n "{\"$_Key\": $_Value}"
+		else
+			echo -n "{\"$_Key\": \"$_Value\"}"
+		fi
+	done | sed "s|}{|,|g" | jq -c -M
+}
+misskey.is_admin() {
+	bool "$(misskey.i | jq -r ".isAdmin")"
+}
+misskey.my_id() {
+	misskey.i | jq -r ".id"
+}
+misskey.my_user_name() {
+	misskey.i | jq -r ".username"
+}
+misskey.my_name() {
+	misskey.i | jq -r ".name"
 }
