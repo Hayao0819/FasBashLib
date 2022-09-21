@@ -11,9 +11,9 @@ GNU getoptのように引数を解析して並び替えを行う関数です。
 
 ## Index
 
-* [ParseArg()](#parsearg)
+* [ParseArg](#parsearg)
 
-### ParseArg()
+### ParseArg
 
 GNU getoptの最小限の機能をBashで実装した関数です。
 

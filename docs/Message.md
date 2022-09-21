@@ -13,11 +13,11 @@ FSBLIB_MSG 環境変数を設定することで出力先を変更できます
 
 ## Index
 
-* [Info()](#info)
-* [Warn()](#warn)
-* [Debug()](#debug)
+* [Info](#info)
+* [Warn](#warn)
+* [Debug](#debug)
 
-### Info()
+### Info
 
 Output info to stdout
 
@@ -29,7 +29,7 @@ Output info to stdout
 
 * **0**: This script return only 0
 
-### Warn()
+### Warn
 
 Output warning to stderr
 
@@ -41,7 +41,7 @@ Output warning to stderr
 
 * **0**: This script return only 0
 
-### Debug()
+### Debug
 
 Output debug message to stderr
 

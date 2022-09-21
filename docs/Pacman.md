@@ -15,10 +15,10 @@ Pacmanの仕様変更などで動作しない場合は開発者に問題を報�
 
 ## Index
 
-* [GetRepoListFromConf()](#getrepolistfromconf)
-* [GetRepoListFromLocalDb()](#getrepolistfromlocaldb)
+* [GetRepoListFromConf](#getrepolistfromconf)
+* [GetRepoListFromLocalDb](#getrepolistfromlocaldb)
 
-### GetRepoListFromConf()
+### GetRepoListFromConf
 
 pacman.confからリポジトリの一覧を取得します。
 pacman-confを使用してpacman.confを読みより、リポジトリの一覧を取得します。
@@ -30,7 +30,7 @@ _Function has no arguments._
 
 * **0**: この関数は常に0を返します
 
-### GetRepoListFromLocalDb()
+### GetRepoListFromLocalDb
 
 ローカルデータベースからリポジトリの一覧を取得します。
 ローカルデータベース（/var/lib/pacman/sync)からリポジトリの一覧を取得します。

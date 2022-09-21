@@ -12,11 +12,11 @@ Ini設定ファイルを読み取り、以下のものを出力します
 
 ## Index
 
-* [GetSectionList()](#getsectionlist)
-* [GetParamList()](#getparamlist)
-* [GetParam()](#getparam)
+* [GetSectionList](#getsectionlist)
+* [GetParamList](#getparamlist)
+* [GetParam](#getparam)
 
-### GetSectionList()
+### GetSectionList
 
 Iniのセクションの一覧を取得します
 Iniファイルは標準入力から受け取ります。
@@ -38,7 +38,7 @@ _Function has no arguments._
 
 * セクションのリストを返します
 
-### GetParamList()
+### GetParamList
 
 指定されたセクション内のパラメータの一覧を表示します
 Iniファイルは標準入力から受け取ります。
@@ -62,7 +62,7 @@ cat chromium.desktop | GetParamList desktop
 
 * パラメータのリストを返します
 
-### GetParam()
+### GetParam
 
 指定されたセクションのパラメータを表示します
 Iniファイルは標準入力から受け取ります。

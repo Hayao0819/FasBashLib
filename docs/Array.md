@@ -1,12 +1,12 @@
 
 ## Index
 
-* [Append()](#append)
-* [Push()](#push)
-* [Print()](#print)
-* [Length()](#length)
+* [Append](#append)
+* [Push](#push)
+* [Print](#print)
+* [Length](#length)
 
-### Append()
+### Append
 
 指定された配列に標準入力の内容を1行づつ追加します
 内部でreadarrayを使用しているため、標準入力の引き渡しにパイプを使用しないでください。
@@ -36,7 +36,7 @@ ArrayAppend NameList < /path/to/namelist
 
 * 何も出力しません
 
-### Push()
+### Push
 
 指定された配列に要素を1つ追加します
 
@@ -65,7 +65,7 @@ Array.Eval NameList # hoge fuga piyo yamada
 
 * 何も出力しません
 
-### Print()
+### Print
 
 引数で指定されたものを1行づつ出力します
 
@@ -89,7 +89,7 @@ PrintArray Apple Banana Orange
 
 * 引数に指定された文字列を1行づつ出力します。何も指定されなかった場合は何も出力しません。
 
-### Length()
+### Length
 
 配列の要素数を返します
 

@@ -9,17 +9,17 @@
 
 ## Index
 
-* [GetBaseName()](#getbasename)
-* [GetLine()](#getline)
-* [ForEach()](#foreach)
-* [CheckFuncDefined()](#checkfuncdefined)
-* [IsUUID()](#isuuid)
-* [RandomString()](#randomstring)
-* [CutLastString()](#cutlaststring)
-* [RemoveBlank()](#removeblank)
-* [PrintEval()](#printeval)
+* [GetBaseName](#getbasename)
+* [GetLine](#getline)
+* [ForEach](#foreach)
+* [CheckFuncDefined](#checkfuncdefined)
+* [IsUUID](#isuuid)
+* [RandomString](#randomstring)
+* [CutLastString](#cutlaststring)
+* [RemoveBlank](#removeblank)
+* [PrintEval](#printeval)
 
-### GetBaseName()
+### GetBaseName
 
 標準入力から1行づつファイル一覧を受け取りファイル名のみを出力します。
 
@@ -37,7 +37,7 @@ find . | GetBaseName
 
 * 標準入力から受け取ったパスのファイル名
 
-### GetLine()
+### GetLine
 
 標準入力から指定された行を抽出します
 headコマンドとtailコマンドのシンプルなラッパーです
@@ -56,7 +56,7 @@ cat file.txt | GetLine 4
 
 * 標準出力の指定された行
 
-### ForEach()
+### ForEach
 
 標準入力から値を読み取り、ループします
 標準入力から1行ずつ読み取り、指定されたコマンドの引数に渡してコマンドを繰り返し実行します。
@@ -82,7 +82,7 @@ find . -type f | ForEach mv "{}" "{}.bak"
 
 * 指定されたコマンドの出力をそのまま返します。この関数特有のものはありません。
 
-### CheckFuncDefined()
+### CheckFuncDefined
 
 指定された関数が定義されているか確認します。
 
@@ -106,7 +106,7 @@ CheckFuncDefined hoge || echo "hoge is not defined"
 
 * 何も出力しません
 
-### IsUUID()
+### IsUUID
 
 文字列がUUIDかどうかを確認します
 
@@ -119,7 +119,7 @@ CheckFuncDefined hoge || echo "hoge is not defined"
 * **0**: $1はUUIDです
 * **1**: $1はUUIDではありません
 
-### RandomString()
+### RandomString
 
 ランダムな文字列を/dev/randomから生成します
 
@@ -142,7 +142,7 @@ password=$(RandomString 15)
 
 * ランダムな文字列
 
-### CutLastString()
+### CutLastString
 
 後方最長一致を行います
 後ろで一致した文字列を除外して出力します
@@ -166,7 +166,7 @@ CutLastString "HelloWorld!ILoveArchLinux" "Linux"
 
 * $1 から 末尾の $2 を削除した文字列
 
-### RemoveBlank()
+### RemoveBlank
 
 行頭行末の空行を除去します
 
@@ -188,7 +188,7 @@ _Function has no arguments._
 
 * stdinから行頭と末尾の空白を除去したもの
 
-### PrintEval()
+### PrintEval
 
 指定された文字列の変数を参照します
 
