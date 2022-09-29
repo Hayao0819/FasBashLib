@@ -100,7 +100,7 @@ MakeFuncName(){
 }
 
 _GetPrefix(){
-    echo -n "${CommonPrefix:-""}${Delimiter:-""}"
+    [[ -n "${CommonPrefix:-""}" ]] && echo -n "${CommonPrefix:-""}${Delimiter:-""}"
     GetMeta "$1" "Prefix"
 }
 
