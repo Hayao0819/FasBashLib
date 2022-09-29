@@ -16,6 +16,7 @@ NoRequire=false
 NoIgnore=false # すべてのIgnore設定を無視
 NoParalell=false # 並列ビルドを無効化
 MultiFileMode=false # マルチファイルモード（スクリプトが複数回sourceされることを許可します）
+CommonPrefix="" # すべての関数に付与されるプレフィックス
 
 CodeType="Upper"
 #CodeType="Lower"
@@ -98,6 +99,10 @@ MakeFuncName(){
     return 0
 }
 
+_GetPrefix(){
+    echo -n "${CommonPrefix:-""}${Delimiter:-""}"
+    GetMeta "$1" "Prefix"
+}
 
 _Check_Dependency(){
     which shfmt >/dev/null 2>&1 || {
@@ -343,7 +348,7 @@ _Make_Lib(){
         {
             _DefinedFuncInLib=()
             LibName="$(basename "$Dir")"
-            LibPrefix="$("$LibDir/GetMeta.sh" "$LibName" "Prefix")"
+            LibPrefix=$(_GetPrefix "$LibName")
             TmpLibFile="$TmpDir/LibFiles/$LibName.sh"
             ReplacePrefix=true
 
@@ -514,7 +519,7 @@ _Make_Const(){
     # ライブラリの定数
     while read -r Lib; do
         # ライブラリごとの設定
-        Prefix="$(GetMeta "$Lib" Prefix)"
+        Prefix="$(_GetPrefix "$Lib")"
         VarNameStart="FSBLIB_"
         if [[ -n "$Prefix" ]]; then
             VarNameStart="FSBLIB_${Prefix}_"
