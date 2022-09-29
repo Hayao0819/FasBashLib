@@ -227,38 +227,6 @@ _Make_TargetLib(){
     return 0
 }
 
-# _Make_TargetLibを書き直す前のやつ
-# 動作はこっちに準拠する
-_Make_TargetLib_old(){
-    # 読み込むライブラリの一覧
-    # TargetLib配列にはライブラリのディレクトリへのフルパスが代入されています
-    readarray -t TargetLib < <(
-        local LoadLibDir=()
-        if (( "${#}" > 0 )); then
-            # 引数が指定されている場合
-            readarray -t LoadLibDir < <(printf "${SrcDir}/%s\n" "${RequireLib[@]}" "${@}")
-        else
-            local Lib _FullLibList=()
-            readarray -t _FullLibList < <(find "$SrcDir" -mindepth 1 -maxdepth 1 -type d )
-            # IgnoreListのものを除外
-            for Lib in "${_FullLibList[@]}"; do
-                if [[ "${NoIgnore}" = true ]] || { ! PrintArray "${IgnoreLib[@]}" | grep -qx "$(basename "$Lib")" && ! [[ "$(GetMeta "$(basename "$Lib")" ExcludeFromAll | RemoveBlank | tr "[:upper:]" "[:lower:]" )" = "true" ]]; }; then # IgnoreLibに含まれていないことを確認
-                    LoadLibDir+=("$Lib")
-                elif PrintArray "${ForceLoadLib[@]}" | grep -qx "$(basename "$Lib")"; then
-                    LoadLibDir+=("$Lib")
-                else
-                    echo "Skip $Lib" >&2
-                fi
-
-            done
-        fi
-        readarray -t LoadLibDir < <(printf "%s\n" "${LoadLibDir[@]}" | sort)
-        echo "Load libs: $(printf "%s\n" "${LoadLibDir[@]}" | xargs -L 1 basename | tr "\n" " ")" >&2
-        printf "%s\n" "${LoadLibDir[@]}"
-        unset LoadLibDir
-    )
-}
-
 _Make_Shell(){
     local ShellList=()
 
