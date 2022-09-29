@@ -377,22 +377,32 @@ _Make_Lib(){
                     fi
                     {
                         ReplacePrefix=true
-                        if PrintArray "${_NoPrefixFunc[@]}" | grep -qx "$Func"; then
+
+                        # プレフィックスが空の場合は置き換えない
+                        if [[ -z "${LibPrefix-""}" ]]; then
                             ReplacePrefix=false
+                        else
+                            # プレフィックスを置き換えない関数として設定されている場合は置き換えない
+                            if PrintArray "${_NoPrefixFunc[@]}" | grep -qx "$Func"; then
+                                # コードスタイルが一致している場合は置き換えない
+                                if [[ "$CodeType" = "$DefaultCodeType" ]]; then
+                                    ReplacePrefix=false
+                                fi
+                            fi
                         fi
 
-                        if [[ "${ReplacePrefix}" = false ]] && [[ "$CodeType" = "$DefaultCodeType" ]]; then
-                            # 関数の置き換えを一切行わない場合
-                            echo " = $Func" >> "$TmpFile_FuncList"
-                            "$Debug" && echo "${Func}を${TmpLibFile}に書き込み" >&2
-                            _GetFuncCodeFromFile "${Dir}/${File}" "$Func" >> "$TmpLibFile"
-                        else
+                        if [[ "${ReplacePrefix}" = true ]]; then
                             # 関数の定義部分を書き換え
                             local NewFuncName=""
                             echo "${LibPrefix-""} = ${Func}" >> "$TmpFile_FuncList"
                             NewFuncName="$(MakeFuncName "${LibPrefix-""}" "$Func")"
                             "${Debug}" && echo "置き換え1: 関数定義の${Func}を${NewFuncName}に置き換えて${TmpLibFile}に書き込み" >&2
                             _GetFuncCodeFromFile "${Dir}/${File}" "$Func" | sed "1 s|${Func} ()|${NewFuncName} ()|g" | grep -v "^ *\#" >> "$TmpLibFile"
+                        else
+                            # 関数の置き換えを一切行わない場合
+                            echo " = $Func" >> "$TmpFile_FuncList"
+                            "$Debug" && echo "${Func}を${TmpLibFile}に書き込み" >&2
+                            _GetFuncCodeFromFile "${Dir}/${File}" "$Func" >> "$TmpLibFile"
                         fi
                     } &
                 done
