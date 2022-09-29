@@ -352,11 +352,6 @@ _Make_Lib(){
             mkdir -p "$TmpDir/Internal"
             echo -n > "$TmpLibFile"
 
-            #Prefix置換えを行うかどうか
-            if [[ -z "${LibPrefix-""}" ]]; then
-                ReplacePrefix=false
-            fi
-
             readarray -t _NoPrefixFunc < <(GetMeta -c "$LibName" "NoPrefixFunc")
 
             # ライブラリのファイルごとに関数を読み取ってTmpLibFileに関数を書き込み
@@ -423,7 +418,6 @@ _Make_Lib(){
                     # スネークケースへの置き換えは全てまとめて最後に行う
                 else
                     # スネークケースが有効化されている場合、プレフィックスは小文字にする
-                    #if [[ "${SnakeCase}" = true ]]; then
                     if [[ "$CodeType" = "Snake" ]]; then
                         NewLibPrefix="$(ToLower "${LibPrefix}")"
                     fi
