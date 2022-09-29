@@ -13,7 +13,6 @@ TmpFile_FuncList="${TmpDir}/fasbashlib-list.sh" # スネークケース置き換
 OutFile="${MainDir}/fasbashlib.sh"
 Delimiter="."
 NoRequire=false
-OneLine=false # うまく動かないよ
 NoIgnore=false # すべてのIgnore設定を無視
 NoParalell=false # 並列ビルドを無効化
 MultiFileMode=false # マルチファイルモード（スクリプトが複数回sourceされることを許可します）
@@ -314,12 +313,6 @@ _GetFuncCodeFromFile(){
     )
 }
 
-_MakeOneLineFunc(){
-    sed "$ s|^}$|;}|g" | grep -v "^ *\#" | RemoveBlank | sed "s|^| |g; s|$| |g" | sed "s|^ *}|;}|g" | tr -d "\n"| RemoveBlank | sed -E "s| +| |g"
-    #sed ":a s/[\]$//; N; s/[\]$//; s/\n/ /; t a ;"
-    echo
-}
-
 # _CheckLoadedFile <Path>
 # $? = 0: 読み込まれていません
 # $? = 1: 既に読み込まれています
@@ -392,26 +385,14 @@ _Make_Lib(){
                             # 関数の置き換えを一切行わない場合
                             echo " = $Func" >> "$TmpFile_FuncList"
                             "$Debug" && echo "${Func}を${TmpLibFile}に書き込み" >&2
-                            if "${OneLine-"false"}"; then
-                                _GetFuncCodeFromFile "${Dir}/${File}" "$Func" | _MakeOneLineFunc >> "$TmpLibFile"
-                            else
-                                _GetFuncCodeFromFile "${Dir}/${File}" "$Func" >> "$TmpLibFile"
-                            fi
+                            _GetFuncCodeFromFile "${Dir}/${File}" "$Func" >> "$TmpLibFile"
                         else
                             # 関数の定義部分を書き換え
                             local NewFuncName=""
                             echo "${LibPrefix-""} = ${Func}" >> "$TmpFile_FuncList"
                             NewFuncName="$(MakeFuncName "${LibPrefix-""}" "$Func")"
                             "${Debug}" && echo "置き換え1: 関数定義の${Func}を${NewFuncName}に置き換えて${TmpLibFile}に書き込み" >&2
-
-                            # 関数を1行にまとめられないかなって...
-                            if "${OneLine-"false"}"; then
-                                _GetFuncCodeFromFile "${Dir}/${File}" "$Func" | sed "1 s|${Func} ()|${NewFuncName} ()|g" | \
-                                    grep -v "^ *\#" | _MakeOneLineFunc >> "$TmpLibFile"
-                                echo >> "$TmpLibFile"
-                            else
-                                _GetFuncCodeFromFile "${Dir}/${File}" "$Func" | sed "1 s|${Func} ()|${NewFuncName} ()|g" | grep -v "^ *\#" >> "$TmpLibFile"
-                            fi
+                            _GetFuncCodeFromFile "${Dir}/${File}" "$Func" | sed "1 s|${Func} ()|${NewFuncName} ()|g" | grep -v "^ *\#" >> "$TmpLibFile"
                         fi
                     } &
                 done
