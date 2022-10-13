@@ -26,6 +26,7 @@ CodeType="Upper"
 Debug=false
 DontRunAtMarkReplacement=false
 GenerateFuncList=false
+DontRemoveTmpDir=false
 
 # Environment
 Version=""
@@ -592,7 +593,9 @@ _Make_OutFile(){
     fi
 
     # 一時ディレクトリの削除
-    rm -rf "$TmpDir"
+    if [[ "${DontRemoveTmpDir}" = false ]]; then
+        rm -rf "$TmpDir"
+    fi
     echo "$OutFile にビルドされました" >&2
     return 0
 }
@@ -648,6 +651,10 @@ while [[ -n "${1-""}" ]]; do
             ;;
         "-multimode")
             MultiFileMode=true
+            shift 1
+            ;;
+        "-normtmpdir")
+            DontRemoveTmpDir=true
             shift 1
             ;;
         "--")
