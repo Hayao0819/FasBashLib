@@ -398,7 +398,7 @@ _Make_Lib(){
                             echo "${LibPrefix-""} = ${Func}" >> "$TmpFile_FuncList"
                             NewFuncName="$(MakeFuncName "${LibPrefix-""}" "$Func")"
                             "${Debug}" && echo "置き換え1: 関数定義の${Func}を${NewFuncName}に置き換えて${TmpLibFile}に書き込み" >&2
-                            _GetFuncCodeFromFile "${Dir}/${File}" "$Func" | sed "1 s|${Func} ()|${NewFuncName} ()|g" | grep -v "^ *\#" >> "$TmpLibFile"
+                            _GetFuncCodeFromFile "${Dir}/${File}" "$Func" | sed "1 s|${Func} ()|${NewFuncName} ()|g" | grep -v "^ *#" >> "$TmpLibFile"
                         else
                             # 関数の置き換えを一切行わない場合
                             echo " = $Func" >> "$TmpFile_FuncList"
