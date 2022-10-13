@@ -248,7 +248,7 @@ _Make_Shell(){
             fi
         done < <(
             # shellcheck disable=SC2016
-            PrintArray "${TargetLib[@]}" | ForEach eval '${LibDir}/GetMeta.sh $(basename "{}") Shell'
+            PrintArray "${TargetLib[@]}" | ForEach eval 'GetMeta $(basename "{}") Shell'
         )
         printf "%s\n" "${ShellList[@]}" | head -n "$MaxIndex" | tail -n 1
         unset Shell Index MaxIndex
