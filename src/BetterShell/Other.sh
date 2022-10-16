@@ -25,3 +25,9 @@ Match(){
     done
     return 1
 }
+
+# 標準入力をまとめて引数に渡す
+ToArgs(){
+    readarray -t args
+    "$@" "${args[@]}"
+}
