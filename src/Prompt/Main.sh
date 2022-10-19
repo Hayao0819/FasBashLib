@@ -85,18 +85,23 @@ CaptureSpecialKeys(){
         read -r -n2 -s rest
         SELECTION+="$rest"
     else
-        if [[ "$SELECTION" == '' ]] ;then
-            echo "Enter"
-            return 0
-        else
-            echo -n "$SELECTION"
-            read -r rest
-            echo "$SELECTION$rest"
-            return 0
-        fi
+        case "$SELECTION" in
+            "")
+                echo "Enter"
+                ;;
+            $'\x7f')
+                echo "Backspace"
+                ;;
+            *)
+                read -i "$SELECTION" -e -r rest
+                echo "$rest"
+                ;;
+        esac
+        return 0
     fi
 
     case $SELECTION in
+        # backspace 
         $'\x1b\x5b\x41') #up arrow
             echo "Up"
             ;;
@@ -108,9 +113,6 @@ CaptureSpecialKeys(){
             ;;
         $'\x1b\x5b\x44') #left arrow
             echo "Left"
-            ;;
-        $'\x20') #space
-            echo "Space"
             ;;
     esac
 }
