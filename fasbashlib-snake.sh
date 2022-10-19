@@ -28,8 +28,8 @@
 # shellcheck disable=all
 
 FSBLIB_LIBLIST+=("ArchLinux" "Array" "AwkForCalc" "BetterShell" "Cache" "Core" "Csv" "Emerge" "Esc" "Ini" "LibreTranslate" "Message" "Misskey" "Pacman" "ParseArg" "Prompt" "Readlink" "Sqlite3" "SrcInfo" "URL")
-FSBLIB_FUNCLIST+=("msg.common" "capture_special_keys" "readlinkf" "parse_arg" "misskey.notes.create" "arch.get_kernel_file_list" "url.authority" "csv.get_clm" "srcinfo.format" "pm.check_pkg" "cache.exist" "add_new_to_array" "readlinkf__posix" "sqlite3.call" "fsblib.env_check" "choice" "libretranslate.check" "array_append" "awk.cos" "choice_loop" "em.get_all_pkg_list" "array_includes" "msg.debug" "array.append" "select_menu" "esc.clear_left" "readlinkf__readlink" "array_index" "arch.get_kernel_src_list" "sqlite3.connect" "ini.get_last_param" "get_array_index" "misskey.notes.renotes" "url.fragment" "pm.get_config" "awk.float" "cache.get" "print_array" "srcinfo.get_key_list" "csv.get_clm_cnt" "em.get_default_repo_name" "msg.err" "fsblib.fsblib_env_check" "libretranslate.detect" "array.from_str" "print_eval_array" "esc.clear_line" "arch.get_mkinitcpio_preset_list" "sqlite3.create" "rev_array" "ini.get_param" "misskey.notes.search" "awk.log" "pm.get_installed_pkg_ver" "cache.get_dir" "url.host" "str_to_char_list" "srcinfo.get_pkg_base" "msg.info" "em.get_installed_pkg_list" "fsblib.require_lib" "csv.to_bash_array" "array.pop" "libretranslate.languages" "sqlite3.current_db" "esc.clear_right" "awk.pi" "ini.get_param_list" "file_type" "cache.get_file_last_update" "pm.get_keyring_list" "msg.warn" "srcinfo.get_pkg_name" "get_base_name" "url.no_scheme" "em.get_repo_conf" "array.push" "sqlite3.delete" "esc.clear_screen" "get_file_ext" "libretranslate.translate" "misskey.users.get_frequently_replied_users" "remove_file_ext" "awk.print" "srcinfo.get_section_list" "cache.get_id" "pm.get_latest_pkg_ver" "ini.get_section_list" "array.remove" "url.path" "sqlite3.exist_field" "em.get_repo_location" "libretranslate.translate_auto" "misskey.users.notes" "check_func_defined" "cache.get_time_diff_from_last_update" "srcinfo.get_value" "awk.rad" "for_each" "ini.parse_line" "esc.move_cursor" "pm.get_name" "array.rev" "url.path_and_query_and_fragment" "em.get_repo_pkg_list" "sqlite3.exist_table" "get_line" "misskey.users.pages" "is_available" "awk.sin" "srcinfo.get_value_in_pkg_base" "loop" "esc.move_cursor_down" "url.port" "pm.get_pacman_kernel_pkg" "array.shift" "em.get_world_pkg_list" "sqlite3.insert" "cache.create" "ini.new_param" "misskey.users.search_by_username_and_host" "awk.tan" "esc.move_cursor_left" "break_char" "srcinfo.get_value_in_pkg_name" "url.query" "pm.get_pacman_keyring_dir" "sqlite3.select" "cut_last_string" "get_last_split_string" "ini.new_section" "cache.create_dir" "misskey.users.show" "is_uu_id" "array.eval" "esc.move_cursor_right" "srcinfo.parse" "em.no_version" "pm.get_repo_conf" "url.scheme" "sqlite3.select_all" "print_eval" "random_string" "ini.set_value" "misskey.users.stats" "array.last" "pm.get_repo_list_from_conf" "remove_blank" "esc.move_cursor_up" "text_box" "url.user" "to_lower" "array.print" "pm.get_repo_pkg_list" "to_lower_stdin" "misskey.admin.server_info" "esc.clear_upper_lines" "calc_int" "pm.get_repo_server" "ntest" "url.has_authority" "array.index_of" "sum" "pm.get_repo_ver" "misskey.setup" "url.has_fragment" "array.last_index" "esc.black_background" "bool" "pm.get_root" "esc.black_text" "array.length" "url.has_port" "get_func_list" "pm.is_repo_pkg" "misskey.i" "esc.blink" "unset_all_func" "url.has_query" "pm.pacman_gpg" "array.for_each" "match" "esc.blue_background" "misskey.meta" "remove_match_line" "url.has_user" "to_args" "array.includes" "esc.blue_text" "pm.run" "misskey.server_info" "esc.bold" "pm.run_key" "url.parse" "esc.conceal" "misskey.binding_base" "pm.get_db_next_section" "esc.crossed_out" "url.get_query" "misskey.make_json" "pm.get_db_section" "esc.cyan_background" "misskey.send_req" "url.parse_query" "pm.get_db_section_list" "esc.cyan_text" "misskey.is_admin" "esc.green_background" "pm.create_db_tmp_dir" "misskey.my_id" "esc.green_text" "pm.delete_db_tmp_dir" "misskey.my_name" "esc.italic" "esc.low_intensity" "pm.get_db_tmp_dir" "misskey.my_user_name" "esc.magenta_background" "pm.get_pkg_arch" "pm.get_repo_list_from_local_db" "esc.magenta_text" "pm.get_sync_all_desc" "esc.rapid_blink" "pm.get_sync_db_desc" "esc.red_background" "pm.get_sync_db_desc_path" "esc.red_text" "esc.reset_style" "pm.get_virtual_pkg_list" "esc.reverse" "pm.is_opend_sync_db" "esc.underline" "pm.open_sync_db" "esc.white_background" "pm.opened_sync_db_list" "esc.white_text" "pm.parse_pkg_file_name" "esc.yellow_background" "esc.yellow_text")
-declare -r FSBLIB_VERSION='v0.2.6.r406.g7bb055d-snake'
+FSBLIB_FUNCLIST+=("esc.clear_left" "ini.get_last_param" "msg.common" "awk.cos" "arch.get_kernel_file_list" "srcinfo.format" "fsblib.env_check" "sqlite3.call" "cache.exist" "misskey.notes.create" "readlinkf" "esc.clear_line" "capture_special_keys" "em.get_all_pkg_list" "add_new_to_array" "libretranslate.check" "url.authority" "ini.get_param" "readlinkf__posix" "parse_arg" "csv.get_clm" "msg.debug" "choice" "array_append" "arch.get_kernel_src_list" "pm.check_pkg" "readlinkf__readlink" "srcinfo.get_key_list" "awk.float" "fsblib.fsblib_env_check" "array.append" "choice_loop" "sqlite3.connect" "cache.get" "array_includes" "misskey.notes.renotes" "select_menu" "esc.clear_right" "array_index" "em.get_default_repo_name" "libretranslate.detect" "url.fragment" "msg.err" "ini.get_param_list" "get_array_index" "csv.get_clm_cnt" "arch.get_mkinitcpio_preset_list" "fsblib.require_lib" "sqlite3.create" "pm.get_config" "awk.log" "array.from_str" "print_array" "cache.get_dir" "misskey.notes.search" "srcinfo.get_pkg_base" "esc.clear_screen" "print_eval_array" "msg.info" "url.host" "libretranslate.languages" "ini.get_section_list" "rev_array" "csv.to_bash_array" "em.get_installed_pkg_list" "pm.get_installed_pkg_ver" "sqlite3.current_db" "array.pop" "awk.pi" "str_to_char_list" "srcinfo.get_pkg_name" "cache.get_file_last_update" "msg.warn" "libretranslate.translate" "url.no_scheme" "misskey.users.get_frequently_replied_users" "ini.parse_line" "em.get_repo_conf" "array.push" "sqlite3.delete" "pm.get_keyring_list" "esc.move_cursor" "awk.print" "file_type" "srcinfo.get_section_list" "cache.get_id" "get_base_name" "libretranslate.translate_auto" "misskey.users.notes" "url.path" "em.get_repo_location" "get_file_ext" "esc.move_cursor_down" "sqlite3.exist_field" "pm.get_latest_pkg_ver" "array.remove" "awk.rad" "remove_file_ext" "cache.get_time_diff_from_last_update" "srcinfo.get_value" "ini.new_param" "misskey.users.pages" "em.get_repo_pkg_list" "url.path_and_query_and_fragment" "esc.move_cursor_left" "pm.get_name" "sqlite3.exist_table" "array.rev" "awk.sin" "check_func_defined" "srcinfo.get_value_in_pkg_base" "ini.new_section" "misskey.users.search_by_username_and_host" "for_each" "em.get_world_pkg_list" "url.port" "cache.create" "get_line" "esc.move_cursor_right" "sqlite3.insert" "pm.get_pacman_kernel_pkg" "is_available" "array.shift" "awk.tan" "srcinfo.get_value_in_pkg_name" "ini.set_value" "loop" "misskey.users.show" "url.query" "cache.create_dir" "esc.move_cursor_up" "pm.get_pacman_keyring_dir" "sqlite3.select" "em.no_version" "srcinfo.parse" "break_char" "misskey.users.stats" "cut_last_string" "url.scheme" "array.eval" "get_last_split_string" "sqlite3.select_all" "pm.get_repo_conf" "is_uu_id" "url.user" "esc.clear_upper_lines" "print_eval" "array.last" "random_string" "misskey.admin.server_info" "pm.get_repo_list_from_conf" "remove_blank" "text_box" "to_lower" "array.print" "to_lower_stdin" "url.has_authority" "esc.black_background" "pm.get_repo_pkg_list" "misskey.setup" "calc_int" "esc.black_text" "url.has_fragment" "ntest" "pm.get_repo_server" "array.index_of" "sum" "esc.blink" "pm.get_repo_ver" "url.has_port" "misskey.i" "array.last_index" "bool" "esc.blue_background" "pm.get_root" "url.has_query" "misskey.meta" "array.length" "get_func_list" "esc.blue_text" "unset_all_func" "url.has_user" "pm.is_repo_pkg" "misskey.server_info" "esc.bold" "array.for_each" "match" "pm.pacman_gpg" "remove_match_line" "to_args" "array.includes" "esc.conceal" "url.parse" "misskey.binding_base" "pm.run" "esc.crossed_out" "misskey.make_json" "pm.run_key" "url.get_query" "esc.cyan_background" "misskey.send_req" "url.parse_query" "esc.cyan_text" "pm.get_db_next_section" "esc.green_background" "misskey.is_admin" "pm.get_db_section" "esc.green_text" "misskey.my_id" "pm.get_db_section_list" "esc.italic" "misskey.my_name" "esc.low_intensity" "pm.create_db_tmp_dir" "misskey.my_user_name" "esc.magenta_background" "pm.delete_db_tmp_dir" "esc.magenta_text" "pm.get_db_tmp_dir" "esc.rapid_blink" "pm.get_pkg_arch" "esc.red_background" "pm.get_repo_list_from_local_db" "esc.red_text" "pm.get_sync_all_desc" "esc.reset_style" "pm.get_sync_db_desc" "esc.reverse" "pm.get_sync_db_desc_path" "pm.get_virtual_pkg_list" "esc.underline" "pm.is_opend_sync_db" "esc.white_background" "pm.open_sync_db" "esc.white_text" "pm.opened_sync_db_list" "esc.yellow_background" "pm.parse_pkg_file_name" "esc.yellow_text")
+declare -r FSBLIB_VERSION='v0.2.6.r409.ga6208a5-snake'
 declare -r FSBLIB_REQUIRE='ModernBash'
 
 parse_arg() {
@@ -125,6 +125,68 @@ parse_arg() {
 	done
 	OPTRET=("${_OutArg[@]}" -- "${_NoArg[@]}")
 	return 0
+}
+readlinkf() {
+	readlinkf_Posix "$@"
+}
+readlinkf_Posix() {
+	[ "${1:-}" ] || return 1
+	max_symlinks=40
+	CDPATH=''
+	target=$1
+	[ -e "${target%/}" ] || target=${1%"${1##*[!/]}"}
+	[ -d "${target:-/}" ] && target="$target/"
+	cd -P . 2>/dev/null || return 1
+	while [ "$max_symlinks" -ge 0 ] && max_symlinks=$((max_symlinks - 1)); do
+		if [ ! "$target" = "${target%/*}" ]; then
+			case $target in
+			/*)
+				cd -P "${target%/*}/" 2>/dev/null || break
+				;;
+			*)
+				cd -P "./${target%/*}" 2>/dev/null || break
+				;;
+			esac
+			target=${target##*/}
+		fi
+		if [ ! -L "$target" ]; then
+			target="${PWD%/}${target:+/}${target}"
+			printf '%s\n' "${target:-/}"
+			return 0
+		fi
+		link=$(ls -dl -- "$target" 2>/dev/null) || break
+		target=${link#*" $target -> "}
+	done
+	return 1
+}
+readlinkf_Readlink() {
+	[ "${1:-}" ] || return 1
+	max_symlinks=40
+	CDPATH=''
+	target=$1
+	[ -e "${target%/}" ] || target=${1%"${1##*[!/]}"}
+	[ -d "${target:-/}" ] && target="$target/"
+	cd -P . 2>/dev/null || return 1
+	while [ "$max_symlinks" -ge 0 ] && max_symlinks=$((max_symlinks - 1)); do
+		if [ ! "$target" = "${target%/*}" ]; then
+			case $target in
+			/*)
+				cd -P "${target%/*}/" 2>/dev/null || break
+				;;
+			*)
+				cd -P "./${target%/*}" 2>/dev/null || break
+				;;
+			esac
+			target=${target##*/}
+		fi
+		if [ ! -L "$target" ]; then
+			target="${PWD%/}${target:+/}${target}"
+			printf '%s\n' "${target:-/}"
+			return 0
+		fi
+		target=$(readlink -- "$target" 2>/dev/null) || break
+	done
+	return 1
 }
 capture_special_keys() {
 	local SELECTION rest
@@ -228,6 +290,10 @@ choiceloop() {
 }
 select_menu() {
 	local choices=("$@") Currentchoice=0 Key=""
+	[[ ${#choices[@]} -eq 0 ]] && return 1
+	[[ ${#choices[@]} -eq 1 ]] && {
+		echo "${choices[0]}" && return 0
+	}
 	while [[ $Key != "Enter" ]]; do
 		for i in "${!choices[@]}"; do
 			if [[ $i == "$Currentchoice" ]]; then
@@ -250,77 +316,6 @@ select_menu() {
 		esc.clear_upper_lines "${#choices[@]}"
 	done
 	echo "${choices[$Currentchoice]}"
-}
-readlinkf() {
-	readlinkf_Posix "$@"
-}
-readlinkf_Posix() {
-	[ "${1:-}" ] || return 1
-	max_symlinks=40
-	CDPATH=''
-	target=$1
-	[ -e "${target%/}" ] || target=${1%"${1##*[!/]}"}
-	[ -d "${target:-/}" ] && target="$target/"
-	cd -P . 2>/dev/null || return 1
-	while [ "$max_symlinks" -ge 0 ] && max_symlinks=$((max_symlinks - 1)); do
-		if [ ! "$target" = "${target%/*}" ]; then
-			case $target in
-			/*)
-				cd -P "${target%/*}/" 2>/dev/null || break
-				;;
-			*)
-				cd -P "./${target%/*}" 2>/dev/null || break
-				;;
-			esac
-			target=${target##*/}
-		fi
-		if [ ! -L "$target" ]; then
-			target="${PWD%/}${target:+/}${target}"
-			printf '%s\n' "${target:-/}"
-			return 0
-		fi
-		link=$(ls -dl -- "$target" 2>/dev/null) || break
-		target=${link#*" $target -> "}
-	done
-	return 1
-}
-readlinkf_Readlink() {
-	[ "${1:-}" ] || return 1
-	max_symlinks=40
-	CDPATH=''
-	target=$1
-	[ -e "${target%/}" ] || target=${1%"${1##*[!/]}"}
-	[ -d "${target:-/}" ] && target="$target/"
-	cd -P . 2>/dev/null || return 1
-	while [ "$max_symlinks" -ge 0 ] && max_symlinks=$((max_symlinks - 1)); do
-		if [ ! "$target" = "${target%/*}" ]; then
-			case $target in
-			/*)
-				cd -P "${target%/*}/" 2>/dev/null || break
-				;;
-			*)
-				cd -P "./${target%/*}" 2>/dev/null || break
-				;;
-			esac
-			target=${target##*/}
-		fi
-		if [ ! -L "$target" ]; then
-			target="${PWD%/}${target:+/}${target}"
-			printf '%s\n' "${target:-/}"
-			return 0
-		fi
-		target=$(readlink -- "$target" 2>/dev/null) || break
-	done
-	return 1
-}
-arch.get_kernel_file_list() {
-	find "/boot" -maxdepth 1 -mindepth 1 -name "vmlinuz-*"
-}
-arch.get_kernel_src_list() {
-	find "/usr/src" -mindepth 1 -maxdepth 1 -type l -name "linux*"
-}
-arch.get_mkinitcpio_preset_list() {
-	find "/etc/mkinitcpio.d/" -name "*.preset" -type f | get_base_name | remove_file_ext
 }
 fsblib.env_check() {
 	case "$FSBLIB_REQUIRE" in
@@ -345,6 +340,15 @@ fsblib.require_lib() {
 		fi
 	done
 	return "$return"
+}
+arch.get_kernel_file_list() {
+	find "/boot" -maxdepth 1 -mindepth 1 -name "vmlinuz-*"
+}
+arch.get_kernel_src_list() {
+	find "/usr/src" -mindepth 1 -maxdepth 1 -type l -name "linux*"
+}
+arch.get_mkinitcpio_preset_list() {
+	find "/etc/mkinitcpio.d/" -name "*.preset" -type f | get_base_name | remove_file_ext
 }
 csv.get_clm() {
 	grep -v "^#" | sed "/^$/d" | cut -d "${CSVDELIM-","}" -f "$1"
@@ -485,6 +489,177 @@ awk.sin() {
 }
 awk.tan() {
 	awk.float "sin($1)/tan($1)"
+}
+ini.get_last_param() {
+	ini.get_param_list "$1" | tail -n 1
+}
+ini.get_param() {
+	local _RawIniLine=()
+	local _Line _LineNo=1 _Exit=0 _InSection=false
+	readarray -t _RawIniLine
+	while read -r _Line; do
+		ini.parse_line <<<"$_Line"
+		case "$TYPE" in
+		"SECTION")
+			if [[ $SECTION == "$1" ]]; then
+				_InSection=true
+			else
+				_InSection=false
+			fi
+			;;
+		"PARAM-VALUE")
+			[[ $_InSection == false ]] && continue
+			[[ ${FSBLIB_INI_PARSED_PARAM} == "$2" ]] && echo "$FSBLIB_INI_PARSED_VALUE"
+			;;
+		"ERROR")
+			echo "Line $_LineNo: Failed to parse Ini" 1>&2
+			_Exit=1
+			;;
+		esac
+		_LineNo=$((_LineNo + 1))
+	done < <(print_array "${_RawIniLine[@]}")
+	return "$_Exit"
+}
+ini.get_param_list() {
+	local _RawIniLine=()
+	local _Line _LineNo=1 _Exit=0 _InSection=false
+	readarray -t _RawIniLine
+	while read -r _Line; do
+		ini.parse_line <<<"$_Line"
+		case "$TYPE" in
+		"SECTION")
+			if [[ $SECTION == "$1" ]]; then
+				_InSection=true
+			else
+				_InSection=false
+			fi
+			;;
+		"PARAM-VALUE")
+			[[ $_InSection == false ]] || echo "$PARAM"
+			;;
+		"ERROR")
+			echo "Line $_LineNo: Failed to parse Ini" 1>&2
+			_Exit=1
+			;;
+		esac
+		_LineNo=$((_LineNo + 1))
+	done < <(print_array "${_RawIniLine[@]}")
+	return "$_Exit"
+}
+ini.get_section_list() {
+	local _RawIniLine=()
+	local _Line _LineNo=1 _Exit=0
+	readarray -t _RawIniLine
+	while read -r _Line; do
+		ini.parse_line <<<"$_Line"
+		case "$TYPE" in
+		"SECTION")
+			echo "$SECTION"
+			;;
+		"ERROR")
+			echo "Line $_LineNo: Failed to parse Ini" 1>&2
+			_Exit=1
+			;;
+		esac
+		_LineNo=$((_LineNo + 1))
+	done < <(print_array "${_RawIniLine[@]}")
+	return "$_Exit"
+}
+ini.parse_line() {
+	local _Line
+	TYPE="" PARAM="" VALUE="" SECTION=""
+	_Line="$(remove_blank <<<"$(cat)")"
+	case "$_Line" in
+	"["*"]")
+		TYPE="SECTION"
+		SECTION=$(sed "s|^\[||g; s|\]$||g" <<<"$_Line")
+		FSBLIB_INI_PARSED_TYPE="$TYPE"
+		FSBLIB_INI_PARSED_SECTION="$SECTION"
+		;;
+	"" | "#"*)
+		TYPE="NOTHING"
+		FSBLIB_INI_PARSED_TYPE="$TYPE"
+		;;
+	*"="*)
+		TYPE="PARAM-VALUE"
+		PARAM="$(remove_blank <<<"$(cut -d "=" -f 1 <<<"$_Line")")"
+		VALUE="$(remove_blank <<<"$(cut -d "=" -f 2- <<<"$_Line")")"
+		FSBLIB_INI_PARSED_TYPE="$TYPE"
+		FSBLIB_INI_PARSED_PARAM="$PARAM"
+		FSBLIB_INI_PARSED_VALUE="$VALUE"
+		;;
+	*)
+		TYPE="ERROR"
+		FSBLIB_INI_PARSED_TYPE="$TYPE"
+		;;
+	esac
+	return 0
+}
+ini.new_param() {
+	local IniContents=() Line
+	local Section="$1" Param="$2"
+	local InSection=false LineNo=0
+	local NewIniContents=()
+	readarray -t IniContents
+	local BeforeParam
+	local SectionLastParam
+	local ParamAdded=false
+	if ! print_array "${IniContents[@]}" | ini.get_param_list "$Section" | grep -qx "$Param"; then
+		SectionLastParam="$(print_eval_array IniContents | ini.get_last_param "$Section")"
+		for Line in "${IniContents[@]}"; do
+			LineNo=$((LineNo + 1))
+			ini.parse_line <<<"$Line"
+			case "$FSBLIB_INI_PARSED_TYPE" in
+			"SECTION")
+				if [[ $FSBLIB_INI_PARSED_SECTION == "$Section" ]]; then
+					InSection=true
+				else
+					InSection=false
+				fi
+				;;
+			"PARAM-VALUE")
+				if [[ $InSection == true ]]; then
+					BeforeParam="$FSBLIB_INI_PARSED_PARAM"
+				fi
+				;;
+			"ERROR")
+				echo "Line $LineNo: Failed to parse Ini" 1>&2
+				return 1
+				;;
+			esac
+			NewIniContents+=("$Line")
+			if {
+				! bool "$ParamAdded"
+			} && bool "$InSection" && [[ $SectionLastParam == "${BeforeParam-""}" ]]; then
+				NewIniContents+=("$Param=")
+				ParamAdded=true
+			fi
+		done
+	fi
+	print_eval_array NewIniContents
+	return 0
+}
+ini.new_section() {
+	local IniContents=()
+	local Section="$1"
+	readarray -t IniContents
+	if print_array "${IniContents[@]}" | ini.get_section_list | grep -x "$Section" >/dev/null; then
+		print_eval_array IniContents
+		return 0
+	fi
+	if [[ -z "$(array.last IniContents)" ]]; then
+		array.pop IniContents
+	fi
+	IniContents+=("" "[$Section]")
+	print_eval_array IniContents
+	return 0
+}
+ini.set_value() {
+	local IniContents=()
+	local Section="$1" Param="$2"
+	readarray -t IniContents
+	readarray -t IniContents < <(print_array "${IniContents[@]}" | ini.new_section "$Section" | ini.new_param "$Section" "$Param")
+	print_eval_array IniContents
 }
 cache.exist() {
 	local _File
@@ -695,177 +870,6 @@ srcinfo.parse() {
 		;;
 	esac
 	return 0
-}
-ini.get_last_param() {
-	ini.get_param_list "$1" | tail -n 1
-}
-ini.get_param() {
-	local _RawIniLine=()
-	local _Line _LineNo=1 _Exit=0 _InSection=false
-	readarray -t _RawIniLine
-	while read -r _Line; do
-		ini.parse_line <<<"$_Line"
-		case "$TYPE" in
-		"SECTION")
-			if [[ $SECTION == "$1" ]]; then
-				_InSection=true
-			else
-				_InSection=false
-			fi
-			;;
-		"PARAM-VALUE")
-			[[ $_InSection == false ]] && continue
-			[[ ${FSBLIB_INI_PARSED_PARAM} == "$2" ]] && echo "$FSBLIB_INI_PARSED_VALUE"
-			;;
-		"ERROR")
-			echo "Line $_LineNo: Failed to parse Ini" 1>&2
-			_Exit=1
-			;;
-		esac
-		_LineNo=$((_LineNo + 1))
-	done < <(print_array "${_RawIniLine[@]}")
-	return "$_Exit"
-}
-ini.get_param_list() {
-	local _RawIniLine=()
-	local _Line _LineNo=1 _Exit=0 _InSection=false
-	readarray -t _RawIniLine
-	while read -r _Line; do
-		ini.parse_line <<<"$_Line"
-		case "$TYPE" in
-		"SECTION")
-			if [[ $SECTION == "$1" ]]; then
-				_InSection=true
-			else
-				_InSection=false
-			fi
-			;;
-		"PARAM-VALUE")
-			[[ $_InSection == false ]] || echo "$PARAM"
-			;;
-		"ERROR")
-			echo "Line $_LineNo: Failed to parse Ini" 1>&2
-			_Exit=1
-			;;
-		esac
-		_LineNo=$((_LineNo + 1))
-	done < <(print_array "${_RawIniLine[@]}")
-	return "$_Exit"
-}
-ini.get_section_list() {
-	local _RawIniLine=()
-	local _Line _LineNo=1 _Exit=0
-	readarray -t _RawIniLine
-	while read -r _Line; do
-		ini.parse_line <<<"$_Line"
-		case "$TYPE" in
-		"SECTION")
-			echo "$SECTION"
-			;;
-		"ERROR")
-			echo "Line $_LineNo: Failed to parse Ini" 1>&2
-			_Exit=1
-			;;
-		esac
-		_LineNo=$((_LineNo + 1))
-	done < <(print_array "${_RawIniLine[@]}")
-	return "$_Exit"
-}
-ini.parse_line() {
-	local _Line
-	TYPE="" PARAM="" VALUE="" SECTION=""
-	_Line="$(remove_blank <<<"$(cat)")"
-	case "$_Line" in
-	"["*"]")
-		TYPE="SECTION"
-		SECTION=$(sed "s|^\[||g; s|\]$||g" <<<"$_Line")
-		FSBLIB_INI_PARSED_TYPE="$TYPE"
-		FSBLIB_INI_PARSED_SECTION="$SECTION"
-		;;
-	"" | "#"*)
-		TYPE="NOTHING"
-		FSBLIB_INI_PARSED_TYPE="$TYPE"
-		;;
-	*"="*)
-		TYPE="PARAM-VALUE"
-		PARAM="$(remove_blank <<<"$(cut -d "=" -f 1 <<<"$_Line")")"
-		VALUE="$(remove_blank <<<"$(cut -d "=" -f 2- <<<"$_Line")")"
-		FSBLIB_INI_PARSED_TYPE="$TYPE"
-		FSBLIB_INI_PARSED_PARAM="$PARAM"
-		FSBLIB_INI_PARSED_VALUE="$VALUE"
-		;;
-	*)
-		TYPE="ERROR"
-		FSBLIB_INI_PARSED_TYPE="$TYPE"
-		;;
-	esac
-	return 0
-}
-ini.new_param() {
-	local IniContents=() Line
-	local Section="$1" Param="$2"
-	local InSection=false LineNo=0
-	local NewIniContents=()
-	readarray -t IniContents
-	local BeforeParam
-	local SectionLastParam
-	local ParamAdded=false
-	if ! print_array "${IniContents[@]}" | ini.get_param_list "$Section" | grep -qx "$Param"; then
-		SectionLastParam="$(print_eval_array IniContents | ini.get_last_param "$Section")"
-		for Line in "${IniContents[@]}"; do
-			LineNo=$((LineNo + 1))
-			ini.parse_line <<<"$Line"
-			case "$FSBLIB_INI_PARSED_TYPE" in
-			"SECTION")
-				if [[ $FSBLIB_INI_PARSED_SECTION == "$Section" ]]; then
-					InSection=true
-				else
-					InSection=false
-				fi
-				;;
-			"PARAM-VALUE")
-				if [[ $InSection == true ]]; then
-					BeforeParam="$FSBLIB_INI_PARSED_PARAM"
-				fi
-				;;
-			"ERROR")
-				echo "Line $LineNo: Failed to parse Ini" 1>&2
-				return 1
-				;;
-			esac
-			NewIniContents+=("$Line")
-			if {
-				! bool "$ParamAdded"
-			} && bool "$InSection" && [[ $SectionLastParam == "${BeforeParam-""}" ]]; then
-				NewIniContents+=("$Param=")
-				ParamAdded=true
-			fi
-		done
-	fi
-	print_eval_array NewIniContents
-	return 0
-}
-ini.new_section() {
-	local IniContents=()
-	local Section="$1"
-	readarray -t IniContents
-	if print_array "${IniContents[@]}" | ini.get_section_list | grep -x "$Section" >/dev/null; then
-		print_eval_array IniContents
-		return 0
-	fi
-	if [[ -z "$(array.last IniContents)" ]]; then
-		array.pop IniContents
-	fi
-	IniContents+=("" "[$Section]")
-	print_eval_array IniContents
-	return 0
-}
-ini.set_value() {
-	local IniContents=()
-	local Section="$1" Param="$2"
-	readarray -t IniContents
-	readarray -t IniContents < <(print_array "${IniContents[@]}" | ini.new_section "$Section" | ini.new_param "$Section" "$Param")
-	print_eval_array IniContents
 }
 sqlite3.call() {
 	msg.debug sqlite3 "${SQLITE3_OPTIONS[@]}" "$SQLITE3_DBPATH" "$@" 1>&2
