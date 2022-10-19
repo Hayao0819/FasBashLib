@@ -85,10 +85,14 @@ CaptureSpecialKeys(){
         read -r -n2 -s rest
         SELECTION+="$rest"
     else
-        echo -n "$SELECTION"
-        read -r rest
-        echo "$SELECTION$rest"
-        return 0
+        if [[ "$SELECTION" == '' ]] ;then
+            echo "Enter"
+            return 0
+        else
+            read -r rest
+            echo "$SELECTION$rest"
+            return 0
+        fi
     fi
 
     case $SELECTION in
