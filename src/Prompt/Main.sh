@@ -130,7 +130,7 @@ SelectMenu(){
         done
 
         # キー検知
-        Key="$(@CaptureSpecialKeys)"
+        Key="$(CaptureSpecialKeys)"
         case "$Key" in
             Up)
                 (( "$CurrentChoice" != 0 )) && CurrentChoice=$((CurrentChoice - 1))
