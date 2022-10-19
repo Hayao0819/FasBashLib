@@ -13,10 +13,10 @@ TmpFile_FuncList="${TmpDir}/fasbashlib-list.sh" # スネークケース置き換
 OutFile="${MainDir}/fasbashlib.sh"
 Delimiter="."
 NoRequire=false
-OneLine=false # うまく動かないよ
 NoIgnore=false # すべてのIgnore設定を無視
 NoParalell=false # 並列ビルドを無効化
 MultiFileMode=false # マルチファイルモード（スクリプトが複数回sourceされることを許可します）
+CommonPrefix="" # すべての関数に付与されるプレフィックス
 
 CodeType="Upper"
 #CodeType="Lower"
@@ -26,6 +26,7 @@ CodeType="Upper"
 Debug=false
 DontRunAtMarkReplacement=false
 GenerateFuncList=false
+DontRemoveTmpDir=false
 
 # Environment
 Version=""
@@ -99,6 +100,10 @@ MakeFuncName(){
     return 0
 }
 
+_GetPrefix(){
+    [[ -n "${CommonPrefix:-""}" ]] && echo -n "${CommonPrefix:-""}${Delimiter:-""}"
+    GetMeta "$1" "Prefix"
+}
 
 _Check_Dependency(){
     which shfmt >/dev/null 2>&1 || {
@@ -227,38 +232,6 @@ _Make_TargetLib(){
     return 0
 }
 
-# _Make_TargetLibを書き直す前のやつ
-# 動作はこっちに準拠する
-_Make_TargetLib_old(){
-    # 読み込むライブラリの一覧
-    # TargetLib配列にはライブラリのディレクトリへのフルパスが代入されています
-    readarray -t TargetLib < <(
-        local LoadLibDir=()
-        if (( "${#}" > 0 )); then
-            # 引数が指定されている場合
-            readarray -t LoadLibDir < <(printf "${SrcDir}/%s\n" "${RequireLib[@]}" "${@}")
-        else
-            local Lib _FullLibList=()
-            readarray -t _FullLibList < <(find "$SrcDir" -mindepth 1 -maxdepth 1 -type d )
-            # IgnoreListのものを除外
-            for Lib in "${_FullLibList[@]}"; do
-                if [[ "${NoIgnore}" = true ]] || { ! PrintArray "${IgnoreLib[@]}" | grep -qx "$(basename "$Lib")" && ! [[ "$(GetMeta "$(basename "$Lib")" ExcludeFromAll | RemoveBlank | tr "[:upper:]" "[:lower:]" )" = "true" ]]; }; then # IgnoreLibに含まれていないことを確認
-                    LoadLibDir+=("$Lib")
-                elif PrintArray "${ForceLoadLib[@]}" | grep -qx "$(basename "$Lib")"; then
-                    LoadLibDir+=("$Lib")
-                else
-                    echo "Skip $Lib" >&2
-                fi
-
-            done
-        fi
-        readarray -t LoadLibDir < <(printf "%s\n" "${LoadLibDir[@]}" | sort)
-        echo "Load libs: $(printf "%s\n" "${LoadLibDir[@]}" | xargs -L 1 basename | tr "\n" " ")" >&2
-        printf "%s\n" "${LoadLibDir[@]}"
-        unset LoadLibDir
-    )
-}
-
 _Make_Shell(){
     local ShellList=()
 
@@ -275,7 +248,7 @@ _Make_Shell(){
             fi
         done < <(
             # shellcheck disable=SC2016
-            PrintArray "${TargetLib[@]}" | ForEach eval '${LibDir}/GetMeta.sh $(basename "{}") Shell'
+            PrintArray "${TargetLib[@]}" | ForEach eval 'GetMeta $(basename "{}") Shell'
         )
         printf "%s\n" "${ShellList[@]}" | head -n "$MaxIndex" | tail -n 1
         unset Shell Index MaxIndex
@@ -346,12 +319,6 @@ _GetFuncCodeFromFile(){
     )
 }
 
-_MakeOneLineFunc(){
-    sed "$ s|^}$|;}|g" | grep -v "^ *\#" | RemoveBlank | sed "s|^| |g; s|$| |g" | sed "s|^ *}|;}|g" | tr -d "\n"| RemoveBlank | sed -E "s| +| |g"
-    #sed ":a s/[\]$//; N; s/[\]$//; s/\n/ /; t a ;"
-    echo
-}
-
 # _CheckLoadedFile <Path>
 # $? = 0: 読み込まれていません
 # $? = 1: 既に読み込まれています
@@ -382,7 +349,7 @@ _Make_Lib(){
         {
             _DefinedFuncInLib=()
             LibName="$(basename "$Dir")"
-            LibPrefix="$("$LibDir/GetMeta.sh" "$LibName" "Prefix")"
+            LibPrefix=$(_GetPrefix "$LibName")
             TmpLibFile="$TmpDir/LibFiles/$LibName.sh"
             ReplacePrefix=true
 
@@ -390,11 +357,6 @@ _Make_Lib(){
             mkdir -p "$(dirname "$TmpLibFile")"
             mkdir -p "$TmpDir/Internal"
             echo -n > "$TmpLibFile"
-
-            #Prefix置換えを行うかどうか
-            if [[ -z "${LibPrefix-""}" ]]; then
-                ReplacePrefix=false
-            fi
 
             readarray -t _NoPrefixFunc < <(GetMeta -c "$LibName" "NoPrefixFunc")
 
@@ -416,34 +378,32 @@ _Make_Lib(){
                     fi
                     {
                         ReplacePrefix=true
-                        if PrintArray "${_NoPrefixFunc[@]}" | grep -qx "$Func"; then
+
+                        # プレフィックスが空の場合は置き換えない
+                        if [[ -z "${LibPrefix-""}" ]]; then
                             ReplacePrefix=false
+                        else
+                            # プレフィックスを置き換えない関数として設定されている場合は置き換えない
+                            if PrintArray "${_NoPrefixFunc[@]}" | grep -qx "$Func"; then
+                                # コードスタイルが一致している場合は置き換えない
+                                if [[ "$CodeType" = "$DefaultCodeType" ]]; then
+                                    ReplacePrefix=false
+                                fi
+                            fi
                         fi
 
-                        if [[ "${ReplacePrefix}" = false ]] && [[ "$CodeType" = "$DefaultCodeType" ]]; then
-                            # 関数の置き換えを一切行わない場合
-                            echo " = $Func" >> "$TmpFile_FuncList"
-                            "$Debug" && echo "${Func}を${TmpLibFile}に書き込み" >&2
-                            if "${OneLine-"false"}"; then
-                                _GetFuncCodeFromFile "${Dir}/${File}" "$Func" | _MakeOneLineFunc >> "$TmpLibFile"
-                            else
-                                _GetFuncCodeFromFile "${Dir}/${File}" "$Func" >> "$TmpLibFile"
-                            fi
-                        else
+                        if [[ "${ReplacePrefix}" = true ]]; then
                             # 関数の定義部分を書き換え
                             local NewFuncName=""
                             echo "${LibPrefix-""} = ${Func}" >> "$TmpFile_FuncList"
                             NewFuncName="$(MakeFuncName "${LibPrefix-""}" "$Func")"
                             "${Debug}" && echo "置き換え1: 関数定義の${Func}を${NewFuncName}に置き換えて${TmpLibFile}に書き込み" >&2
-
-                            # 関数を1行にまとめられないかなって...
-                            if "${OneLine-"false"}"; then
-                                _GetFuncCodeFromFile "${Dir}/${File}" "$Func" | sed "1 s|${Func} ()|${NewFuncName} ()|g" | \
-                                    grep -v "^ *\#" | _MakeOneLineFunc >> "$TmpLibFile"
-                                echo >> "$TmpLibFile"
-                            else
-                                _GetFuncCodeFromFile "${Dir}/${File}" "$Func" | sed "1 s|${Func} ()|${NewFuncName} ()|g" | grep -v "^ *\#" >> "$TmpLibFile"
-                            fi
+                            _GetFuncCodeFromFile "${Dir}/${File}" "$Func" | sed "1 s|${Func} ()|${NewFuncName} ()|g" | grep -v "^ *#" >> "$TmpLibFile"
+                        else
+                            # 関数の置き換えを一切行わない場合
+                            echo " = $Func" >> "$TmpFile_FuncList"
+                            "$Debug" && echo "${Func}を${TmpLibFile}に書き込み" >&2
+                            _GetFuncCodeFromFile "${Dir}/${File}" "$Func" >> "$TmpLibFile"
                         fi
                     } &
                 done
@@ -464,7 +424,6 @@ _Make_Lib(){
                     # スネークケースへの置き換えは全てまとめて最後に行う
                 else
                     # スネークケースが有効化されている場合、プレフィックスは小文字にする
-                    #if [[ "${SnakeCase}" = true ]]; then
                     if [[ "$CodeType" = "Snake" ]]; then
                         NewLibPrefix="$(ToLower "${LibPrefix}")"
                     fi
@@ -561,7 +520,7 @@ _Make_Const(){
     # ライブラリの定数
     while read -r Lib; do
         # ライブラリごとの設定
-        Prefix="$(GetMeta "$Lib" Prefix)"
+        Prefix="$(_GetPrefix "$Lib")"
         VarNameStart="FSBLIB_"
         if [[ -n "$Prefix" ]]; then
             VarNameStart="FSBLIB_${Prefix}_"
@@ -634,7 +593,9 @@ _Make_OutFile(){
     fi
 
     # 一時ディレクトリの削除
-    rm -rf "$TmpDir"
+    if [[ "${DontRemoveTmpDir}" = false ]]; then
+        rm -rf "$TmpDir"
+    fi
     echo "$OutFile にビルドされました" >&2
     return 0
 }
@@ -690,6 +651,10 @@ while [[ -n "${1-""}" ]]; do
             ;;
         "-multimode")
             MultiFileMode=true
+            shift 1
+            ;;
+        "-normtmpdir")
+            DontRemoveTmpDir=true
             shift 1
             ;;
         "--")
