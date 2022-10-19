@@ -120,6 +120,10 @@ CaptureSpecialKeys(){
 SelectMenu(){
     local Choices=("$@") CurrentChoice=0 Key=""
 
+    # 例外処理
+    [[ "${#Choices[@]}" -eq 0 ]] && return 1
+    [[ ${#Choices[@]} -eq 1 ]] && { echo "${Choices[0]}" && return 0 ;}
+
     while [[ "$Key" != "Enter" ]]; do
         # メニューを表示
         for i in "${!Choices[@]}"; do
@@ -127,6 +131,7 @@ SelectMenu(){
                 Esc.Bold && Esc.Underline
                 echo " > $i: ${Choices[$i]}"
             else
+                #Esc.LowIntensity
                 echo "   $i: ${Choices[$i]}"
             fi
             Esc.ResetStyle
