@@ -76,3 +76,36 @@ ChoiceLoop(){
         fi
     done
 }
+
+CaptureSpecialKeys(){
+    local SELECTION rest
+
+    IFS= read -r -n1 -s SELECTION
+    if [[ $SELECTION == $'\x1b' ]]; then
+        read -r -n2 -s rest
+        SELECTION+="$rest"
+    else
+        echo -n "$SELECTION"
+        read -r rest
+        echo "$SELECTION$rest"
+        return 0
+    fi
+
+    case $SELECTION in
+        $'\x1b\x5b\x41') #up arrow
+            echo "Up"
+            ;;
+        $'\x1b\x5b\x42') #down arrow
+            echo "Down"
+            ;;
+        $'\x1b\x5b\x43') #right arrow
+            echo "Right"
+            ;;
+        $'\x1b\x5b\x44') #left arrow
+            echo "Left"
+            ;;
+        $'\x20') #space
+            echo "Space"
+            ;;
+    esac
+}
