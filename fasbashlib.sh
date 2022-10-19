@@ -27,10 +27,11 @@
 #
 # shellcheck disable=all
 
-FSBLIB_LIBLIST+=("ArchLinux" "Array" "AwkForCalc" "BetterShell" "Cache" "Core" "Csv" "Emerge" "Esc" "Ini" "LibreTranslate" "Message" "Misskey" "Pacman" "ParseArg" "Prompt" "Readlink" "Sqlite3" "SrcInfo" "URL")
-FSBLIB_FUNCLIST+=("Csv.GetClm" "Esc.ClearLeft" "Sqlite3.Call" "Em.GetAllPkgList" "AddNewToArray" "URL.Authority" "Pm.CheckPkg" "Arch.GetKernelFileList" "Cache.Exist" "ArrayAppend" "ParseArg" "Ini.GetLastParam" "SrcInfo.Format" "Readlinkf" "CaptureSpecialKeys" "Misskey.Notes.Create" "LibreTranslate.Check" "Csv.GetClmCnt" "Sqlite3.Connect" "Esc.ClearLine" "ArrayIncludes" "Em.GetDefaultRepoName" "Pm.GetConfig" "Readlinkf_Posix" "Arch.GetKernelSrcList" "URL.Fragment" "Cache.Get" "Choice" "SrcInfo.GetKeyList" "ArrayIndex" "Array.Append" "Fsblib.EnvCheck" "Ini.GetParam" "Readlinkf_Readlink" "Awk.Cos" "Misskey.Notes.Renotes" "ChoiceLoop" "Msg.Common" "Sqlite3.Create" "LibreTranslate.Detect" "Csv.ToBashArray" "Em.GetInstalledPkgList" "Pm.GetInstalledPkgVer" "GetArrayIndex" "Esc.ClearRight" "URL.Host" "Arch.GetMkinitcpioPresetList" "Array.FromStr" "Cache.GetDir" "FsblibEnvCheck" "SrcInfo.GetPkgBase" "Ini.GetParamList" "SelectMenu" "Awk.Float" "PrintArray" "Sqlite3.CurrentDb" "Misskey.Notes.Search" "LibreTranslate.Languages" "Pm.GetKeyringList" "Msg.Debug" "Ini.GetSectionList" "Fsblib.RequireLib" "Esc.ClearScreen" "Em.GetRepoConf" "URL.NoScheme" "PrintEvalArray" "SrcInfo.GetPkgName" "Awk.Log" "Array.Pop" "Sqlite3.Delete" "Cache.GetFileLastUpdate" "Ini.ParseLine" "LibreTranslate.Translate" "Pm.GetLatestPkgVer" "Msg.Err" "URL.Path" "RevArray" "SrcInfo.GetSectionList" "Em.GetRepoLocation" "Array.Push" "Awk.Pi" "Sqlite3.ExistField" "Cache.GetID" "StrToCharList" "Pm.GetName" "LibreTranslate.TranslateAuto" "Misskey.Users.GetFrequentlyRepliedUsers" "Esc.MoveCursor" "URL.PathAndQueryAndFragment" "Msg.Info" "SrcInfo.GetValue" "Array.Remove" "Awk.Print" "Sqlite3.ExistTable" "Pm.GetPacmanKernelPkg" "Em.GetRepoPkgList" "Cache.GetTimeDiffFromLastUpdate" "Esc.MoveCursorDown" "Misskey.Users.Notes" "Ini.NewParam" "SrcInfo.GetValueInPkgBase" "URL.Port" "FileType" "Array.Rev" "Msg.Warn" "Sqlite3.Insert" "GetBaseName" "Pm.GetPacmanKeyringDir" "Ini.NewSection" "GetFileExt" "SrcInfo.GetValueInPkgName" "Awk.Rad" "Em.GetWorldPkgList" "Esc.MoveCursorLeft" "Array.Shift" "Sqlite3.Select" "RemoveFileExt" "URL.Query" "Pm.GetRepoConf" "Misskey.Users.Pages" "Ini.SetValue" "SrcInfo.Parse" "Awk.Sin" "Cache.Create" "Esc.MoveCursorRight" "Sqlite3.SelectAll" "Pm.GetRepoListFromConf" "URL.Scheme" "Cache.CreateDir" "Misskey.Users.SearchByUsernameAndHost" "Esc.MoveCursorUp" "CheckFuncDefined" "Array.Eval" "Awk.Tan" "Pm.GetRepoPkgList" "ForEach" "Misskey.Users.Show" "Array.Last" "Em.NoVersion" "URL.User" "GetLine" "Pm.GetRepoServer" "Array.Print" "IsAvailable" "Esc.ClearUpperLines" "Misskey.Users.Stats" "Loop" "Pm.GetRepoVer" "URL.HasAuthority" "Pm.GetRoot" "Esc.BlackBackground" "Array.IndexOf" "Misskey.Admin.ServerInfo" "URL.HasFragment" "BreakChar" "Pm.IsRepoPkg" "CutLastString" "Array.LastIndex" "URL.HasPort" "Pm.PacmanGpg" "Esc.BlackText" "GetLastSplitString" "IsUUID" "Array.Length" "Misskey.Setup" "URL.HasQuery" "Pm.Run" "Esc.Blink" "PrintEval" "URL.HasUser" "RandomString" "Esc.BlueBackground" "Pm.RunKey" "RemoveBlank" "TextBox" "Misskey.I" "Array.ForEach" "Esc.BlueText" "ToLower" "ToLowerStdin" "Esc.Bold" "Misskey.Meta" "Pm.GetDbNextSection" "Array.Includes" "URL.Parse" "Misskey.ServerInfo" "Esc.Conceal" "Pm.GetDbSection" "CalcInt" "Ntest" "Esc.CrossedOut" "Sum" "Pm.GetDbSectionList" "URL.GetQuery" "Misskey.BindingBase" "Esc.CyanBackground" "Bool" "URL.ParseQuery" "Misskey.MakeJson" "Pm.CreateDbTmpDir" "Esc.CyanText" "Esc.GreenBackground" "GetFuncList" "Misskey.SendReq" "Pm.DeleteDbTmpDir" "UnsetAllFunc" "Esc.GreenText" "Pm.GetDbTmpDir" "Esc.Italic" "Match" "Misskey.IsAdmin" "Pm.GetPkgArch" "RemoveMatchLine" "ToArgs" "Esc.LowIntensity" "Misskey.MyId" "Pm.GetRepoListFromLocalDb" "Esc.MagentaBackground" "Misskey.MyName" "Esc.MagentaText" "Pm.GetSyncAllDesc" "Esc.RapidBlink" "Misskey.MyUserName" "Pm.GetSyncDbDesc" "Esc.RedBackground" "Pm.GetSyncDbDescPath" "Esc.RedText" "Pm.GetVirtualPkgList" "Esc.ResetStyle" "Esc.Reverse" "Pm.IsOpendSyncDb" "Pm.OpenSyncDb" "Esc.Underline" "Esc.WhiteBackground" "Pm.OpenedSyncDbList" "Esc.WhiteText" "Pm.ParsePkgFileName" "Esc.YellowBackground" "Esc.YellowText")
-declare -r FSBLIB_VERSION='v0.2.6.r409.ga6208a5-upper'
+FSBLIB_LIBLIST+=("ArchLinux" "Array" "AwkForCalc" "BetterShell" "Cache" "Core" "Csv" "Emerge" "Esc" "Ini" "LibreTranslate" "Message" "Misskey" "Pacman" "ParseArg" "Progress" "Prompt" "Readlink" "Sqlite3" "SrcInfo" "URL")
+FSBLIB_FUNCLIST+=("Arch.GetKernelFileList" "Readlinkf" "Esc.ClearLeft" "Ini.GetLastParam" "CaptureSpecialKeys" "Fsblib.EnvCheck" "Readlinkf_Posix" "Cache.Exist" "AddNewToArray" "Array.Append" "Msg.Common" "LibreTranslate.Check" "Sqlite3.Call" "SrcInfo.Format" "Em.GetAllPkgList" "Misskey.Notes.Create" "Prog.Kill" "Choice" "Arch.GetKernelSrcList" "Awk.Cos" "URL.Authority" "Readlinkf_Readlink" "ArrayAppend" "Ini.GetParam" "Esc.ClearLine" "ChoiceLoop" "Pm.CheckPkg" "Cache.Get" "Csv.GetClm" "FsblibEnvCheck" "ParseArg" "LibreTranslate.Detect" "Sqlite3.Connect" "SrcInfo.GetKeyList" "Misskey.Notes.Renotes" "ArrayIncludes" "Msg.Debug" "Array.FromStr" "Em.GetDefaultRepoName" "Awk.Float" "Prog.Rotation" "URL.Fragment" "Arch.GetMkinitcpioPresetList" "SelectMenu" "Esc.ClearRight" "Fsblib.RequireLib" "ArrayIndex" "Ini.GetParamList" "Cache.GetDir" "Csv.GetClmCnt" "Pm.GetConfig" "LibreTranslate.Languages" "Sqlite3.Create" "GetArrayIndex" "Msg.Err" "Em.GetInstalledPkgList" "SrcInfo.GetPkgBase" "Array.Pop" "Misskey.Notes.Search" "Awk.Log" "URL.Host" "Ini.GetSectionList" "PrintArray" "Csv.ToBashArray" "Cache.GetFileLastUpdate" "Esc.ClearScreen" "LibreTranslate.Translate" "Pm.GetInstalledPkgVer" "SrcInfo.GetPkgName" "Msg.Info" "Array.Push" "PrintEvalArray" "Awk.Pi" "Sqlite3.CurrentDb" "Em.GetRepoConf" "URL.NoScheme" "Ini.ParseLine" "Cache.GetID" "RevArray" "LibreTranslate.TranslateAuto" "Pm.GetKeyringList" "SrcInfo.GetSectionList" "Awk.Print" "StrToCharList" "Sqlite3.Delete" "Msg.Warn" "Em.GetRepoLocation" "URL.Path" "Misskey.Users.GetFrequentlyRepliedUsers" "Array.Remove" "Cache.GetTimeDiffFromLastUpdate" "Esc.MoveCursor" "Pm.GetLatestPkgVer" "SrcInfo.GetValue" "URL.PathAndQueryAndFragment" "Array.Rev" "Misskey.Users.Notes" "Awk.Rad" "Sqlite3.ExistField" "Em.GetRepoPkgList" "Ini.NewParam" "FileType" "Esc.MoveCursorDown" "Pm.GetName" "GetBaseName" "SrcInfo.GetValueInPkgBase" "Em.GetWorldPkgList" "Array.Shift" "Awk.Sin" "URL.Port" "Misskey.Users.Pages" "Ini.NewSection" "Sqlite3.ExistTable" "Cache.Create" "Esc.MoveCursorLeft" "Pm.GetPacmanKernelPkg" "Awk.Tan" "GetFileExt" "SrcInfo.GetValueInPkgName" "URL.Query" "Ini.SetValue" "Em.NoVersion" "RemoveFileExt" "Cache.CreateDir" "Sqlite3.Insert" "Misskey.Users.SearchByUsernameAndHost" "Esc.MoveCursorRight" "Pm.GetPacmanKeyringDir" "SrcInfo.Parse" "URL.Scheme" "Array.Eval" "Sqlite3.Select" "Esc.MoveCursorUp" "Pm.GetRepoConf" "Misskey.Users.Show" "CheckFuncDefined" "Array.Last" "URL.User" "Sqlite3.SelectAll" "Misskey.Users.Stats" "ForEach" "Pm.GetRepoListFromConf" "GetLine" "Array.Print" "IsAvailable" "Esc.ClearUpperLines" "Pm.GetRepoPkgList" "URL.HasAuthority" "Loop" "Misskey.Admin.ServerInfo" "Pm.GetRepoServer" "Array.IndexOf" "URL.HasFragment" "Esc.BlackBackground" "Pm.GetRepoVer" "BreakChar" "Array.LastIndex" "CutLastString" "Misskey.Setup" "URL.HasPort" "Pm.GetRoot" "Esc.BlackText" "GetLastSplitString" "Array.Length" "IsUUID" "URL.HasQuery" "PrintEval" "Pm.IsRepoPkg" "Esc.Blink" "Misskey.I" "URL.HasUser" "RandomString" "Array.ForEach" "RemoveBlank" "Misskey.Meta" "Pm.PacmanGpg" "Esc.BlueBackground" "TextBox" "ToLower" "Array.Includes" "URL.Parse" "Misskey.ServerInfo" "Pm.Run" "Esc.BlueText" "ToLowerStdin" "Pm.RunKey" "Esc.Bold" "CalcInt" "Esc.Conceal" "URL.GetQuery" "Misskey.BindingBase" "Ntest" "Sum" "Pm.GetDbNextSection" "Esc.CrossedOut" "URL.ParseQuery" "Misskey.MakeJson" "Pm.GetDbSection" "Esc.CyanBackground" "Bool" "Misskey.SendReq" "Pm.GetDbSectionList" "Esc.CyanText" "GetFuncList" "Esc.GreenBackground" "UnsetAllFunc" "Misskey.IsAdmin" "Match" "Esc.GreenText" "Misskey.MyId" "Pm.CreateDbTmpDir" "RemoveMatchLine" "ToArgs" "Esc.Italic" "Misskey.MyName" "Pm.DeleteDbTmpDir" "Esc.LowIntensity" "Pm.GetDbTmpDir" "Misskey.MyUserName" "Esc.MagentaBackground" "Pm.GetPkgArch" "Esc.MagentaText" "Pm.GetRepoListFromLocalDb" "Esc.RapidBlink" "Esc.RedBackground" "Pm.GetSyncAllDesc" "Pm.GetSyncDbDesc" "Esc.RedText" "Esc.ResetStyle" "Pm.GetSyncDbDescPath" "Esc.Reverse" "Pm.GetVirtualPkgList" "Esc.Underline" "Pm.IsOpendSyncDb" "Esc.WhiteBackground" "Pm.OpenSyncDb" "Esc.WhiteText" "Esc.YellowBackground" "Pm.OpenedSyncDbList" "Esc.YellowText" "Pm.ParsePkgFileName")
+declare -r FSBLIB_VERSION='v0.2.6.r412.g1fce987-upper'
 declare -r FSBLIB_REQUIRE='ModernBash'
+declare -r FSBLIB_PROG_PIDFILEPATH='FSBLIB_PROGRESS_PIDLIST'
 
 ParseArg() {
 	local _Arg _Chr _Cnt
@@ -317,6 +318,50 @@ SelectMenu() {
 	done
 	echo "${Choices[$CurrentChoice]}"
 }
+Prog.Kill() {
+	local AnimeID="${1-""}"
+	[[ -z ${AnimeID} ]] && return 1
+	local TargetPID
+	TargetPID="$(grep -o "$$-${AnimeID}=[0-9]*" "$TMPDIR/${FSBLIB_PROG_PIDFILEPATH}" | cut -d "=" -f 2)"
+	[[ -n ${TargetPID} ]] && kill -9 "${TargetPID}"
+}
+Prog.Rotation() {
+	local Chr AnimeID="${1-""}"
+	[[ -z ${AnimeID} ]] && return 1
+	[[ -n ${2-""} ]] && echo -n "${2}" 1>&2
+	echo "${$}-${AnimeID}=$BASHPID" >>"$TMPDIR/$FSBLIB_PROG_PIDFILEPATH"
+	while true; do
+		for Chr in "-" '\' "|" "/"; do
+			printf "%s" "$Chr" 1>&2
+			sleep 0.1
+			Esc.MoveCursorLeft 1
+		done
+	done
+}
+Fsblib.EnvCheck() {
+	case "$FSBLIB_REQUIRE" in
+	"Any")
+		return 0
+		;;
+	"ModernShell")
+		[ "$(echo "$BASH_VERSION" | cut -d "." -f 1)" = "5" ] && return 0
+		;;
+	esac
+	return 1
+}
+FsblibEnvCheck() {
+	Fsblib.EnvCheck
+}
+Fsblib.RequireLib() {
+	local lib missing=() return=0
+	for lib in "$@"; do
+		if ! [[ ${FSBLIB_LIBLIST[*]} == *" $lib "* ]]; then
+			missing+=("$lib")
+			return=1
+		fi
+	done
+	return "$return"
+}
 Arch.GetKernelFileList() {
 	find "/boot" -maxdepth 1 -mindepth 1 -name "vmlinuz-*"
 }
@@ -355,30 +400,6 @@ Csv.ToBashArray() {
 			PrintArray "${_RawCsvLine[@]}" | cut -d "${CSVDELIM-","}" -f "$_Cnt"
 		)
 	done < <(seq 1 "$#")
-}
-Fsblib.EnvCheck() {
-	case "$FSBLIB_REQUIRE" in
-	"Any")
-		return 0
-		;;
-	"ModernShell")
-		[ "$(echo "$BASH_VERSION" | cut -d "." -f 1)" = "5" ] && return 0
-		;;
-	esac
-	return 1
-}
-FsblibEnvCheck() {
-	Fsblib.EnvCheck
-}
-Fsblib.RequireLib() {
-	local lib missing=() return=0
-	for lib in "$@"; do
-		if ! [[ ${FSBLIB_LIBLIST[*]} == *" $lib "* ]]; then
-			missing+=("$lib")
-			return=1
-		fi
-	done
-	return "$return"
 }
 LibreTranslate.Check() {
 	export LIBRETRANSLATE_URL="${LIBRETRANSLATE_URL:-""}"
@@ -465,6 +486,30 @@ Msg.Info() {
 }
 Msg.Warn() {
 	Msg.Common " Warn:" "${*}" stderr
+}
+Awk.Cos() {
+	Awk.Float "cos($*)"
+}
+Awk.Float() {
+	awk "BEGIN {printf (\"%4.${AWKSCALE-"5"}f\n\", $*)}"
+}
+Awk.Log() {
+	Awk.Float "log(${2}) / log($1)"
+}
+Awk.Pi() {
+	Awk.Float "atan2(0, -0)"
+}
+Awk.Print() {
+	awk "BEGIN {print $*}"
+}
+Awk.Rad() {
+	Awk.Float "$1 * $(Awk.Pi) / 180 "
+}
+Awk.Sin() {
+	Awk.Float "sin($*)"
+}
+Awk.Tan() {
+	Awk.Float "sin($1)/tan($1)"
 }
 Ini.GetLastParam() {
 	Ini.GetParamList "$1" | tail -n 1
@@ -637,6 +682,84 @@ Ini.SetValue() {
 	readarray -t IniContents < <(PrintArray "${IniContents[@]}" | Ini.NewSection "$Section" | Ini.NewParam "$Section" "$Param")
 	PrintEvalArray IniContents
 }
+Em.GetAllPkgList() {
+	Em.GetRepoConf | sed -e 's/^ *//' -e 's/ *$//' | grep "^ *location *=" | sed -e 's/^location *= *//' | xargs -L1 realpath | xargs -I{} bash -c "find '{}' -mindepth 3 -maxdepth 3 -type f -name '*.ebuild' | sed -e 's|{}/||g' -e 's|.ebuild$||g'" | awk -F "/" '{print $1"/"$3}'
+}
+Em.GetDefaultRepoName() {
+	Em.GetRepoConf | Ini.GetParam DEFAULT main-repo
+}
+Em.GetInstalledPkgList() {
+	find /var/db/pkg/ -mindepth 2 -maxdepth 2 -type d | sed 's|/var/db/pkg/||g'
+}
+Em.GetRepoConf() {
+	cat /etc/portage/repos.conf /etc/portage/repos.conf/* 2>/dev/null
+}
+Em.GetRepoLocation() {
+	Em.GetRepoConf | Ini.GetParam "$1" location
+}
+Em.GetRepoPkgList() {
+	local _RepoPath
+	_RepoPath="$(Em.GetRepoLocation "$1")"
+	find "$_RepoPath" -mindepth 3 -maxdepth 3 -type f -name '*.ebuild' | sed -e "s|${_RepoPath%/}/||g" -e 's|.ebuild$||g' | awk -F "/" '{print $1"/"$3}'
+}
+Em.GetWorldPkgList() {
+	sed -E 's|:.+$||g' /var/lib/portage/world | xargs -I{} bash -c 'ls -d /var/db/pkg/{}-* | sed "s|/var/db/pkg/||g" | grep -E "{}-[0-9]"'
+}
+Em.NoVersion() {
+	sed -E 's|\-[0-9]+.+||g'
+}
+Cache.Exist() {
+	local _File
+	_File="$(Cache.CreateDir)/$1"
+	[[ -e $_File ]] || return 1
+	(("$(Cache.GetTimeDiffFromLastUpdate "$_File")" > "${KEEPCACHESEC-"86400"}")) && return 2
+	return 0
+}
+Cache.Get() {
+	cat "$(Cache.GetDir)/$1" 2>/dev/null || return 1
+}
+Cache.GetDir() {
+	echo "${TMPDIR-"/tmp"}/$(Cache.GetID)"
+}
+Cache.GetFileLastUpdate() {
+	local _isGnu=false
+	date --help 2>/dev/null | grep -q "GNU" && _isGnu=true
+	if [[ $_isGnu == true ]]; then
+		date +%s -r "$1"
+	else
+		{
+			eval "$(stat -s "$1")"
+			echo "$st_mtime"
+		}
+	fi
+}
+Cache.GetID() {
+	if [[ -z ${FSBLIB_CACHEID-""} ]]; then
+		Cache.CreateDir >/dev/null
+	fi
+	echo "$FSBLIB_CACHEID"
+}
+Cache.GetTimeDiffFromLastUpdate() {
+	local _Now _Last
+	_Now="$(date "+%s")"
+	_Last="$(Cache.GetFileLastUpdate "$1")"
+	echo "$((_Now - _Last))"
+	return 0
+}
+Cache.Create() {
+	Cache.CreateDir >/dev/null
+	cat >"$(Cache.GetDir)/${1}"
+	cat "$(Cache.GetDir)/$1"
+}
+Cache.CreateDir() {
+	FSBLIB_CACHEID="${FSBLIB_CACHEID-"$(RandomString "10")"}"
+	export FSBLIB_CACHEID="$FSBLIB_CACHEID"
+	local TMPDIR="${TMPDIR-"/tmp"}"
+	local _Dir="$TMPDIR/${FSBLIB_CACHEID}"
+	mkdir -p "$_Dir"
+	echo "$_Dir"
+	return 0
+}
 SrcInfo.Format() {
 	RemoveBlank | sed "/^$/d" | grep -v "^#" | ForEach eval 'SrcInfo.Parse Line <<< "{}"'
 }
@@ -769,82 +892,6 @@ SrcInfo.Parse() {
 	esac
 	return 0
 }
-Cache.Exist() {
-	local _File
-	_File="$(Cache.CreateDir)/$1"
-	[[ -e $_File ]] || return 1
-	(("$(Cache.GetTimeDiffFromLastUpdate "$_File")" > "${KEEPCACHESEC-"86400"}")) && return 2
-	return 0
-}
-Cache.Get() {
-	cat "$(Cache.GetDir)/$1" 2>/dev/null || return 1
-}
-Cache.GetDir() {
-	echo "${TMPDIR-"/tmp"}/$(Cache.GetID)"
-}
-Cache.GetFileLastUpdate() {
-	local _isGnu=false
-	date --help 2>/dev/null | grep -q "GNU" && _isGnu=true
-	if [[ $_isGnu == true ]]; then
-		date +%s -r "$1"
-	else
-		{
-			eval "$(stat -s "$1")"
-			echo "$st_mtime"
-		}
-	fi
-}
-Cache.GetID() {
-	if [[ -z ${FSBLIB_CACHEID-""} ]]; then
-		Cache.CreateDir >/dev/null
-	fi
-	echo "$FSBLIB_CACHEID"
-}
-Cache.GetTimeDiffFromLastUpdate() {
-	local _Now _Last
-	_Now="$(date "+%s")"
-	_Last="$(Cache.GetFileLastUpdate "$1")"
-	echo "$((_Now - _Last))"
-	return 0
-}
-Cache.Create() {
-	Cache.CreateDir >/dev/null
-	cat >"$(Cache.GetDir)/${1}"
-	cat "$(Cache.GetDir)/$1"
-}
-Cache.CreateDir() {
-	FSBLIB_CACHEID="${FSBLIB_CACHEID-"$(RandomString "10")"}"
-	export FSBLIB_CACHEID="$FSBLIB_CACHEID"
-	local TMPDIR="${TMPDIR-"/tmp"}"
-	local _Dir="$TMPDIR/${FSBLIB_CACHEID}"
-	mkdir -p "$_Dir"
-	echo "$_Dir"
-	return 0
-}
-Awk.Cos() {
-	Awk.Float "cos($*)"
-}
-Awk.Float() {
-	awk "BEGIN {printf (\"%4.${AWKSCALE-"5"}f\n\", $*)}"
-}
-Awk.Log() {
-	Awk.Float "log(${2}) / log($1)"
-}
-Awk.Pi() {
-	Awk.Float "atan2(0, -0)"
-}
-Awk.Print() {
-	awk "BEGIN {print $*}"
-}
-Awk.Rad() {
-	Awk.Float "$1 * $(Awk.Pi) / 180 "
-}
-Awk.Sin() {
-	Awk.Float "sin($*)"
-}
-Awk.Tan() {
-	Awk.Float "sin($1)/tan($1)"
-}
 Sqlite3.Call() {
 	Msg.Debug sqlite3 "${SQLITE3_OPTIONS[@]}" "$SQLITE3_DBPATH" "$@" 1>&2
 	sqlite3 "${SQLITE3_OPTIONS[@]}" "$SQLITE3_DBPATH" "$@"
@@ -927,32 +974,6 @@ Sqlite3.SelectAll() {
 	local _table="$1" _args=()
 	shift 1 || return 1
 	Sqlite3.Call "select * from $_table"
-}
-Em.GetAllPkgList() {
-	Em.GetRepoConf | sed -e 's/^ *//' -e 's/ *$//' | grep "^ *location *=" | sed -e 's/^location *= *//' | xargs -L1 realpath | xargs -I{} bash -c "find '{}' -mindepth 3 -maxdepth 3 -type f -name '*.ebuild' | sed -e 's|{}/||g' -e 's|.ebuild$||g'" | awk -F "/" '{print $1"/"$3}'
-}
-Em.GetDefaultRepoName() {
-	Em.GetRepoConf | Ini.GetParam DEFAULT main-repo
-}
-Em.GetInstalledPkgList() {
-	find /var/db/pkg/ -mindepth 2 -maxdepth 2 -type d | sed 's|/var/db/pkg/||g'
-}
-Em.GetRepoConf() {
-	cat /etc/portage/repos.conf /etc/portage/repos.conf/* 2>/dev/null
-}
-Em.GetRepoLocation() {
-	Em.GetRepoConf | Ini.GetParam "$1" location
-}
-Em.GetRepoPkgList() {
-	local _RepoPath
-	_RepoPath="$(Em.GetRepoLocation "$1")"
-	find "$_RepoPath" -mindepth 3 -maxdepth 3 -type f -name '*.ebuild' | sed -e "s|${_RepoPath%/}/||g" -e 's|.ebuild$||g' | awk -F "/" '{print $1"/"$3}'
-}
-Em.GetWorldPkgList() {
-	sed -E 's|:.+$||g' /var/lib/portage/world | xargs -I{} bash -c 'ls -d /var/db/pkg/{}-* | sed "s|/var/db/pkg/||g" | grep -E "{}-[0-9]"'
-}
-Em.NoVersion() {
-	sed -E 's|\-[0-9]+.+||g'
 }
 AddNewToArray() {
 	Array.Push "$@"
