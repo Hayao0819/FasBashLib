@@ -28,8 +28,8 @@
 # shellcheck disable=all
 
 FSBLIB_LIBLIST+=("ArchLinux" "Array" "AwkForCalc" "BetterShell" "Cache" "Core" "Csv" "Emerge" "Esc" "Ini" "LibreTranslate" "Message" "Misskey" "Pacman" "ParseArg" "Prompt" "Readlink" "Sqlite3" "SrcInfo" "URL")
-FSBLIB_FUNCLIST+=("addNewToArray" "Pm.checkPkg" "Fsblib.envCheck" "arrayAppend" "parseArg" "Msg.common" "LibreTranslate.check" "URL.authority" "arrayIncludes" "captureSpecialKeys" "Esc.clearLeft" "Ini.getLastParam" "Sqlite3.call" "Csv.getClm" "arrayIndex" "choice" "Pm.getConfig" "Fsblib.fsblibEnvCheck" "Awk.cos" "SrcInfo.format" "Em.getAllPkgList" "Msg.debug" "choiceLoop" "getArrayIndex" "URL.fragment" "LibreTranslate.detect" "Esc.clearLine" "Ini.getParam" "selectMenu" "Arch.getKernelFileList" "readlinkf" "Csv.getClmCnt" "printArray" "Awk.float" "SrcInfo.getKeyList" "Cache.exist" "Msg.err" "Pm.getInstalledPkgVer" "Fsblib.requireLib" "Sqlite3.connect" "readlinkf_Posix" "printEvalArray" "URL.host" "LibreTranslate.languages" "Arch.getKernelSrcList" "Esc.clearRight" "Csv.toBashArray" "SrcInfo.getPkgBase" "Awk.log" "Misskey.notes.Create" "Em.getDefaultRepoName" "Array.append" "readlinkf_Readlink" "Ini.getParamList" "Pm.getKeyringList" "revArray" "Cache.get" "strToCharList" "Msg.info" "Arch.getMkinitcpioPresetList" "Sqlite3.create" "LibreTranslate.translate" "Esc.clearScreen" "URL.noScheme" "SrcInfo.getPkgName" "Misskey.notes.Renotes" "Array.fromStr" "Em.getInstalledPkgList" "Awk.pi" "Ini.getSectionList" "Pm.getLatestPkgVer" "Msg.warn" "Sqlite3.currentDb" "Cache.getDir" "SrcInfo.getSectionList" "Misskey.notes.Search" "fileType" "URL.path" "LibreTranslate.translateAuto" "Array.pop" "Awk.print" "Em.getRepoConf" "Pm.getName" "getBaseName" "Ini.parseLine" "Esc.moveCursor" "Sqlite3.delete" "getFileExt" "Cache.getFileLastUpdate" "SrcInfo.getValue" "URL.pathAndQueryAndFragment" "Pm.getPacmanKernelPkg" "Awk.rad" "Array.push" "Em.getRepoLocation" "removeFileExt" "Sqlite3.existField" "Esc.moveCursorDown" "SrcInfo.getValueInPkgBase" "Cache.getID" "URL.port" "Awk.sin" "Array.remove" "Pm.getPacmanKeyringDir" "Misskey.users.GetFrequentlyRepliedUsers" "Ini.newParam" "Em.getRepoPkgList" "checkFuncDefined" "SrcInfo.getValueInPkgName" "Sqlite3.existTable" "URL.query" "Awk.tan" "Esc.moveCursorLeft" "Cache.getTimeDiffFromLastUpdate" "forEach" "Misskey.users.Notes" "Array.rev" "Pm.getRepoConf" "Ini.newSection" "Em.getWorldPkgList" "getLine" "SrcInfo.parse" "Sqlite3.insert" "URL.scheme" "isAvailable" "Esc.moveCursorRight" "Array.shift" "Misskey.users.Pages" "Ini.setValue" "loop" "Pm.getRepoListFromConf" "Sqlite3.select" "Cache.create" "URL.user" "Esc.moveCursorUp" "Misskey.users.SearchByUsernameAndHost" "Pm.getRepoPkgList" "Sqlite3.selectAll" "breakChar" "Em.noVersion" "Cache.createDir" "cutLastString" "Array.eval" "Pm.getRepoServer" "Misskey.users.Show" "getLastSplitString" "URL.hasAuthority" "isUUID" "Esc.clearUpperLines" "Array.last" "Pm.getRepoVer" "printEval" "Misskey.users.Stats" "randomString" "URL.hasFragment" "Array.print" "removeBlank" "Pm.getRoot" "URL.hasPort" "textBox" "Misskey.admin.ServerInfo" "Pm.isRepoPkg" "toLower" "Esc.blackBackground" "URL.hasQuery" "toLowerStdin" "Pm.pacmanGpg" "Array.indexOf" "Esc.blackText" "URL.hasUser" "Misskey.setup" "Pm.run" "Array.lastIndex" "calcInt" "ntest" "Esc.blink" "sum" "Pm.runKey" "Array.length" "URL.parse" "Esc.blueBackground" "Misskey.i" "Array.forEach" "bool" "Esc.blueText" "Misskey.meta" "URL.getQuery" "Pm.getDbNextSection" "Array.includes" "Esc.bold" "getFuncList" "Pm.getDbSection" "Misskey.serverInfo" "URL.parseQuery" "unsetAllFunc" "Esc.conceal" "Pm.getDbSectionList" "Esc.crossedOut" "match" "removeMatchLine" "Esc.cyanBackground" "toArgs" "Pm.createDbTmpDir" "Misskey.bindingBase" "Pm.deleteDbTmpDir" "Esc.cyanText" "Misskey.makeJson" "Esc.greenBackground" "Pm.getDbTmpDir" "Misskey.sendReq" "Esc.greenText" "Pm.getPkgArch" "Esc.italic" "Esc.lowIntensity" "Pm.getRepoListFromLocalDb" "Misskey.isAdmin" "Pm.getSyncAllDesc" "Esc.magentaBackground" "Misskey.myId" "Esc.magentaText" "Pm.getSyncDbDesc" "Misskey.myName" "Esc.rapidBlink" "Misskey.myUserName" "Pm.getSyncDbDescPath" "Esc.redBackground" "Pm.getVirtualPkgList" "Esc.redText" "Pm.isOpendSyncDb" "Esc.resetStyle" "Pm.openSyncDb" "Esc.reverse" "Pm.openedSyncDbList" "Esc.underline" "Esc.whiteBackground" "Pm.parsePkgFileName" "Esc.whiteText" "Esc.yellowBackground" "Esc.yellowText")
-declare -r FSBLIB_VERSION='v0.2.6.r400.g33082f9-lower'
+FSBLIB_FUNCLIST+=("Misskey.notes.Create" "Arch.getKernelFileList" "addNewToArray" "Csv.getClm" "Array.append" "Fsblib.envCheck" "Sqlite3.call" "Ini.getLastParam" "Esc.clearLeft" "Msg.common" "captureSpecialKeys" "Cache.exist" "arrayAppend" "readlinkf" "SrcInfo.format" "Misskey.notes.Renotes" "choice" "Pm.checkPkg" "Arch.getKernelSrcList" "parseArg" "LibreTranslate.check" "Sqlite3.connect" "Ini.getParam" "Fsblib.fsblibEnvCheck" "arrayIncludes" "Esc.clearLine" "choiceLoop" "Msg.debug" "readlinkf_Posix" "Em.getAllPkgList" "URL.authority" "Awk.cos" "Array.fromStr" "Cache.get" "Csv.getClmCnt" "Misskey.notes.Search" "arrayIndex" "selectMenu" "readlinkf_Readlink" "SrcInfo.getKeyList" "Sqlite3.create" "Fsblib.requireLib" "Arch.getMkinitcpioPresetList" "Pm.getConfig" "Ini.getParamList" "LibreTranslate.detect" "getArrayIndex" "Esc.clearRight" "Msg.err" "Array.pop" "Em.getDefaultRepoName" "Awk.float" "URL.fragment" "Csv.toBashArray" "Cache.getDir" "printArray" "Sqlite3.currentDb" "SrcInfo.getPkgBase" "printEvalArray" "Pm.getInstalledPkgVer" "LibreTranslate.languages" "Ini.getSectionList" "Esc.clearScreen" "Msg.info" "Awk.log" "Em.getInstalledPkgList" "Array.push" "URL.host" "Misskey.users.GetFrequentlyRepliedUsers" "revArray" "Cache.getFileLastUpdate" "SrcInfo.getPkgName" "Pm.getKeyringList" "LibreTranslate.translate" "strToCharList" "Sqlite3.delete" "Awk.pi" "Ini.parseLine" "Array.remove" "Msg.warn" "Em.getRepoConf" "URL.noScheme" "Misskey.users.Notes" "Cache.getID" "Pm.getLatestPkgVer" "LibreTranslate.translateAuto" "SrcInfo.getSectionList" "Sqlite3.existField" "Esc.moveCursor" "fileType" "Awk.print" "Array.rev" "Em.getRepoLocation" "URL.path" "Cache.getTimeDiffFromLastUpdate" "Misskey.users.Pages" "Pm.getName" "getBaseName" "SrcInfo.getValue" "Sqlite3.existTable" "Ini.newParam" "Esc.moveCursorDown" "Awk.rad" "getFileExt" "Em.getRepoPkgList" "URL.pathAndQueryAndFragment" "Array.shift" "Misskey.users.SearchByUsernameAndHost" "removeFileExt" "SrcInfo.getValueInPkgBase" "Pm.getPacmanKernelPkg" "Sqlite3.insert" "Esc.moveCursorLeft" "Awk.sin" "Ini.newSection" "Em.getWorldPkgList" "URL.port" "Cache.create" "Misskey.users.Show" "Sqlite3.select" "SrcInfo.getValueInPkgName" "Esc.moveCursorRight" "Pm.getPacmanKeyringDir" "checkFuncDefined" "Ini.setValue" "Awk.tan" "Array.eval" "URL.query" "Misskey.users.Stats" "forEach" "SrcInfo.parse" "Esc.moveCursorUp" "Sqlite3.selectAll" "Pm.getRepoConf" "Cache.createDir" "getLine" "Em.noVersion" "Array.last" "URL.scheme" "isAvailable" "Pm.getRepoListFromConf" "loop" "Array.print" "Esc.clearUpperLines" "URL.user" "Misskey.admin.ServerInfo" "Pm.getRepoPkgList" "breakChar" "cutLastString" "Pm.getRepoServer" "getLastSplitString" "Array.indexOf" "URL.hasAuthority" "Esc.blackBackground" "Misskey.setup" "isUUID" "Pm.getRepoVer" "printEval" "Array.lastIndex" "URL.hasFragment" "randomString" "Esc.blackText" "Pm.getRoot" "removeBlank" "Array.length" "URL.hasPort" "Misskey.i" "textBox" "Esc.blink" "Pm.isRepoPkg" "toLower" "URL.hasQuery" "toLowerStdin" "Misskey.meta" "Array.forEach" "Esc.blueBackground" "URL.hasUser" "Pm.pacmanGpg" "Misskey.serverInfo" "calcInt" "Array.includes" "ntest" "Esc.blueText" "Pm.run" "sum" "URL.parse" "Esc.bold" "Misskey.bindingBase" "Pm.runKey" "bool" "Esc.conceal" "Misskey.makeJson" "URL.getQuery" "getFuncList" "Esc.crossedOut" "Misskey.sendReq" "unsetAllFunc" "URL.parseQuery" "Pm.getDbNextSection" "Esc.cyanBackground" "Pm.getDbSection" "Esc.cyanText" "match" "Misskey.isAdmin" "removeMatchLine" "Pm.getDbSectionList" "Esc.greenBackground" "toArgs" "Misskey.myId" "Esc.greenText" "Misskey.myName" "Pm.createDbTmpDir" "Esc.italic" "Pm.deleteDbTmpDir" "Misskey.myUserName" "Pm.getDbTmpDir" "Esc.lowIntensity" "Pm.getPkgArch" "Esc.magentaBackground" "Pm.getRepoListFromLocalDb" "Esc.magentaText" "Pm.getSyncAllDesc" "Esc.rapidBlink" "Pm.getSyncDbDesc" "Esc.redBackground" "Pm.getSyncDbDescPath" "Esc.redText" "Pm.getVirtualPkgList" "Esc.resetStyle" "Pm.isOpendSyncDb" "Esc.reverse" "Pm.openSyncDb" "Esc.underline" "Pm.openedSyncDbList" "Esc.whiteBackground" "Pm.parsePkgFileName" "Esc.whiteText" "Esc.yellowBackground" "Esc.yellowText")
+declare -r FSBLIB_VERSION='v0.2.6.r403.gba569b1-lower'
 declare -r FSBLIB_REQUIRE='ModernBash'
 
 parseArg() {
@@ -137,6 +137,7 @@ captureSpecialKeys() {
 			echo "Enter"
 			return 0
 		else
+			echo -n "$SELECTION"
 			read -r rest
 			echo "$SELECTION$rest"
 			return 0
@@ -335,6 +336,15 @@ Fsblib.requireLib() {
 	done
 	return "$return"
 }
+Arch.getKernelFileList() {
+	find "/boot" -maxdepth 1 -mindepth 1 -name "vmlinuz-*"
+}
+Arch.getKernelSrcList() {
+	find "/usr/src" -mindepth 1 -maxdepth 1 -type l -name "linux*"
+}
+Arch.getMkinitcpioPresetList() {
+	find "/etc/mkinitcpio.d/" -name "*.preset" -type f | getBaseName | removeFileExt
+}
 Csv.getClm() {
 	grep -v "^#" | sed "/^$/d" | cut -d "${CSVDELIM-","}" -f "$1"
 }
@@ -364,15 +374,6 @@ Csv.toBashArray() {
 			printArray "${_RawCsvLine[@]}" | cut -d "${CSVDELIM-","}" -f "$_Cnt"
 		)
 	done < <(seq 1 "$#")
-}
-Arch.getKernelFileList() {
-	find "/boot" -maxdepth 1 -mindepth 1 -name "vmlinuz-*"
-}
-Arch.getKernelSrcList() {
-	find "/usr/src" -mindepth 1 -maxdepth 1 -type l -name "linux*"
-}
-Arch.getMkinitcpioPresetList() {
-	find "/etc/mkinitcpio.d/" -name "*.preset" -type f | getBaseName | removeFileExt
 }
 Msg.common() {
 	local i l="$1" string="$2" out="${3-""}"
@@ -483,138 +484,6 @@ Awk.sin() {
 }
 Awk.tan() {
 	Awk.float "sin($1)/tan($1)"
-}
-SrcInfo.format() {
-	removeBlank | sed "/^$/d" | grep -v "^#" | forEach eval 'SrcInfo.parse Line <<< "{}"'
-}
-SrcInfo.getKeyList() {
-	SrcInfo.format | cut -d "=" -f 1
-}
-SrcInfo.getPkgBase() {
-	local _Line _Key _InSection=false
-	while read -r _Line; do
-		_Key="$(SrcInfo.parse Key <<<"$_Line")"
-		case "$_Key" in
-		"pkgbase")
-			_InSection=true
-			;;
-		"pkgname")
-			_InSection=false
-			;;
-		*)
-			if [[ ${_InSection} == true ]]; then
-				echo "$_Line"
-			fi
-			;;
-		esac
-	done < <(SrcInfo.format)
-}
-SrcInfo.getPkgName() {
-	local _Line _Key _InSection=false _TargetPkgName="$1"
-	while read -r _Line; do
-		_Key="$(SrcInfo.parse Key <<<"$_Line")"
-		case "$_Key" in
-		"pkgname")
-			if [[ "$(SrcInfo.parse Value <<<"$_Line")" == "$_TargetPkgName" ]]; then
-				_InSection=true
-			else
-				_InSection=false
-			fi
-			;;
-		"pkgbase")
-			_InSection=false
-			;;
-		*)
-			if [[ ${_InSection} == true ]]; then
-				echo "$_Line"
-			fi
-			;;
-		esac
-	done < <(SrcInfo.format)
-}
-SrcInfo.getSectionList() {
-	SrcInfo.format | grep -e "^pkgbase" -e "^pkgname"
-}
-SrcInfo.getValue() {
-	local _SrcInfo=()
-	local _Output=()
-	local _PkgBaseValues=("pkgver" "pkgrel" "epoch")
-	local _AllValues=("pkgdesc" "url" "install" "changelog")
-	local _AllArrays=("arch" "groups" "license" "noextract" "options" "backup" "validpgpkeys")
-	local _AllArraysWithArch=("source" "depends" "checkdepends" "makedepends" "optdepends" "provides" "conflicts" "replaces" "md5sums" "sha1sums" "sha224sums" "sha256sums" "sha384sums" "sha512sums")
-	arrayAppend _SrcInfo
-	arrayIncludes _PkgBaseValues "$1" && {
-		printEvalArray _SrcInfo | SrcInfo.getValueInPkgBase "$1"
-		return 0
-	}
-	[[ -n ${2-""} ]] || {
-		echo "No pkgname or pkgbase is specified" 1>&2
-		return 1
-	}
-	if arrayIncludes _AllValues "$1" || arrayIncludes _AllArrays "$1"; then
-		arrayAppend _Output < <(printEvalArray _SrcInfo | SrcInfo.getValueInPkgBase "$1")
-		arrayAppend _Output < <(printEvalArray _SrcInfo | SrcInfo.getValueInPkgName "$2" "$1")
-		printArray "${_Output[@]}" | tail -n 1
-		return 0
-	fi
-	arrayIncludes _AllArraysWithArch "$1" || return 1
-	local _Arch _ArchList=()
-	if [[ -z ${3-""} ]]; then
-		arrayAppend _ArchList < <(printEvalArray _SrcInfo | SrcInfo.getValue arch "$2")
-	else
-		arrayAppend _ArchList < <(tr "," "\n" <<<"$3" | removeBlank)
-	fi
-	arrayAppend _Output < <(printEvalArray _SrcInfo | SrcInfo.getValueInPkgBase "$1")
-	arrayAppend _Output < <(printEvalArray _SrcInfo | SrcInfo.getValueInPkgName "$2" "$1")
-	for _Arch in "${_ArchList[@]}"; do
-		arrayAppend _Output < <(printEvalArray _SrcInfo | SrcInfo.getValueInPkgBase "$1_${_Arch}")
-		arrayAppend _Output < <(printEvalArray _SrcInfo | SrcInfo.getValueInPkgName "$2" "$1_${_Arch}")
-	done
-	printEvalArray _Output
-	return 0
-}
-SrcInfo.getValueInPkgBase() {
-	local _Line
-	while read -r _Line; do
-		_Key="$(SrcInfo.parse Key <<<"$_Line")"
-		case "$_Key" in
-		"$1")
-			SrcInfo.parse Value <<<"$_Line"
-			;;
-		esac
-	done < <(SrcInfo.getPkgBase)
-}
-SrcInfo.getValueInPkgName() {
-	local _Line
-	while read -r _Line; do
-		_Key="$(SrcInfo.parse Key <<<"$_Line")"
-		case "$_Key" in
-		"$2")
-			SrcInfo.parse Value <<<"$_Line"
-			;;
-		esac
-	done < <(SrcInfo.getPkgName "$1")
-}
-SrcInfo.parse() {
-	local _Output="${1-""}"
-	[[ -n ${_Output} ]] || return 1
-	shift 1
-	local _String _Key _Value
-	_String="$(cat)"
-	_Key="$(cut -d "=" -f 1 <<<"$_String" | removeBlank)"
-	_Value="$(cut -d "=" -f 2- <<<"$_String" | removeBlank)"
-	case "$_Output" in
-	"Line")
-		echo "$_Key=$_Value"
-		;;
-	"Key")
-		echo "$_Key"
-		;;
-	"Value")
-		echo "$_Value"
-		;;
-	esac
-	return 0
 }
 Ini.getLastParam() {
 	Ini.getParamList "$1" | tail -n 1
@@ -787,32 +656,6 @@ Ini.setValue() {
 	readarray -t IniContents < <(printArray "${IniContents[@]}" | Ini.newSection "$Section" | Ini.newParam "$Section" "$Param")
 	printEvalArray IniContents
 }
-Em.getAllPkgList() {
-	Em.getRepoConf | sed -e 's/^ *//' -e 's/ *$//' | grep "^ *location *=" | sed -e 's/^location *= *//' | xargs -L1 realpath | xargs -I{} bash -c "find '{}' -mindepth 3 -maxdepth 3 -type f -name '*.ebuild' | sed -e 's|{}/||g' -e 's|.ebuild$||g'" | awk -F "/" '{print $1"/"$3}'
-}
-Em.getDefaultRepoName() {
-	Em.getRepoConf | Ini.getParam DEFAULT main-repo
-}
-Em.getInstalledPkgList() {
-	find /var/db/pkg/ -mindepth 2 -maxdepth 2 -type d | sed 's|/var/db/pkg/||g'
-}
-Em.getRepoConf() {
-	cat /etc/portage/repos.conf /etc/portage/repos.conf/* 2>/dev/null
-}
-Em.getRepoLocation() {
-	Em.getRepoConf | Ini.getParam "$1" location
-}
-Em.getRepoPkgList() {
-	local _RepoPath
-	_RepoPath="$(Em.getRepoLocation "$1")"
-	find "$_RepoPath" -mindepth 3 -maxdepth 3 -type f -name '*.ebuild' | sed -e "s|${_RepoPath%/}/||g" -e 's|.ebuild$||g' | awk -F "/" '{print $1"/"$3}'
-}
-Em.getWorldPkgList() {
-	sed -E 's|:.+$||g' /var/lib/portage/world | xargs -I{} bash -c 'ls -d /var/db/pkg/{}-* | sed "s|/var/db/pkg/||g" | grep -E "{}-[0-9]"'
-}
-Em.noVersion() {
-	sed -E 's|\-[0-9]+.+||g'
-}
 Cache.exist() {
 	local _File
 	_File="$(Cache.createDir)/$1"
@@ -864,6 +707,164 @@ Cache.createDir() {
 	mkdir -p "$_Dir"
 	echo "$_Dir"
 	return 0
+}
+SrcInfo.format() {
+	removeBlank | sed "/^$/d" | grep -v "^#" | forEach eval 'SrcInfo.parse Line <<< "{}"'
+}
+SrcInfo.getKeyList() {
+	SrcInfo.format | cut -d "=" -f 1
+}
+SrcInfo.getPkgBase() {
+	local _Line _Key _InSection=false
+	while read -r _Line; do
+		_Key="$(SrcInfo.parse Key <<<"$_Line")"
+		case "$_Key" in
+		"pkgbase")
+			_InSection=true
+			;;
+		"pkgname")
+			_InSection=false
+			;;
+		*)
+			if [[ ${_InSection} == true ]]; then
+				echo "$_Line"
+			fi
+			;;
+		esac
+	done < <(SrcInfo.format)
+}
+SrcInfo.getPkgName() {
+	local _Line _Key _InSection=false _TargetPkgName="$1"
+	while read -r _Line; do
+		_Key="$(SrcInfo.parse Key <<<"$_Line")"
+		case "$_Key" in
+		"pkgname")
+			if [[ "$(SrcInfo.parse Value <<<"$_Line")" == "$_TargetPkgName" ]]; then
+				_InSection=true
+			else
+				_InSection=false
+			fi
+			;;
+		"pkgbase")
+			_InSection=false
+			;;
+		*)
+			if [[ ${_InSection} == true ]]; then
+				echo "$_Line"
+			fi
+			;;
+		esac
+	done < <(SrcInfo.format)
+}
+SrcInfo.getSectionList() {
+	SrcInfo.format | grep -e "^pkgbase" -e "^pkgname"
+}
+SrcInfo.getValue() {
+	local _SrcInfo=()
+	local _Output=()
+	local _PkgBaseValues=("pkgver" "pkgrel" "epoch")
+	local _AllValues=("pkgdesc" "url" "install" "changelog")
+	local _AllArrays=("arch" "groups" "license" "noextract" "options" "backup" "validpgpkeys")
+	local _AllArraysWithArch=("source" "depends" "checkdepends" "makedepends" "optdepends" "provides" "conflicts" "replaces" "md5sums" "sha1sums" "sha224sums" "sha256sums" "sha384sums" "sha512sums")
+	arrayAppend _SrcInfo
+	arrayIncludes _PkgBaseValues "$1" && {
+		printEvalArray _SrcInfo | SrcInfo.getValueInPkgBase "$1"
+		return 0
+	}
+	[[ -n ${2-""} ]] || {
+		echo "No pkgname or pkgbase is specified" 1>&2
+		return 1
+	}
+	if arrayIncludes _AllValues "$1" || arrayIncludes _AllArrays "$1"; then
+		arrayAppend _Output < <(printEvalArray _SrcInfo | SrcInfo.getValueInPkgBase "$1")
+		arrayAppend _Output < <(printEvalArray _SrcInfo | SrcInfo.getValueInPkgName "$2" "$1")
+		printArray "${_Output[@]}" | tail -n 1
+		return 0
+	fi
+	arrayIncludes _AllArraysWithArch "$1" || return 1
+	local _Arch _ArchList=()
+	if [[ -z ${3-""} ]]; then
+		arrayAppend _ArchList < <(printEvalArray _SrcInfo | SrcInfo.getValue arch "$2")
+	else
+		arrayAppend _ArchList < <(tr "," "\n" <<<"$3" | removeBlank)
+	fi
+	arrayAppend _Output < <(printEvalArray _SrcInfo | SrcInfo.getValueInPkgBase "$1")
+	arrayAppend _Output < <(printEvalArray _SrcInfo | SrcInfo.getValueInPkgName "$2" "$1")
+	for _Arch in "${_ArchList[@]}"; do
+		arrayAppend _Output < <(printEvalArray _SrcInfo | SrcInfo.getValueInPkgBase "$1_${_Arch}")
+		arrayAppend _Output < <(printEvalArray _SrcInfo | SrcInfo.getValueInPkgName "$2" "$1_${_Arch}")
+	done
+	printEvalArray _Output
+	return 0
+}
+SrcInfo.getValueInPkgBase() {
+	local _Line
+	while read -r _Line; do
+		_Key="$(SrcInfo.parse Key <<<"$_Line")"
+		case "$_Key" in
+		"$1")
+			SrcInfo.parse Value <<<"$_Line"
+			;;
+		esac
+	done < <(SrcInfo.getPkgBase)
+}
+SrcInfo.getValueInPkgName() {
+	local _Line
+	while read -r _Line; do
+		_Key="$(SrcInfo.parse Key <<<"$_Line")"
+		case "$_Key" in
+		"$2")
+			SrcInfo.parse Value <<<"$_Line"
+			;;
+		esac
+	done < <(SrcInfo.getPkgName "$1")
+}
+SrcInfo.parse() {
+	local _Output="${1-""}"
+	[[ -n ${_Output} ]] || return 1
+	shift 1
+	local _String _Key _Value
+	_String="$(cat)"
+	_Key="$(cut -d "=" -f 1 <<<"$_String" | removeBlank)"
+	_Value="$(cut -d "=" -f 2- <<<"$_String" | removeBlank)"
+	case "$_Output" in
+	"Line")
+		echo "$_Key=$_Value"
+		;;
+	"Key")
+		echo "$_Key"
+		;;
+	"Value")
+		echo "$_Value"
+		;;
+	esac
+	return 0
+}
+Em.getAllPkgList() {
+	Em.getRepoConf | sed -e 's/^ *//' -e 's/ *$//' | grep "^ *location *=" | sed -e 's/^location *= *//' | xargs -L1 realpath | xargs -I{} bash -c "find '{}' -mindepth 3 -maxdepth 3 -type f -name '*.ebuild' | sed -e 's|{}/||g' -e 's|.ebuild$||g'" | awk -F "/" '{print $1"/"$3}'
+}
+Em.getDefaultRepoName() {
+	Em.getRepoConf | Ini.getParam DEFAULT main-repo
+}
+Em.getInstalledPkgList() {
+	find /var/db/pkg/ -mindepth 2 -maxdepth 2 -type d | sed 's|/var/db/pkg/||g'
+}
+Em.getRepoConf() {
+	cat /etc/portage/repos.conf /etc/portage/repos.conf/* 2>/dev/null
+}
+Em.getRepoLocation() {
+	Em.getRepoConf | Ini.getParam "$1" location
+}
+Em.getRepoPkgList() {
+	local _RepoPath
+	_RepoPath="$(Em.getRepoLocation "$1")"
+	find "$_RepoPath" -mindepth 3 -maxdepth 3 -type f -name '*.ebuild' | sed -e "s|${_RepoPath%/}/||g" -e 's|.ebuild$||g' | awk -F "/" '{print $1"/"$3}'
+}
+Em.getWorldPkgList() {
+	sed -E 's|:.+$||g' /var/lib/portage/world | xargs -I{} bash -c 'ls -d /var/db/pkg/{}-* | sed "s|/var/db/pkg/||g" | grep -E "{}-[0-9]"'
+}
+Em.noVersion() {
+	sed -E 's|\-[0-9]+.+||g'
 }
 Sqlite3.call() {
 	Msg.debug sqlite3 "${SQLITE3_OPTIONS[@]}" "$SQLITE3_DBPATH" "$@" 1>&2

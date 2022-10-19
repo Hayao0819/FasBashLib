@@ -28,104 +28,10 @@
 # shellcheck disable=all
 
 FSBLIB_LIBLIST+=("ArchLinux" "Array" "AwkForCalc" "BetterShell" "Cache" "Core" "Csv" "Emerge" "Esc" "Ini" "LibreTranslate" "Message" "Misskey" "Pacman" "ParseArg" "Prompt" "Readlink" "Sqlite3" "SrcInfo" "URL")
-FSBLIB_FUNCLIST+=("msg.common" "ini.get_last_param" "em.get_all_pkg_list" "cache.exist" "array.append" "parse_arg" "sqlite3.call" "esc.clear_left" "pm.check_pkg" "arch.get_kernel_file_list" "misskey.notes.create" "readlinkf" "msg.debug" "libretranslate.check" "capture_special_keys" "url.authority" "ini.get_param" "csv.get_clm" "readlinkf__posix" "fsblib.env_check" "awk.cos" "choice" "readlinkf__readlink" "cache.get" "em.get_default_repo_name" "array.from_str" "sqlite3.connect" "choice_loop" "arch.get_kernel_src_list" "esc.clear_line" "add_new_to_array" "msg.err" "libretranslate.detect" "srcinfo.format" "misskey.notes.renotes" "ini.get_param_list" "select_menu" "url.fragment" "array_append" "pm.get_config" "awk.float" "csv.get_clm_cnt" "fsblib.fsblib_env_check" "cache.get_dir" "em.get_installed_pkg_list" "array_includes" "array.pop" "esc.clear_right" "arch.get_mkinitcpio_preset_list" "sqlite3.create" "array_index" "msg.info" "srcinfo.get_key_list" "ini.get_section_list" "misskey.notes.search" "libretranslate.languages" "awk.log" "get_array_index" "url.host" "fsblib.require_lib" "csv.to_bash_array" "pm.get_installed_pkg_ver" "cache.get_file_last_update" "print_array" "em.get_repo_conf" "array.push" "esc.clear_screen" "print_eval_array" "srcinfo.get_pkg_base" "sqlite3.current_db" "msg.warn" "awk.pi" "libretranslate.translate" "rev_array" "pm.get_keyring_list" "ini.parse_line" "url.no_scheme" "cache.get_id" "str_to_char_list" "em.get_repo_location" "array.remove" "sqlite3.delete" "misskey.users.get_frequently_replied_users" "srcinfo.get_pkg_name" "libretranslate.translate_auto" "awk.print" "url.path" "pm.get_latest_pkg_ver" "file_type" "cache.get_time_diff_from_last_update" "esc.move_cursor" "get_base_name" "array.rev" "em.get_repo_pkg_list" "sqlite3.exist_field" "ini.new_param" "misskey.users.notes" "awk.rad" "get_file_ext" "srcinfo.get_section_list" "pm.get_name" "url.path_and_query_and_fragment" "remove_file_ext" "esc.move_cursor_down" "sqlite3.exist_table" "array.shift" "em.get_world_pkg_list" "ini.new_section" "awk.sin" "misskey.users.pages" "cache.create" "srcinfo.get_value" "pm.get_pacman_kernel_pkg" "url.port" "check_func_defined" "esc.move_cursor_left" "sqlite3.insert" "for_each" "ini.set_value" "misskey.users.search_by_username_and_host" "awk.tan" "cache.create_dir" "get_line" "em.no_version" "pm.get_pacman_keyring_dir" "url.query" "srcinfo.get_value_in_pkg_base" "is_available" "array.eval" "esc.move_cursor_right" "sqlite3.select" "loop" "pm.get_repo_conf" "misskey.users.show" "url.scheme" "esc.move_cursor_up" "srcinfo.get_value_in_pkg_name" "array.last" "sqlite3.select_all" "break_char" "misskey.users.stats" "pm.get_repo_list_from_conf" "cut_last_string" "url.user" "get_last_split_string" "srcinfo.parse" "array.print" "is_uu_id" "print_eval" "pm.get_repo_pkg_list" "esc.clear_upper_lines" "random_string" "misskey.admin.server_info" "remove_blank" "text_box" "pm.get_repo_server" "array.index_of" "to_lower" "url.has_authority" "to_lower_stdin" "misskey.setup" "url.has_fragment" "array.last_index" "pm.get_repo_ver" "esc.black_background" "calc_int" "ntest" "pm.get_root" "array.length" "esc.black_text" "url.has_port" "sum" "pm.is_repo_pkg" "misskey.i" "esc.blink" "url.has_query" "bool" "array.for_each" "pm.pacman_gpg" "misskey.meta" "esc.blue_background" "url.has_user" "array.includes" "get_func_list" "pm.run" "misskey.server_info" "esc.blue_text" "unset_all_func" "url.parse" "pm.run_key" "esc.bold" "match" "misskey.binding_base" "remove_match_line" "to_args" "esc.conceal" "url.get_query" "misskey.make_json" "pm.get_db_next_section" "esc.crossed_out" "url.parse_query" "misskey.send_req" "esc.cyan_background" "pm.get_db_section" "pm.get_db_section_list" "esc.cyan_text" "misskey.is_admin" "esc.green_background" "misskey.my_id" "pm.create_db_tmp_dir" "esc.green_text" "misskey.my_name" "pm.delete_db_tmp_dir" "misskey.my_user_name" "esc.italic" "pm.get_db_tmp_dir" "esc.low_intensity" "pm.get_pkg_arch" "esc.magenta_background" "pm.get_repo_list_from_local_db" "esc.magenta_text" "pm.get_sync_all_desc" "esc.rapid_blink" "pm.get_sync_db_desc" "esc.red_background" "pm.get_sync_db_desc_path" "esc.red_text" "pm.get_virtual_pkg_list" "esc.reset_style" "pm.is_opend_sync_db" "esc.reverse" "pm.open_sync_db" "esc.underline" "pm.opened_sync_db_list" "esc.white_background" "pm.parse_pkg_file_name" "esc.white_text" "esc.yellow_background" "esc.yellow_text")
-declare -r FSBLIB_VERSION='v0.2.6.r400.g33082f9-snake'
+FSBLIB_FUNCLIST+=("cache.exist" "misskey.notes.create" "fsblib.env_check" "csv.get_clm" "readlinkf" "capture_special_keys" "pm.check_pkg" "ini.get_last_param" "choice" "esc.clear_left" "readlinkf__posix" "cache.get" "arch.get_kernel_file_list" "url.authority" "awk.cos" "readlinkf__readlink" "choice_loop" "add_new_to_array" "select_menu" "array_append" "misskey.notes.renotes" "fsblib.fsblib_env_check" "em.get_all_pkg_list" "pm.get_config" "sqlite3.call" "libretranslate.check" "esc.clear_line" "array.append" "ini.get_param" "array_includes" "csv.get_clm_cnt" "arch.get_kernel_src_list" "msg.common" "srcinfo.format" "parse_arg" "array_index" "cache.get_dir" "get_array_index" "awk.float" "fsblib.require_lib" "url.fragment" "print_array" "esc.clear_right" "ini.get_param_list" "array.from_str" "misskey.notes.search" "em.get_default_repo_name" "arch.get_mkinitcpio_preset_list" "msg.debug" "sqlite3.connect" "pm.get_installed_pkg_ver" "csv.to_bash_array" "print_eval_array" "libretranslate.detect" "srcinfo.get_key_list" "rev_array" "cache.get_file_last_update" "url.host" "awk.log" "ini.get_section_list" "str_to_char_list" "em.get_installed_pkg_list" "sqlite3.create" "esc.clear_screen" "pm.get_keyring_list" "array.pop" "msg.err" "libretranslate.languages" "srcinfo.get_pkg_base" "cache.get_id" "ini.parse_line" "url.no_scheme" "file_type" "awk.pi" "em.get_repo_conf" "sqlite3.current_db" "misskey.users.get_frequently_replied_users" "array.push" "pm.get_latest_pkg_ver" "msg.info" "get_base_name" "libretranslate.translate" "srcinfo.get_pkg_name" "get_file_ext" "cache.get_time_diff_from_last_update" "esc.move_cursor" "url.path" "awk.print" "em.get_repo_location" "remove_file_ext" "pm.get_name" "msg.warn" "misskey.users.notes" "array.remove" "sqlite3.delete" "ini.new_param" "libretranslate.translate_auto" "srcinfo.get_section_list" "esc.move_cursor_down" "awk.rad" "misskey.users.pages" "url.path_and_query_and_fragment" "em.get_repo_pkg_list" "array.rev" "check_func_defined" "pm.get_pacman_kernel_pkg" "sqlite3.exist_field" "ini.new_section" "for_each" "srcinfo.get_value" "cache.create" "get_line" "awk.sin" "url.port" "pm.get_pacman_keyring_dir" "array.shift" "misskey.users.search_by_username_and_host" "is_available" "esc.move_cursor_left" "sqlite3.exist_table" "em.get_world_pkg_list" "loop" "ini.set_value" "srcinfo.get_value_in_pkg_base" "cache.create_dir" "awk.tan" "pm.get_repo_conf" "esc.move_cursor_right" "url.query" "misskey.users.show" "break_char" "sqlite3.insert" "srcinfo.get_value_in_pkg_name" "array.eval" "cut_last_string" "em.no_version" "get_last_split_string" "srcinfo.parse" "url.scheme" "sqlite3.select" "esc.move_cursor_up" "pm.get_repo_list_from_conf" "is_uu_id" "misskey.users.stats" "array.last" "print_eval" "random_string" "remove_blank" "sqlite3.select_all" "url.user" "pm.get_repo_pkg_list" "array.print" "text_box" "to_lower" "esc.clear_upper_lines" "to_lower_stdin" "misskey.admin.server_info" "pm.get_repo_server" "calc_int" "url.has_authority" "pm.get_repo_ver" "array.index_of" "ntest" "sum" "misskey.setup" "esc.black_background" "bool" "pm.get_root" "url.has_fragment" "esc.black_text" "array.last_index" "get_func_list" "url.has_port" "esc.blink" "unset_all_func" "pm.is_repo_pkg" "misskey.i" "array.length" "url.has_query" "esc.blue_background" "match" "pm.pacman_gpg" "misskey.meta" "remove_match_line" "url.has_user" "to_args" "esc.blue_text" "pm.run" "array.for_each" "misskey.server_info" "esc.bold" "pm.run_key" "array.includes" "url.parse" "esc.conceal" "misskey.binding_base" "esc.crossed_out" "pm.get_db_next_section" "misskey.make_json" "url.get_query" "esc.cyan_background" "pm.get_db_section" "url.parse_query" "misskey.send_req" "esc.cyan_text" "pm.get_db_section_list" "misskey.is_admin" "esc.green_background" "misskey.my_id" "esc.green_text" "pm.create_db_tmp_dir" "misskey.my_name" "esc.italic" "pm.delete_db_tmp_dir" "esc.low_intensity" "misskey.my_user_name" "pm.get_db_tmp_dir" "esc.magenta_background" "pm.get_pkg_arch" "esc.magenta_text" "pm.get_repo_list_from_local_db" "esc.rapid_blink" "pm.get_sync_all_desc" "esc.red_background" "pm.get_sync_db_desc" "esc.red_text" "pm.get_sync_db_desc_path" "esc.reset_style" "esc.reverse" "pm.get_virtual_pkg_list" "esc.underline" "pm.is_opend_sync_db" "esc.white_background" "pm.open_sync_db" "esc.white_text" "pm.opened_sync_db_list" "esc.yellow_background" "pm.parse_pkg_file_name" "esc.yellow_text")
+declare -r FSBLIB_VERSION='v0.2.6.r403.gba569b1-snake'
 declare -r FSBLIB_REQUIRE='ModernBash'
 
-parse_arg() {
-	local _Arg _Chr _Cnt
-	local _Long=() _LongWithArg=() _Short=() _ShortWithArg=()
-	local _OutArg=() _NoArg=()
-	for _Arg in "${@}"; do
-		local _TempArray=()
-		case "${_Arg}" in
-		"LONG="*)
-			readarray -t _TempArray < <(tr -d '"' <<<"${_Arg#LONG=}" | tr "," "\n")
-			for _Chr in "${_TempArray[@]}"; do
-				if [[ ${_Chr} == *":" ]]; then
-					_LongWithArg+=("${_Chr%":"}")
-				else
-					_Long+=("${_Chr}")
-				fi
-			done
-			shift 1
-			;;
-		"SHORT="*)
-			readarray -t _TempArray < <(tr -d '"' <<<"${_Arg#SHORT=}" | grep -o .)
-			for ((_Cnt = 0; _Cnt <= "${#_TempArray[@]}" - 1; _Cnt++)); do
-				if [[ ${_TempArray["$((_Cnt + 1))"]-""} == ":" ]]; then
-					_ShortWithArg+=("${_TempArray["${_Cnt}"]}")
-					_Cnt=$((_Cnt + 1))
-				else
-					_Short+=("${_TempArray["${_Cnt}"]}")
-				fi
-			done
-			shift 1
-			;;
-		"--")
-			shift 1
-			break
-			;;
-		esac
-	done
-	while (("$#" > 0)); do
-		if [[ ${1} == "--" ]]; then
-			shift 1
-			_NoArg+=("${@}")
-			shift "$#"
-			break
-		else
-			if [[ ${1} == "--"* ]]; then
-				if printf "%s\n" "${_LongWithArg[@]}" | grep -qx "${1#--}"; then
-					if [[ ${2} == "-"* ]]; then
-						msg.err "${1} の引数が指定されていません"
-						return 2
-					else
-						_OutArg+=("${1}" "${2}")
-						shift 2
-					fi
-				else
-					if printf "%s\n" "${_Long[@]}" | grep -qx "${1#--}"; then
-						_OutArg+=("${1}")
-						shift 1
-					else
-						msg.err "${1} は不正なオプションです。-hで使い方を確認してください。"
-						return 1
-					fi
-				fi
-			else
-				if [[ ${1} == "-"* ]]; then
-					local _Shift=0
-					while read -r _Chr; do
-						if printf "%s\n" "${_ShortWithArg[@]}" | grep -qx "${_Chr}"; then
-							if [[ ${1} == *"${_Chr}" ]] && [[ ! ${2} == "-"* ]]; then
-								_OutArg+=("-${_Chr}" "${2}")
-								_Shift=2
-							else
-								msg.err "-${_Chr} の引数が指定されていません"
-								return 2
-							fi
-						else
-							if printf "%s\n" "${_Short[@]}" | grep -qx "${_Chr}"; then
-								_OutArg+=("-${_Chr}")
-								_Shift=1
-							else
-								msg.err "-${_Chr} は不正なオプションです。-hで使い方を確認してください。"
-								return 1
-							fi
-						fi
-					done < <(grep -o . <<<"${1#-}")
-					shift "${_Shift}"
-				else
-					_NoArg+=("${1}")
-					shift 1
-				fi
-			fi
-		fi
-	done
-	OPTRET=("${_OutArg[@]}" -- "${_NoArg[@]}")
-	return 0
-}
 readlinkf() {
 	readlinkf_Posix "$@"
 }
@@ -199,6 +105,7 @@ capture_special_keys() {
 			echo "Enter"
 			return 0
 		else
+			echo -n "$SELECTION"
 			read -r rest
 			echo "$SELECTION$rest"
 			return 0
@@ -311,14 +218,99 @@ select_menu() {
 	done
 	echo "${choices[$Currentchoice]}"
 }
-arch.get_kernel_file_list() {
-	find "/boot" -maxdepth 1 -mindepth 1 -name "vmlinuz-*"
-}
-arch.get_kernel_src_list() {
-	find "/usr/src" -mindepth 1 -maxdepth 1 -type l -name "linux*"
-}
-arch.get_mkinitcpio_preset_list() {
-	find "/etc/mkinitcpio.d/" -name "*.preset" -type f | get_base_name | remove_file_ext
+parse_arg() {
+	local _Arg _Chr _Cnt
+	local _Long=() _LongWithArg=() _Short=() _ShortWithArg=()
+	local _OutArg=() _NoArg=()
+	for _Arg in "${@}"; do
+		local _TempArray=()
+		case "${_Arg}" in
+		"LONG="*)
+			readarray -t _TempArray < <(tr -d '"' <<<"${_Arg#LONG=}" | tr "," "\n")
+			for _Chr in "${_TempArray[@]}"; do
+				if [[ ${_Chr} == *":" ]]; then
+					_LongWithArg+=("${_Chr%":"}")
+				else
+					_Long+=("${_Chr}")
+				fi
+			done
+			shift 1
+			;;
+		"SHORT="*)
+			readarray -t _TempArray < <(tr -d '"' <<<"${_Arg#SHORT=}" | grep -o .)
+			for ((_Cnt = 0; _Cnt <= "${#_TempArray[@]}" - 1; _Cnt++)); do
+				if [[ ${_TempArray["$((_Cnt + 1))"]-""} == ":" ]]; then
+					_ShortWithArg+=("${_TempArray["${_Cnt}"]}")
+					_Cnt=$((_Cnt + 1))
+				else
+					_Short+=("${_TempArray["${_Cnt}"]}")
+				fi
+			done
+			shift 1
+			;;
+		"--")
+			shift 1
+			break
+			;;
+		esac
+	done
+	while (("$#" > 0)); do
+		if [[ ${1} == "--" ]]; then
+			shift 1
+			_NoArg+=("${@}")
+			shift "$#"
+			break
+		else
+			if [[ ${1} == "--"* ]]; then
+				if printf "%s\n" "${_LongWithArg[@]}" | grep -qx "${1#--}"; then
+					if [[ ${2} == "-"* ]]; then
+						msg.err "${1} の引数が指定されていません"
+						return 2
+					else
+						_OutArg+=("${1}" "${2}")
+						shift 2
+					fi
+				else
+					if printf "%s\n" "${_Long[@]}" | grep -qx "${1#--}"; then
+						_OutArg+=("${1}")
+						shift 1
+					else
+						msg.err "${1} は不正なオプションです。-hで使い方を確認してください。"
+						return 1
+					fi
+				fi
+			else
+				if [[ ${1} == "-"* ]]; then
+					local _Shift=0
+					while read -r _Chr; do
+						if printf "%s\n" "${_ShortWithArg[@]}" | grep -qx "${_Chr}"; then
+							if [[ ${1} == *"${_Chr}" ]] && [[ ! ${2} == "-"* ]]; then
+								_OutArg+=("-${_Chr}" "${2}")
+								_Shift=2
+							else
+								msg.err "-${_Chr} の引数が指定されていません"
+								return 2
+							fi
+						else
+							if printf "%s\n" "${_Short[@]}" | grep -qx "${_Chr}"; then
+								_OutArg+=("-${_Chr}")
+								_Shift=1
+							else
+								msg.err "-${_Chr} は不正なオプションです。-hで使い方を確認してください。"
+								return 1
+							fi
+						fi
+					done < <(grep -o . <<<"${1#-}")
+					shift "${_Shift}"
+				else
+					_NoArg+=("${1}")
+					shift 1
+				fi
+			fi
+		fi
+	done
+	OPTRET=("${_OutArg[@]}" -- "${_NoArg[@]}")
+	return 0
 }
 fsblib.env_check() {
 	case "$FSBLIB_REQUIRE" in
@@ -343,6 +335,15 @@ fsblib.require_lib() {
 		fi
 	done
 	return "$return"
+}
+arch.get_kernel_file_list() {
+	find "/boot" -maxdepth 1 -mindepth 1 -name "vmlinuz-*"
+}
+arch.get_kernel_src_list() {
+	find "/usr/src" -mindepth 1 -maxdepth 1 -type l -name "linux*"
+}
+arch.get_mkinitcpio_preset_list() {
+	find "/etc/mkinitcpio.d/" -name "*.preset" -type f | get_base_name | remove_file_ext
 }
 csv.get_clm() {
 	grep -v "^#" | sed "/^$/d" | cut -d "${CSVDELIM-","}" -f "$1"
@@ -459,58 +460,6 @@ libretranslate.translate() {
 libretranslate.translate_auto() {
 	libretranslate.check || return 2
 	libretranslate.translate "${1:-""}" "$(libretranslate.detect "${1:-""}")" "${2:-""}"
-}
-cache.exist() {
-	local _File
-	_File="$(cache.create_dir)/$1"
-	[[ -e $_File ]] || return 1
-	(("$(cache.get_time_diff_from_last_update "$_File")" > "${KEEPCACHESEC-"86400"}")) && return 2
-	return 0
-}
-cache.get() {
-	cat "$(cache.get_dir)/$1" 2>/dev/null || return 1
-}
-cache.get_dir() {
-	echo "${TMPDIR-"/tmp"}/$(cache.get_id)"
-}
-cache.get_file_last_update() {
-	local _isGnu=false
-	date --help 2>/dev/null | grep -q "GNU" && _isGnu=true
-	if [[ $_isGnu == true ]]; then
-		date +%s -r "$1"
-	else
-		{
-			eval "$(stat -s "$1")"
-			echo "$st_mtime"
-		}
-	fi
-}
-cache.get_id() {
-	if [[ -z ${FSBLIB_CACHEID-""} ]]; then
-		cache.create_dir >/dev/null
-	fi
-	echo "$FSBLIB_CACHEID"
-}
-cache.get_time_diff_from_last_update() {
-	local _Now _Last
-	_Now="$(date "+%s")"
-	_Last="$(cache.get_file_last_update "$1")"
-	echo "$((_Now - _Last))"
-	return 0
-}
-cache.create() {
-	cache.create_dir >/dev/null
-	cat >"$(cache.get_dir)/${1}"
-	cat "$(cache.get_dir)/$1"
-}
-cache.create_dir() {
-	FSBLIB_CACHEID="${FSBLIB_CACHEID-"$(random_string "10")"}"
-	export FSBLIB_CACHEID="$FSBLIB_CACHEID"
-	local TMPDIR="${TMPDIR-"/tmp"}"
-	local _Dir="$TMPDIR/${FSBLIB_CACHEID}"
-	mkdir -p "$_Dir"
-	echo "$_Dir"
-	return 0
 }
 ini.get_last_param() {
 	ini.get_param_list "$1" | tail -n 1
@@ -683,6 +632,58 @@ ini.set_value() {
 	readarray -t IniContents < <(print_array "${IniContents[@]}" | ini.new_section "$Section" | ini.new_param "$Section" "$Param")
 	print_eval_array IniContents
 }
+cache.exist() {
+	local _File
+	_File="$(cache.create_dir)/$1"
+	[[ -e $_File ]] || return 1
+	(("$(cache.get_time_diff_from_last_update "$_File")" > "${KEEPCACHESEC-"86400"}")) && return 2
+	return 0
+}
+cache.get() {
+	cat "$(cache.get_dir)/$1" 2>/dev/null || return 1
+}
+cache.get_dir() {
+	echo "${TMPDIR-"/tmp"}/$(cache.get_id)"
+}
+cache.get_file_last_update() {
+	local _isGnu=false
+	date --help 2>/dev/null | grep -q "GNU" && _isGnu=true
+	if [[ $_isGnu == true ]]; then
+		date +%s -r "$1"
+	else
+		{
+			eval "$(stat -s "$1")"
+			echo "$st_mtime"
+		}
+	fi
+}
+cache.get_id() {
+	if [[ -z ${FSBLIB_CACHEID-""} ]]; then
+		cache.create_dir >/dev/null
+	fi
+	echo "$FSBLIB_CACHEID"
+}
+cache.get_time_diff_from_last_update() {
+	local _Now _Last
+	_Now="$(date "+%s")"
+	_Last="$(cache.get_file_last_update "$1")"
+	echo "$((_Now - _Last))"
+	return 0
+}
+cache.create() {
+	cache.create_dir >/dev/null
+	cat >"$(cache.get_dir)/${1}"
+	cat "$(cache.get_dir)/$1"
+}
+cache.create_dir() {
+	FSBLIB_CACHEID="${FSBLIB_CACHEID-"$(random_string "10")"}"
+	export FSBLIB_CACHEID="$FSBLIB_CACHEID"
+	local TMPDIR="${TMPDIR-"/tmp"}"
+	local _Dir="$TMPDIR/${FSBLIB_CACHEID}"
+	mkdir -p "$_Dir"
+	echo "$_Dir"
+	return 0
+}
 awk.cos() {
 	awk.float "cos($*)"
 }
@@ -732,89 +733,6 @@ em.get_world_pkg_list() {
 }
 em.no_version() {
 	sed -E 's|\-[0-9]+.+||g'
-}
-sqlite3.call() {
-	msg.debug sqlite3 "${SQLITE3_OPTIONS[@]}" "$SQLITE3_DBPATH" "$@" 1>&2
-	sqlite3 "${SQLITE3_OPTIONS[@]}" "$SQLITE3_DBPATH" "$@"
-}
-sqlite3.connect() {
-	export SQLITE3_DBPATH="$1"
-	echo ".open \"$SQLITE3_DBPATH\"" | sqlite3
-	return 0
-}
-sqlite3.create() {
-	local _table="$1" _args=() _columns=()
-	shift 1 || return 1
-	_columns=("$@")
-	_args+=(create table "$_table" "(")
-	for_each eval '_args+=("\"{}\"" ,)' < <(print_eval_array _columns)
-	array.pop _args
-	_args+=(")")
-	sqlite3.call "${_args[*]}"
-}
-sqlite3.current_db() {
-	if [[ -z ${SQLITE3_DBPATH-""} ]]; then
-		msg.err "No datebase is connected."
-		return 1
-	fi
-	echo "${SQLITE3_DBPATH}"
-	return 0
-}
-sqlite3.delete() {
-	local _table="$1" _args=()
-	shift 1 || return 1
-	if (($# < 1)) && ((${SQLITE3_ALLOWDELETEALL-"0"} != 1)); then
-		msg.err "Cannot delete all data.\nIf you really want that, Please set environment-variable \"SQLITE3_ALLOWDELETEALL=1\""
-		return 1
-	fi
-	_args+=(delete from "$_table")
-	if (($# > 0)); then
-		_args+=(where "${@}")
-	fi
-	sqlite3.call "${_args[*]}"
-}
-sqlite3.exist_field() {
-	_result="$(sqlite3.call "SELECT * FROM '$1' WHERE $2 = '$3' LIMIT 1;")"
-	if [[ -n ${_result-""} ]]; then
-		return 0
-	fi
-	return 1
-}
-sqlite3.exist_table() {
-	local _result
-	_result="$(sqlite3.call "SELECT COUNT(*) 
-                            FROM sqlite_master 
-                            WHERE TYPE='table' AND name='$1';
-            ")"
-	if ((_result > 0)); then
-		return 0
-	fi
-	return 1
-}
-sqlite3.insert() {
-	local _table="$1" _args=()
-	shift 1 || return 1
-	local _values=("$@")
-	_args+=(insert into "$_table" values '(')
-	for_each eval '_args+=("\"{}\"" ,)' < <(print_eval_array _values)
-	array.pop _args
-	_args+=(");")
-	sqlite3.call "${_args[*]}"
-}
-sqlite3.select() {
-	local _table="$1" _args=()
-	shift 1 || return 1
-	local _values=("$@")
-	_args+=(select)
-	for_each eval '_args+=("\"{}\"" ,)' < <(print_eval_array _values)
-	array.pop _args
-	_args+=("from" "$_table" ";")
-	sqlite3.call "${_args[*]}"
-}
-sqlite3.select_all() {
-	local _table="$1" _args=()
-	shift 1 || return 1
-	sqlite3.call "select * from $_table"
 }
 srcinfo.format() {
 	remove_blank | sed "/^$/d" | grep -v "^#" | for_each eval 'srcinfo.parse Line <<< "{}"'
@@ -1125,6 +1043,89 @@ RemovematchLine() {
 to_args() {
 	readarray -t args
 	"$@" "${args[@]}"
+}
+sqlite3.call() {
+	msg.debug sqlite3 "${SQLITE3_OPTIONS[@]}" "$SQLITE3_DBPATH" "$@" 1>&2
+	sqlite3 "${SQLITE3_OPTIONS[@]}" "$SQLITE3_DBPATH" "$@"
+}
+sqlite3.connect() {
+	export SQLITE3_DBPATH="$1"
+	echo ".open \"$SQLITE3_DBPATH\"" | sqlite3
+	return 0
+}
+sqlite3.create() {
+	local _table="$1" _args=() _columns=()
+	shift 1 || return 1
+	_columns=("$@")
+	_args+=(create table "$_table" "(")
+	for_each eval '_args+=("\"{}\"" ,)' < <(print_eval_array _columns)
+	array.pop _args
+	_args+=(")")
+	sqlite3.call "${_args[*]}"
+}
+sqlite3.current_db() {
+	if [[ -z ${SQLITE3_DBPATH-""} ]]; then
+		msg.err "No datebase is connected."
+		return 1
+	fi
+	echo "${SQLITE3_DBPATH}"
+	return 0
+}
+sqlite3.delete() {
+	local _table="$1" _args=()
+	shift 1 || return 1
+	if (($# < 1)) && ((${SQLITE3_ALLOWDELETEALL-"0"} != 1)); then
+		msg.err "Cannot delete all data.\nIf you really want that, Please set environment-variable \"SQLITE3_ALLOWDELETEALL=1\""
+		return 1
+	fi
+	_args+=(delete from "$_table")
+	if (($# > 0)); then
+		_args+=(where "${@}")
+	fi
+	sqlite3.call "${_args[*]}"
+}
+sqlite3.exist_field() {
+	_result="$(sqlite3.call "SELECT * FROM '$1' WHERE $2 = '$3' LIMIT 1;")"
+	if [[ -n ${_result-""} ]]; then
+		return 0
+	fi
+	return 1
+}
+sqlite3.exist_table() {
+	local _result
+	_result="$(sqlite3.call "SELECT COUNT(*) 
+                            FROM sqlite_master 
+                            WHERE TYPE='table' AND name='$1';
+            ")"
+	if ((_result > 0)); then
+		return 0
+	fi
+	return 1
+}
+sqlite3.insert() {
+	local _table="$1" _args=()
+	shift 1 || return 1
+	local _values=("$@")
+	_args+=(insert into "$_table" values '(')
+	for_each eval '_args+=("\"{}\"" ,)' < <(print_eval_array _values)
+	array.pop _args
+	_args+=(");")
+	sqlite3.call "${_args[*]}"
+}
+sqlite3.select() {
+	local _table="$1" _args=()
+	shift 1 || return 1
+	local _values=("$@")
+	_args+=(select)
+	for_each eval '_args+=("\"{}\"" ,)' < <(print_eval_array _values)
+	array.pop _args
+	_args+=("from" "$_table" ";")
+	sqlite3.call "${_args[*]}"
+}
+sqlite3.select_all() {
+	local _table="$1" _args=()
+	shift 1 || return 1
+	sqlite3.call "select * from $_table"
 }
 array.append() {
 	local _ArrName="$1"
