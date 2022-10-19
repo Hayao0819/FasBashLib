@@ -89,6 +89,7 @@ CaptureSpecialKeys(){
             echo "Enter"
             return 0
         else
+            echo -n "$SELECTION"
             read -r rest
             echo "$SELECTION$rest"
             return 0
