@@ -405,7 +405,7 @@ _Make_Lib(){
                             "$Debug" && echo "${Func}を${TmpLibFile}に書き込み" >&2
                             _GetFuncCodeFromFile "${Dir}/${File}" "$Func" >> "$TmpLibFile"
                         fi
-                    } &
+                    } #& #関数処理を並列化すると同時にファイル書き込みを行って破損する可能性がある
                 done
                 wait
             #done < <("$LibDir/GetMeta.sh" "${LibName}" "Files" | tr "," "\n")
