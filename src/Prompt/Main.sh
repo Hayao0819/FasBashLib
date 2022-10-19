@@ -121,16 +121,16 @@ SelectMenu(){
         # メニューを表示
         for i in "${!Choices[@]}"; do
             if [[ "$i" = "$CurrentChoice" ]]; then
-                printf "\033[4m" && printf "\033[1m" # 太字+下線
+                Esc.Bold && Esc.Underline
                 echo " > $i: ${Choices[$i]}"
             else
                 echo "   $i: ${Choices[$i]}"
             fi
-            printf "\033[0m" # リセット
+            Esc.ResetStyle
         done
 
         # キー検知
-        Key="$(CaptureSpecialKeys)"
+        Key="$(@CaptureSpecialKeys)"
         case "$Key" in
             Up)
                 (( "$CurrentChoice" != 0 )) && CurrentChoice=$((CurrentChoice - 1))
@@ -141,11 +141,7 @@ SelectMenu(){
         esac
 
         # メニューを削除
-        # shellcheck disable=SC2034
-        for i in $(seq 1 "${#Choices[@]}"); do
-            printf "\033[1A"
-            printf "\033[2K"
-        done 
+        Esc.ClearUpperLines "${#Choices[@]}"
     done 
 
     echo "${Choices[$CurrentChoice]}"
