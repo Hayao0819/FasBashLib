@@ -15,3 +15,12 @@ ClearLeft(){
 ClearLine(){
     printf "\033[2K"
 }
+
+Return(){
+    printf "\r"
+}
+
+ClearLineAndReturn(){
+    @ClearLine
+    @Return
+}
