@@ -28,8 +28,8 @@
 # shellcheck disable=all
 
 FSBLIB_LIBLIST+=("ArchLinux" "Array" "AwkForCalc" "BetterShell" "Cache" "Core" "Csv" "Emerge" "Esc" "Ini" "LibreTranslate" "Message" "Misskey" "Pacman" "ParseArg" "Progress" "Prompt" "Readlink" "Sqlite3" "SrcInfo" "URL")
-FSBLIB_FUNCLIST+=("ParseArg" "URL.Authority" "Ini.GetLastParam" "AddNewToArray" "Sqlite3.Call" "Readlinkf" "Csv.GetClm" "Pm.CheckPkg" "ArrayAppend" "Em.GetAllPkgList" "SrcInfo.Format" "Awk.Cos" "CaptureSpecialKeys" "Readlinkf_Posix" "Prog.Bar" "URL.Fragment" "Arch.GetKernelFileList" "LibreTranslate.Check" "Ini.GetParam" "ArrayIncludes" "Sqlite3.Connect" "Msg.Common" "Fsblib.EnvCheck" "Readlinkf_Readlink" "Choice" "Misskey.Notes.Create" "Esc.ClearLeft" "Csv.GetClmCnt" "Pm.GetConfig" "Array.Append" "Cache.Exist" "Em.GetDefaultRepoName" "ArrayIndex" "Prog.Rotation" "SrcInfo.GetKeyList" "Awk.Float" "Arch.GetKernelSrcList" "URL.Host" "ChoiceLoop" "LibreTranslate.Detect" "FsblibEnvCheck" "Msg.Debug" "Ini.GetParamList" "Misskey.Notes.Renotes" "GetArrayIndex" "Sqlite3.Create" "Csv.ToBashArray" "Pm.GetInstalledPkgVer" "SelectMenu" "Esc.ClearLine" "Cache.Get" "Em.GetInstalledPkgList" "Array.FromStr" "Fsblib.RequireLib" "PrintArray" "SrcInfo.GetPkgBase" "Awk.Log" "Prog.WideBar" "Arch.GetMkinitcpioPresetList" "LibreTranslate.Languages" "URL.NoScheme" "Misskey.Notes.Search" "Msg.Err" "PrintEvalArray" "Pm.GetKeyringList" "Sqlite3.CurrentDb" "Array.Pop" "Ini.GetSectionList" "Em.GetRepoConf" "Esc.ClearLineAndReturn" "Cache.GetDir" "Awk.Pi" "LibreTranslate.Translate" "RevArray" "SrcInfo.GetPkgName" "Msg.Info" "URL.Path" "Pm.GetLatestPkgVer" "Sqlite3.Delete" "Array.Push" "Ini.ParseLine" "StrToCharList" "Em.GetRepoLocation" "Esc.ClearRight" "LibreTranslate.TranslateAuto" "Awk.Print" "Cache.GetFileLastUpdate" "SrcInfo.GetSectionList" "Msg.Warn" "URL.PathAndQueryAndFragment" "Misskey.Users.GetFrequentlyRepliedUsers" "Sqlite3.ExistField" "Array.Remove" "Pm.GetName" "Em.GetRepoPkgList" "Esc.ClearScreen" "Awk.Rad" "Cache.GetID" "FileType" "SrcInfo.GetValue" "URL.Port" "Misskey.Users.Notes" "Esc.Return" "Array.Rev" "GetBaseName" "Sqlite3.ExistTable" "Ini.NewParam" "Pm.GetPacmanKernelPkg" "Awk.Sin" "Cache.GetTimeDiffFromLastUpdate" "GetFileExt" "Em.GetWorldPkgList" "SrcInfo.GetValueInPkgBase" "URL.Query" "Array.Shift" "RemoveFileExt" "Awk.Tan" "Misskey.Users.Pages" "Sqlite3.Insert" "Ini.NewSection" "SrcInfo.GetValueInPkgName" "Pm.GetPacmanKeyringDir" "Esc.GetTermX" "URL.Scheme" "Cache.Create" "Em.NoVersion" "Misskey.Users.SearchByUsernameAndHost" "Ini.SetValue" "SrcInfo.Parse" "Sqlite3.Select" "Pm.GetRepoConf" "Array.Eval" "CheckFuncDefined" "Esc.GetTermY" "URL.User" "Misskey.Users.Show" "Cache.CreateDir" "ForEach" "Sqlite3.SelectAll" "Pm.GetRepoListFromConf" "GetLine" "Array.Last" "Esc.GetX" "Misskey.Users.Stats" "Pm.GetRepoPkgList" "IsAvailable" "Array.Print" "Loop" "URL.HasAuthority" "Esc.GetY" "Pm.GetRepoServer" "URL.HasFragment" "Misskey.Admin.ServerInfo" "Esc.MoveCursor" "Pm.GetRepoVer" "BreakChar" "Array.IndexOf" "URL.HasPort" "CutLastString" "Esc.MoveCursorDown" "GetLastSplitString" "Pm.GetRoot" "URL.HasQuery" "Array.LastIndex" "IsUUID" "Esc.MoveCursorLeft" "Pm.IsRepoPkg" "PrintEval" "Misskey.Setup" "RandomString" "URL.HasUser" "Array.Length" "Esc.MoveCursorRight" "RemoveBlank" "Pm.PacmanGpg" "TextBox" "ToLower" "Esc.MoveCursorUp" "Misskey.I" "ToLowerStdin" "Pm.Run" "URL.Parse" "Array.ForEach" "Pm.RunKey" "Misskey.Meta" "Array.Includes" "Esc.ClearUpperLines" "CalcInt" "Ntest" "Misskey.ServerInfo" "Sum" "URL.GetQuery" "Pm.GetDbNextSection" "Esc.BlackBackground" "URL.ParseQuery" "Misskey.BindingBase" "Bool" "Esc.BlackText" "Misskey.MakeJson" "Pm.GetDbSection" "GetFuncList" "Pm.GetDbSectionList" "Misskey.SendReq" "Esc.Blink" "UnsetAllFunc" "Esc.BlueBackground" "Match" "Pm.CreateDbTmpDir" "Misskey.IsAdmin" "Esc.BlueText" "RemoveMatchLine" "Pm.DeleteDbTmpDir" "Esc.Bold" "Misskey.MyId" "ToArgs" "Esc.Conceal" "Misskey.MyName" "Pm.GetDbTmpDir" "Esc.CrossedOut" "Pm.GetPkgArch" "Misskey.MyUserName" "Esc.CyanBackground" "Pm.GetRepoListFromLocalDb" "Esc.CyanText" "Pm.GetSyncAllDesc" "Esc.GreenBackground" "Pm.GetSyncDbDesc" "Esc.GreenText" "Pm.GetSyncDbDescPath" "Esc.Italic" "Pm.GetVirtualPkgList" "Esc.LowIntensity" "Pm.IsOpendSyncDb" "Esc.MagentaBackground" "Pm.OpenSyncDb" "Esc.MagentaText" "Pm.OpenedSyncDbList" "Esc.RapidBlink" "Pm.ParsePkgFileName" "Esc.RedBackground" "Esc.RedText" "Esc.ResetStyle" "Esc.Reverse" "Esc.Underline" "Esc.WhiteBackground" "Esc.WhiteText" "Esc.YellowBackground" "Esc.YellowText")
-declare -r FSBLIB_VERSION='v0.2.6.r441.gf796583-upper'
+FSBLIB_FUNCLIST+=("SrcInfo.Format" "Csv.GetClm" "AddNewToArray" "Cache.Exist" "LibreTranslate.Check" "Em.GetAllPkgList" "ArrayAppend" "URL.Authority" "Esc.ClearLeft" "SrcInfo.GetKeyList" "Readlinkf" "Csv.GetClmCnt" "Sqlite3.Call" "Msg.Common" "Prog.Bar" "ArrayIncludes" "CaptureSpecialKeys" "Arch.GetKernelFileList" "Pm.CheckPkg" "Readlinkf_Posix" "Cache.Get" "Fsblib.EnvCheck" "Ini.GetLastParam" "Misskey.Notes.Create" "Awk.Cos" "Em.GetDefaultRepoName" "ParseArg" "Choice" "Esc.ClearLine" "ArrayIndex" "LibreTranslate.Detect" "SrcInfo.GetPkgBase" "Msg.Debug" "Array.Append" "Readlinkf_Readlink" "URL.Fragment" "Arch.GetKernelSrcList" "Csv.ToBashArray" "Sqlite3.Connect" "Prog.Rotation" "Pm.GetConfig" "ChoiceLoop" "GetArrayIndex" "Misskey.Notes.Renotes" "Ini.GetParam" "Cache.GetDir" "FsblibEnvCheck" "Em.GetInstalledPkgList" "Awk.Float" "SelectMenu" "LibreTranslate.Languages" "Array.FromStr" "URL.Host" "SrcInfo.GetPkgName" "Esc.ClearLineAndReturn" "Msg.Err" "Sqlite3.Create" "PrintArray" "Arch.GetMkinitcpioPresetList" "Prog.WideBar" "Pm.GetInstalledPkgVer" "Fsblib.RequireLib" "Ini.GetParamList" "PrintEvalArray" "Em.GetRepoConf" "Awk.Log" "Cache.GetFileLastUpdate" "URL.NoScheme" "Misskey.Notes.Search" "SrcInfo.GetSectionList" "Array.Pop" "LibreTranslate.Translate" "RevArray" "Sqlite3.CurrentDb" "Msg.Info" "Esc.ClearRight" "Pm.GetKeyringList" "StrToCharList" "Array.Push" "Ini.GetSectionList" "Awk.Pi" "URL.Path" "LibreTranslate.TranslateAuto" "Esc.ClearScreen" "SrcInfo.GetValue" "Em.GetRepoLocation" "Cache.GetID" "Sqlite3.Delete" "Msg.Warn" "Pm.GetLatestPkgVer" "Array.Remove" "Ini.ParseLine" "Misskey.Users.GetFrequentlyRepliedUsers" "Awk.Print" "URL.PathAndQueryAndFragment" "Esc.Return" "SrcInfo.GetValueInPkgBase" "Cache.GetTimeDiffFromLastUpdate" "Sqlite3.ExistField" "FileType" "Em.GetRepoPkgList" "Pm.GetName" "GetBaseName" "Misskey.Users.Notes" "Awk.Rad" "Array.Rev" "URL.Port" "SrcInfo.GetValueInPkgName" "Sqlite3.ExistTable" "Em.GetWorldPkgList" "GetFileExt" "Pm.GetPacmanKernelPkg" "RemoveFileExt" "Misskey.Users.Pages" "Ini.NewParam" "Awk.Sin" "Cache.Create" "Array.Shift" "URL.Query" "Sqlite3.Insert" "Esc.GetTermX" "SrcInfo.Parse" "Pm.GetPacmanKeyringDir" "Misskey.Users.SearchByUsernameAndHost" "Ini.NewSection" "URL.Scheme" "Cache.CreateDir" "Sqlite3.Select" "Awk.Tan" "Esc.GetTermY" "Em.NoVersion" "CheckFuncDefined" "Pm.GetRepoConf" "Misskey.Users.Show" "ForEach" "Ini.SetValue" "Sqlite3.SelectAll" "URL.User" "Array.Eval" "Esc.GetX" "GetLine" "Pm.GetRepoListFromConf" "Misskey.Users.Stats" "IsAvailable" "Esc.GetY" "Array.Last" "Loop" "Pm.GetRepoPkgList" "Esc.MoveCursor" "Array.Print" "URL.HasAuthority" "Misskey.Admin.ServerInfo" "Pm.GetRepoServer" "Esc.MoveCursorDown" "Pm.GetRepoVer" "BreakChar" "URL.HasFragment" "Esc.MoveCursorLeft" "CutLastString" "Array.IndexOf" "Misskey.Setup" "Pm.GetRoot" "GetLastSplitString" "URL.HasPort" "IsUUID" "Esc.MoveCursorRight" "Array.LastIndex" "Pm.IsRepoPkg" "PrintEval" "URL.HasQuery" "Array.Length" "Esc.MoveCursorUp" "RandomString" "Pm.PacmanGpg" "Misskey.I" "RemoveBlank" "URL.HasUser" "TextBox" "Misskey.Meta" "Pm.Run" "ToLower" "Array.ForEach" "Esc.ClearUpperLines" "ToLowerStdin" "Pm.RunKey" "URL.Parse" "Misskey.ServerInfo" "Array.Includes" "CalcInt" "Ntest" "Esc.BlackBackground" "Sum" "Pm.GetDbNextSection" "Misskey.BindingBase" "URL.GetQuery" "Esc.BlackText" "Pm.GetDbSection" "Misskey.MakeJson" "URL.ParseQuery" "Esc.Blink" "Bool" "Misskey.SendReq" "Pm.GetDbSectionList" "Esc.BlueBackground" "GetFuncList" "Esc.BlueText" "UnsetAllFunc" "Misskey.IsAdmin" "Pm.CreateDbTmpDir" "Esc.Bold" "Pm.DeleteDbTmpDir" "Misskey.MyId" "Match" "RemoveMatchLine" "Esc.Conceal" "Pm.GetDbTmpDir" "ToArgs" "Misskey.MyName" "Esc.CrossedOut" "Pm.GetPkgArch" "Esc.CyanBackground" "Misskey.MyUserName" "Pm.GetRepoListFromLocalDb" "Esc.CyanText" "Pm.GetSyncAllDesc" "Esc.GreenBackground" "Pm.GetSyncDbDesc" "Esc.GreenText" "Pm.GetSyncDbDescPath" "Esc.Italic" "Pm.GetVirtualPkgList" "Esc.LowIntensity" "Pm.IsOpendSyncDb" "Pm.OpenSyncDb" "Esc.MagentaBackground" "Pm.OpenedSyncDbList" "Esc.MagentaText" "Pm.ParsePkgFileName" "Esc.RapidBlink" "Esc.RedBackground" "Esc.RedText" "Esc.ResetStyle" "Esc.Reverse" "Esc.Underline" "Esc.WhiteBackground" "Esc.WhiteText" "Esc.YellowBackground" "Esc.YellowText")
+declare -r FSBLIB_VERSION='v0.2.6.r445.g4dff004-upper'
 declare -r FSBLIB_REQUIRE='ModernBash'
 declare -r FSBLIB_PROG_PIDFILEPATH='FSBLIB_PROGRESS_PIDLIST'
 
@@ -348,6 +348,34 @@ Csv.ToBashArray() {
 		)
 	done < <(seq 1 "$#")
 }
+Arch.GetKernelFileList() {
+	find "/boot" -maxdepth 1 -mindepth 1 -name "vmlinuz-*"
+}
+Arch.GetKernelSrcList() {
+	find "/usr/src" -mindepth 1 -maxdepth 1 -type l -name "linux*"
+}
+Arch.GetMkinitcpioPresetList() {
+	find "/etc/mkinitcpio.d/" -name "*.preset" -type f | GetBaseName | RemoveFileExt
+}
+Prog.Bar() {
+	local Max="$1" Counter="$2" Size="${3-"100"}"
+	local SharpCount=$((Counter * Size / Max))
+	local SpaceCount=$((Size - SharpCount))
+	Esc.Return
+	echo -n "$Counter/$Max [$(yes "#" | head -n "$SharpCount" 2>/dev/null | tr -d "\n")$(yes " " | head -n "$SpaceCount" 2>/dev/null | tr -d "\n")]"
+}
+Prog.Rotation() {
+	local Count="$1" CharList=('|' '/' '-' '\')
+	Esc.ClearLineAndReturn
+	[[ -n ${2-""} ]] && echo -n "${2}" 1>&2
+	printf "%s" "${CharList["$((Count % "${#CharList[@]}"))"]}" 1>&2
+}
+Prog.WideBar() {
+	local Max="$1" Counter="$2"
+	local StatusString="$Counter/$Max"
+	local Size=$(($(Esc.GetTermX) - ${#StatusString} - 3))
+	Prog.Bar "$Max" "$Counter" "$Size"
+}
 Fsblib.EnvCheck() {
 	case "$FSBLIB_REQUIRE" in
 	"Any")
@@ -372,33 +400,40 @@ Fsblib.RequireLib() {
 	done
 	return "$return"
 }
-Prog.Bar() {
-	local Max="$1" Counter="$2" Size="${3-"100"}"
-	local SharpCount=$((Counter * Size / Max))
-	local SpaceCount=$((Size - SharpCount))
-	Esc.Return
-	echo -n "$Counter/$Max [$(yes "#" | head -n "$SharpCount" 2>/dev/null | tr -d "\n")$(yes " " | head -n "$SpaceCount" 2>/dev/null | tr -d "\n")]"
+Msg.Common() {
+	local i l="$1" string="$2" out="${3-""}"
+	shift 2 || return 1
+	{
+		[[ -z ${out-""} ]] && {
+			[[ ${l^^} == *"ERR"* ]] || [[ ${l^^} == *"WARN"* ]] || [[ ${l^^} == *"DEBUG"* ]]
+		}
+	} && out="stderr"
+	case "${FSBLIB_MSG-"${out:-"stdout"}"}" in
+	"stdout")
+		for i in $(seq "$(echo -e "${string}" | wc -l)"); do
+			echo -n "$l "
+			echo -e "${string}" | head -n "${i}" | tail -n 1
+		done
+		;;
+	"stderr")
+		for i in $(seq "$(echo -e "${string}" | wc -l)"); do
+			echo -n "$l " 1>&2
+			echo -e "${string}" | head -n "${i}" | tail -n 1 1>&2
+		done
+		;;
+	esac
 }
-Prog.Rotation() {
-	local Count="$1" CharList=('|' '/' '-' '\')
-	Esc.ClearLineAndReturn
-	[[ -n ${2-""} ]] && echo -n "${2}" 1>&2
-	printf "%s" "${CharList["$((Count % "${#CharList[@]}"))"]}" 1>&2
+Msg.Debug() {
+	Msg.Common "Debug:" "${*}" stderr
 }
-Prog.WideBar() {
-	local Max="$1" Counter="$2"
-	local StatusString="$Counter/$Max"
-	local Size=$(($(Esc.GetTermX) - ${#StatusString} - 3))
-	Prog.Bar "$Max" "$Counter" "$Size"
+Msg.Err() {
+	Msg.Common "Error:" "${*}" stderr
 }
-Arch.GetKernelFileList() {
-	find "/boot" -maxdepth 1 -mindepth 1 -name "vmlinuz-*"
+Msg.Info() {
+	Msg.Common " Info:" "${*}" stdout
 }
-Arch.GetKernelSrcList() {
-	find "/usr/src" -mindepth 1 -maxdepth 1 -type l -name "linux*"
-}
-Arch.GetMkinitcpioPresetList() {
-	find "/etc/mkinitcpio.d/" -name "*.preset" -type f | GetBaseName | RemoveFileExt
+Msg.Warn() {
+	Msg.Common " Warn:" "${*}" stderr
 }
 LibreTranslate.Check() {
 	export LIBRETRANSLATE_URL="${LIBRETRANSLATE_URL:-""}"
@@ -451,41 +486,6 @@ LibreTranslate.TranslateAuto() {
 	LibreTranslate.Check || return 2
 	LibreTranslate.Translate "${1:-""}" "$(LibreTranslate.Detect "${1:-""}")" "${2:-""}"
 }
-Msg.Common() {
-	local i l="$1" string="$2" out="${3-""}"
-	shift 2 || return 1
-	{
-		[[ -z ${out-""} ]] && {
-			[[ ${l^^} == *"ERR"* ]] || [[ ${l^^} == *"WARN"* ]] || [[ ${l^^} == *"DEBUG"* ]]
-		}
-	} && out="stderr"
-	case "${FSBLIB_MSG-"${out:-"stdout"}"}" in
-	"stdout")
-		for i in $(seq "$(echo -e "${string}" | wc -l)"); do
-			echo -n "$l "
-			echo -e "${string}" | head -n "${i}" | tail -n 1
-		done
-		;;
-	"stderr")
-		for i in $(seq "$(echo -e "${string}" | wc -l)"); do
-			echo -n "$l " 1>&2
-			echo -e "${string}" | head -n "${i}" | tail -n 1 1>&2
-		done
-		;;
-	esac
-}
-Msg.Debug() {
-	Msg.Common "Debug:" "${*}" stderr
-}
-Msg.Err() {
-	Msg.Common "Error:" "${*}" stderr
-}
-Msg.Info() {
-	Msg.Common " Info:" "${*}" stdout
-}
-Msg.Warn() {
-	Msg.Common " Warn:" "${*}" stderr
-}
 Awk.Cos() {
 	Awk.Float "cos($*)"
 }
@@ -509,177 +509,6 @@ Awk.Sin() {
 }
 Awk.Tan() {
 	Awk.Float "sin($1)/tan($1)"
-}
-Ini.GetLastParam() {
-	Ini.GetParamList "$1" | tail -n 1
-}
-Ini.GetParam() {
-	local _RawIniLine=()
-	local _Line _LineNo=1 _Exit=0 _InSection=false
-	readarray -t _RawIniLine
-	while read -r _Line; do
-		Ini.ParseLine <<<"$_Line"
-		case "$TYPE" in
-		"SECTION")
-			if [[ $SECTION == "$1" ]]; then
-				_InSection=true
-			else
-				_InSection=false
-			fi
-			;;
-		"PARAM-VALUE")
-			[[ $_InSection == false ]] && continue
-			[[ ${FSBLIB_INI_PARSED_PARAM} == "$2" ]] && echo "$FSBLIB_INI_PARSED_VALUE"
-			;;
-		"ERROR")
-			echo "Line $_LineNo: Failed to parse Ini" 1>&2
-			_Exit=1
-			;;
-		esac
-		_LineNo=$((_LineNo + 1))
-	done < <(PrintArray "${_RawIniLine[@]}")
-	return "$_Exit"
-}
-Ini.GetParamList() {
-	local _RawIniLine=()
-	local _Line _LineNo=1 _Exit=0 _InSection=false
-	readarray -t _RawIniLine
-	while read -r _Line; do
-		Ini.ParseLine <<<"$_Line"
-		case "$TYPE" in
-		"SECTION")
-			if [[ $SECTION == "$1" ]]; then
-				_InSection=true
-			else
-				_InSection=false
-			fi
-			;;
-		"PARAM-VALUE")
-			[[ $_InSection == false ]] || echo "$PARAM"
-			;;
-		"ERROR")
-			echo "Line $_LineNo: Failed to parse Ini" 1>&2
-			_Exit=1
-			;;
-		esac
-		_LineNo=$((_LineNo + 1))
-	done < <(PrintArray "${_RawIniLine[@]}")
-	return "$_Exit"
-}
-Ini.GetSectionList() {
-	local _RawIniLine=()
-	local _Line _LineNo=1 _Exit=0
-	readarray -t _RawIniLine
-	while read -r _Line; do
-		Ini.ParseLine <<<"$_Line"
-		case "$TYPE" in
-		"SECTION")
-			echo "$SECTION"
-			;;
-		"ERROR")
-			echo "Line $_LineNo: Failed to parse Ini" 1>&2
-			_Exit=1
-			;;
-		esac
-		_LineNo=$((_LineNo + 1))
-	done < <(PrintArray "${_RawIniLine[@]}")
-	return "$_Exit"
-}
-Ini.ParseLine() {
-	local _Line
-	TYPE="" PARAM="" VALUE="" SECTION=""
-	_Line="$(RemoveBlank <<<"$(cat)")"
-	case "$_Line" in
-	"["*"]")
-		TYPE="SECTION"
-		SECTION=$(sed "s|^\[||g; s|\]$||g" <<<"$_Line")
-		FSBLIB_INI_PARSED_TYPE="$TYPE"
-		FSBLIB_INI_PARSED_SECTION="$SECTION"
-		;;
-	"" | "#"*)
-		TYPE="NOTHING"
-		FSBLIB_INI_PARSED_TYPE="$TYPE"
-		;;
-	*"="*)
-		TYPE="PARAM-VALUE"
-		PARAM="$(RemoveBlank <<<"$(cut -d "=" -f 1 <<<"$_Line")")"
-		VALUE="$(RemoveBlank <<<"$(cut -d "=" -f 2- <<<"$_Line")")"
-		FSBLIB_INI_PARSED_TYPE="$TYPE"
-		FSBLIB_INI_PARSED_PARAM="$PARAM"
-		FSBLIB_INI_PARSED_VALUE="$VALUE"
-		;;
-	*)
-		TYPE="ERROR"
-		FSBLIB_INI_PARSED_TYPE="$TYPE"
-		;;
-	esac
-	return 0
-}
-Ini.NewParam() {
-	local IniContents=() Line
-	local Section="$1" Param="$2"
-	local InSection=false LineNo=0
-	local NewIniContents=()
-	readarray -t IniContents
-	local BeforeParam
-	local SectionLastParam
-	local ParamAdded=false
-	if ! PrintArray "${IniContents[@]}" | Ini.GetParamList "$Section" | grep -qx "$Param"; then
-		SectionLastParam="$(PrintEvalArray IniContents | Ini.GetLastParam "$Section")"
-		for Line in "${IniContents[@]}"; do
-			LineNo=$((LineNo + 1))
-			Ini.ParseLine <<<"$Line"
-			case "$FSBLIB_INI_PARSED_TYPE" in
-			"SECTION")
-				if [[ $FSBLIB_INI_PARSED_SECTION == "$Section" ]]; then
-					InSection=true
-				else
-					InSection=false
-				fi
-				;;
-			"PARAM-VALUE")
-				if [[ $InSection == true ]]; then
-					BeforeParam="$FSBLIB_INI_PARSED_PARAM"
-				fi
-				;;
-			"ERROR")
-				echo "Line $LineNo: Failed to parse Ini" 1>&2
-				return 1
-				;;
-			esac
-			NewIniContents+=("$Line")
-			if {
-				! Bool "$ParamAdded"
-			} && Bool "$InSection" && [[ $SectionLastParam == "${BeforeParam-""}" ]]; then
-				NewIniContents+=("$Param=")
-				ParamAdded=true
-			fi
-		done
-	fi
-	PrintEvalArray NewIniContents
-	return 0
-}
-Ini.NewSection() {
-	local IniContents=()
-	local Section="$1"
-	readarray -t IniContents
-	if PrintArray "${IniContents[@]}" | Ini.GetSectionList | grep -x "$Section" >/dev/null; then
-		PrintEvalArray IniContents
-		return 0
-	fi
-	if [[ -z "$(Array.Last IniContents)" ]]; then
-		Array.Pop IniContents
-	fi
-	IniContents+=("" "[$Section]")
-	PrintEvalArray IniContents
-	return 0
-}
-Ini.SetValue() {
-	local IniContents=()
-	local Section="$1" Param="$2"
-	readarray -t IniContents
-	readarray -t IniContents < <(PrintArray "${IniContents[@]}" | Ini.NewSection "$Section" | Ini.NewParam "$Section" "$Param")
-	PrintEvalArray IniContents
 }
 SrcInfo.Format() {
 	RemoveBlank | sed "/^$/d" | grep -v "^#" | ForEach eval 'SrcInfo.Parse Line <<< "{}"'
@@ -890,6 +719,177 @@ Cache.CreateDir() {
 	mkdir -p "$_Dir"
 	echo "$_Dir"
 	return 0
+}
+Ini.GetLastParam() {
+	Ini.GetParamList "$1" | tail -n 1
+}
+Ini.GetParam() {
+	local _RawIniLine=()
+	local _Line _LineNo=1 _Exit=0 _InSection=false
+	readarray -t _RawIniLine
+	while read -r _Line; do
+		Ini.ParseLine <<<"$_Line"
+		case "$TYPE" in
+		"SECTION")
+			if [[ $SECTION == "$1" ]]; then
+				_InSection=true
+			else
+				_InSection=false
+			fi
+			;;
+		"PARAM-VALUE")
+			[[ $_InSection == false ]] && continue
+			[[ ${FSBLIB_INI_PARSED_PARAM} == "$2" ]] && echo "$FSBLIB_INI_PARSED_VALUE"
+			;;
+		"ERROR")
+			echo "Line $_LineNo: Failed to parse Ini" 1>&2
+			_Exit=1
+			;;
+		esac
+		_LineNo=$((_LineNo + 1))
+	done < <(PrintArray "${_RawIniLine[@]}")
+	return "$_Exit"
+}
+Ini.GetParamList() {
+	local _RawIniLine=()
+	local _Line _LineNo=1 _Exit=0 _InSection=false
+	readarray -t _RawIniLine
+	while read -r _Line; do
+		Ini.ParseLine <<<"$_Line"
+		case "$TYPE" in
+		"SECTION")
+			if [[ $SECTION == "$1" ]]; then
+				_InSection=true
+			else
+				_InSection=false
+			fi
+			;;
+		"PARAM-VALUE")
+			[[ $_InSection == false ]] || echo "$PARAM"
+			;;
+		"ERROR")
+			echo "Line $_LineNo: Failed to parse Ini" 1>&2
+			_Exit=1
+			;;
+		esac
+		_LineNo=$((_LineNo + 1))
+	done < <(PrintArray "${_RawIniLine[@]}")
+	return "$_Exit"
+}
+Ini.GetSectionList() {
+	local _RawIniLine=()
+	local _Line _LineNo=1 _Exit=0
+	readarray -t _RawIniLine
+	while read -r _Line; do
+		Ini.ParseLine <<<"$_Line"
+		case "$TYPE" in
+		"SECTION")
+			echo "$SECTION"
+			;;
+		"ERROR")
+			echo "Line $_LineNo: Failed to parse Ini" 1>&2
+			_Exit=1
+			;;
+		esac
+		_LineNo=$((_LineNo + 1))
+	done < <(PrintArray "${_RawIniLine[@]}")
+	return "$_Exit"
+}
+Ini.ParseLine() {
+	local _Line
+	TYPE="" PARAM="" VALUE="" SECTION=""
+	_Line="$(RemoveBlank <<<"$(cat)")"
+	case "$_Line" in
+	"["*"]")
+		TYPE="SECTION"
+		SECTION=$(sed "s|^\[||g; s|\]$||g" <<<"$_Line")
+		FSBLIB_INI_PARSED_TYPE="$TYPE"
+		FSBLIB_INI_PARSED_SECTION="$SECTION"
+		;;
+	"" | "#"*)
+		TYPE="NOTHING"
+		FSBLIB_INI_PARSED_TYPE="$TYPE"
+		;;
+	*"="*)
+		TYPE="PARAM-VALUE"
+		PARAM="$(RemoveBlank <<<"$(cut -d "=" -f 1 <<<"$_Line")")"
+		VALUE="$(RemoveBlank <<<"$(cut -d "=" -f 2- <<<"$_Line")")"
+		FSBLIB_INI_PARSED_TYPE="$TYPE"
+		FSBLIB_INI_PARSED_PARAM="$PARAM"
+		FSBLIB_INI_PARSED_VALUE="$VALUE"
+		;;
+	*)
+		TYPE="ERROR"
+		FSBLIB_INI_PARSED_TYPE="$TYPE"
+		;;
+	esac
+	return 0
+}
+Ini.NewParam() {
+	local IniContents=() Line
+	local Section="$1" Param="$2"
+	local InSection=false LineNo=0
+	local NewIniContents=()
+	readarray -t IniContents
+	local BeforeParam
+	local SectionLastParam
+	local ParamAdded=false
+	if ! PrintArray "${IniContents[@]}" | Ini.GetParamList "$Section" | grep -qx "$Param"; then
+		SectionLastParam="$(PrintEvalArray IniContents | Ini.GetLastParam "$Section")"
+		for Line in "${IniContents[@]}"; do
+			LineNo=$((LineNo + 1))
+			Ini.ParseLine <<<"$Line"
+			case "$FSBLIB_INI_PARSED_TYPE" in
+			"SECTION")
+				if [[ $FSBLIB_INI_PARSED_SECTION == "$Section" ]]; then
+					InSection=true
+				else
+					InSection=false
+				fi
+				;;
+			"PARAM-VALUE")
+				if [[ $InSection == true ]]; then
+					BeforeParam="$FSBLIB_INI_PARSED_PARAM"
+				fi
+				;;
+			"ERROR")
+				echo "Line $LineNo: Failed to parse Ini" 1>&2
+				return 1
+				;;
+			esac
+			NewIniContents+=("$Line")
+			if {
+				! Bool "$ParamAdded"
+			} && Bool "$InSection" && [[ $SectionLastParam == "${BeforeParam-""}" ]]; then
+				NewIniContents+=("$Param=")
+				ParamAdded=true
+			fi
+		done
+	fi
+	PrintEvalArray NewIniContents
+	return 0
+}
+Ini.NewSection() {
+	local IniContents=()
+	local Section="$1"
+	readarray -t IniContents
+	if PrintArray "${IniContents[@]}" | Ini.GetSectionList | grep -x "$Section" >/dev/null; then
+		PrintEvalArray IniContents
+		return 0
+	fi
+	if [[ -z "$(Array.Last IniContents)" ]]; then
+		Array.Pop IniContents
+	fi
+	IniContents+=("" "[$Section]")
+	PrintEvalArray IniContents
+	return 0
+}
+Ini.SetValue() {
+	local IniContents=()
+	local Section="$1" Param="$2"
+	readarray -t IniContents
+	readarray -t IniContents < <(PrintArray "${IniContents[@]}" | Ini.NewSection "$Section" | Ini.NewParam "$Section" "$Param")
+	PrintEvalArray IniContents
 }
 Sqlite3.Call() {
 	Msg.Debug sqlite3 "${SQLITE3_OPTIONS[@]}" "$SQLITE3_DBPATH" "$@" 1>&2
