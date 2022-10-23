@@ -12,10 +12,8 @@ time {
     count=0
     sec=30
     while true; do
-        Esc.ClearLineAndReturn
-        Prog.Bar "$sec" "$count"
+        Prog.WideBar "$sec" "$count" # Change this line to Prog.Bar to see the difference
         ((count++))
-        
         if ((count > sec)); then
             echo
             break
