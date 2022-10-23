@@ -17,14 +17,14 @@ MoveCursorLeft(){
 }
 GetX(){
     local _POS
-    printf "\033[6n" > /dev/tty
+    printf "\033[6n" >> /dev/tty
     read -r -s -d "R" _POS
     echo $(( "$(printf "%s\n" "${_POS:2}" | cut -d";" -f2)" - 1))
 }
 
 GetY(){
     local _POS
-    printf "\033[6n" > /dev/tty
+    printf "\033[6n" >> /dev/tty
     read -r -s -d "R" _POS
     echo $(( "$(printf "%s\n" "${_POS:2}" | cut -d";" -f1)" - 1))
 }
