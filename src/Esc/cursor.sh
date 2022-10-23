@@ -28,3 +28,13 @@ GetY(){
     read -r -s -d "R" _POS
     echo $(( "$(printf "%s\n" "${_POS:2}" | cut -d";" -f1)" - 1))
 }
+
+GetTermX(){
+    [[ -n ${COLUMNS-""} ]] && echo "$COLUMNS" && return 0
+    tput cols
+}
+
+GetTermY(){
+    [[ -n ${LINES-""} ]] && echo "$LINES" && return 0
+    tput lines
+}
