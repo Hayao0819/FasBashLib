@@ -176,7 +176,7 @@ Main(){
                     ;;
             esac
             ;;
-        "help")
+        help | h*)
             HelpDoc
             SCRIPT_RUN=true
             ;;
