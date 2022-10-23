@@ -12,7 +12,7 @@ INSTALLDIR="/usr/lib/fasbashlib/"
 
 #TmpDir="$(mktemp -d -t "fasbashlib.XXXXX")"
 TmpDir="$MainDir/work"
-MinVersion="v0.2.5.1"
+MinVersion="v0.2.6"
 MaxVersion=""
 declare -A DownloadFileList=(
     ["fasbashlib.tar.gz"]="upper.tar.gz"
