@@ -28,11 +28,167 @@
 # shellcheck disable=all
 
 FSBLIB_LIBLIST+=("ArchLinux" "Array" "AwkForCalc" "BetterShell" "Cache" "Core" "Csv" "Emerge" "Esc" "Ini" "LibreTranslate" "Message" "Misskey" "Pacman" "ParseArg" "Progress" "Prompt" "Readlink" "Sqlite3" "SrcInfo" "URL")
-FSBLIB_FUNCLIST+=("capture_special_keys" "choice" "arch.get_kernel_file_list" "fsblib.env_check" "pm.check_pkg" "choice_loop" "libretranslate.check" "prog.bar" "readlinkf" "select_menu" "readlinkf__posix" "url.authority" "esc.clear_left" "ini.get_last_param" "misskey.notes.create" "msg.common" "cache.exist" "srcinfo.format" "add_new_to_array" "csv.get_clm" "parse_arg" "awk.cos" "readlinkf__readlink" "sqlite3.call" "array_append" "libretranslate.detect" "fsblib.fsblib_env_check" "em.get_all_pkg_list" "pm.get_config" "array.append" "prog.rotation" "arch.get_kernel_src_list" "array_includes" "url.fragment" "esc.clear_line" "array_index" "ini.get_param" "misskey.notes.renotes" "csv.get_clm_cnt" "fsblib.require_lib" "msg.debug" "cache.get" "pm.get_installed_pkg_ver" "srcinfo.get_key_list" "get_array_index" "awk.float" "em.get_default_repo_name" "sqlite3.connect" "libretranslate.languages" "arch.get_mkinitcpio_preset_list" "array.from_str" "print_array" "prog.wide_bar" "esc.clear_line_and_return" "print_eval_array" "url.host" "csv.to_bash_array" "ini.get_param_list" "misskey.notes.search" "rev_array" "cache.get_dir" "msg.err" "srcinfo.get_pkg_base" "sqlite3.create" "em.get_installed_pkg_list" "libretranslate.translate" "pm.get_keyring_list" "awk.log" "array.pop" "str_to_char_list" "esc.clear_right" "ini.get_section_list" "url.no_scheme" "msg.info" "sqlite3.current_db" "cache.get_file_last_update" "em.get_repo_conf" "srcinfo.get_pkg_name" "libretranslate.translate_auto" "awk.pi" "file_type" "pm.get_latest_pkg_ver" "array.push" "esc.clear_screen" "misskey.users.get_frequently_replied_users" "get_base_name" "url.path" "ini.parse_line" "msg.warn" "get_file_ext" "cache.get_id" "sqlite3.delete" "srcinfo.get_section_list" "em.get_repo_location" "pm.get_name" "awk.print" "remove_file_ext" "esc.return" "array.remove" "misskey.users.notes" "em.get_repo_pkg_list" "url.path_and_query_and_fragment" "awk.rad" "array.rev" "cache.get_time_diff_from_last_update" "srcinfo.get_value" "ini.new_param" "check_func_defined" "url.port" "em.get_world_pkg_list" "array.shift" "misskey.users.pages" "esc.get_term_x" "pm.get_pacman_kernel_pkg" "for_each" "get_line" "ini.new_section" "sqlite3.exist_field" "awk.sin" "srcinfo.get_value_in_pkg_base" "is_available" "url.query" "pm.get_pacman_keyring_dir" "esc.get_term_y" "misskey.users.search_by_username_and_host" "loop" "cache.create" "em.no_version" "array.eval" "awk.tan" "sqlite3.exist_table" "ini.set_value" "url.scheme" "srcinfo.get_value_in_pkg_name" "pm.get_repo_conf" "break_char" "esc.get_x" "misskey.users.show" "cut_last_string" "cache.create_dir" "array.last" "sqlite3.insert" "get_last_split_string" "url.user" "srcinfo.parse" "is_uu_id" "esc.get_y" "misskey.users.stats" "pm.get_repo_list_from_conf" "print_eval" "sqlite3.select" "array.print" "random_string" "esc.move_cursor" "remove_blank" "pm.get_repo_pkg_list" "text_box" "sqlite3.select_all" "url.has_authority" "to_lower" "esc.move_cursor_down" "misskey.admin.server_info" "to_lower_stdin" "pm.get_repo_server" "array.index_of" "url.has_fragment" "esc.move_cursor_left" "calc_int" "misskey.setup" "array.last_index" "pm.get_repo_ver" "url.has_port" "ntest" "esc.move_cursor_right" "sum" "pm.get_root" "array.length" "url.has_query" "esc.move_cursor_up" "bool" "misskey.i" "url.has_user" "pm.is_repo_pkg" "misskey.meta" "get_func_list" "pm.pacman_gpg" "esc.clear_upper_lines" "unset_all_func" "array.for_each" "misskey.server_info" "url.parse" "pm.run" "match" "array.includes" "remove_match_line" "to_args" "pm.run_key" "misskey.binding_base" "esc.black_background" "url.get_query" "misskey.make_json" "esc.black_text" "misskey.send_req" "pm.get_db_next_section" "url.parse_query" "esc.blink" "pm.get_db_section" "misskey.is_admin" "esc.blue_background" "pm.get_db_section_list" "esc.blue_text" "misskey.my_id" "misskey.my_name" "esc.bold" "pm.create_db_tmp_dir" "misskey.my_user_name" "pm.delete_db_tmp_dir" "esc.conceal" "esc.crossed_out" "pm.get_db_tmp_dir" "esc.cyan_background" "pm.get_pkg_arch" "esc.cyan_text" "pm.get_repo_list_from_local_db" "esc.green_background" "pm.get_sync_all_desc" "esc.green_text" "pm.get_sync_db_desc" "esc.italic" "pm.get_sync_db_desc_path" "esc.low_intensity" "pm.get_virtual_pkg_list" "esc.magenta_background" "pm.is_opend_sync_db" "esc.magenta_text" "pm.open_sync_db" "pm.opened_sync_db_list" "esc.rapid_blink" "pm.parse_pkg_file_name" "esc.red_background" "esc.red_text" "esc.reset_style" "esc.reverse" "esc.underline" "esc.white_background" "esc.white_text" "esc.yellow_background" "esc.yellow_text")
-declare -r FSBLIB_VERSION='v0.2.6.r434.g2e56d0a-snake'
+FSBLIB_FUNCLIST+=("readlinkf" "readlinkf__posix" "readlinkf__readlink" "pm.check_pkg" "msg.common" "array.append" "capture_special_keys" "sqlite3.call" "parse_arg" "ini.get_last_param" "arch.get_kernel_file_list" "csv.get_clm" "fsblib.env_check" "srcinfo.format" "cache.exist" "add_new_to_array" "misskey.notes.create" "choice" "esc.clear_left" "choice_loop" "prog.bar" "libretranslate.check" "url.authority" "array_append" "em.get_all_pkg_list" "awk.cos" "pm.get_config" "array.from_str" "select_menu" "msg.debug" "array_includes" "sqlite3.connect" "ini.get_param" "csv.get_clm_cnt" "arch.get_kernel_src_list" "array_index" "fsblib.fsblib_env_check" "misskey.notes.renotes" "srcinfo.get_key_list" "cache.get" "esc.clear_line" "prog.rotation" "get_array_index" "libretranslate.detect" "url.fragment" "em.get_default_repo_name" "awk.float" "pm.get_installed_pkg_ver" "array.pop" "msg.err" "print_array" "arch.get_mkinitcpio_preset_list" "sqlite3.create" "csv.to_bash_array" "ini.get_param_list" "cache.get_dir" "srcinfo.get_pkg_base" "print_eval_array" "misskey.notes.search" "fsblib.require_lib" "prog.wide_bar" "esc.clear_line_and_return" "em.get_installed_pkg_list" "rev_array" "libretranslate.languages" "array.push" "pm.get_keyring_list" "msg.info" "awk.log" "url.host" "str_to_char_list" "ini.get_section_list" "sqlite3.current_db" "cache.get_file_last_update" "srcinfo.get_pkg_name" "em.get_repo_conf" "esc.clear_right" "pm.get_latest_pkg_ver" "msg.warn" "libretranslate.translate" "url.no_scheme" "ini.parse_line" "array.remove" "file_type" "awk.pi" "sqlite3.delete" "misskey.users.get_frequently_replied_users" "cache.get_id" "get_base_name" "srcinfo.get_section_list" "em.get_repo_location" "esc.clear_screen" "get_file_ext" "pm.get_name" "url.path" "array.rev" "libretranslate.translate_auto" "awk.print" "remove_file_ext" "cache.get_time_diff_from_last_update" "sqlite3.exist_field" "misskey.users.notes" "em.get_repo_pkg_list" "srcinfo.get_value" "ini.new_param" "esc.return" "pm.get_pacman_kernel_pkg" "url.path_and_query_and_fragment" "check_func_defined" "array.shift" "awk.rad" "sqlite3.exist_table" "for_each" "misskey.users.pages" "em.get_world_pkg_list" "srcinfo.get_value_in_pkg_base" "get_line" "ini.new_section" "pm.get_pacman_keyring_dir" "url.port" "cache.create" "is_available" "awk.sin" "sqlite3.insert" "esc.get_term_x" "misskey.users.search_by_username_and_host" "loop" "srcinfo.get_value_in_pkg_name" "array.eval" "ini.set_value" "pm.get_repo_conf" "url.query" "cache.create_dir" "awk.tan" "em.no_version" "sqlite3.select" "esc.get_term_y" "misskey.users.show" "break_char" "array.last" "srcinfo.parse" "cut_last_string" "pm.get_repo_list_from_conf" "get_last_split_string" "url.scheme" "sqlite3.select_all" "misskey.users.stats" "esc.get_x" "is_uu_id" "array.print" "print_eval" "pm.get_repo_pkg_list" "random_string" "url.user" "remove_blank" "esc.get_y" "text_box" "misskey.admin.server_info" "pm.get_repo_server" "to_lower" "array.index_of" "to_lower_stdin" "url.has_authority" "esc.move_cursor" "pm.get_repo_ver" "array.last_index" "calc_int" "url.has_fragment" "ntest" "esc.move_cursor_down" "pm.get_root" "sum" "misskey.setup" "array.length" "url.has_port" "esc.move_cursor_left" "pm.is_repo_pkg" "bool" "pm.pacman_gpg" "misskey.i" "url.has_query" "esc.move_cursor_right" "get_func_list" "array.for_each" "unset_all_func" "pm.run" "misskey.meta" "url.has_user" "array.includes" "esc.move_cursor_up" "misskey.server_info" "match" "pm.run_key" "remove_match_line" "to_args" "url.parse" "esc.clear_upper_lines" "misskey.binding_base" "pm.get_db_next_section" "misskey.make_json" "esc.black_background" "url.get_query" "pm.get_db_section" "misskey.send_req" "esc.black_text" "url.parse_query" "pm.get_db_section_list" "esc.blink" "misskey.is_admin" "esc.blue_background" "pm.create_db_tmp_dir" "misskey.my_id" "esc.blue_text" "pm.delete_db_tmp_dir" "misskey.my_name" "esc.bold" "pm.get_db_tmp_dir" "misskey.my_user_name" "esc.conceal" "pm.get_pkg_arch" "esc.crossed_out" "pm.get_repo_list_from_local_db" "esc.cyan_background" "pm.get_sync_all_desc" "esc.cyan_text" "pm.get_sync_db_desc" "esc.green_background" "pm.get_sync_db_desc_path" "esc.green_text" "pm.get_virtual_pkg_list" "esc.italic" "pm.is_opend_sync_db" "esc.low_intensity" "pm.open_sync_db" "esc.magenta_background" "pm.opened_sync_db_list" "pm.parse_pkg_file_name" "esc.magenta_text" "esc.rapid_blink" "esc.red_background" "esc.red_text" "esc.reset_style" "esc.reverse" "esc.underline" "esc.white_background" "esc.white_text" "esc.yellow_background" "esc.yellow_text")
+declare -r FSBLIB_VERSION='v0.2.6.r441.gf796583-snake'
 declare -r FSBLIB_REQUIRE='ModernBash'
 declare -r FSBLIB_PROG_PIDFILEPATH='FSBLIB_PROGRESS_PIDLIST'
 
+readlinkf() {
+	readlinkf_Posix "$@"
+}
+readlinkf_Posix() {
+	[ "${1:-}" ] || return 1
+	max_symlinks=40
+	CDPATH=''
+	target=$1
+	[ -e "${target%/}" ] || target=${1%"${1##*[!/]}"}
+	[ -d "${target:-/}" ] && target="$target/"
+	cd -P . 2>/dev/null || return 1
+	while [ "$max_symlinks" -ge 0 ] && max_symlinks=$((max_symlinks - 1)); do
+		if [ ! "$target" = "${target%/*}" ]; then
+			case $target in
+			/*)
+				cd -P "${target%/*}/" 2>/dev/null || break
+				;;
+			*)
+				cd -P "./${target%/*}" 2>/dev/null || break
+				;;
+			esac
+			target=${target##*/}
+		fi
+		if [ ! -L "$target" ]; then
+			target="${PWD%/}${target:+/}${target}"
+			printf '%s\n' "${target:-/}"
+			return 0
+		fi
+		link=$(ls -dl -- "$target" 2>/dev/null) || break
+		target=${link#*" $target -> "}
+	done
+	return 1
+}
+readlinkf_Readlink() {
+	[ "${1:-}" ] || return 1
+	max_symlinks=40
+	CDPATH=''
+	target=$1
+	[ -e "${target%/}" ] || target=${1%"${1##*[!/]}"}
+	[ -d "${target:-/}" ] && target="$target/"
+	cd -P . 2>/dev/null || return 1
+	while [ "$max_symlinks" -ge 0 ] && max_symlinks=$((max_symlinks - 1)); do
+		if [ ! "$target" = "${target%/*}" ]; then
+			case $target in
+			/*)
+				cd -P "${target%/*}/" 2>/dev/null || break
+				;;
+			*)
+				cd -P "./${target%/*}" 2>/dev/null || break
+				;;
+			esac
+			target=${target##*/}
+		fi
+		if [ ! -L "$target" ]; then
+			target="${PWD%/}${target:+/}${target}"
+			printf '%s\n' "${target:-/}"
+			return 0
+		fi
+		target=$(readlink -- "$target" 2>/dev/null) || break
+	done
+	return 1
+}
+parse_arg() {
+	local _Arg _Chr _Cnt
+	local _Long=() _LongWithArg=() _Short=() _ShortWithArg=()
+	local _OutArg=() _NoArg=()
+	for _Arg in "${@}"; do
+		local _TempArray=()
+		case "${_Arg}" in
+		"LONG="*)
+			readarray -t _TempArray < <(tr -d '"' <<<"${_Arg#LONG=}" | tr "," "\n")
+			for _Chr in "${_TempArray[@]}"; do
+				if [[ ${_Chr} == *":" ]]; then
+					_LongWithArg+=("${_Chr%":"}")
+				else
+					_Long+=("${_Chr}")
+				fi
+			done
+			shift 1
+			;;
+		"SHORT="*)
+			readarray -t _TempArray < <(tr -d '"' <<<"${_Arg#SHORT=}" | grep -o .)
+			for ((_Cnt = 0; _Cnt <= "${#_TempArray[@]}" - 1; _Cnt++)); do
+				if [[ ${_TempArray["$((_Cnt + 1))"]-""} == ":" ]]; then
+					_ShortWithArg+=("${_TempArray["${_Cnt}"]}")
+					_Cnt=$((_Cnt + 1))
+				else
+					_Short+=("${_TempArray["${_Cnt}"]}")
+				fi
+			done
+			shift 1
+			;;
+		"--")
+			shift 1
+			break
+			;;
+		esac
+	done
+	while (("$#" > 0)); do
+		if [[ ${1} == "--" ]]; then
+			shift 1
+			_NoArg+=("${@}")
+			shift "$#"
+			break
+		else
+			if [[ ${1} == "--"* ]]; then
+				if printf "%s\n" "${_LongWithArg[@]}" | grep -qx "${1#--}"; then
+					if [[ ${2} == "-"* ]]; then
+						msg.err "${1} の引数が指定されていません"
+						return 2
+					else
+						_OutArg+=("${1}" "${2}")
+						shift 2
+					fi
+				else
+					if printf "%s\n" "${_Long[@]}" | grep -qx "${1#--}"; then
+						_OutArg+=("${1}")
+						shift 1
+					else
+						msg.err "${1} は不正なオプションです。-hで使い方を確認してください。"
+						return 1
+					fi
+				fi
+			else
+				if [[ ${1} == "-"* ]]; then
+					local _Shift=0
+					while read -r _Chr; do
+						if printf "%s\n" "${_ShortWithArg[@]}" | grep -qx "${_Chr}"; then
+							if [[ ${1} == *"${_Chr}" ]] && [[ ! ${2} == "-"* ]]; then
+								_OutArg+=("-${_Chr}" "${2}")
+								_Shift=2
+							else
+								msg.err "-${_Chr} の引数が指定されていません"
+								return 2
+							fi
+						else
+							if printf "%s\n" "${_Short[@]}" | grep -qx "${_Chr}"; then
+								_OutArg+=("-${_Chr}")
+								_Shift=1
+							else
+								msg.err "-${_Chr} は不正なオプションです。-hで使い方を確認してください。"
+								return 1
+							fi
+						fi
+					done < <(grep -o . <<<"${1#-}")
+					shift "${_Shift}"
+				else
+					_NoArg+=("${1}")
+					shift 1
+				fi
+			fi
+		fi
+	done
+	OPTRET=("${_OutArg[@]}" -- "${_NoArg[@]}")
+	return 0
+}
 capture_special_keys() {
 	local SELECTION rest
 	IFS= read -r -n1 -s SELECTION
@@ -162,161 +318,35 @@ select_menu() {
 	done
 	echo "${choices[$Currentchoice]}"
 }
-parse_arg() {
-	local _Arg _Chr _Cnt
-	local _Long=() _LongWithArg=() _Short=() _ShortWithArg=()
-	local _OutArg=() _NoArg=()
-	for _Arg in "${@}"; do
-		local _TempArray=()
-		case "${_Arg}" in
-		"LONG="*)
-			readarray -t _TempArray < <(tr -d '"' <<<"${_Arg#LONG=}" | tr "," "\n")
-			for _Chr in "${_TempArray[@]}"; do
-				if [[ ${_Chr} == *":" ]]; then
-					_LongWithArg+=("${_Chr%":"}")
-				else
-					_Long+=("${_Chr}")
-				fi
-			done
-			shift 1
-			;;
-		"SHORT="*)
-			readarray -t _TempArray < <(tr -d '"' <<<"${_Arg#SHORT=}" | grep -o .)
-			for ((_Cnt = 0; _Cnt <= "${#_TempArray[@]}" - 1; _Cnt++)); do
-				if [[ ${_TempArray["$((_Cnt + 1))"]-""} == ":" ]]; then
-					_ShortWithArg+=("${_TempArray["${_Cnt}"]}")
-					_Cnt=$((_Cnt + 1))
-				else
-					_Short+=("${_TempArray["${_Cnt}"]}")
-				fi
-			done
-			shift 1
-			;;
-		"--")
-			shift 1
-			break
-			;;
-		esac
-	done
-	while (("$#" > 0)); do
-		if [[ ${1} == "--" ]]; then
-			shift 1
-			_NoArg+=("${@}")
-			shift "$#"
-			break
-		else
-			if [[ ${1} == "--"* ]]; then
-				if printf "%s\n" "${_LongWithArg[@]}" | grep -qx "${1#--}"; then
-					if [[ ${2} == "-"* ]]; then
-						msg.err "${1} の引数が指定されていません"
-						return 2
-					else
-						_OutArg+=("${1}" "${2}")
-						shift 2
-					fi
-				else
-					if printf "%s\n" "${_Long[@]}" | grep -qx "${1#--}"; then
-						_OutArg+=("${1}")
-						shift 1
-					else
-						msg.err "${1} は不正なオプションです。-hで使い方を確認してください。"
-						return 1
-					fi
-				fi
-			else
-				if [[ ${1} == "-"* ]]; then
-					local _Shift=0
-					while read -r _Chr; do
-						if printf "%s\n" "${_ShortWithArg[@]}" | grep -qx "${_Chr}"; then
-							if [[ ${1} == *"${_Chr}" ]] && [[ ! ${2} == "-"* ]]; then
-								_OutArg+=("-${_Chr}" "${2}")
-								_Shift=2
-							else
-								msg.err "-${_Chr} の引数が指定されていません"
-								return 2
-							fi
-						else
-							if printf "%s\n" "${_Short[@]}" | grep -qx "${_Chr}"; then
-								_OutArg+=("-${_Chr}")
-								_Shift=1
-							else
-								msg.err "-${_Chr} は不正なオプションです。-hで使い方を確認してください。"
-								return 1
-							fi
-						fi
-					done < <(grep -o . <<<"${1#-}")
-					shift "${_Shift}"
-				else
-					_NoArg+=("${1}")
-					shift 1
-				fi
-			fi
-		fi
-	done
-	OPTRET=("${_OutArg[@]}" -- "${_NoArg[@]}")
+csv.get_clm() {
+	grep -v "^#" | sed "/^$/d" | cut -d "${CSVDELIM-","}" -f "$1"
+}
+csv.get_clm_cnt() {
+	local _RawCsvLine=()
+	local _Line _ClmCnt=0
+	readarray -t _RawCsvLine
+	while read -r _Line; do
+		grep -qE "^#" <<<"$_Line" && continue
+		_CurrentClmCnt=$(tr "${CSVDELIM-","}" "\n" | wc -l)
+		((_CurrentClmCnt > _ClmCnt)) && _ClmCnt="$_CurrentClmCnt"
+	done < <(print_array "${_RawCsvLine[@]}")
+	remove_blank <<<"$_ClmCnt"
 	return 0
 }
-readlinkf() {
-	readlinkf_Posix "$@"
-}
-readlinkf_Posix() {
-	[ "${1:-}" ] || return 1
-	max_symlinks=40
-	CDPATH=''
-	target=$1
-	[ -e "${target%/}" ] || target=${1%"${1##*[!/]}"}
-	[ -d "${target:-/}" ] && target="$target/"
-	cd -P . 2>/dev/null || return 1
-	while [ "$max_symlinks" -ge 0 ] && max_symlinks=$((max_symlinks - 1)); do
-		if [ ! "$target" = "${target%/*}" ]; then
-			case $target in
-			/*)
-				cd -P "${target%/*}/" 2>/dev/null || break
-				;;
-			*)
-				cd -P "./${target%/*}" 2>/dev/null || break
-				;;
-			esac
-			target=${target##*/}
-		fi
-		if [ ! -L "$target" ]; then
-			target="${PWD%/}${target:+/}${target}"
-			printf '%s\n' "${target:-/}"
-			return 0
-		fi
-		link=$(ls -dl -- "$target" 2>/dev/null) || break
-		target=${link#*" $target -> "}
-	done
-	return 1
-}
-readlinkf_Readlink() {
-	[ "${1:-}" ] || return 1
-	max_symlinks=40
-	CDPATH=''
-	target=$1
-	[ -e "${target%/}" ] || target=${1%"${1##*[!/]}"}
-	[ -d "${target:-/}" ] && target="$target/"
-	cd -P . 2>/dev/null || return 1
-	while [ "$max_symlinks" -ge 0 ] && max_symlinks=$((max_symlinks - 1)); do
-		if [ ! "$target" = "${target%/*}" ]; then
-			case $target in
-			/*)
-				cd -P "${target%/*}/" 2>/dev/null || break
-				;;
-			*)
-				cd -P "./${target%/*}" 2>/dev/null || break
-				;;
-			esac
-			target=${target##*/}
-		fi
-		if [ ! -L "$target" ]; then
-			target="${PWD%/}${target:+/}${target}"
-			printf '%s\n' "${target:-/}"
-			return 0
-		fi
-		target=$(readlink -- "$target" 2>/dev/null) || break
-	done
-	return 1
+csv.to_bash_array() {
+	local _RawCsvLine=() _Line _ClmCnt=0
+	local ArrayPrefix="${ArrayPrefix-"{}"}"
+	readarray -t _RawCsvLine < <(
+		while read -r _Line; do
+			(($(tr "${CSVDELIM-","}" "\n" <<<"$_Line" | wc -l) >= ${#})) && echo "$_Line"
+		done < <(grep -v "^#")
+	)
+	_ClmCnt=$(print_array "${_RawCsvLine[@]}" | csv.get_clm_cnt)
+	while read -r _Cnt; do
+		readarray -t "$(sed "s|{}|$(eval "echo \"\${${_Cnt}}\"")|g" <<<"$ArrayPrefix")" < <(
+			print_array "${_RawCsvLine[@]}" | cut -d "${CSVDELIM-","}" -f "$_Cnt"
+		)
+	done < <(seq 1 "$#")
 }
 fsblib.env_check() {
 	case "$FSBLIB_REQUIRE" in
@@ -369,36 +399,6 @@ prog.wide_bar() {
 	local StatusString="$Counter/$Max"
 	local Size=$(($(esc.get_term_x) - ${#StatusString} - 3))
 	prog.bar "$Max" "$Counter" "$Size"
-}
-csv.get_clm() {
-	grep -v "^#" | sed "/^$/d" | cut -d "${CSVDELIM-","}" -f "$1"
-}
-csv.get_clm_cnt() {
-	local _RawCsvLine=()
-	local _Line _ClmCnt=0
-	readarray -t _RawCsvLine
-	while read -r _Line; do
-		grep -qE "^#" <<<"$_Line" && continue
-		_CurrentClmCnt=$(tr "${CSVDELIM-","}" "\n" | wc -l)
-		((_CurrentClmCnt > _ClmCnt)) && _ClmCnt="$_CurrentClmCnt"
-	done < <(print_array "${_RawCsvLine[@]}")
-	remove_blank <<<"$_ClmCnt"
-	return 0
-}
-csv.to_bash_array() {
-	local _RawCsvLine=() _Line _ClmCnt=0
-	local ArrayPrefix="${ArrayPrefix-"{}"}"
-	readarray -t _RawCsvLine < <(
-		while read -r _Line; do
-			(($(tr "${CSVDELIM-","}" "\n" <<<"$_Line" | wc -l) >= ${#})) && echo "$_Line"
-		done < <(grep -v "^#")
-	)
-	_ClmCnt=$(print_array "${_RawCsvLine[@]}" | csv.get_clm_cnt)
-	while read -r _Cnt; do
-		readarray -t "$(sed "s|{}|$(eval "echo \"\${${_Cnt}}\"")|g" <<<"$ArrayPrefix")" < <(
-			print_array "${_RawCsvLine[@]}" | cut -d "${CSVDELIM-","}" -f "$_Cnt"
-		)
-	done < <(seq 1 "$#")
 }
 msg.common() {
 	local i l="$1" string="$2" out="${3-""}"
@@ -485,30 +485,6 @@ libretranslate.translate() {
 libretranslate.translate_auto() {
 	libretranslate.check || return 2
 	libretranslate.translate "${1:-""}" "$(libretranslate.detect "${1:-""}")" "${2:-""}"
-}
-awk.cos() {
-	awk.float "cos($*)"
-}
-awk.float() {
-	awk "BEGIN {printf (\"%4.${AWKSCALE-"5"}f\n\", $*)}"
-}
-awk.log() {
-	awk.float "log(${2}) / log($1)"
-}
-awk.pi() {
-	awk.float "atan2(0, -0)"
-}
-awk.print() {
-	awk "BEGIN {print $*}"
-}
-awk.rad() {
-	awk.float "$1 * $(awk.pi) / 180 "
-}
-awk.sin() {
-	awk.float "sin($*)"
-}
-awk.tan() {
-	awk.float "sin($1)/tan($1)"
 }
 ini.get_last_param() {
 	ini.get_param_list "$1" | tail -n 1
@@ -681,32 +657,6 @@ ini.set_value() {
 	readarray -t IniContents < <(print_array "${IniContents[@]}" | ini.new_section "$Section" | ini.new_param "$Section" "$Param")
 	print_eval_array IniContents
 }
-em.get_all_pkg_list() {
-	em.get_repo_conf | sed -e 's/^ *//' -e 's/ *$//' | grep "^ *location *=" | sed -e 's/^location *= *//' | xargs -L1 realpath | xargs -I{} bash -c "find '{}' -mindepth 3 -maxdepth 3 -type f -name '*.ebuild' | sed -e 's|{}/||g' -e 's|.ebuild$||g'" | awk -F "/" '{print $1"/"$3}'
-}
-em.get_default_repo_name() {
-	em.get_repo_conf | ini.get_param DEFAULT main-repo
-}
-em.get_installed_pkg_list() {
-	find /var/db/pkg/ -mindepth 2 -maxdepth 2 -type d | sed 's|/var/db/pkg/||g'
-}
-em.get_repo_conf() {
-	cat /etc/portage/repos.conf /etc/portage/repos.conf/* 2>/dev/null
-}
-em.get_repo_location() {
-	em.get_repo_conf | ini.get_param "$1" location
-}
-em.get_repo_pkg_list() {
-	local _RepoPath
-	_RepoPath="$(em.get_repo_location "$1")"
-	find "$_RepoPath" -mindepth 3 -maxdepth 3 -type f -name '*.ebuild' | sed -e "s|${_RepoPath%/}/||g" -e 's|.ebuild$||g' | awk -F "/" '{print $1"/"$3}'
-}
-em.get_world_pkg_list() {
-	sed -E 's|:.+$||g' /var/lib/portage/world | xargs -I{} bash -c 'ls -d /var/db/pkg/{}-* | sed "s|/var/db/pkg/||g" | grep -E "{}-[0-9]"'
-}
-em.no_version() {
-	sed -E 's|\-[0-9]+.+||g'
-}
 cache.exist() {
 	local _File
 	_File="$(cache.create_dir)/$1"
@@ -758,6 +708,56 @@ cache.create_dir() {
 	mkdir -p "$_Dir"
 	echo "$_Dir"
 	return 0
+}
+em.get_all_pkg_list() {
+	em.get_repo_conf | sed -e 's/^ *//' -e 's/ *$//' | grep "^ *location *=" | sed -e 's/^location *= *//' | xargs -L1 realpath | xargs -I{} bash -c "find '{}' -mindepth 3 -maxdepth 3 -type f -name '*.ebuild' | sed -e 's|{}/||g' -e 's|.ebuild$||g'" | awk -F "/" '{print $1"/"$3}'
+}
+em.get_default_repo_name() {
+	em.get_repo_conf | ini.get_param DEFAULT main-repo
+}
+em.get_installed_pkg_list() {
+	find /var/db/pkg/ -mindepth 2 -maxdepth 2 -type d | sed 's|/var/db/pkg/||g'
+}
+em.get_repo_conf() {
+	cat /etc/portage/repos.conf /etc/portage/repos.conf/* 2>/dev/null
+}
+em.get_repo_location() {
+	em.get_repo_conf | ini.get_param "$1" location
+}
+em.get_repo_pkg_list() {
+	local _RepoPath
+	_RepoPath="$(em.get_repo_location "$1")"
+	find "$_RepoPath" -mindepth 3 -maxdepth 3 -type f -name '*.ebuild' | sed -e "s|${_RepoPath%/}/||g" -e 's|.ebuild$||g' | awk -F "/" '{print $1"/"$3}'
+}
+em.get_world_pkg_list() {
+	sed -E 's|:.+$||g' /var/lib/portage/world | xargs -I{} bash -c 'ls -d /var/db/pkg/{}-* | sed "s|/var/db/pkg/||g" | grep -E "{}-[0-9]"'
+}
+em.no_version() {
+	sed -E 's|\-[0-9]+.+||g'
+}
+awk.cos() {
+	awk.float "cos($*)"
+}
+awk.float() {
+	awk "BEGIN {printf (\"%4.${AWKSCALE-"5"}f\n\", $*)}"
+}
+awk.log() {
+	awk.float "log(${2}) / log($1)"
+}
+awk.pi() {
+	awk.float "atan2(0, -0)"
+}
+awk.print() {
+	awk "BEGIN {print $*}"
+}
+awk.rad() {
+	awk.float "$1 * $(awk.pi) / 180 "
+}
+awk.sin() {
+	awk.float "sin($*)"
+}
+awk.tan() {
+	awk.float "sin($1)/tan($1)"
 }
 srcinfo.format() {
 	remove_blank | sed "/^$/d" | grep -v "^#" | for_each eval 'srcinfo.parse Line <<< "{}"'
