@@ -82,10 +82,10 @@ Main(){
                 single | s*)
                     RunScript "$BinDir/Build-Single.sh" "$@"
                     ;;
-                info | json | j*)
+                info | json | j* | inf*)
                     RunScript "${BinDir}/Build-Info.sh" "$@"
                     ;;
-                install)
+                install | ins*)
                     RunsScript "${BinDir}/Build-Install.sh" "$@"
                     ;;
                 all)
