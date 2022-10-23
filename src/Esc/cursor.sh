@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 MoveCursor(){
     printf "\033[%d;%dH" "$1" "$2"
@@ -14,4 +14,17 @@ MoveCursorRight(){
 }
 MoveCursorLeft(){
     printf "\033[%dD" "$1"
+}
+GetX(){
+    local _POS
+    printf "\033[6n" > /dev/tty
+    read -r -s -d "R" _POS
+    echo $(( "$(printf "%s\n" "${_POS:2}" | cut -d";" -f2)" - 1))
+}
+
+GetY(){
+    local _POS
+    printf "\033[6n" > /dev/tty
+    read -r -s -d "R" _POS
+    echo $(( "$(printf "%s\n" "${_POS:2}" | cut -d";" -f1)" - 1))
 }
