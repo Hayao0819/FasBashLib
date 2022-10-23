@@ -24,9 +24,9 @@ declare -A DownloadFileList=(
     ["fasbashlib.json"]="info.json"
 )
 TagNameToBuild=()
-GitCommitToBuild=(89a76db7384e5a61a06a3994022180a9aaae16ff)
+GitCommitToBuild=()
 DefaultBranchName=""
-BuildTagFromSource=false # タグ付けされたバージョンをソースからビルドするかどうか
+BuildTagFromSource=true # タグ付けされたバージョンをソースからビルドするかどうか
 NoTagBuild=false
 
 #_Run(){
