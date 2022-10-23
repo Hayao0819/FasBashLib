@@ -86,7 +86,7 @@ Main(){
                     RunScript "${BinDir}/Build-Info.sh" "$@"
                     ;;
                 install | ins*)
-                    RunsScript "${BinDir}/Build-Install.sh" "$@"
+                    RunScript "${BinDir}/Build-Install.sh" "$@"
                     ;;
                 all)
                     SCRIPT_RUN=true
