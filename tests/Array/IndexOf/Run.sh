@@ -2,4 +2,4 @@
 
 PMHQ=("Madoka" "Sayaka" "Homura" "Mami" "Kyouko")
 
-Array.IndexOf PMHQ
+Array.Eval PMHQ | Array.IndexOf "Homura"
