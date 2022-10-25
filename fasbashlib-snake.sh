@@ -28,8 +28,8 @@
 # shellcheck disable=all
 
 FSBLIB_LIBLIST+=("ArchLinux" "Array" "AwkForCalc" "BetterShell" "Cache" "Core" "Csv" "Emerge" "Esc" "Ini" "LibreTranslate" "Message" "Misskey" "Pacman" "ParseArg" "Progress" "Prompt" "Readlink" "Sqlite3" "SrcInfo" "URL")
-FSBLIB_FUNCLIST+=("em.get_all_pkg_list" "cache.exist" "msg.common" "fsblib.env_check" "esc.clear_left" "arch.get_kernel_file_list" "prog.bar" "srcinfo.format" "readlinkf" "array.append" "capture_special_keys" "add_new_to_array" "misskey.notes.create" "libretranslate.check" "readlinkf__posix" "parse_arg" "sqlite3.call" "pm.check_pkg" "ini.get_last_param" "url.authority" "choice" "csv.get_clm" "array_append" "em.get_default_repo_name" "awk.cos" "readlinkf__readlink" "cache.get" "msg.debug" "choice_loop" "fsblib.fsblib_env_check" "esc.clear_line" "array_includes" "arch.get_kernel_src_list" "prog.rotation" "select_menu" "srcinfo.get_key_list" "array_index" "array.from_str" "misskey.notes.renotes" "pm.get_config" "libretranslate.detect" "get_array_index" "sqlite3.connect" "url.fragment" "ini.get_param" "awk.float" "csv.get_clm_cnt" "em.get_installed_pkg_list" "esc.clear_line_and_return" "print_array" "cache.get_dir" "fsblib.require_lib" "prog.wide_bar" "arch.get_mkinitcpio_preset_list" "msg.err" "print_eval_array" "srcinfo.get_pkg_base" "array.pop" "misskey.notes.search" "pm.get_installed_pkg_ver" "libretranslate.languages" "awk.log" "ini.get_param_list" "rev_array" "sqlite3.create" "url.host" "csv.to_bash_array" "cache.get_file_last_update" "em.get_repo_conf" "esc.clear_right" "str_to_char_list" "msg.info" "srcinfo.get_pkg_name" "pm.get_keyring_list" "awk.pi" "libretranslate.translate" "array.push" "sqlite3.current_db" "ini.get_section_list" "url.no_scheme" "file_type" "cache.get_id" "em.get_repo_location" "esc.clear_screen" "misskey.users.get_frequently_replied_users" "msg.warn" "get_base_name" "srcinfo.get_section_list" "array.remove" "pm.get_latest_pkg_ver" "awk.print" "libretranslate.translate_auto" "sqlite3.delete" "ini.parse_line" "get_file_ext" "url.path" "remove_file_ext" "em.get_repo_pkg_list" "cache.get_time_diff_from_last_update" "misskey.users.notes" "esc.return" "srcinfo.get_value" "pm.get_name" "array.rev" "sqlite3.exist_field" "awk.rad" "check_func_defined" "url.path_and_query_and_fragment" "em.get_world_pkg_list" "misskey.users.pages" "for_each" "ini.new_param" "pm.get_pacman_kernel_pkg" "srcinfo.get_value_in_pkg_base" "get_line" "array.shift" "awk.sin" "sqlite3.exist_table" "cache.create" "is_available" "esc.get_term_x" "url.port" "misskey.users.search_by_username_and_host" "loop" "srcinfo.get_value_in_pkg_name" "ini.new_section" "pm.get_pacman_keyring_dir" "awk.tan" "em.no_version" "sqlite3.insert" "cache.create_dir" "esc.get_term_y" "url.query" "array.eval" "misskey.users.show" "pm.get_repo_conf" "break_char" "ini.set_value" "srcinfo.parse" "sqlite3.select" "cut_last_string" "get_last_split_string" "url.scheme" "esc.get_x" "misskey.users.stats" "pm.get_repo_list_from_conf" "array.last" "is_uu_id" "print_eval" "sqlite3.select_all" "esc.get_y" "random_string" "pm.get_repo_pkg_list" "array.print" "url.user" "remove_blank" "misskey.admin.server_info" "text_box" "esc.move_cursor" "pm.get_repo_server" "to_lower" "to_lower_stdin" "array.index_of" "url.has_authority" "pm.get_repo_ver" "esc.move_cursor_down" "calc_int" "misskey.setup" "array.last_index" "url.has_fragment" "ntest" "pm.get_root" "esc.move_cursor_left" "sum" "array.length" "url.has_port" "esc.move_cursor_right" "pm.is_repo_pkg" "misskey.i" "bool" "url.has_query" "esc.move_cursor_up" "pm.pacman_gpg" "misskey.meta" "array.for_each" "get_func_list" "url.has_user" "unset_all_func" "pm.run" "misskey.server_info" "array.includes" "esc.clear_upper_lines" "match" "remove_match_line" "pm.run_key" "url.parse" "to_args" "misskey.binding_base" "esc.black_background" "pm.get_db_next_section" "misskey.make_json" "url.get_query" "esc.black_text" "pm.get_db_section" "url.parse_query" "misskey.send_req" "esc.blink" "pm.get_db_section_list" "esc.blue_background" "misskey.is_admin" "esc.blue_text" "pm.create_db_tmp_dir" "misskey.my_id" "esc.bold" "pm.delete_db_tmp_dir" "misskey.my_name" "esc.conceal" "pm.get_db_tmp_dir" "misskey.my_user_name" "esc.crossed_out" "pm.get_pkg_arch" "esc.cyan_background" "pm.get_repo_list_from_local_db" "esc.cyan_text" "pm.get_sync_all_desc" "esc.green_background" "pm.get_sync_db_desc" "esc.green_text" "pm.get_sync_db_desc_path" "esc.italic" "pm.get_virtual_pkg_list" "esc.low_intensity" "pm.is_opend_sync_db" "esc.magenta_background" "pm.open_sync_db" "esc.magenta_text" "pm.opened_sync_db_list" "esc.rapid_blink" "pm.parse_pkg_file_name" "esc.red_background" "esc.red_text" "esc.reset_style" "esc.reverse" "esc.underline" "esc.white_background" "esc.white_text" "esc.yellow_background" "esc.yellow_text")
-declare -r FSBLIB_VERSION='v0.2.6.r445.g4dff004-snake'
+FSBLIB_FUNCLIST+=("csv.get_clm" "esc.clear_left" "arch.get_kernel_file_list" "misskey.notes.create" "readlinkf" "libretranslate.check" "ini.get_last_param" "parse_arg" "em.get_all_pkg_list" "readlinkf__posix" "sqlite3.call" "prog.bar" "fsblib.env_check" "readlinkf__readlink" "libretranslate.detect" "esc.clear_line" "csv.get_clm_cnt" "add_new_to_array" "srcinfo.format" "arch.get_kernel_src_list" "cache.exist" "ini.get_param" "pm.check_pkg" "capture_special_keys" "misskey.notes.renotes" "array_append" "em.get_default_repo_name" "msg.common" "url.authority" "awk.cos" "array.append" "fsblib.fsblib_env_check" "sqlite3.connect" "array_includes" "check_menu" "prog.rotation" "srcinfo.get_key_list" "csv.to_bash_array" "esc.clear_line_and_return" "libretranslate.languages" "choice" "array_index" "arch.get_mkinitcpio_preset_list" "awk.float" "cache.get" "choice_loop" "ini.get_param_list" "get_array_index" "pm.get_config" "misskey.notes.search" "em.get_installed_pkg_list" "array.from_str" "msg.debug" "url.fragment" "fsblib.require_lib" "select_menu" "sqlite3.create" "print_array" "prog.wide_bar" "esc.clear_right" "srcinfo.get_pkg_base" "libretranslate.translate" "print_eval_array" "ini.get_section_list" "awk.log" "pm.get_installed_pkg_ver" "rev_array" "em.get_repo_conf" "msg.err" "cache.get_dir" "array.pop" "sqlite3.current_db" "url.host" "str_to_char_list" "esc.clear_screen" "srcinfo.get_pkg_name" "libretranslate.translate_auto" "misskey.users.get_frequently_replied_users" "pm.get_keyring_list" "ini.parse_line" "awk.pi" "cache.get_file_last_update" "url.no_scheme" "array.push" "em.get_repo_location" "msg.info" "sqlite3.delete" "file_type" "misskey.users.notes" "esc.return" "srcinfo.get_section_list" "get_base_name" "pm.get_latest_pkg_ver" "em.get_repo_pkg_list" "get_file_ext" "awk.print" "msg.warn" "sqlite3.exist_field" "url.path" "array.remove" "cache.get_id" "remove_file_ext" "ini.new_param" "misskey.users.pages" "em.get_world_pkg_list" "srcinfo.get_value" "pm.get_name" "sqlite3.exist_table" "cache.get_time_diff_from_last_update" "array.rev" "esc.get_term_x" "awk.rad" "url.path_and_query_and_fragment" "ini.new_section" "check_func_defined" "misskey.users.search_by_username_and_host" "srcinfo.get_value_in_pkg_base" "for_each" "pm.get_pacman_kernel_pkg" "array.shift" "get_line" "esc.get_term_y" "sqlite3.insert" "srcinfo.get_value_in_pkg_name" "ini.set_value" "awk.sin" "url.port" "is_available" "misskey.users.show" "cache.create" "loop" "em.no_version" "sqlite3.select" "break_char" "cut_last_string" "get_last_split_string" "esc.get_x" "misskey.users.stats" "is_uu_id" "srcinfo.parse" "cache.create_dir" "url.query" "print_eval" "sqlite3.select_all" "awk.tan" "pm.get_pacman_keyring_dir" "random_string" "esc.get_y" "array.eval" "remove_blank" "url.scheme" "text_box" "pm.get_repo_conf" "to_lower" "esc.move_cursor" "array.last" "misskey.admin.server_info" "to_lower_stdin" "url.user" "pm.get_repo_list_from_conf" "calc_int" "esc.move_cursor_down" "array.print" "ntest" "sum" "pm.get_repo_pkg_list" "esc.move_cursor_left" "misskey.setup" "url.has_authority" "bool" "pm.get_repo_server" "esc.move_cursor_right" "array.index_of" "url.has_fragment" "get_func_list" "misskey.i" "esc.move_cursor_up" "pm.get_repo_ver" "unset_all_func" "array.last_index" "url.has_port" "misskey.meta" "match" "pm.get_root" "array.length" "remove_match_line" "url.has_query" "esc.clear_upper_lines" "to_args" "misskey.server_info" "pm.is_repo_pkg" "url.has_user" "array.for_each" "pm.pacman_gpg" "misskey.binding_base" "esc.black_background" "array.include" "pm.run" "url.parse" "array.includes" "esc.black_text" "misskey.make_json" "pm.run_key" "esc.blink" "misskey.send_req" "url.get_query" "esc.blue_background" "pm.get_db_next_section" "misskey.is_admin" "url.parse_query" "esc.blue_text" "misskey.my_id" "pm.get_db_section" "esc.bold" "misskey.my_name" "pm.get_db_section_list" "esc.conceal" "misskey.my_user_name" "esc.crossed_out" "pm.create_db_tmp_dir" "esc.cyan_background" "pm.delete_db_tmp_dir" "esc.cyan_text" "pm.get_db_tmp_dir" "esc.green_background" "pm.get_pkg_arch" "esc.green_text" "pm.get_repo_list_from_local_db" "esc.italic" "pm.get_sync_all_desc" "esc.low_intensity" "pm.get_sync_db_desc" "esc.magenta_background" "esc.magenta_text" "pm.get_sync_db_desc_path" "esc.rapid_blink" "pm.get_virtual_pkg_list" "esc.red_background" "pm.is_opend_sync_db" "pm.open_sync_db" "esc.red_text" "pm.opened_sync_db_list" "esc.reset_style" "pm.parse_pkg_file_name" "esc.reverse" "esc.underline" "esc.white_background" "esc.white_text" "esc.yellow_background" "esc.yellow_text")
+declare -r FSBLIB_VERSION='v0.2.6.r453.g306d487-snake'
 declare -r FSBLIB_REQUIRE='ModernBash'
 declare -r FSBLIB_PROG_PIDFILEPATH='FSBLIB_PROGRESS_PIDLIST'
 
@@ -203,6 +203,9 @@ capture_special_keys() {
 		'')
 			echo "Backspace"
 			;;
+		' ')
+			echo "Space"
+			;;
 		*)
 			read -i "$SELECTION" -e -r rest
 			echo "$rest"
@@ -224,6 +227,77 @@ capture_special_keys() {
 		echo "Left"
 		;;
 	esac
+}
+check_menu() {
+	local arg OPTARG OPTIND
+	local choices=() CurrentSelected=() Key="" Currentchoice=0
+	local _question="" _number=false _selected=()
+	while getopts "s:p:n" arg; do
+		case "${arg}" in
+		s)
+			_selected+=("${OPTARG}")
+			;;
+		p)
+			_question="${OPTARG}"
+			;;
+		n)
+			_number=true
+			;;
+		*)
+			exit 1
+			;;
+		esac
+	done
+	shift "$((OPTIND - 1))" || return 1
+	choices=("$@")
+	[[ ${#choices[@]} -eq 0 ]] && return 1
+	for i in "${!_selected[@]}"; do
+		if array.include choices "${choices[$i]}"; then
+			CurrentSelected+=("$i")
+		fi
+	done
+	if [[ -n $_question ]]; then
+		echo "$_question" 1>&2
+	fi
+	while [[ $Key != "Enter" ]]; do
+		for i in "${!choices[@]}"; do
+			[[ $i == "$Currentchoice" ]] && {
+				esc.bold && esc.underline
+			}
+			if [[ ${CurrentSelected[*]} =~ $i ]]; then
+				echo " [X] $i: ${choices[$i]}"
+			else
+				echo " [ ] $i: ${choices[$i]}"
+			fi
+			esc.reset_style
+		done
+		Key="$(capture_special_keys)"
+		case "$Key" in
+		Up)
+			(("$Currentchoice" != 0)) && Currentchoice=$((Currentchoice - 1))
+			;;
+		Down)
+			(("$Currentchoice" != "${#choices[@]}" - 1)) && Currentchoice=$((Currentchoice + 1))
+			;;
+		Space)
+			if array.include CurrentSelected "$Currentchoice"; then
+				array.remove CurrentSelected "$Currentchoice"
+			else
+				CurrentSelected+=("$Currentchoice")
+			fi
+			;;
+		esac
+		esc.clear_upper_lines "${#choices[@]}"
+	done
+	if [[ -n $_question ]]; then
+		esc.clear_upper_lines 1
+	fi
+	if [[ $_number == true ]]; then
+		array.eval CurrentSelected
+	else
+		Array.for_each CurrentSelected eval 'echo ${choices[{}]}'
+	fi
+	return 0
 }
 choice() {
 	local arg OPTARG OPTIND
@@ -290,11 +364,37 @@ choiceloop() {
 	done
 }
 select_menu() {
-	local choices=("$@") Currentchoice=0 Key=""
+	local arg OPTARG OPTIND
+	local choices=() Currentchoice=0 Key=""
+	local _question="" _default="" _number=false
+	while getopts "ad:p:n" arg; do
+		case "${arg}" in
+		d)
+			_default="${OPTARG}"
+			;;
+		p)
+			_question="${OPTARG}"
+			;;
+		n)
+			_number=true
+			;;
+		*)
+			exit 1
+			;;
+		esac
+	done
+	shift "$((OPTIND - 1))" || return 1
+	choices=("$@")
 	[[ ${#choices[@]} -eq 0 ]] && return 1
 	[[ ${#choices[@]} -eq 1 ]] && {
 		echo "${choices[0]}" && return 0
 	}
+	if [[ -n $_default ]] && array.include choices "$_default"; then
+		Currentchoice="$(array.eval choices | array.index_of "$_default")"
+	fi
+	if [[ -n $_question ]]; then
+		echo "$_question" 1>&2
+	fi
 	while [[ $Key != "Enter" ]]; do
 		for i in "${!choices[@]}"; do
 			if [[ $i == "$Currentchoice" ]]; then
@@ -316,59 +416,15 @@ select_menu() {
 		esac
 		esc.clear_upper_lines "${#choices[@]}"
 	done
-	echo "${choices[$Currentchoice]}"
-}
-fsblib.env_check() {
-	case "$FSBLIB_REQUIRE" in
-	"Any")
-		return 0
-		;;
-	"ModernShell")
-		[ "$(echo "$BASH_VERSION" | cut -d "." -f 1)" = "5" ] && return 0
-		;;
-	esac
-	return 1
-}
-fsblib.fsblib_env_check() {
-	fsblib.env_check
-}
-fsblib.require_lib() {
-	local lib missing=() return=0
-	for lib in "$@"; do
-		if ! [[ ${FSBLIB_LIBLIST[*]} == *" $lib "* ]]; then
-			missing+=("$lib")
-			return=1
-		fi
-	done
-	return "$return"
-}
-prog.bar() {
-	local Max="$1" Counter="$2" Size="${3-"100"}"
-	local SharpCount=$((Counter * Size / Max))
-	local SpaceCount=$((Size - SharpCount))
-	esc.return
-	echo -n "$Counter/$Max [$(yes "#" | head -n "$SharpCount" 2>/dev/null | tr -d "\n")$(yes " " | head -n "$SpaceCount" 2>/dev/null | tr -d "\n")]"
-}
-prog.rotation() {
-	local Count="$1" CharList=('|' '/' '-' '\')
-	esc.clear_lineAndReturn
-	[[ -n ${2-""} ]] && echo -n "${2}" 1>&2
-	printf "%s" "${CharList["$((Count % "${#CharList[@]}"))"]}" 1>&2
-}
-prog.wide_bar() {
-	local Max="$1" Counter="$2"
-	local StatusString="$Counter/$Max"
-	local Size=$(($(esc.get_term_x) - ${#StatusString} - 3))
-	prog.bar "$Max" "$Counter" "$Size"
-}
-arch.get_kernel_file_list() {
-	find "/boot" -maxdepth 1 -mindepth 1 -name "vmlinuz-*"
-}
-arch.get_kernel_src_list() {
-	find "/usr/src" -mindepth 1 -maxdepth 1 -type l -name "linux*"
-}
-arch.get_mkinitcpio_preset_list() {
-	find "/etc/mkinitcpio.d/" -name "*.preset" -type f | get_base_name | remove_file_ext
+	if [[ -n $_question ]]; then
+		esc.clear_upper_lines 1
+	fi
+	if [[ $_number == true ]]; then
+		echo "$Currentchoice"
+	else
+		echo "${choices[$Currentchoice]}"
+	fi
+	return 0
 }
 csv.get_clm() {
 	grep -v "^#" | sed "/^$/d" | cut -d "${CSVDELIM-","}" -f "$1"
@@ -400,40 +456,57 @@ csv.to_bash_array() {
 		)
 	done < <(seq 1 "$#")
 }
-msg.common() {
-	local i l="$1" string="$2" out="${3-""}"
-	shift 2 || return 1
-	{
-		[[ -z ${out-""} ]] && {
-			[[ ${l^^} == *"ERR"* ]] || [[ ${l^^} == *"WARN"* ]] || [[ ${l^^} == *"DEBUG"* ]]
-		}
-	} && out="stderr"
-	case "${FSBLIB_MSG-"${out:-"stdout"}"}" in
-	"stdout")
-		for i in $(seq "$(echo -e "${string}" | wc -l)"); do
-			echo -n "$l "
-			echo -e "${string}" | head -n "${i}" | tail -n 1
-		done
+fsblib.env_check() {
+	case "$FSBLIB_REQUIRE" in
+	"Any")
+		return 0
 		;;
-	"stderr")
-		for i in $(seq "$(echo -e "${string}" | wc -l)"); do
-			echo -n "$l " 1>&2
-			echo -e "${string}" | head -n "${i}" | tail -n 1 1>&2
-		done
+	"ModernShell")
+		[ "$(echo "$BASH_VERSION" | cut -d "." -f 1)" = "5" ] && return 0
 		;;
 	esac
+	return 1
 }
-msg.debug() {
-	msg.common "Debug:" "${*}" stderr
+fsblib.fsblib_env_check() {
+	fsblib.env_check
 }
-msg.err() {
-	msg.common "Error:" "${*}" stderr
+fsblib.require_lib() {
+	local lib missing=() return=0
+	for lib in "$@"; do
+		if ! [[ ${FSBLIB_LIBLIST[*]} == *" $lib "* ]]; then
+			missing+=("$lib")
+			return=1
+		fi
+	done
+	return "$return"
 }
-msg.info() {
-	msg.common " Info:" "${*}" stdout
+arch.get_kernel_file_list() {
+	find "/boot" -maxdepth 1 -mindepth 1 -name "vmlinuz-*"
 }
-msg.warn() {
-	msg.common " Warn:" "${*}" stderr
+arch.get_kernel_src_list() {
+	find "/usr/src" -mindepth 1 -maxdepth 1 -type l -name "linux*"
+}
+arch.get_mkinitcpio_preset_list() {
+	find "/etc/mkinitcpio.d/" -name "*.preset" -type f | get_base_name | remove_file_ext
+}
+prog.bar() {
+	local Max="$1" Counter="$2" Size="${3-"100"}"
+	local SharpCount=$((Counter * Size / Max))
+	local SpaceCount=$((Size - SharpCount))
+	esc.return
+	echo -n "$Counter/$Max [$(yes "#" | head -n "$SharpCount" 2>/dev/null | tr -d "\n")$(yes " " | head -n "$SpaceCount" 2>/dev/null | tr -d "\n")]"
+}
+prog.rotation() {
+	local Count="$1" CharList=('|' '/' '-' '\')
+	esc.clear_lineAndReturn
+	[[ -n ${2-""} ]] && echo -n "${2}" 1>&2
+	printf "%s" "${CharList["$((Count % "${#CharList[@]}"))"]}" 1>&2
+}
+prog.wide_bar() {
+	local Max="$1" Counter="$2"
+	local StatusString="$Counter/$Max"
+	local Size=$(($(esc.get_term_x) - ${#StatusString} - 3))
+	prog.bar "$Max" "$Counter" "$Size"
 }
 libretranslate.check() {
 	export LIBRETRANSLATE_URL="${LIBRETRANSLATE_URL:-""}"
@@ -486,107 +559,40 @@ libretranslate.translate_auto() {
 	libretranslate.check || return 2
 	libretranslate.translate "${1:-""}" "$(libretranslate.detect "${1:-""}")" "${2:-""}"
 }
-awk.cos() {
-	awk.float "cos($*)"
-}
-awk.float() {
-	awk "BEGIN {printf (\"%4.${AWKSCALE-"5"}f\n\", $*)}"
-}
-awk.log() {
-	awk.float "log(${2}) / log($1)"
-}
-awk.pi() {
-	awk.float "atan2(0, -0)"
-}
-awk.print() {
-	awk "BEGIN {print $*}"
-}
-awk.rad() {
-	awk.float "$1 * $(awk.pi) / 180 "
-}
-awk.sin() {
-	awk.float "sin($*)"
-}
-awk.tan() {
-	awk.float "sin($1)/tan($1)"
-}
-em.get_all_pkg_list() {
-	em.get_repo_conf | sed -e 's/^ *//' -e 's/ *$//' | grep "^ *location *=" | sed -e 's/^location *= *//' | xargs -L1 realpath | xargs -I{} bash -c "find '{}' -mindepth 3 -maxdepth 3 -type f -name '*.ebuild' | sed -e 's|{}/||g' -e 's|.ebuild$||g'" | awk -F "/" '{print $1"/"$3}'
-}
-em.get_default_repo_name() {
-	em.get_repo_conf | ini.get_param DEFAULT main-repo
-}
-em.get_installed_pkg_list() {
-	find /var/db/pkg/ -mindepth 2 -maxdepth 2 -type d | sed 's|/var/db/pkg/||g'
-}
-em.get_repo_conf() {
-	cat /etc/portage/repos.conf /etc/portage/repos.conf/* 2>/dev/null
-}
-em.get_repo_location() {
-	em.get_repo_conf | ini.get_param "$1" location
-}
-em.get_repo_pkg_list() {
-	local _RepoPath
-	_RepoPath="$(em.get_repo_location "$1")"
-	find "$_RepoPath" -mindepth 3 -maxdepth 3 -type f -name '*.ebuild' | sed -e "s|${_RepoPath%/}/||g" -e 's|.ebuild$||g' | awk -F "/" '{print $1"/"$3}'
-}
-em.get_world_pkg_list() {
-	sed -E 's|:.+$||g' /var/lib/portage/world | xargs -I{} bash -c 'ls -d /var/db/pkg/{}-* | sed "s|/var/db/pkg/||g" | grep -E "{}-[0-9]"'
-}
-em.no_version() {
-	sed -E 's|\-[0-9]+.+||g'
-}
-cache.exist() {
-	local _File
-	_File="$(cache.create_dir)/$1"
-	[[ -e $_File ]] || return 1
-	(("$(cache.get_time_diff_from_last_update "$_File")" > "${KEEPCACHESEC-"86400"}")) && return 2
-	return 0
-}
-cache.get() {
-	cat "$(cache.get_dir)/$1" 2>/dev/null || return 1
-}
-cache.get_dir() {
-	echo "${TMPDIR-"/tmp"}/$(cache.get_id)"
-}
-cache.get_file_last_update() {
-	local _isGnu=false
-	date --help 2>/dev/null | grep -q "GNU" && _isGnu=true
-	if [[ $_isGnu == true ]]; then
-		date +%s -r "$1"
-	else
-		{
-			eval "$(stat -s "$1")"
-			echo "$st_mtime"
+msg.common() {
+	local i l="$1" string="$2" out="${3-""}"
+	shift 2 || return 1
+	{
+		[[ -z ${out-""} ]] && {
+			[[ ${l^^} == *"ERR"* ]] || [[ ${l^^} == *"WARN"* ]] || [[ ${l^^} == *"DEBUG"* ]]
 		}
-	fi
+	} && out="stderr"
+	case "${FSBLIB_MSG-"${out:-"stdout"}"}" in
+	"stdout")
+		for i in $(seq "$(echo -e "${string}" | wc -l)"); do
+			echo -n "$l "
+			echo -e "${string}" | head -n "${i}" | tail -n 1
+		done
+		;;
+	"stderr")
+		for i in $(seq "$(echo -e "${string}" | wc -l)"); do
+			echo -n "$l " 1>&2
+			echo -e "${string}" | head -n "${i}" | tail -n 1 1>&2
+		done
+		;;
+	esac
 }
-cache.get_id() {
-	if [[ -z ${FSBLIB_CACHEID-""} ]]; then
-		cache.create_dir >/dev/null
-	fi
-	echo "$FSBLIB_CACHEID"
+msg.debug() {
+	msg.common "Debug:" "${*}" stderr
 }
-cache.get_time_diff_from_last_update() {
-	local _Now _Last
-	_Now="$(date "+%s")"
-	_Last="$(cache.get_file_last_update "$1")"
-	echo "$((_Now - _Last))"
-	return 0
+msg.err() {
+	msg.common "Error:" "${*}" stderr
 }
-cache.create() {
-	cache.create_dir >/dev/null
-	cat >"$(cache.get_dir)/${1}"
-	cat "$(cache.get_dir)/$1"
+msg.info() {
+	msg.common " Info:" "${*}" stdout
 }
-cache.create_dir() {
-	FSBLIB_CACHEID="${FSBLIB_CACHEID-"$(random_string "10")"}"
-	export FSBLIB_CACHEID="$FSBLIB_CACHEID"
-	local TMPDIR="${TMPDIR-"/tmp"}"
-	local _Dir="$TMPDIR/${FSBLIB_CACHEID}"
-	mkdir -p "$_Dir"
-	echo "$_Dir"
-	return 0
+msg.warn() {
+	msg.common " Warn:" "${*}" stderr
 }
 ini.get_last_param() {
 	ini.get_param_list "$1" | tail -n 1
@@ -758,6 +764,108 @@ ini.set_value() {
 	readarray -t IniContents
 	readarray -t IniContents < <(print_array "${IniContents[@]}" | ini.new_section "$Section" | ini.new_param "$Section" "$Param")
 	print_eval_array IniContents
+}
+cache.exist() {
+	local _File
+	_File="$(cache.create_dir)/$1"
+	[[ -e $_File ]] || return 1
+	(("$(cache.get_time_diff_from_last_update "$_File")" > "${KEEPCACHESEC-"86400"}")) && return 2
+	return 0
+}
+cache.get() {
+	cat "$(cache.get_dir)/$1" 2>/dev/null || return 1
+}
+cache.get_dir() {
+	echo "${TMPDIR-"/tmp"}/$(cache.get_id)"
+}
+cache.get_file_last_update() {
+	local _isGnu=false
+	date --help 2>/dev/null | grep -q "GNU" && _isGnu=true
+	if [[ $_isGnu == true ]]; then
+		date +%s -r "$1"
+	else
+		{
+			eval "$(stat -s "$1")"
+			echo "$st_mtime"
+		}
+	fi
+}
+cache.get_id() {
+	if [[ -z ${FSBLIB_CACHEID-""} ]]; then
+		cache.create_dir >/dev/null
+	fi
+	echo "$FSBLIB_CACHEID"
+}
+cache.get_time_diff_from_last_update() {
+	local _Now _Last
+	_Now="$(date "+%s")"
+	_Last="$(cache.get_file_last_update "$1")"
+	echo "$((_Now - _Last))"
+	return 0
+}
+cache.create() {
+	cache.create_dir >/dev/null
+	cat >"$(cache.get_dir)/${1}"
+	cat "$(cache.get_dir)/$1"
+}
+cache.create_dir() {
+	FSBLIB_CACHEID="${FSBLIB_CACHEID-"$(random_string "10")"}"
+	export FSBLIB_CACHEID="$FSBLIB_CACHEID"
+	local TMPDIR="${TMPDIR-"/tmp"}"
+	local _Dir="$TMPDIR/${FSBLIB_CACHEID}"
+	mkdir -p "$_Dir"
+	echo "$_Dir"
+	return 0
+}
+em.get_all_pkg_list() {
+	em.get_repo_conf | sed -e 's/^ *//' -e 's/ *$//' | grep "^ *location *=" | sed -e 's/^location *= *//' | xargs -L1 realpath | xargs -I{} bash -c "find '{}' -mindepth 3 -maxdepth 3 -type f -name '*.ebuild' | sed -e 's|{}/||g' -e 's|.ebuild$||g'" | awk -F "/" '{print $1"/"$3}'
+}
+em.get_default_repo_name() {
+	em.get_repo_conf | ini.get_param DEFAULT main-repo
+}
+em.get_installed_pkg_list() {
+	find /var/db/pkg/ -mindepth 2 -maxdepth 2 -type d | sed 's|/var/db/pkg/||g'
+}
+em.get_repo_conf() {
+	cat /etc/portage/repos.conf /etc/portage/repos.conf/* 2>/dev/null
+}
+em.get_repo_location() {
+	em.get_repo_conf | ini.get_param "$1" location
+}
+em.get_repo_pkg_list() {
+	local _RepoPath
+	_RepoPath="$(em.get_repo_location "$1")"
+	find "$_RepoPath" -mindepth 3 -maxdepth 3 -type f -name '*.ebuild' | sed -e "s|${_RepoPath%/}/||g" -e 's|.ebuild$||g' | awk -F "/" '{print $1"/"$3}'
+}
+em.get_world_pkg_list() {
+	sed -E 's|:.+$||g' /var/lib/portage/world | xargs -I{} bash -c 'ls -d /var/db/pkg/{}-* | sed "s|/var/db/pkg/||g" | grep -E "{}-[0-9]"'
+}
+em.no_version() {
+	sed -E 's|\-[0-9]+.+||g'
+}
+awk.cos() {
+	awk.float "cos($*)"
+}
+awk.float() {
+	awk "BEGIN {printf (\"%4.${AWKSCALE-"5"}f\n\", $*)}"
+}
+awk.log() {
+	awk.float "log(${2}) / log($1)"
+}
+awk.pi() {
+	awk.float "atan2(0, -0)"
+}
+awk.print() {
+	awk "BEGIN {print $*}"
+}
+awk.rad() {
+	awk.float "$1 * $(awk.pi) / 180 "
+}
+awk.sin() {
+	awk.float "sin($*)"
+}
+awk.tan() {
+	awk.float "sin($1)/tan($1)"
 }
 srcinfo.format() {
 	remove_blank | sed "/^$/d" | grep -v "^#" | for_each eval 'srcinfo.parse Line <<< "{}"'
@@ -1202,6 +1310,9 @@ array.length() {
 }
 array.for_each() {
 	print_eval_array "$1" | for_each "${@:2}"
+}
+array.include() {
+	array.includes "$@"
 }
 array.includes() {
 	print_eval_array "$1" | grep -qx "$2"
