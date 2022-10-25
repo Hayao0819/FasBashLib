@@ -5,6 +5,10 @@ Includes(){
     PrintEvalArray "$1" | grep -qx "$2"
 }
 
+Include(){
+    @Includes "$@"
+}
+
 
 # Array.ForEach namelist echo "{}"
 ForEach(){
