@@ -163,10 +163,10 @@ SelectMenu(){
         for i in "${!Choices[@]}"; do
             if [[ "$i" = "$CurrentChoice" ]]; then
                 Esc.Bold && Esc.Underline
-                echo " > $i: ${Choices[$i]}"
+                echo " > $i: ${Choices[$i]}" >&2
             else
                 #Esc.LowIntensity
-                echo "   $i: ${Choices[$i]}"
+                echo "   $i: ${Choices[$i]}" >&2
             fi
             Esc.ResetStyle
         done
@@ -242,9 +242,9 @@ CheckMenu(){
             [[ "$i" = "$CurrentChoice" ]] && { Esc.Bold && Esc.Underline; }
             #if Array.Include CurrentSelected "$i"; then
             if [[ "${CurrentSelected[*]}" =~ $i ]]; then
-                echo " [X] $i: ${Choices[$i]}"
+                echo " [X] $i: ${Choices[$i]}" >&2
             else
-                echo " [ ] $i: ${Choices[$i]}"
+                echo " [ ] $i: ${Choices[$i]}" >&2
             fi
             Esc.ResetStyle
         done
