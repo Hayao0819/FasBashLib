@@ -1,26 +1,21 @@
 #!/bin/sh
 
 ClearScreen(){
-    printf "\033[2J"
+    printf "\033[2J" > /dev/tty
 }
 
 ClearRight(){
-    printf "\033[0K"
+    printf "\033[0K" > /dev/tty
 }
 
 ClearLeft(){
-    printf "\033[1K"
+    printf "\033[1K" > /dev/tty
 }
 
 ClearLine(){
-    printf "\033[2K"
+    printf "\033[2K" > /dev/tty
 }
 
 Return(){
-    printf "\r"
-}
-
-ClearLineAndReturn(){
-    @ClearLine
-    @Return
+    printf "\r" > /dev/tty
 }

@@ -1,19 +1,19 @@
 #!/usr/bin/env bash
 
 MoveCursor(){
-    printf "\033[%d;%dH" "$1" "$2"
+    printf "\033[%d;%dH" "$1" "$2" > /dev/tty
 }
 MoveCursorUp(){
-    printf "\033[%dA" "$1"
+    printf "\033[%dA" "$1" > /dev/tty
 }
 MoveCursorDown(){
-    printf "\033[%dB" "$1"
+    printf "\033[%dB" "$1" > /dev/tty
 }
 MoveCursorRight(){
-    printf "\033[%dC" "$1"
+    printf "\033[%dC" "$1" > /dev/tty
 }
 MoveCursorLeft(){
-    printf "\033[%dD" "$1"
+    printf "\033[%dD" "$1" > /dev/tty
 }
 GetX(){
     local _POS

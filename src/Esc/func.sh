@@ -7,3 +7,8 @@ ClearUpperLines(){
         @ClearLine
     done
 }
+
+ClearLineAndReturn(){
+    @ClearLine
+    @Return
+}
