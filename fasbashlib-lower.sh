@@ -28,8 +28,8 @@
 # shellcheck disable=all
 
 FSBLIB_LIBLIST+=("ArchLinux" "Array" "AwkForCalc" "BetterShell" "Cache" "Core" "Csv" "Emerge" "Esc" "Ini" "LibreTranslate" "Message" "Misskey" "Pacman" "ParseArg" "Progress" "Prompt" "Readlink" "Sqlite3" "SrcInfo" "URL")
-FSBLIB_FUNCLIST+=("Arch.getKernelFileList" "Prog.bar" "Cache.exist" "Fsblib.envCheck" "LibreTranslate.check" "Sqlite3.call" "Pm.checkPkg" "captureSpecialKeys" "Awk.cos" "Misskey.notes.Create" "Prog.rotation" "Arch.getKernelSrcList" "readlinkf" "parseArg" "Ini.getLastParam" "SrcInfo.format" "Msg.common" "Esc.clearLeft" "Array.append" "URL.authority" "Cache.get" "checkMenu" "Csv.getClm" "readlinkf_Posix" "Fsblib.fsblibEnvCheck" "addNewToArray" "Sqlite3.connect" "Pm.getConfig" "choice" "Awk.float" "readlinkf_Readlink" "Prog.wideBar" "LibreTranslate.detect" "Arch.getMkinitcpioPresetList" "Misskey.notes.Renotes" "arrayAppend" "Ini.getParam" "Em.getAllPkgList" "Esc.clearLine" "choiceLoop" "Array.fromStr" "Cache.getDir" "SrcInfo.getKeyList" "Msg.debug" "URL.fragment" "Csv.getClmCnt" "arrayIncludes" "Fsblib.requireLib" "selectMenu" "Pm.getInstalledPkgVer" "Awk.log" "Sqlite3.create" "arrayIndex" "LibreTranslate.languages" "Misskey.notes.Search" "Em.getDefaultRepoName" "SrcInfo.getPkgBase" "Ini.getParamList" "Esc.clearLineAndReturn" "Csv.toBashArray" "Msg.err" "Cache.getFileLastUpdate" "Array.pop" "URL.host" "getArrayIndex" "Sqlite3.currentDb" "Pm.getKeyringList" "Awk.pi" "printArray" "Ini.getSectionList" "Esc.clearRight" "LibreTranslate.translate" "SrcInfo.getPkgName" "Msg.info" "Array.push" "Em.getInstalledPkgList" "Cache.getID" "printEvalArray" "URL.noScheme" "Pm.getLatestPkgVer" "Sqlite3.delete" "Esc.clearScreen" "Awk.print" "revArray" "LibreTranslate.translateAuto" "Ini.parseLine" "Msg.warn" "Misskey.users.GetFrequentlyRepliedUsers" "SrcInfo.getSectionList" "Array.remove" "Cache.getTimeDiffFromLastUpdate" "Em.getRepoConf" "strToCharList" "URL.path" "Pm.getName" "Sqlite3.existField" "Awk.rad" "Esc.return" "Misskey.users.Notes" "SrcInfo.getValue" "Em.getRepoLocation" "Array.rev" "Pm.getPacmanKernelPkg" "URL.pathAndQueryAndFragment" "fileType" "Sqlite3.existTable" "Ini.newParam" "Awk.sin" "Misskey.users.Pages" "SrcInfo.getValueInPkgBase" "getBaseName" "Em.getRepoPkgList" "Cache.create" "Array.shift" "Pm.getPacmanKeyringDir" "Misskey.users.SearchByUsernameAndHost" "getFileExt" "Sqlite3.insert" "URL.port" "Ini.newSection" "Awk.tan" "removeFileExt" "SrcInfo.getValueInPkgName" "Esc.getTermX" "Em.getWorldPkgList" "Cache.createDir" "Pm.getRepoConf" "Ini.setValue" "Misskey.users.Show" "Sqlite3.select" "URL.query" "SrcInfo.parse" "Array.eval" "Esc.getTermY" "Pm.getRepoListFromConf" "checkFuncDefined" "forEach" "Sqlite3.selectAll" "Misskey.users.Stats" "URL.scheme" "Em.noVersion" "getLine" "Pm.getRepoPkgList" "Array.last" "Esc.getX" "isAvailable" "URL.user" "loop" "Array.print" "Pm.getRepoServer" "Esc.getY" "Misskey.admin.ServerInfo" "Esc.moveCursor" "Pm.getRepoVer" "breakChar" "URL.hasAuthority" "cutLastString" "Array.indexOf" "Pm.getRoot" "Esc.moveCursorDown" "getLastSplitString" "isUUID" "Array.lastIndex" "URL.hasFragment" "Pm.isRepoPkg" "Misskey.setup" "printEval" "Esc.moveCursorLeft" "randomString" "URL.hasPort" "Array.length" "Pm.pacmanGpg" "removeBlank" "textBox" "Esc.moveCursorRight" "Pm.run" "toLower" "Misskey.i" "URL.hasQuery" "Array.forEach" "toLowerStdin" "Esc.moveCursorUp" "Pm.runKey" "Misskey.meta" "URL.hasUser" "Array.include" "calcInt" "Misskey.serverInfo" "ntest" "Array.includes" "Pm.getDbNextSection" "Esc.clearUpperLines" "sum" "URL.parse" "Pm.getDbSection" "bool" "Misskey.bindingBase" "Esc.blackBackground" "Pm.getDbSectionList" "URL.getQuery" "Misskey.makeJson" "getFuncList" "Esc.blackText" "URL.parseQuery" "unsetAllFunc" "Misskey.sendReq" "Pm.createDbTmpDir" "Esc.blink" "match" "Esc.blueBackground" "Pm.deleteDbTmpDir" "removeMatchLine" "toArgs" "Misskey.isAdmin" "Esc.blueText" "Pm.getDbTmpDir" "Misskey.myId" "Esc.bold" "Pm.getPkgArch" "Misskey.myName" "Esc.conceal" "Pm.getRepoListFromLocalDb" "Esc.crossedOut" "Misskey.myUserName" "Pm.getSyncAllDesc" "Esc.cyanBackground" "Pm.getSyncDbDesc" "Esc.cyanText" "Pm.getSyncDbDescPath" "Esc.greenBackground" "Pm.getVirtualPkgList" "Pm.isOpendSyncDb" "Esc.greenText" "Pm.openSyncDb" "Esc.italic" "Pm.openedSyncDbList" "Esc.lowIntensity" "Pm.parsePkgFileName" "Esc.magentaBackground" "Esc.magentaText" "Esc.rapidBlink" "Esc.redBackground" "Esc.redText" "Esc.resetStyle" "Esc.reverse" "Esc.underline" "Esc.whiteBackground" "Esc.whiteText" "Esc.yellowBackground" "Esc.yellowText")
-declare -r FSBLIB_VERSION='v0.2.7.r409.g4dbfe23-lower'
+FSBLIB_FUNCLIST+=("LibreTranslate.check" "addNewToArray" "Ini.getLastParam" "captureSpecialKeys" "Cache.exist" "Misskey.notes.Create" "Em.getAllPkgList" "Sqlite3.call" "Prog.bar" "Pm.checkPkg" "Fsblib.envCheck" "Array.append" "arrayAppend" "parseArg" "readlinkf" "Msg.common" "Ini.getParam" "Awk.cos" "URL.authority" "Arch.getKernelFileList" "checkMenu" "arrayIncludes" "readlinkf_Posix" "LibreTranslate.detect" "choice" "Misskey.notes.Renotes" "Csv.getClm" "Prog.rotation" "SrcInfo.format" "readlinkf_Readlink" "arrayIndex" "Pm.getConfig" "Cache.get" "Fsblib.fsblibEnvCheck" "Array.fromStr" "Awk.float" "Em.getDefaultRepoName" "Sqlite3.connect" "choiceLoop" "Arch.getKernelSrcList" "URL.fragment" "Ini.getParamList" "Msg.debug" "Esc.clearLeft" "getArrayIndex" "LibreTranslate.languages" "selectMenu" "printArray" "Prog.wideBar" "Csv.getClmCnt" "Misskey.notes.Search" "SrcInfo.getKeyList" "Fsblib.requireLib" "Pm.getInstalledPkgVer" "Em.getInstalledPkgList" "Cache.getDir" "Awk.log" "Array.pop" "printEvalArray" "Ini.getSectionList" "URL.host" "Sqlite3.create" "Arch.getMkinitcpioPresetList" "Esc.clearLine" "Msg.err" "LibreTranslate.translate" "revArray" "Csv.toBashArray" "Em.getRepoConf" "SrcInfo.getPkgBase" "strToCharList" "Pm.getKeyringList" "Ini.parseLine" "URL.noScheme" "Awk.pi" "Cache.getFileLastUpdate" "Sqlite3.currentDb" "Array.push" "Esc.clearRight" "Msg.info" "LibreTranslate.translateAuto" "Em.getRepoLocation" "Pm.getLatestPkgVer" "Misskey.users.GetFrequentlyRepliedUsers" "Awk.print" "URL.path" "SrcInfo.getPkgName" "Cache.getID" "Sqlite3.delete" "Esc.clearScreen" "Array.remove" "fileType" "Msg.warn" "getBaseName" "Ini.newParam" "Em.getRepoPkgList" "Pm.getName" "Misskey.users.Notes" "Awk.rad" "Cache.getTimeDiffFromLastUpdate" "SrcInfo.getSectionList" "URL.pathAndQueryAndFragment" "getFileExt" "Sqlite3.existField" "Esc.return" "Array.rev" "removeFileExt" "Ini.newSection" "Em.getWorldPkgList" "Misskey.users.Pages" "URL.port" "Array.shift" "Awk.sin" "Pm.getPacmanKernelPkg" "Sqlite3.existTable" "SrcInfo.getValue" "Ini.setValue" "URL.query" "Esc.getTermX" "Cache.create" "checkFuncDefined" "Sqlite3.insert" "Pm.getPacmanKeyringDir" "Misskey.users.SearchByUsernameAndHost" "SrcInfo.getValueInPkgBase" "Awk.tan" "forEach" "Em.noVersion" "getLine" "Cache.createDir" "Array.eval" "Esc.getTermY" "Misskey.users.Show" "Sqlite3.select" "isAvailable" "URL.scheme" "SrcInfo.getValueInPkgName" "Pm.getRepoConf" "loop" "Esc.getX" "Array.last" "Misskey.users.Stats" "Sqlite3.selectAll" "SrcInfo.parse" "Pm.getRepoListFromConf" "URL.user" "Array.print" "Esc.getY" "breakChar" "Pm.getRepoPkgList" "cutLastString" "Misskey.admin.ServerInfo" "Esc.moveCursor" "getLastSplitString" "Pm.getRepoServer" "Array.indexOf" "URL.hasAuthority" "isUUID" "Esc.moveCursorDown" "printEval" "Pm.getRepoVer" "Array.lastIndex" "URL.hasFragment" "Misskey.setup" "Esc.moveCursorLeft" "randomString" "removeBlank" "Array.length" "Pm.getRoot" "URL.hasPort" "textBox" "Esc.moveCursorRight" "toLower" "Pm.isRepoPkg" "URL.hasQuery" "toLowerStdin" "Esc.moveCursorUp" "Misskey.i" "URL.hasUser" "Array.forEach" "Pm.pacmanGpg" "Misskey.meta" "calcInt" "Array.include" "ntest" "Misskey.serverInfo" "Pm.run" "Esc.clearLineAndReturn" "sum" "URL.parse" "Array.includes" "Pm.runKey" "Esc.clearUpperLines" "bool" "Misskey.bindingBase" "URL.getQuery" "Misskey.makeJson" "getFuncList" "Pm.getDbNextSection" "Esc.blackBackground" "unsetAllFunc" "URL.parseQuery" "Misskey.sendReq" "Pm.getDbSection" "Esc.blackText" "match" "Misskey.isAdmin" "Pm.getDbSectionList" "removeMatchLine" "Esc.blink" "toArgs" "Misskey.myId" "Esc.blueBackground" "Misskey.myName" "Pm.createDbTmpDir" "Esc.blueText" "Misskey.myUserName" "Pm.deleteDbTmpDir" "Esc.bold" "Pm.getDbTmpDir" "Esc.conceal" "Esc.crossedOut" "Pm.getPkgArch" "Esc.cyanBackground" "Pm.getRepoListFromLocalDb" "Esc.cyanText" "Pm.getSyncAllDesc" "Pm.getSyncDbDesc" "Esc.greenBackground" "Pm.getSyncDbDescPath" "Esc.greenText" "Pm.getVirtualPkgList" "Esc.italic" "Pm.isOpendSyncDb" "Esc.lowIntensity" "Pm.openSyncDb" "Esc.magentaBackground" "Pm.openedSyncDbList" "Esc.magentaText" "Pm.parsePkgFileName" "Esc.rapidBlink" "Esc.redBackground" "Esc.redText" "Esc.resetStyle" "Esc.reverse" "Esc.underline" "Esc.whiteBackground" "Esc.whiteText" "Esc.yellowBackground" "Esc.yellowText")
+declare -r FSBLIB_VERSION='v0.2.7.r413.gcb751ea-lower'
 declare -r FSBLIB_REQUIRE='ModernBash'
 declare -r FSBLIB_PROG_PIDFILEPATH='FSBLIB_PROGRESS_PIDLIST'
 
@@ -426,25 +426,6 @@ selectMenu() {
 	fi
 	return 0
 }
-Prog.bar() {
-	local Max="$1" Counter="$2" Size="${3-"100"}"
-	local SharpCount=$((Counter * Size / Max))
-	local SpaceCount=$((Size - SharpCount))
-	Esc.return
-	echo -n "$Counter/$Max [$(yes "#" | head -n "$SharpCount" 2>/dev/null | tr -d "\n")$(yes " " | head -n "$SpaceCount" 2>/dev/null | tr -d "\n")]"
-}
-Prog.rotation() {
-	local Count="$1" CharList=('|' '/' '-' '\')
-	Esc.clearLineAndReturn
-	[[ -n ${2-""} ]] && echo -n "${2}" 1>&2
-	printf "%s" "${CharList["$((Count % "${#CharList[@]}"))"]}" 1>&2
-}
-Prog.wideBar() {
-	local Max="$1" Counter="$2"
-	local StatusString="$Counter/$Max"
-	local Size=$(($(Esc.getTermX) - ${#StatusString} - 3))
-	Prog.bar "$Max" "$Counter" "$Size"
-}
 Arch.getKernelFileList() {
 	find "/boot" -maxdepth 1 -mindepth 1 -name "vmlinuz-*"
 }
@@ -478,6 +459,25 @@ Fsblib.requireLib() {
 	done
 	return "$return"
 }
+Prog.bar() {
+	local Max="$1" Counter="$2" Size="${3-"100"}"
+	local SharpCount=$((Counter * Size / Max))
+	local SpaceCount=$((Size - SharpCount))
+	Esc.return
+	echo -n "$Counter/$Max [$(yes "#" | head -n "$SharpCount" 2>/dev/null | tr -d "\n")$(yes " " | head -n "$SpaceCount" 2>/dev/null | tr -d "\n")]"
+}
+Prog.rotation() {
+	local Count="$1" CharList=('|' '/' '-' '\')
+	Esc.clearLineAndReturn
+	[[ -n ${2-""} ]] && echo -n "${2}" 1>&2
+	printf "%s" "${CharList["$((Count % "${#CharList[@]}"))"]}" 1>&2
+}
+Prog.wideBar() {
+	local Max="$1" Counter="$2"
+	local StatusString="$Counter/$Max"
+	local Size=$(($(Esc.getTermX) - ${#StatusString} - 3))
+	Prog.bar "$Max" "$Counter" "$Size"
+}
 Csv.getClm() {
 	grep -v "^#" | sed "/^$/d" | cut -d "${CSVDELIM-","}" -f "$1"
 }
@@ -507,41 +507,6 @@ Csv.toBashArray() {
 			printArray "${_RawCsvLine[@]}" | cut -d "${CSVDELIM-","}" -f "$_Cnt"
 		)
 	done < <(seq 1 "$#")
-}
-Msg.common() {
-	local i l="$1" string="$2" out="${3-""}"
-	shift 2 || return 1
-	{
-		[[ -z ${out-""} ]] && {
-			[[ ${l^^} == *"ERR"* ]] || [[ ${l^^} == *"WARN"* ]] || [[ ${l^^} == *"DEBUG"* ]]
-		}
-	} && out="stderr"
-	case "${FSBLIB_MSG-"${out:-"stdout"}"}" in
-	"stdout")
-		for i in $(seq "$(echo -e "${string}" | wc -l)"); do
-			echo -n "$l "
-			echo -e "${string}" | head -n "${i}" | tail -n 1
-		done
-		;;
-	"stderr")
-		for i in $(seq "$(echo -e "${string}" | wc -l)"); do
-			echo -n "$l " 1>&2
-			echo -e "${string}" | head -n "${i}" | tail -n 1 1>&2
-		done
-		;;
-	esac
-}
-Msg.debug() {
-	Msg.common "Debug:" "${*}" stderr
-}
-Msg.err() {
-	Msg.common "Error:" "${*}" stderr
-}
-Msg.info() {
-	Msg.common " Info:" "${*}" stdout
-}
-Msg.warn() {
-	Msg.common " Warn:" "${*}" stderr
 }
 LibreTranslate.check() {
 	export LIBRETRANSLATE_URL="${LIBRETRANSLATE_URL:-""}"
@@ -594,29 +559,40 @@ LibreTranslate.translateAuto() {
 	LibreTranslate.check || return 2
 	LibreTranslate.translate "${1:-""}" "$(LibreTranslate.detect "${1:-""}")" "${2:-""}"
 }
-Awk.cos() {
-	Awk.float "cos($*)"
+Msg.common() {
+	local i l="$1" string="$2" out="${3-""}"
+	shift 2 || return 1
+	{
+		[[ -z ${out-""} ]] && {
+			[[ ${l^^} == *"ERR"* ]] || [[ ${l^^} == *"WARN"* ]] || [[ ${l^^} == *"DEBUG"* ]]
+		}
+	} && out="stderr"
+	case "${FSBLIB_MSG-"${out:-"stdout"}"}" in
+	"stdout")
+		for i in $(seq "$(echo -e "${string}" | wc -l)"); do
+			echo -n "$l "
+			echo -e "${string}" | head -n "${i}" | tail -n 1
+		done
+		;;
+	"stderr")
+		for i in $(seq "$(echo -e "${string}" | wc -l)"); do
+			echo -n "$l " 1>&2
+			echo -e "${string}" | head -n "${i}" | tail -n 1 1>&2
+		done
+		;;
+	esac
 }
-Awk.float() {
-	awk "BEGIN {printf (\"%4.${AWKSCALE-"5"}f\n\", $*)}"
+Msg.debug() {
+	Msg.common "Debug:" "${*}" stderr
 }
-Awk.log() {
-	Awk.float "log(${2}) / log($1)"
+Msg.err() {
+	Msg.common "Error:" "${*}" stderr
 }
-Awk.pi() {
-	Awk.float "atan2(0, -0)"
+Msg.info() {
+	Msg.common " Info:" "${*}" stdout
 }
-Awk.print() {
-	awk "BEGIN {print $*}"
-}
-Awk.rad() {
-	Awk.float "$1 * $(Awk.pi) / 180 "
-}
-Awk.sin() {
-	Awk.float "sin($*)"
-}
-Awk.tan() {
-	Awk.float "sin($1)/tan($1)"
+Msg.warn() {
+	Msg.common " Warn:" "${*}" stderr
 }
 Ini.getLastParam() {
 	Ini.getParamList "$1" | tail -n 1
@@ -789,6 +765,56 @@ Ini.setValue() {
 	readarray -t IniContents < <(printArray "${IniContents[@]}" | Ini.newSection "$Section" | Ini.newParam "$Section" "$Param")
 	printEvalArray IniContents
 }
+Awk.cos() {
+	Awk.float "cos($*)"
+}
+Awk.float() {
+	awk "BEGIN {printf (\"%4.${AWKSCALE-"5"}f\n\", $*)}"
+}
+Awk.log() {
+	Awk.float "log(${2}) / log($1)"
+}
+Awk.pi() {
+	Awk.float "atan2(0, -0)"
+}
+Awk.print() {
+	awk "BEGIN {print $*}"
+}
+Awk.rad() {
+	Awk.float "$1 * $(Awk.pi) / 180 "
+}
+Awk.sin() {
+	Awk.float "sin($*)"
+}
+Awk.tan() {
+	Awk.float "sin($1)/tan($1)"
+}
+Em.getAllPkgList() {
+	Em.getRepoConf | sed -e 's/^ *//' -e 's/ *$//' | grep "^ *location *=" | sed -e 's/^location *= *//' | xargs -L1 realpath | xargs -I{} bash -c "find '{}' -mindepth 3 -maxdepth 3 -type f -name '*.ebuild' | sed -e 's|{}/||g' -e 's|.ebuild$||g'" | awk -F "/" '{print $1"/"$3}'
+}
+Em.getDefaultRepoName() {
+	Em.getRepoConf | Ini.getParam DEFAULT main-repo
+}
+Em.getInstalledPkgList() {
+	find /var/db/pkg/ -mindepth 2 -maxdepth 2 -type d | sed 's|/var/db/pkg/||g'
+}
+Em.getRepoConf() {
+	cat /etc/portage/repos.conf /etc/portage/repos.conf/* 2>/dev/null
+}
+Em.getRepoLocation() {
+	Em.getRepoConf | Ini.getParam "$1" location
+}
+Em.getRepoPkgList() {
+	local _RepoPath
+	_RepoPath="$(Em.getRepoLocation "$1")"
+	find "$_RepoPath" -mindepth 3 -maxdepth 3 -type f -name '*.ebuild' | sed -e "s|${_RepoPath%/}/||g" -e 's|.ebuild$||g' | awk -F "/" '{print $1"/"$3}'
+}
+Em.getWorldPkgList() {
+	sed -E 's|:.+$||g' /var/lib/portage/world | xargs -I{} bash -c 'ls -d /var/db/pkg/{}-* | sed "s|/var/db/pkg/||g" | grep -E "{}-[0-9]"'
+}
+Em.noVersion() {
+	sed -E 's|\-[0-9]+.+||g'
+}
 Cache.exist() {
 	local _File
 	_File="$(Cache.createDir)/$1"
@@ -840,6 +866,89 @@ Cache.createDir() {
 	mkdir -p "$_Dir"
 	echo "$_Dir"
 	return 0
+}
+Sqlite3.call() {
+	Msg.debug sqlite3 "${SQLITE3_OPTIONS[@]}" "$SQLITE3_DBPATH" "$@" 1>&2
+	sqlite3 "${SQLITE3_OPTIONS[@]}" "$SQLITE3_DBPATH" "$@"
+}
+Sqlite3.connect() {
+	export SQLITE3_DBPATH="$1"
+	echo ".open \"$SQLITE3_DBPATH\"" | sqlite3
+	return 0
+}
+Sqlite3.create() {
+	local _table="$1" _args=() _columns=()
+	shift 1 || return 1
+	_columns=("$@")
+	_args+=(create table "$_table" "(")
+	forEach eval '_args+=("\"{}\"" ,)' < <(printEvalArray _columns)
+	Array.pop _args
+	_args+=(")")
+	Sqlite3.call "${_args[*]}"
+}
+Sqlite3.currentDb() {
+	if [[ -z ${SQLITE3_DBPATH-""} ]]; then
+		Msg.err "No datebase is connected."
+		return 1
+	fi
+	echo "${SQLITE3_DBPATH}"
+	return 0
+}
+Sqlite3.delete() {
+	local _table="$1" _args=()
+	shift 1 || return 1
+	if (($# < 1)) && ((${SQLITE3_ALLOWDELETEALL-"0"} != 1)); then
+		Msg.err "Cannot delete all data.\nIf you really want that, Please set environment-variable \"SQLITE3_ALLOWDELETEALL=1\""
+		return 1
+	fi
+	_args+=(delete from "$_table")
+	if (($# > 0)); then
+		_args+=(where "${@}")
+	fi
+	Sqlite3.call "${_args[*]}"
+}
+Sqlite3.existField() {
+	_result="$(Sqlite3.call "SELECT * FROM '$1' WHERE $2 = '$3' LIMIT 1;")"
+	if [[ -n ${_result-""} ]]; then
+		return 0
+	fi
+	return 1
+}
+Sqlite3.existTable() {
+	local _result
+	_result="$(Sqlite3.call "SELECT COUNT(*) 
+                            FROM sqlite_master 
+                            WHERE TYPE='table' AND name='$1';
+            ")"
+	if ((_result > 0)); then
+		return 0
+	fi
+	return 1
+}
+Sqlite3.insert() {
+	local _table="$1" _args=()
+	shift 1 || return 1
+	local _values=("$@")
+	_args+=(insert into "$_table" values '(')
+	forEach eval '_args+=("\"{}\"" ,)' < <(printEvalArray _values)
+	Array.pop _args
+	_args+=(");")
+	Sqlite3.call "${_args[*]}"
+}
+Sqlite3.select() {
+	local _table="$1" _args=()
+	shift 1 || return 1
+	local _values=("$@")
+	_args+=(select)
+	forEach eval '_args+=("\"{}\"" ,)' < <(printEvalArray _values)
+	Array.pop _args
+	_args+=("from" "$_table" ";")
+	Sqlite3.call "${_args[*]}"
+}
+Sqlite3.selectAll() {
+	local _table="$1" _args=()
+	shift 1 || return 1
+	Sqlite3.call "select * from $_table"
 }
 SrcInfo.format() {
 	removeBlank | sed "/^$/d" | grep -v "^#" | forEach eval 'SrcInfo.parse Line <<< "{}"'
@@ -972,115 +1081,6 @@ SrcInfo.parse() {
 		;;
 	esac
 	return 0
-}
-Sqlite3.call() {
-	Msg.debug sqlite3 "${SQLITE3_OPTIONS[@]}" "$SQLITE3_DBPATH" "$@" 1>&2
-	sqlite3 "${SQLITE3_OPTIONS[@]}" "$SQLITE3_DBPATH" "$@"
-}
-Sqlite3.connect() {
-	export SQLITE3_DBPATH="$1"
-	echo ".open \"$SQLITE3_DBPATH\"" | sqlite3
-	return 0
-}
-Sqlite3.create() {
-	local _table="$1" _args=() _columns=()
-	shift 1 || return 1
-	_columns=("$@")
-	_args+=(create table "$_table" "(")
-	forEach eval '_args+=("\"{}\"" ,)' < <(printEvalArray _columns)
-	Array.pop _args
-	_args+=(")")
-	Sqlite3.call "${_args[*]}"
-}
-Sqlite3.currentDb() {
-	if [[ -z ${SQLITE3_DBPATH-""} ]]; then
-		Msg.err "No datebase is connected."
-		return 1
-	fi
-	echo "${SQLITE3_DBPATH}"
-	return 0
-}
-Sqlite3.delete() {
-	local _table="$1" _args=()
-	shift 1 || return 1
-	if (($# < 1)) && ((${SQLITE3_ALLOWDELETEALL-"0"} != 1)); then
-		Msg.err "Cannot delete all data.\nIf you really want that, Please set environment-variable \"SQLITE3_ALLOWDELETEALL=1\""
-		return 1
-	fi
-	_args+=(delete from "$_table")
-	if (($# > 0)); then
-		_args+=(where "${@}")
-	fi
-	Sqlite3.call "${_args[*]}"
-}
-Sqlite3.existField() {
-	_result="$(Sqlite3.call "SELECT * FROM '$1' WHERE $2 = '$3' LIMIT 1;")"
-	if [[ -n ${_result-""} ]]; then
-		return 0
-	fi
-	return 1
-}
-Sqlite3.existTable() {
-	local _result
-	_result="$(Sqlite3.call "SELECT COUNT(*) 
-                            FROM sqlite_master 
-                            WHERE TYPE='table' AND name='$1';
-            ")"
-	if ((_result > 0)); then
-		return 0
-	fi
-	return 1
-}
-Sqlite3.insert() {
-	local _table="$1" _args=()
-	shift 1 || return 1
-	local _values=("$@")
-	_args+=(insert into "$_table" values '(')
-	forEach eval '_args+=("\"{}\"" ,)' < <(printEvalArray _values)
-	Array.pop _args
-	_args+=(");")
-	Sqlite3.call "${_args[*]}"
-}
-Sqlite3.select() {
-	local _table="$1" _args=()
-	shift 1 || return 1
-	local _values=("$@")
-	_args+=(select)
-	forEach eval '_args+=("\"{}\"" ,)' < <(printEvalArray _values)
-	Array.pop _args
-	_args+=("from" "$_table" ";")
-	Sqlite3.call "${_args[*]}"
-}
-Sqlite3.selectAll() {
-	local _table="$1" _args=()
-	shift 1 || return 1
-	Sqlite3.call "select * from $_table"
-}
-Em.getAllPkgList() {
-	Em.getRepoConf | sed -e 's/^ *//' -e 's/ *$//' | grep "^ *location *=" | sed -e 's/^location *= *//' | xargs -L1 realpath | xargs -I{} bash -c "find '{}' -mindepth 3 -maxdepth 3 -type f -name '*.ebuild' | sed -e 's|{}/||g' -e 's|.ebuild$||g'" | awk -F "/" '{print $1"/"$3}'
-}
-Em.getDefaultRepoName() {
-	Em.getRepoConf | Ini.getParam DEFAULT main-repo
-}
-Em.getInstalledPkgList() {
-	find /var/db/pkg/ -mindepth 2 -maxdepth 2 -type d | sed 's|/var/db/pkg/||g'
-}
-Em.getRepoConf() {
-	cat /etc/portage/repos.conf /etc/portage/repos.conf/* 2>/dev/null
-}
-Em.getRepoLocation() {
-	Em.getRepoConf | Ini.getParam "$1" location
-}
-Em.getRepoPkgList() {
-	local _RepoPath
-	_RepoPath="$(Em.getRepoLocation "$1")"
-	find "$_RepoPath" -mindepth 3 -maxdepth 3 -type f -name '*.ebuild' | sed -e "s|${_RepoPath%/}/||g" -e 's|.ebuild$||g' | awk -F "/" '{print $1"/"$3}'
-}
-Em.getWorldPkgList() {
-	sed -E 's|:.+$||g' /var/lib/portage/world | xargs -I{} bash -c 'ls -d /var/db/pkg/{}-* | sed "s|/var/db/pkg/||g" | grep -E "{}-[0-9]"'
-}
-Em.noVersion() {
-	sed -E 's|\-[0-9]+.+||g'
 }
 addNewToArray() {
 	Array.push "$@"
@@ -1715,23 +1715,19 @@ Pm.parsePkgFileName() {
 	printArray "${_ParsedPkg[@]}"
 }
 Esc.clearLeft() {
-	printf "\033[1K"
+	printf "\033[1K" >/dev/tty
 }
 Esc.clearLine() {
-	printf "\033[2K"
-}
-Esc.clearLineAndReturn() {
-	Esc.clearLine
-	Esc.return
+	printf "\033[2K" >/dev/tty
 }
 Esc.clearRight() {
-	printf "\033[0K"
+	printf "\033[0K" >/dev/tty
 }
 Esc.clearScreen() {
-	printf "\033[2J"
+	printf "\033[2J" >/dev/tty
 }
 Esc.return() {
-	printf "\r"
+	printf "\r" >/dev/tty
 }
 Esc.getTermX() {
 	[[ -n ${COLUMNS-""} ]] && echo "$COLUMNS" && return 0
@@ -1754,19 +1750,23 @@ Esc.getY() {
 	echo $(("$(printf "%s\n" "${_POS:2}" | cut -d";" -f1)" - 1))
 }
 Esc.moveCursor() {
-	printf "\033[%d;%dH" "$1" "$2"
+	printf "\033[%d;%dH" "$1" "$2" >/dev/tty
 }
 Esc.moveCursorDown() {
-	printf "\033[%dB" "$1"
+	printf "\033[%dB" "$1" >/dev/tty
 }
 Esc.moveCursorLeft() {
-	printf "\033[%dD" "$1"
+	printf "\033[%dD" "$1" >/dev/tty
 }
 Esc.moveCursorRight() {
-	printf "\033[%dC" "$1"
+	printf "\033[%dC" "$1" >/dev/tty
 }
 Esc.moveCursorUp() {
-	printf "\033[%dA" "$1"
+	printf "\033[%dA" "$1" >/dev/tty
+}
+Esc.clearLineAndReturn() {
+	Esc.clearLine
+	Esc.return
 }
 Esc.clearUpperLines() {
 	for i in $(seq 1 "$1"); do
@@ -1775,80 +1775,80 @@ Esc.clearUpperLines() {
 	done
 }
 Esc.blackBackground() {
-	printf "\033[40m"
+	printf "\033[40m" >/dev/tty
 }
 Esc.blackText() {
-	printf "\033[30m"
+	printf "\033[30m" >/dev/tty
 }
 Esc.blink() {
-	printf "\033[5m"
+	printf "\033[5m" >/dev/tty
 }
 Esc.blueBackground() {
-	printf "\033[44m"
+	printf "\033[44m" >/dev/tty
 }
 Esc.blueText() {
-	printf "\033[34m"
+	printf "\033[34m" >/dev/tty
 }
 Esc.bold() {
-	printf "\033[1m"
+	printf "\033[1m" >/dev/tty
 }
 Esc.conceal() {
-	printf "\033[8m"
+	printf "\033[8m" >/dev/tty
 }
 Esc.crossedOut() {
-	printf "\033[9m"
+	printf "\033[9m" >/dev/tty
 }
 Esc.cyanBackground() {
-	printf "\033[46m"
+	printf "\033[46m" >/dev/tty
 }
 Esc.cyanText() {
-	printf "\033[36m"
+	printf "\033[36m" >/dev/tty
 }
 Esc.greenBackground() {
-	printf "\033[42m"
+	printf "\033[42m" >/dev/tty
 }
 Esc.greenText() {
-	printf "\033[32m"
+	printf "\033[32m" >/dev/tty
 }
 Esc.italic() {
-	printf "\033[3m"
+	printf "\033[3m" >/dev/tty
 }
 Esc.lowIntensity() {
-	printf "\033[2m"
+	printf "\033[2m" >/dev/tty
 }
 Esc.magentaBackground() {
-	printf "\033[45m"
+	printf "\033[45m" >/dev/tty
 }
 Esc.magentaText() {
-	printf "\033[35m"
+	printf "\033[35m" >/dev/tty
 }
 Esc.rapidBlink() {
-	printf "\033[6m"
+	printf "\033[6m" >/dev/tty
 }
 Esc.redBackground() {
-	printf "\033[41m"
+	printf "\033[41m" >/dev/tty
 }
 Esc.redText() {
-	printf "\033[31m"
+	printf "\033[31m" >/dev/tty
 }
 Esc.resetStyle() {
-	printf "\033[0m"
+	printf "\033[0m" >/dev/tty
 }
 Esc.reverse() {
-	printf "\033[7m"
+	printf "\033[7m" >/dev/tty
 }
 Esc.underline() {
-	printf "\033[4m"
+	printf "\033[4m" >/dev/tty
 }
 Esc.whiteBackground() {
-	printf "\033[47m"
+	printf "\033[47m" >/dev/tty
 }
 Esc.whiteText() {
-	printf "\033[37m"
+	printf "\033[37m" >/dev/tty
 }
 Esc.yellowBackground() {
-	printf "\033[43m"
+	printf "\033[43m" >/dev/tty
 }
 Esc.yellowText() {
-	printf "\033[33m"
+	printf "\033[33m" >/dev/tty
 }
