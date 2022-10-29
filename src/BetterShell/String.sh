@@ -134,3 +134,8 @@ BreakChar(){
     grep -o "."
     #fold -w 1
 }
+
+
+GetMaxWidth(){
+    awk '{ if ( length > x && length > 0 ) { x = length } }END{ print x }'
+}
