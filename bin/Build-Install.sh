@@ -26,7 +26,7 @@ declare -A DownloadFileList=(
 TagNameToBuild=()
 GitCommitToBuild=()
 DefaultBranchName=""
-BuildTagFromSource=true # タグ付けされたバージョンをソースからビルドするかどうか
+BuildTagFromSource=false # タグ付けされたバージョンをソースからビルドするかどうか
 NoTagBuild=false
 
 #_Run(){
