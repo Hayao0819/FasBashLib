@@ -15,7 +15,7 @@ Delimiter="."
 NoRequire=false
 NoIgnore=false # すべてのIgnore設定を無視
 NoParalell=false # 並列ビルドを無効化
-MultiFileMode=false # マルチファイルモード（スクリプトが複数回sourceされることを許可します）
+MultiFileMode=true # マルチファイルモード（スクリプトが複数回sourceされることを許可します）
 CommonPrefix="" # すべての関数に付与されるプレフィックス
 
 CodeType="Upper"
