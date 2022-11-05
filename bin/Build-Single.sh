@@ -393,10 +393,18 @@ _Make_Lib(){
                         fi
 
                         if [[ "${ReplacePrefix}" = true ]]; then
-                            # 関数の定義部分を書き換え
                             local NewFuncName=""
-                            echo "${LibPrefix-""} = ${Func}" >> "$TmpFile_FuncList"
-                            NewFuncName="$(MakeFuncName "${LibPrefix-""}" "$Func")"
+                            # 関数の定義部分を書き換え
+                            if PrintArray "${_NoPrefixFunc[@]}" | grep -qx "$Func"; then
+                                # 置き換えない関数として設定 かつ コードスタイルが一致していない場合はプレフィックスを除去
+                                echo " = $Func" >> "$TmpFile_FuncList" 
+                                NewFuncName="$(MakeFuncName "" "$Func")"
+                                $Debug && echo "置き換え1: ${Func}はNoPrefixFuncに設定されています" >&2
+                            else
+                                # プレフィックスを置き換え
+                                echo "${LibPrefix-""} = ${Func}" >> "$TmpFile_FuncList"
+                                NewFuncName="$(MakeFuncName "${LibPrefix-""}" "$Func")"
+                            fi
                             "${Debug}" && echo "置き換え1: 関数定義の${Func}を${NewFuncName}に置き換えて${TmpLibFile}に書き込み" >&2
                             _GetFuncCodeFromFile "${Dir}/${File}" "$Func" | sed "1 s|${Func} ()|${NewFuncName} ()|g" | grep -v "^ *#" >> "$TmpLibFile"
                         else
