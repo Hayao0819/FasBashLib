@@ -464,12 +464,12 @@ _Make_Lib(){
                 SedI "/^%$Embedded%$/d" "$TmpLibFile"
                 
             done < <(GetMetaParam "$LibName" "Embedded")
-            
-
-            # 完成したライブラリを全体に追加
-            #cat "$TmpLibFile" >> "$TmpOutFile"
-            cat "$TmpLibFile" >> "$TmpDir/Internal/Funcs.sh"
         } &
+
+        # 完成したライブラリを全体に追加
+        #cat "$TmpLibFile" >> "$TmpOutFile"
+        #cat "$TmpLibFile" >> "$TmpDir/Internal/Funcs.sh"
+        cat "$TmpDir/LibFiles/"*".sh" >> "$TmpDir/Internal/Funcs.sh"
     done
     wait 
 }
