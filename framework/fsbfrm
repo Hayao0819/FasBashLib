@@ -6,37 +6,6 @@ TMPDIR="${TMPDIR:-/tmp}"
 current_dir="$( cd "$( dirname "${0}" )" && pwd )"
 meta_filename="target.json"
 
-readlinkf() {
-	[ "${1:-}" ] || return 1
-	max_symlinks=40
-	CDPATH=''
-	target=$1
-	[ -e "${target%/}" ] || target=${1%"${1##*[!/]}"}
-	[ -d "${target:-/}" ] && target="$target/"
-	cd -P . 2>/dev/null || return 1
-	while [ "$max_symlinks" -ge 0 ] && max_symlinks=$((max_symlinks - 1)); do
-		if [ ! "$target" = "${target%/*}" ]; then
-			case $target in
-			/*)
-				cd -P "${target%/*}/" 2>/dev/null || break
-				;;
-			*)
-				cd -P "./${target%/*}" 2>/dev/null || break
-				;;
-			esac
-			target=${target##*/}
-		fi
-		if [ ! -L "$target" ]; then
-			target="${PWD%/}${target:+/}${target}"
-			printf '%s\n' "${target:-/}"
-			return 0
-		fi
-		link=$(ls -dl -- "$target" 2>/dev/null) || break
-		target=${link#*" $target -> "}
-	done
-	return 1
-}
-
 find(){
     if { command find --help 2>/dev/null || true; } | grep -q "GNU" 1>/dev/null; then
         command find "$@"
@@ -49,10 +18,8 @@ find(){
 }
 
 get_build_target(){
-    #find "$src_dir" -name "${meta_filename}" -type f -print0 | xargs -0 -I{} sh -c 'dirname {}'
     find "$current_dir" -name "${meta_filename}" -type f -print0 | xargs -0 -I{} bash -c 'dirname {}'
 }
-
 
 get_header(){
     local target="$1" headers=()
