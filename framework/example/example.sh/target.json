@@ -1,0 +1,20 @@
+{
+    "filename": "example.sh",
+    "headers": [
+        "header.sh"
+    ],
+    "functions": [
+        "main-1.sh",
+        "main-2.sh"
+    ],
+    "remote-functions": [
+        "https://raw.githubusercontent.com/Hayao0819/Hayao-Tools/master/libretranslate-sh/libretranslate.sh"
+    ],
+    "remote-inserts":{
+        "%README_TXT%": "https://raw.githubusercontent.com/Hayao0819/FasBashFramework/master/README.txt"
+    },
+    "footers": [
+        "footer.sh"
+    ],
+    "entrypoint": "main"
+}
