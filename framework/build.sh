@@ -4,6 +4,7 @@ set -euo pipefail
 
 TMPDIR="${TMPDIR:-/tmp}"
 current_dir="$( cd "$( dirname "${0}" )" && pwd )"
+meta_filename="target.json"
 
 readlinkf() {
 	[ "${1:-}" ] || return 1
@@ -36,10 +37,6 @@ readlinkf() {
 	return 1
 }
 
-export lib_dir="$(readlinkf "$current_dir/lib")"
-export bin_dir="$(readlinkf "$current_dir/bin")"
-export src_dir="$(readlinkf "$current_dir/src")"
-
 find(){
     if { command find --help 2>/dev/null || true; } | grep -q "GNU" 1>/dev/null; then
         command find "$@"
@@ -52,14 +49,14 @@ find(){
 }
 
 get_build_target(){
-    #find "$src_dir" -name "target.json" -type f -print0 | xargs -0 -I{} sh -c 'dirname {}'
-    find "$current_dir" -name "target.json" -type f -print0 | xargs -0 -I{} bash -c 'dirname {}'
+    #find "$src_dir" -name "${meta_filename}" -type f -print0 | xargs -0 -I{} sh -c 'dirname {}'
+    find "$current_dir" -name "${meta_filename}" -type f -print0 | xargs -0 -I{} bash -c 'dirname {}'
 }
 
 
 get_header(){
     local target="$1" headers=()
-    readarray -t headers < <(jq -r ".headers[]" "$target/target.json")
+    readarray -t headers < <(jq -r ".headers[]" "$target/${meta_filename}")
     while read -r script; do
         if [ -e "${target}/$script" ]; then
             echo "Header $script found" >&2
@@ -74,7 +71,7 @@ get_header(){
 
 get_footer(){
     local target="$1" footers=()
-    readarray -t footers < <(jq -r ".footers[]" "$target/target.json")
+    readarray -t footers < <(jq -r ".footers[]" "$target/${meta_filename}")
     for script in "${footers[@]}"; do
         if [ -e "${target}/$script" ]; then
             echo "Footer $script found" >&2
@@ -89,7 +86,7 @@ get_footer(){
 
 get_func(){
     local target="$1" funcfiles=()
-    readarray -t funcfiles < <(jq -r ".functions[]" "$target/target.json")
+    readarray -t funcfiles < <(jq -r ".functions[]" "$target/${meta_filename}")
     (
         local func
         while read -r func; do
@@ -122,7 +119,7 @@ unset_allfunc(){
 
 get_funclist(){
     local target="$1" funcfiles=()
-    readarray -t funcfiles < <(jq -r ".functions[]" "$target/target.json")
+    readarray -t funcfiles < <(jq -r ".functions[]" "$target/${meta_filename}")
     (
         unset_allfunc
         while read -r script; do
@@ -144,7 +141,7 @@ get_funclist(){
 
 make_entrypoint(){
     local target="$1" entrypoint
-    entrypoint="$(jq -r ".entrypoint" "$target/target.json")"
+    entrypoint="$(jq -r ".entrypoint" "$target/${meta_filename}")"
     get_funclist "$target" | grep -qx "$entrypoint" || {
         echo "Entrypoint $entrypoint function are not defined" >&2
         return 1
@@ -165,7 +162,7 @@ print_eval_array(){
 insert_remote(){
     local target="$1" insert_keywords=() base_script=() key
     readarray -t base_script
-    readarray -t insert_keywords < <(jq -r '.["remote-inserts"] | keys[]' "$target/target.json")
+    readarray -t insert_keywords < <(jq -r '.["remote-inserts"] | keys[]' "$target/${meta_filename}")
     if (( ${#insert_keywords[@]} == 0 )); then
         print_array "${base_script[@]}"
         return 0
@@ -173,7 +170,7 @@ insert_remote(){
     for key in "${insert_keywords[@]}"; do
         local insert_url
         echo "Inserting $key" >&2
-        insert_url="$(jq -r ".[\"remote-inserts\"][\"$key\"]" "$target/target.json")"
+        insert_url="$(jq -r ".[\"remote-inserts\"][\"$key\"]" "$target/${meta_filename}")"
         if [[ -n "$insert_url" ]]; then
             #readarray -t remote_file < <(curl -s "$insert_url")
             #print_array "${remote_file[@]}" > 
@@ -196,7 +193,7 @@ get_remote_func(){
             }
             typeset -f
         )
-    done < <(jq -r '.["remote-functions"][]' "$target/target.json")
+    done < <(jq -r '.["remote-functions"][]' "$target/${meta_filename}")
 }
 
 call(){
@@ -217,22 +214,16 @@ build(){
 
 get_filename(){
     local target="$1"
-    jq -r ".filename" "$target/target.json"
+    jq -r ".filename" "$target/${meta_filename}"
 }
 
 
 out_dir="$current_dir/out"
 mkdir -p "${out_dir}"
 
-
-#echo "${out_dir}/$(get_filename "$@")"
-#build "$@" > "${out_dir}/$(get_filename "$@")"
-#chmod +x "${out_dir}/$(get_filename "$@")"
-
 while read -r target; do
     echo "Building $target" >&2
     build "${target}" > "${out_dir}/$(get_filename "${target}")"
     chmod +x "${out_dir}/$(get_filename "${target}")"
 done < <(get_build_target)
-
 
