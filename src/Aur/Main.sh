@@ -1,9 +1,4 @@
 #!/usr/bin/env bash
-# @file Aur
-# @brief AurのAPIを使用します
-# @description
-#    AurwebのAPIをcurlを使って呼び出し、必要な情報を取得します
-#
 
 for _JsonKey in "Description" "FirstSubmitted" "ID" "LastModified" "Maintainer" "NumVotes" "PackageBase" "PackageBaseID" "Popularity" "URL" "URLPath" "Version"; do
     eval "Get$_JsonKey(){ jq -r \".${_JsonKey}\";}"

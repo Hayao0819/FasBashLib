@@ -1,10 +1,4 @@
 #!/usr/bin/env bash
-# @file File name
-# @brief File description
-# @description
-#     The project solves lots of problems:
-#      * a
-#      * b
 
 # @description My super function.
 # Not thread-safe.

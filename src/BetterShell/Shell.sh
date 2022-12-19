@@ -1,8 +1,4 @@
 #!/usr/bin/env bash
-# @file BetterShell
-# @brief よく使う構文をシンプルに書けるようにした関数
-# @description
-#    For文やecho文など、コーディングで多用する文を短く記述できる関数です。
 
 # @description 標準入力から指定された行を抽出します
 # headコマンドとtailコマンドのシンプルなラッパーです

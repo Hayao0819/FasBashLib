@@ -14,7 +14,7 @@ while [[ -n "${1-""}" ]]; do
             shift 2 || break
             ;;
         "-debug")
-            #export SHDOC_DEBUG=1
+            export SHDOC_DEBUG=1
             shift 1
             ;;
         "--")
@@ -31,47 +31,24 @@ done
 
 LibList=("${@}")
 
+mkdir -p "${DocsDir}"
 
+if [[ ! -e "$LibDir/shdoc/shdoc" ]]; then
+    echo "Error: Update git submodule" >&2
+    exit 1
+fi
 
-PrepareBuild(){
-    mkdir -p "${DocsDir}"
-    if [[ -z "${LibList[*]}" ]]; then
-        readarray -t LibList < <("${BinDir}/List.sh" -q)
-    fi
-}
+if [[ -z "${LibList[*]}" ]]; then
+    readarray -t LibList < <("${BinDir}/List.sh" -q)
+fi
 
-
-# GetFullShellCode <Lib>
-GetFullShellCode(){
-    local FileList=()
+for Lib in "${LibList[@]}"; do
+    echo > "${DocsDir}/${Lib}.md"
 
     # Get info
     readarray -t FileList < <("$LibDir/GetMeta.sh" "$Lib" Files | tr "," "\n" | sed "s|^ *||g; s| *$||g; s|^	*||g; s|	*$||g; /^$/d" )
 
     # Create Document
     printf "${SrcDir}/$Lib/%s\n" "${FileList[@]}" | xargs -I{} echo "Load: {}"
-    printf "${SrcDir}/$Lib/%s\n" "${FileList[@]}" | xargs cat
-}
-
-
-GenerateDoc(){
-    local  
-    while read Line; do
-
-    done
-}
-
-PrepareBuild
-
-
-LibList=("BetterShell")
-
-for Lib in "${LibList[@]}"; do
-    #echo > "${DocsDir}/${Lib}.md"
-
-    GetFullShellCode "$Lib"
-
-    #| gawk -f "$LibDir/shdoc/shdoc" >> "${DocsDir}/${Lib}.md"
+    printf "${SrcDir}/$Lib/%s\n" "${FileList[@]}" | xargs cat | gawk -f "$LibDir/shdoc/shdoc" >> "${DocsDir}/${Lib}.md"
 done
-
-
