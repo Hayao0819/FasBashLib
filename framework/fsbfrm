@@ -5,6 +5,7 @@ set -euo pipefail
 TMPDIR="${TMPDIR:-/tmp}"
 current_dir="$( cd "$( dirname "${0}" )" && pwd )"
 meta_filename="target.json"
+build_target=()
 
 find(){
     if { command find --help 2>/dev/null || true; } | grep -q "GNU" 1>/dev/null; then
@@ -139,9 +140,10 @@ insert_remote(){
         echo "Inserting $key" >&2
         insert_url="$(jq -r ".[\"remote-inserts\"][\"$key\"]" "$target/${meta_filename}")"
         if [[ -n "$insert_url" ]]; then
-            #readarray -t remote_file < <(curl -s "$insert_url")
-            #print_array "${remote_file[@]}" > 
-            curl -sL "$insert_url" > "$TMPDIR/remote_insert"
+            curl -f -L --no-progress-meter  "$insert_url" > "$TMPDIR/remote_insert" || {
+                echo "Failed to get remote insert $insert_url" >&2
+                return 1
+            }
             readarray -t base_script< <(print_array "${base_script[@]}" | sed "/^${key}$/r $TMPDIR/remote_insert" | sed "/^${key}$/d")
         fi
     done
@@ -168,7 +170,7 @@ call(){
     "$@"
 }
 
-build(){
+build_make_script(){
     local target="$1"
     {
         call get_header "$target"
@@ -176,7 +178,20 @@ build(){
         call get_func "$target" 
         call make_entrypoint "$target"
         call get_footer "$target"
-    } | insert_remote "$target" | shfmt
+    } | insert_remote "$target"
+}
+
+build(){
+    local target="$1" bash_script
+    build_make_script "$target" | {
+        readarray -t bash_script
+        printf '%s\n' "${bash_script[@]}" | shfmt || {
+            echo "Failed to format script" >&2
+            printf '%s\n' "${bash_script[@]}"
+            return 1
+        }
+    }
+    return 0
 }
 
 get_filename(){
@@ -184,13 +199,32 @@ get_filename(){
     jq -r ".filename" "$target/${meta_filename}"
 }
 
+remove_out(){
+    local target="$1"
+    rm -f "${out_dir}/$(get_filename "${target}")"
+}
 
 out_dir="$current_dir/out"
 mkdir -p "${out_dir}"
 
-while read -r target; do
+if (( $# == 0 )); then
+    readarray -t build_target < <(get_build_target)
+else
+    build_target=("$@")
+fi
+
+for target in "${build_target[@]}"; do
+    if [[ "$(basename "${target}")" = "$meta_filename" ]]; then
+        target="$(dirname "${target}")"
+    fi
+    if [ ! -e "$target/${meta_filename}" ]; then
+        echo "Target $target not found" >&2
+        continue
+    fi
+
+    #trap 'remove_out "${target}"' EXIT INT TERM HUP
     echo "Building $target" >&2
     build "${target}" > "${out_dir}/$(get_filename "${target}")"
     chmod +x "${out_dir}/$(get_filename "${target}")"
-done < <(get_build_target)
+done #< <(get_build_target)
 
