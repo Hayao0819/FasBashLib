@@ -11,7 +11,7 @@
         "https://raw.githubusercontent.com/Hayao0819/Hayao-Tools/master/libretranslate-sh/libretranslate.sh"
     ],
     "remote-inserts":{
-        "%README_TXT%": "https://raw.githubusercontent.com/Hayao0819/FasBashFramework/master/README.txt"
+        "%README_TXT%": "https://raw.githubusercontent.com/Hayao0819/FasBashLib/dev-0.2.x/framework/README.txt"
     },
     "footers": [
         "footer.sh"
