@@ -4,6 +4,8 @@ set -euo pipefail
 
 TMPDIR="${TMPDIR:-/tmp}"
 current_dir="$( cd "$( dirname "${0}" )" && pwd )"
+out_dir="$current_dir/out"
+build_target=()
 meta_filename="target.json"
 
 find(){
@@ -141,7 +143,11 @@ insert_remote(){
         if [[ -n "$insert_url" ]]; then
             #readarray -t remote_file < <(curl -s "$insert_url")
             #print_array "${remote_file[@]}" > 
-            curl -sL "$insert_url" > "$TMPDIR/remote_insert"
+            curl -sLf "$insert_url" > "$TMPDIR/remote_insert" || {
+                echo "Failed to download $insert_url" >&2
+                echo "Please check $key in ${target}/${meta_filename}" >&2
+                return 1
+            }
             readarray -t base_script< <(print_array "${base_script[@]}" | sed "/^${key}$/r $TMPDIR/remote_insert" | sed "/^${key}$/d")
         fi
     done
@@ -185,12 +191,50 @@ get_filename(){
 }
 
 
-out_dir="$current_dir/out"
+
+while getopts "C:o:" OPT; do
+  case "$OPT" in
+    C)
+        current_dir="$OPTARG"
+        ;;
+    o)
+        out_dir="$OPTARG"
+        ;;
+    *)
+        echo "Usage: $0 [-C]" >&2
+        exit 1
+        ;;
+  esac
+done
+
+shift "$((OPTIND - 1))"
+
+if (( $# > 0 )); then
+    build_target=("$@")
+else
+    readarray -t build_target < <(get_build_target)
+fi
+
+echo "Build: ${build_target[*]}" >&2
+
+for target in "${build_target[@]}"; do
+    if [[ "$(basename "$target")" = "$meta_filename" ]]; then
+        if [[ -e "${target}" ]]; then
+            readarray -t build_target < <(printf '%s\n' "${build_target[@]}" | sed "s|^${target}$|$(dirname "${target}")|g")
+        else
+            echo "Target $target is not found" >&2
+            exit 1
+        fi
+    elif ! [[ -e "${target}/${meta_filename}" ]]; then
+        echo "Target ${target}/${meta_filename} is not found" >&2
+        exit 1
+    fi
+done
+
 mkdir -p "${out_dir}"
 
-while read -r target; do
+for target in "${build_target[@]}"; do
     echo "Building $target" >&2
     build "${target}" > "${out_dir}/$(get_filename "${target}")"
     chmod +x "${out_dir}/$(get_filename "${target}")"
-done < <(get_build_target)
-
+done
