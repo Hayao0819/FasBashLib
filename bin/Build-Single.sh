@@ -413,7 +413,10 @@ _Make_Lib(){
                             "$Debug" && echo "${Func}を${TmpLibFile}に書き込み" >&2
                             _GetFuncCodeFromFile "${Dir}/${File}" "$Func" >> "$TmpLibFile"
                         fi
-                    } #& #関数処理を並列化すると同時にファイル書き込みを行って破損する可能性がある
+                    } #&
+                    #関数処理を並列化すると同時にファイル書き込みを行って破損する可能性がある
+                    # ソーススクリプトごとに別のファイルに出力して結合したほうがいい
+                    # あとで必ず実装 ここの並列化の有無でビルド速度がかなり変わる
                 done
                 wait
             #done < <("$LibDir/GetMeta.sh" "${LibName}" "Files" | tr "," "\n")
@@ -477,6 +480,7 @@ _Make_Lib(){
         # 完成したライブラリを全体に追加
         #cat "$TmpLibFile" >> "$TmpOutFile"
         #cat "$TmpLibFile" >> "$TmpDir/Internal/Funcs.sh"
+        wait
         cat "$TmpDir/LibFiles/"*".sh" >> "$TmpDir/Internal/Funcs.sh"
     done
     wait 
