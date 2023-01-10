@@ -154,6 +154,30 @@ insert_remote(){
     print_array "${base_script[@]}"
 }
 
+insert_files(){
+    local target="$1" insert_keywords=() base_script=() key
+    readarray -t base_script
+    readarray -t insert_keywords < <(jq -r '.["file-inserts"] | keys[]' "$target/${meta_filename}")
+    if (( ${#insert_keywords[@]} == 0 )); then
+        print_array "${base_script[@]}"
+        return 0
+    fi
+    for key in "${insert_keywords[@]}"; do
+        local insert_file
+        echo "Inserting $key" >&2
+        insert_file="$(jq -r ".[\"file-inserts\"][\"$key\"]" "$target/${meta_filename}")"
+
+        if [[ -n "$insert_file" ]]; then
+            insert_file="$(
+                cd "$target" || return 1
+                realpath "$insert_file"
+            )"
+            readarray -t base_script< <(print_array "${base_script[@]}" | sed "/^${key}$/r $insert_file" | sed "/^${key}$/d")
+        fi
+    done
+    print_array "${base_script[@]}"
+}
+
 get_remote_func(){
     local url target="$1"
     while read -r url; do
@@ -182,7 +206,7 @@ build(){
         call get_func "$target" 
         call make_entrypoint "$target"
         call get_footer "$target"
-    } | insert_remote "$target" | shfmt
+    } | insert_remote "$target" | insert_files "$target" | shfmt
 }
 
 get_filename(){

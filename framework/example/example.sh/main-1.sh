@@ -10,3 +10,9 @@ EOF
         libre_translate_translate_auto "$line" "ja"
     done
 }
+
+hoge(){
+    cat <<EOF
+%TARGETJSON%
+EOF
+}

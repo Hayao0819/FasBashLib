@@ -13,6 +13,9 @@
     "remote-inserts":{
         "%README_TXT%": "https://raw.githubusercontent.com/Hayao0819/FasBashFramework/master/README.txt"
     },
+    "file-inserts":{
+        "%TARGETJSON%": "./target.json"
+    },
     "footers": [
         "footer.sh"
     ],
