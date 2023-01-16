@@ -335,14 +335,24 @@ _CheckLoadedFile(){
 }
 
 # _WriteToFile <Target file> <Text>
-_WriteToFile(){
+#_WriteToFile(){
+#    local _LockFile="$1" _TargetFile="$1" _Text="$2"
+#    flock "$_LockFile" -c "echo -n \"$_Text\" > \"$_TargetFile\""
+#}
+
+#_WriteToFileFromStdin(){
+#    local _LockFile="$1" _TargetFile="$1"
+#    flock "$_LockFile" -c "cat > \"$_TargetFile\""
+#}
+
+_AddToFile(){
     local _LockFile="$1" _TargetFile="$1" _Text="$2"
-    flock "$_LockFile" -c "echo -n \"$_Text\" > \"$_TargetFile\""
+    flock "$_LockFile" -c "echo -n \"$_Text\" >> \"$_TargetFile\""
 }
 
-_WriteToFileFromStdin(){
+_AddToFileFromStdin(){
     local _LockFile="$1" _TargetFile="$1"
-    flock "$_LockFile" -c "cat > \"$_TargetFile\""
+    flock "$_LockFile" -c "cat >> \"$_TargetFile\""
 }
 
 _Make_Lib(){
@@ -409,25 +419,25 @@ _Make_Lib(){
                             if PrintArray "${_NoPrefixFunc[@]}" | grep -qx "$Func"; then
                                 # 置き換えない関数として設定 かつ コードスタイルが一致していない場合はプレフィックスを除去
                                 #echo " = $Func" >> "$TmpFile_FuncList" 
-                                _WriteToFile "$TmpFile_FuncList" " = $Func"
+                                _AddToFile "$TmpFile_FuncList" " = $Func"
                                 NewFuncName="$(MakeFuncName "" "$Func")"
                                 $Debug && echo "置き換え1: ${Func}はNoPrefixFuncに設定されています" >&2
                             else
                                 # プレフィックスを置き換え
                                 #echo "${LibPrefix-""} = ${Func}" >> "$TmpFile_FuncList"
-                                _WriteToFile "$TmpFile_FuncList" "${LibPrefix-""} = ${Func}"
+                                _AddToFile "$TmpFile_FuncList" "${LibPrefix-""} = ${Func}"
                                 NewFuncName="$(MakeFuncName "${LibPrefix-""}" "$Func")"
                             fi
                             "${Debug}" && echo "置き換え1: 関数定義の${Func}を${NewFuncName}に置き換えて${TmpLibFile}に書き込み" >&2
                             #_GetFuncCodeFromFile "${Dir}/${File}" "$Func" | sed "1 s|${Func} ()|${NewFuncName} ()|g" | grep -v "^ *#" >> "$TmpLibFile"
-                            _GetFuncCodeFromFile "${Dir}/${File}" "$Func" | sed "1 s|${Func} ()|${NewFuncName} ()|g" | grep -v "^ *#" | _WriteToFileFromStdin "$TmpLibFile"
+                            _GetFuncCodeFromFile "${Dir}/${File}" "$Func" | sed "1 s|${Func} ()|${NewFuncName} ()|g" | grep -v "^ *#" | _AddToFileFromStdin "$TmpLibFile"
                         else
                             # 関数の置き換えを一切行わない場合
                             #echo " = $Func" >> "$TmpFile_FuncList"
-                            _WriteToFile "$TmpFile_FuncList" " = $Func"
+                            _AddToFile "$TmpFile_FuncList" " = $Func"
                             "$Debug" && echo "${Func}を${TmpLibFile}に書き込み" >&2
                             #_GetFuncCodeFromFile "${Dir}/${File}" "$Func" >> "$TmpLibFile"
-                            _GetFuncCodeFromFile "${Dir}/${File}" "$Func" | _WriteToFileFromStdin "$TmpLibFile"
+                            _GetFuncCodeFromFile "${Dir}/${File}" "$Func" | _AddToFileFromStdin "$TmpLibFile"
                         fi
                     } &
                 done
