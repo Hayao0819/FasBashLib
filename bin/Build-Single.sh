@@ -523,6 +523,12 @@ _Make_All_Replace(){
 
             "${Debug}" && echo "置き換え3: 全ての${OldFuncName}を${NewFuncName}に置き換え" >&2
             SedI "s|${OldFuncName}|${NewFuncName}|g" "$TmpDir/Internal/Funcs.sh"
+
+            # Array.for_eachみたいな場合の置き換え
+            OldFuncName="$(MakeFuncName "" "$Func")"
+            [[ -n "$LibPrefix" ]] && OldFuncName="${LibPrefix}.${OldFuncName}"
+            "${Debug}" && echo "置き換え3: 全ての${OldFuncName}を${NewFuncName}に置き換え" >&2
+            SedI "s|${OldFuncName}|${NewFuncName}|g" "$TmpDir/Internal/Funcs.sh"
         done < "$TmpFile_FuncList"
     elif [[ "$Delimiter" != "." ]]; then
         # 区切り文字の置き換え
