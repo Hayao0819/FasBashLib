@@ -401,15 +401,12 @@ _Make_Lib(){
                         ReplacePrefix=true
 
                         # プレフィックスが空の場合は置き換えない
-                        if [[ -z "${LibPrefix-""}" ]]; then
+                        if [[ -z "${LibPrefix-""}" ]] && [[ "$CodeType" = "$DefaultCodeType" ]]; then
                             ReplacePrefix=false
                         else
                             # プレフィックスを置き換えない関数として設定されている場合は置き換えない
                             if PrintArray "${_NoPrefixFunc[@]}" | grep -qx "$Func"; then
-                                # コードスタイルが一致している場合は置き換えない
-                                if [[ "$CodeType" = "$DefaultCodeType" ]]; then
-                                    ReplacePrefix=false
-                                fi
+                                ReplacePrefix=false
                             fi
                         fi
 
